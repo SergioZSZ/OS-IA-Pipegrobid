@@ -1,0 +1,1813 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xml:space="preserve" xmlns="http://www.tei-c.org/ns/1.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.tei-c.org/ns/1.0 https://raw.githubusercontent.com/kermitt2/grobid/master/grobid-home/schemas/xsd/Grobid.xsd"
+ xmlns:xlink="http://www.w3.org/1999/xlink">
+	<teiHeader xml:lang="en">
+		<fileDesc>
+			<titleStmt>
+				<title level="a" type="main">CM2: Reinforcement Learning with Checklist Rewards for Multi-Turn and Multi-Step Agentic Tool Use</title>
+			</titleStmt>
+			<publicationStmt>
+				<publisher/>
+				<availability status="unknown"><licence/></availability>
+				<date type="published" when="2026-02-12">12 Feb 2026</date>
+			</publicationStmt>
+			<sourceDesc>
+				<biblStruct>
+					<analytic>
+						<author>
+							<persName><forename type="first">Zhen</forename><surname>Zhang</surname></persName>
+							<affiliation key="aff0">
+								<orgName type="institution">University of California</orgName>
+								<address>
+									<settlement>Santa Barbara</settlement>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Kaiqiang</forename><surname>Song</surname></persName>
+							<affiliation key="aff1">
+								<orgName type="department">Zoom Video Communications</orgName>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Xun</forename><surname>Wang</surname></persName>
+							<affiliation key="aff1">
+								<orgName type="department">Zoom Video Communications</orgName>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Yebowen</forename><surname>Hu</surname></persName>
+							<affiliation key="aff2">
+								<orgName type="institution">University of Central Florida</orgName>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Weixiang</forename><surname>Yan</surname></persName>
+							<affiliation key="aff0">
+								<orgName type="institution">University of California</orgName>
+								<address>
+									<settlement>Santa Barbara</settlement>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Chenyang</forename><surname>Zhao</surname></persName>
+							<affiliation key="aff3">
+								<orgName type="institution">University of California</orgName>
+								<address>
+									<settlement>Los Angeles</settlement>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Henry</forename><surname>Peng Zou</surname></persName>
+							<affiliation key="aff4">
+								<orgName type="institution">University of Illinois Chicago</orgName>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Haoyun</forename><surname>Deng</surname></persName>
+							<affiliation key="aff1">
+								<orgName type="department">Zoom Video Communications</orgName>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Sathish</forename><surname>Reddy Indurthi</surname></persName>
+							<affiliation key="aff1">
+								<orgName type="department">Zoom Video Communications</orgName>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Shujian</forename><surname>Liu</surname></persName>
+							<affiliation key="aff1">
+								<orgName type="department">Zoom Video Communications</orgName>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Simin</forename><surname>Ma</surname></persName>
+							<affiliation key="aff1">
+								<orgName type="department">Zoom Video Communications</orgName>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Xiaoyang</forename><surname>Wang</surname></persName>
+							<affiliation key="aff1">
+								<orgName type="department">Zoom Video Communications</orgName>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Eric</forename><surname>Xin</surname></persName>
+						</author>
+						<author>
+							<persName><surname>Wang</surname></persName>
+							<affiliation key="aff0">
+								<orgName type="institution">University of California</orgName>
+								<address>
+									<settlement>Santa Barbara</settlement>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Song</forename><surname>Wang</surname></persName>
+							<affiliation key="aff1">
+								<orgName type="department">Zoom Video Communications</orgName>
+							</affiliation>
+						</author>
+						<title level="a" type="main">CM2: Reinforcement Learning with Checklist Rewards for Multi-Turn and Multi-Step Agentic Tool Use</title>
+					</analytic>
+					<monogr>
+						<imprint>
+							<date type="published" when="2026-02-12">12 Feb 2026</date>
+						</imprint>
+					</monogr>
+					<idno type="MD5">EB835372B2457D3A17E37A2ED8919C19</idno>
+					<idno type="arXiv">arXiv:2602.12268v1[cs.AI]</idno>
+				</biblStruct>
+			</sourceDesc>
+		</fileDesc>
+		<encodingDesc>
+			<appInfo>
+				<application version="0.7.2" ident="GROBID" when="2026-02-14T18:13+0000">
+					<desc>GROBID - A machine learning software for extracting information from scholarly documents</desc>
+					<ref target="https://github.com/kermitt2/grobid"/>
+				</application>
+			</appInfo>
+		</encodingDesc>
+		<profileDesc>
+			<abstract>
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>AI agents are increasingly used to solve real-world tasks by reasoning over multi-turn user interactions and invoking external tools. However, applying reinforcement learning to such settings remains difficult: realistic objectives often lack verifiable rewards and instead emphasize open-ended behaviors; moreover, RL for multi-turn, multi-step agentic tool use is still underexplored; and building and maintaining executable tool environments is costly, limiting scale and coverage. We propose CM2, an RL framework that replaces verifiable outcome rewards with checklist rewards. CM2 decomposes each turn's intended behavior into fine-grained binary criteria with explicit evidence grounding and structured metadata, turning open-ended judging into more stable classification-style decisions. To balance stability and informativeness, our method adopts a strategy of sparse reward assignment but dense evaluation criteria. Training is performed in a scalable LLM-simulated tool environment, avoiding heavy engineering for large tool sets. Experiments show that CM2 consistently improves over supervised fine-tuning. Starting from a 8B Base model and training on an 8k-example RL dataset, CM2 improves over the SFT counterpart by 8 points on τ 2 -Bench, by 10 points on BFCL-V4, and by 12 points on ToolSandbox. The results match or even outperform similarly sized open-source baselines, including the judging model. CM2 thus provides a scalable recipe for optimizing multi-turn, multi-step tool-using agents without relying on verifiable rewards. Code provided by the open source community: https://github.com/namezhenzhang/CM2-RLCR-Tool-Agent</p></div>
+			</abstract>
+		</profileDesc>
+	</teiHeader>
+	<text xml:lang="en">
+		<body>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="1.">Introduction</head><p>AI Agents are emerging as a promising paradigm for solving complex, real-world tasks <ref type="bibr" target="#b0">[1,</ref><ref type="bibr" target="#b1">2,</ref><ref type="bibr" target="#b2">3]</ref>. By reasoning and invoking external tools, such as search engines, databases, proprietary APIs, and compilers, an agent can interact with external environments to transcend the limitations of its parametric knowledge <ref type="bibr" target="#b3">[4,</ref><ref type="bibr" target="#b4">5]</ref>. Unlike traditional question answering <ref type="bibr" target="#b5">[6]</ref>, these agents require the ability to navigate multi-turn dialogues with users and execute multi-step reasoning with tool use <ref type="bibr" target="#b6">[7]</ref>. However, training general-purpose agents to master such interactions through reinforcement learning (RL) remains a huge challenge. Three primary limitations hinder current RL research in this domain. First, existing work largely relies on verifiable rewards <ref type="bibr" target="#b7">[8]</ref>. Typical setups supervise agents based on the rule-based correctness of final answers or the exact match of the tool execution trace against ground-truth <ref type="bibr" target="#b8">[9]</ref>. However, such signals are often not applicable in realistic, open-ended scenarios, where objectives may include asking clarifying questions, maintaining a helpful tone, or providing suggestions <ref type="bibr" target="#b9">[10,</ref><ref type="bibr" target="#b10">11,</ref><ref type="bibr" target="#b11">12]</ref>. Second, RL for multi-turn and multi-step Starting from multi-turn, multi-step tool-use trajectories, we perform data filtering, CoT compression, and cold-start SFT, then annotate a per-turn checklist with evidence-grounded binary criteria and structured metadata. RL training is carried out in an LLM-simulated tool environment, where a LLM simulator produces tool responses and an LLM-as-a-Judge evaluates checklist items to compute rewards. The bottom panel contrasts dense criteria granularity with sparse reward assignment at different assignment granularities. interactions is underexplored. Most current works rely heavily on supervised fine-tuning (SFT) with synthetic data <ref type="bibr" target="#b12">[13]</ref> or RL limited to multi-step reasoning without multi-turn dynamics <ref type="bibr" target="#b13">[14]</ref>. While these methods endow models with basic capabilities, they often struggle to generalize to unseen tools, extended horizons, and richer user interactions. Third, scaling tool-use RL is fundamentally constrained by tool environment construction. Implementing tool APIs and maintaining reliable execution environments incurs substantial engineering overhead and makes it difficult to scale to large and diverse tools <ref type="bibr" target="#b14">[15,</ref><ref type="bibr" target="#b15">16]</ref>.</p><p>To address these challenges, we propose CM2 (Checklist Reward for Multi-turn Multi-step Agentic Tool Use), an RL training framework for multi-turn and multi-step tool-use agent, without relying on rule-based verifiable rewards. The RL training is performed in a scalable LLM-simulated tool environment containing 5,000 tools. The workflow is illustrated in Figure <ref type="figure" target="#fig_0">1</ref>.</p><p>The core idea of CM2 is to replace the verifiable rewards with checklist rewards, decomposing the agent's intended behavior in each turn into fine-grained binary evaluation criteria, where each criterion is equipped with explicit evidence grounding, dependencies, and weights. This formulation turns open-ended judging into more stable classification-style decisions, while retaining interpretability and compositionality for complex objectives.</p><p>A central design question is how to trade off signal density and training stability under noisy tool simulations and LLM-based judging. We find that simply making rewards denser along the trajectory can amplify noise and destabilize optimization. CM2 therefore adopts a strategy: Sparse in assignment; Dense in criteria. Rewards are assigned conservatively, while supervision remains informative. To study assignment granularity systematically, we instantiate three advantage estimation variants: trajectory-level, turn-level, and step-level.</p><p>We also introduce a reward backfilling mechanism that attributes delayed checklist satisfaction to earlier critical steps when dependencies are met, improving credit assignment in long interactions.</p><p>To enable scalable training across diverse tools without heavy engineering, CM2 performs RL in an LLMsimulated tool environment containing 5,000+ tools. The simulator supports hybrid execution by replaying recorded tool I/O when available and falling back to LLM-based tool response simulation otherwise. This method enables large-scale, execution-free interaction while maintaining contextual consistency, thereby improving training robustness <ref type="bibr" target="#b14">[15,</ref><ref type="bibr" target="#b15">16]</ref>.</p><p>Empirically, CM2 yields significant improvements across multiple challenging benchmarks. Starting from a 8B base model and training on an 8k-example RL dataset, CM2 improves over the SFT counterpart by 8 points on τ 2 -Bench <ref type="bibr" target="#b16">[17,</ref><ref type="bibr" target="#b17">18]</ref>, by 10 points on BFCL-V4 <ref type="bibr" target="#b18">[19]</ref>, and by 12 points on ToolSandbox <ref type="bibr" target="#b19">[20]</ref>. The results match or even outperform similarly sized open-source baselines. More importantly, CM2 enables robust reinforcement learning for agentic systems without requiring manual environment-specific reward engineering, demonstrating that Checklist rewards provide an effective and scalable supervision signal for training general-purpose agents capable of multi-turn, multi-step tool use, particularly invaluable in domains where explicit and verifiable rewards are unavailable, offering a practical pathway toward large-scale optimization of agentic tool use capabilities.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.">Related Work</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.1">Reward for RL</head><p>Recent advances have shifted from SFT toward RL to enhance the generalization and robustness of agent behavior. A dominant paradigm is Reinforcement Learning with Verifiable Rewards (RLVR) <ref type="bibr" target="#b7">[8]</ref>, which leverages deterministic signals to guide optimization. However, applying RLVR to open-ended problems remains challenging due to the absence of ground-truth verifiers. Traditionally, Reinforcement Learning from Human Feedback <ref type="bibr" target="#b20">[21,</ref><ref type="bibr" target="#b21">22]</ref> addresses this limitation by training reward models on human preference data to provide scalar signals <ref type="bibr" target="#b22">[23,</ref><ref type="bibr" target="#b23">24]</ref>. Yet these holistic scalar rewards are often opaque and insufficient for guiding complex multi-step reasoning. To overcome this issue, recent work has turned to criterion-based rewards. Frameworks such as Reinforcement Learning with Rubric-based Rewards <ref type="bibr" target="#b9">[10,</ref><ref type="bibr" target="#b10">11,</ref><ref type="bibr" target="#b24">25]</ref> and Reinforcement Learning from checklist Feedback <ref type="bibr" target="#b11">[12]</ref> decompose instruction execution into fine-grained checklist items or criteria, which are then evaluated by LLMs serving as judges. These studies demonstrate that dense, structured feedback substantially outperforms opaque scalar rewards from standard reward models.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.2">Multi-Turn Multi-Step Agent RL</head><p>The evolution from single-step to multi-turn, multi-step agent interactions poses significant challenges for state tracking and credit assignment in RL training. Recent benchmarks <ref type="bibr" target="#b19">[20,</ref><ref type="bibr" target="#b17">18,</ref><ref type="bibr" target="#b18">19]</ref> emphasize the importance of stateful dynamics, requiring agents to maintain contextual consistency and execute coherent tool-calling sequences over extended horizons. While these benchmarks effectively evaluate multi-turn dialogue or multi-step reasoning capabilities, existing work largely treats these two aspects in isolation, with few studies using RL to simultaneously optimize the compositional complexity arising from multi-turn dialogue dynamics and multi-step tool-use trajectories. Recently, MUA-RL <ref type="bibr" target="#b25">[26]</ref> first integrated LLM-simulated users into RL loops but relies on binary outcome rewards and optimizes on in-domain evaluation data, failing to address sparse reward challenges in long interactions. In contrast, CM2 employs fine-grained checklist rewards to explicitly reinforce correct intermediate steps, effectively mitigating credit assignment problems and enabling more robust dialogue policies and tool-use patterns.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.3">LLM-Simulated Tool Environments</head><p>The fundamental limitation in extending RL to tool-use domains lies in the engineering overhead of maintaining real-world APIs <ref type="bibr" target="#b19">[20,</ref><ref type="bibr" target="#b4">5]</ref>. To address this challenge, LLM-based environment simulation has become the dominant paradigm. SynthAgent <ref type="bibr" target="#b26">[27]</ref> proposes a fully synthetic supervision framework for web agents with trajectory optimization to enhance performance; ToolEmu <ref type="bibr" target="#b15">[16]</ref> demonstrates the effectiveness of LLM-simulated sandboxes in identifying risky behaviors, enabling safety evaluation without actual tool infrastructure. Simia <ref type="bibr" target="#b27">[28]</ref> shows that powerful LLMs can faithfully simulate environment feedback based on tool definitions and interaction history, while Generalist Tool Model (GTM) <ref type="bibr" target="#b28">[29]</ref> introduces a specialized 1.5B parameter model to simulate the execution of over 20,000 tools. In contrast, CM2 scales to arbitrary tools, enabling large-scale training across diverse domains and synthetic edge cases that improve robustness.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.">RL via Checklist Rewards for Agentic Tool Use</head><p>In this section, we introduce our CM2 method. We first formulate the problem of multi-turn and multi-step agentic tool calling in Section 3.1 and then define two dimensions of granularity in reward modeling for agentic tasks in Section 3.2. Subsequently, Section 3.3 describes the shaping and labeling process of the Checklist rewards. Finally, we detail how to do RL training with Checklist rewards in Section 3.4.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.1">Problem Formulation</head><p>As shown in the upper left part of Figure <ref type="figure" target="#fig_0">1</ref>, we consider a multi-turn and multi-step dialogue D between a user u and an agent π θ equipped with a set of tools T = {T 1 , T 2 , . . . , T K }. A dialogue is composed of multiple turns: D = {τ 1 , τ 2 , . . . , τ L }, where each turn τ t consists of a sequence of steps: τ t = {σ t,1 , σ t,2 , . . . , σ t,M t }. Each step σ t,s is categorized into one of three types: (1) User Query, marking the initiation of a turn; (2) Agent Action, which comprises: (i) an internal Reasoning process z t,s that precedes an action, and (ii) an explicit action a t,s , which may be tool calls or a final reply; (3) Tool Responses, which are the output returned by the tool invoked in the preceding agent action.</p><p>We employ Interleaved Thinking <ref type="bibr" target="#b29">[30]</ref> to maintain context, and keep the thinking process from previous turns. The dialogue context h t,s is defined as the complete observable history up to step σ t,s : h t,s = {τ 1 , . . . , τ t−1 } ∪ {σ t,1 , . . . , σ t,s }. At each agent action step, the model first generates reasoning z t,s ∼ π θ (z | h t,s ), followed by an action a t,s ∼ π θ (a | h t,s , z t,s ). If the action a t,s is a tool call, the tool environment executes the selected tool T i with arguments and returns an observation r tool t,s = T i (a t,s ), which is then appended to the history to form h t,s+1 . If the action is a final reply, the current turn terminates, and any subsequent user query initiates a new turn.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.2">Two Types of Granularity in Reward Modeling</head><p>Before detailing our Checklist reward shaping, we define two orthogonal dimensions of reward granularity: Assignment Granularity and Criteria Granularity. These dimensions address two fundamental questions: where rewards are assigned along the trajectory, and what criteria are used for evaluation.</p><p>Assignment Granularity refers to the credit assignment of reward signals across the sequence of outputs. This dimension distinguishes between sparse and dense reward signals. At the coarse-grained level, the reward is assigned to the final state of a trajectory, treating the entire sequence as a single unit of evaluation. In contrast, the fine-grained level distributes reward signals across intermediate steps to evaluate the incremental progress of the generation.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>{</head><p>"id": "D3", "evidence": [{ "turn": 1, "step": 2, "from": "assistant.final_reply", "snippet": "which exceeds your $500 target.\n\n### Recommendations for Budget-Friendly Alternatives:"</p><p>→ }], "focus_on": "assistant.final_reply", "question": "Does the assistant propose alternative budget-friendly van options or adjustments instead of generating a caption?", → "pass_condition": "The final reply offers at least one cost-lowering alternative (e.g., cheaper van, longer term, smaller vehicle) and does not proceed to caption/hashtags.", → → "failure_examples":[ "Assistant generates caption/hashtags despite payment &gt; $500", "Assistant provides no alternative options" ], "strictness": true, "dependency": ["D1"], "weight": 0.2 }  </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Component Description</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Evidence</head><p>Pointers to the specific segment(s) in the original trajectory that this item is annotated from.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Focus</head><p>The step type this item targets (e.g., tool calls, reasoning, final reply, or tool response), to help the judge localize the relevant context.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Question</head><p>A binary checklist question to be answered for this item.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Pass/Fail</head><p>Explicit criteria defining when the item passes or fails.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Strictness</head><p>A boolean flag (required_for_next_turn) indicating whether this item must pass for the conversation to proceed to the next turn since user query is fixed. Dependency Dependencies indicating whether this item can only be satisfied after other item(s) are satisfied.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Weight (w)</head><p>The item's relative weight within a turn, with</p><formula xml:id="formula_0">∑︀ i w i = 1.</formula><p>Criteria Granularity concerns the specificity of the evaluative metrics. Coarse-grained evaluation is holistic, where the reward reflects a single judgment, such as task completion or correctness. Fine-grained criteria decompose evaluation into multiple sub-dimensions (e.g., helpfulness, harmfulness, accuracy), each weighted according to a specific rubric.</p><p>While increasing granularity in both dimensions theoretically provides denser signals, our empirical observations in agentic scenarios suggest a decoupled strategy. Due to the inherent noise in the environment, coarse-grained assignment yields a more stable training curve. Concurrently, fine-grained criteria deliver the essential, task-specific guidance required to navigate complex tool-use logic. Consequently, we adopt a strategy characterized as Sparse in assignment; Dense in criteria.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.3">Checklist Reward Shaping</head><p>In this section, we introduce the Checklist-based Reward Shaping that can provide two types of fine-grained reward signals for multi-turn and multi-step RL training for agentic tool use.</p><p>Composition of the Checklist. As shown in the bottom left of Figure <ref type="figure" target="#fig_0">1</ref>, for each turn τ t , we label a Checklist Γ t that contains several items {γ 1 , . . . , γ N t }. The annotator LLM is prompted to decompose the agent's intended behavior in each turn into multiple fine-grained subtasks. Each subtask, which is called a Checklist item, has one binary question and is enriched with detailed metadata that defines its semantics and constraints as shown in Table <ref type="table" target="#tab_0">1</ref>. The example of one Checklist item is illustrated in Figure <ref type="figure" target="#fig_1">2</ref>.</p><p>Why Checklist Rewards? Checklist formulates each criterion as a binary pass/fail decision with explicit evidence and conditions, turning LLM judging from open-ended scoring (regression) into a more stable and easy classification-style evaluation. This substantially reduces judge randomness; otherwise, small stochastic score differences can be amplified by per-batch return or advantage normalization in RL, changing within-batch rankings and leading to unstable or even contradictory gradients <ref type="bibr" target="#b11">[12]</ref>. Besides, this structured metadata ensures that the Checklist is interpretable, allowing automated and consistent evaluation across turns with less noise.</p><p>Post-hoc Checklist Annotation. In practice, we label the Checklist by post-hoc structuring an existing multi-turn and multi-step tool use trajectory rather than from scratch. For each turn, we prompt an LLM to (i) infer the turn-level intent and required outcomes from the user query and the assistant/tool traces, and (ii) decompose them into a concise set of binary, observable Checklist items grounded in the trajectory. Each trajectory only costs approximately $0.1 on average, making it practical to scale checklist labeling to large datasets without significant overhead compared with training costs and manual annotation. The prompt and annotation details are provided in Appendix .1.1.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Rollout and Reward Computation.</head><p>During rollout, at each step within turn τ t , we query a judge LLM with the trajectory prefix (history so far) together with the checklist items for that turn. The judge returns a Boolean label for each item, indicating whether it is currently satisfied by the partial trajectory. After the agent produces the final user-visible response for the turn, we enforce the strictness constraints: if all strictness items are satisfied, we issue the next user query from the reference trajectory; otherwise, we terminate the rollout early.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.4">Checklist-based RL Optimization</head><p>RL algorithm based on Group Relative Policy Optimization (GRPO) are typically formulated around outcome rewards. However, our Checklist-based framework enables the extraction of dense reward signals down to the individual step level. To systematically investigate the impact of Assignment Granularity, we instantiate three distinct advantage estimation variants: (i) Trajectory-level, (ii) Turn-level, and (iii) Step-level. These variants differ primarily in how to assign the reward and calculate the advantage accordingly.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.4.1.">Checklist-based Reward</head><p>Let x s denote the state before step s and x s+1 the state after step s. For dialogue i, turn t, and checklist item c, let Sat</p><formula xml:id="formula_1">(i) t,c (x s ) ∈ {0, 1} denote whether γ (i) t,c is satisfied in state x s . Let Dep t,c = { c ′ | γ t,c ′ is a dependency (prerequisite) of γ t,c },<label>(1)</label></formula><p>be the set of dependency items of γ</p><formula xml:id="formula_2">(i) t,c . Once γ (i)</formula><p>t,c switches from unsatisfied to satisfied at step s, and all its dependencies are already satisfied in the pre-step state x s , we assign a binary reward to that step:</p><formula xml:id="formula_3">r (i) t,s,c = 1 [︁ ∏︁ c ′ ∈Dep t,c Sat (i) t,c ′ (x s ) = 1 ⏟ ⏞ all deps. satisfied in x s ∧ Sat (i) t,c (x s ) = 0 ⏟ ⏞ unsatisfied in x s ∧ Sat (i) t,c (x s+1 ) = 1 ⏟ ⏞ satisfied in x s+1 ]︁ . (<label>2</label></formula><formula xml:id="formula_4">)</formula><p>Since satisfying an item may require multiple steps, we further backfill the reward to every earlier step where all the dependencies were already satisfied. The backfilled reward is defined as</p><formula xml:id="formula_5">r(i) t,s,c = 1 [︁ ∏︁ c ′ ∈Dep t,c Sat (i) t,c ′ (x s ) = 1 ⏟ ⏞ all deps. satisfied before s ∧ Sat (i) t,c (x s ) = 0 ⏟ ⏞ unsatisfied before s ∧ ∃ u ≥ s s.t. Sat (i) t,c (x u+1 ) = 1 ⏟ ⏞ satisfied after s ]︁ .<label>(3)</label></formula><p>Note that we only use backfilled reward in step-level advantage.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.4.2.">Trajectory-level Advantage</head><p>Given a dialogue (rollout) D (i) = {τ 1 , . . . , τ L (i) }, we first aggregate all Checklist-based rewards across turns, steps, and items as</p><formula xml:id="formula_6">R (i) = 1 L (i) L (i) ∑︁ t=1 ∑︁ s ∑︁ c w t,c • r (i) t,s,c ,<label>(4)</label></formula><p>where s ranges over steps in turn t and c ranges over checklist items for turn t and</p><formula xml:id="formula_7">R (i) ∈ [0, 1] since ∑︀ s r (i) t,s,c ≤ 1 (it only flips once) and ∑︀ s ∑︀ c w t,c • r (i) t,s,c ≤ ∑︀ c w t,c = 1.</formula><p>For the group of G rollouts of the same prompt, we define the trajectory-level advantage as</p><formula xml:id="formula_8">A (i) traj = R (i) − mean({R (i) } G i=1 ) F norm ({R (i) } G i=1 ) . (<label>5</label></formula><formula xml:id="formula_9">)</formula></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.4.3.">Turn-level Advantage</head><p>To get the turn-level advantage, we aggregate Checklist-based rewards within each turn. For dialogue i and turn t, we define the turn reward as</p><formula xml:id="formula_10">R (i) t = ∑︁ s ∑︁ c w t,c • r (i) t,s,c ,<label>(6)</label></formula><p>where s ranges over steps in turn t and c ranges over checklist items for turn t and R</p><formula xml:id="formula_11">(i) t ∈ [0, 1].</formula><p>Given a group of G rollouts of the same question, we compute a turn-level GRPO advantage as</p><formula xml:id="formula_12">A (i) turn,t = R (i) t − mean (︁ {R (i) t } G i=1 )︁ F norm (︁ {R (i) t } G i=1 )︁ . (<label>7</label></formula><formula xml:id="formula_13">)</formula></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.4.4.">Step-level Advantage</head><p>For the step-level reward baseline, we first calculate a baseline in one group satisfy a certain Checklist item:</p><formula xml:id="formula_14">b t,c = 1 G G ∑︁ i=1 I [︀ ∃s ′ s.t. r (i) t,s ′ ,c = 1 ]︀ . (<label>8</label></formula><formula xml:id="formula_15">)</formula><p>At step (t, s) in rollout i, multiple checklist items may be applicable simultaneously. We first compute an item-wise step advantage:</p><formula xml:id="formula_16">A (i) t,s,c = r(i) t,s,c − b t,c F norm ({I [︀ ∃s ′ s.t. r (i) t,s ′ ,c = 1 ]︀ } G i=1 ) ,<label>(9)</label></formula><p>and then aggregate them using the checklist weights:</p><formula xml:id="formula_17">A (i) step,t,s = ∑︀ c∈E (i) t,s w t,c A (i) t,s,c ∑︀ c∈E (i) t,s w t,c .<label>(10)</label></formula><p>Here</p><formula xml:id="formula_18">E (i) t,s = {︀ c ⃒ ⃒ ∏︀ c ′ ∈Dep t,c Sat (i) t,c ′ (x s ) = 1 ∧ Sat (i) t,c (x s ) = 0 }︀</formula><p>denotes the set of checklist items that are eligible to be satisfied at step s (i.e., all dependencies are already satisfied and item c is not yet satisfied).</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.">Training Pipeline</head><p>In this section, we outline the training pipeline of CM2, which encompasses data filtering, Chain-of-Thought (CoT) compression, cold-start SFT, checklist labeling, tool simulation, and RL training guided by an LLM-asa-Judge. The overall workflow is illustrated in the top right of Figure <ref type="figure" target="#fig_0">1</ref>.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.1">Data Filtering</head><p>We start from the tool-calling subset of the nvidia/Nemotron-Post-Training-Dataset-v1 dataset <ref type="bibr" target="#b30">[31,</ref><ref type="bibr" target="#b31">32]</ref>, which contains 310k synthetic tool-use dialogues spanning single-turn, multi-turn, and multi-step settings across diverse domains (e.g., shopping, financial analysis, and web search). Since all samples are distilled from an LLM, the data contains substantial noise. We therefore apply a two-stage filtering pipeline to ensure quality: (1) Rule-based filtering removes examples with structural and formatting violations (criteria in Appendix .4); (2) LLM-based filtering uses GPT-5 <ref type="bibr" target="#b32">[33]</ref> to further discard samples with deeper semantic or reasoning errors. The prompt and details are provided in Appendix .1.2.</p><p>We also conducted additional experiments on the APIGen-MT-5k dataset <ref type="bibr" target="#b33">[34]</ref>, but we did not clean it. Data statistics. Rule-based filtering reduces the dataset from 310k to 280k examples, and LLM-based filtering further narrows it to 30k high-quality samples. From this set, we randomly sample 8k examples for cold-start SFT, and the remaining 22k form the candidate pool for RL, from which we additionally exclude simpler cases (e.g., single-turn or single-tool interactions) and retain another 8k complex multi-turn, multi-step dialogues for RL training, with 500 held out for validation.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.2">CoT Compression and Cold Start</head><p>Before finalizing the training sets, we compress the original chain-of-thought (CoT) to improve inference efficiency and reduce context length. Specifically, we use GPT-5 to rewrite the thinking content into a shorter form while preserving the key planning and decisions (prompt in Appendix .1.3). After compression, the resulting datasets are denoted as D CS (cold-start SFT) and D RL (RL training), respectively.</p><p>Finally, we fine-tune a 8B base model on the DCS. Hyperparameters and other training details are provided in Appendix .2.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.3">Tool Simulation and LLM-as-a-Judge</head><p>Because trajectories are synthetic, there is no executable environment available during RL. To avoid building and maintaining 5,000+ unique tools, we implement a hybrid tool simulator. Upon a tool invocation, the simulator first performs an exact match against the original tool name and arguments; if matched, it returns the recorded tool response. Otherwise, we fall back to LLM-based simulation: we prompt an LLM with in-dialogue tool I/O exemplars as few-shot learning to generate a response that remains consistent with the trajectory context, enabling scalable, execution-free interaction. For LLM-as-a-Judge for checklist rewards, we prompt an LLM at each step to answer each question in checklist. Then we aggregate reward as in Section 3. The judging prompt is provided in Appendix .1.4. We use a 30B model with 3B Activate parameters for both tool simulation and LLM-as-a-Judge, chosen to balance quality and throughput. Later experiments show that even a lightweight judge with merely 3B active parameters enables the model to attain highly competitive or even surpassing results.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.4">Checklist Labeling and RL Training</head><p>Following Section 3.3, we use GPT-5 to annotate a per-turn Checklist for each dialogue (prompts in Appendix .1.1). We then optimize from the cold-start SFT checkpoint using GRPO based on VeRL, and apply the multi-level advantage comparison described in Section 3.4. The RL model is trained on 64 GPUs for 680 hours. Additional implementation details and hyperparameters are deferred to Appendix .3.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5.">Results</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5.1">Effect of Allocation Granularity</head><p>Figure <ref type="figure" target="#fig_3">3a</ref> compares the reward curve on validation set under different assignment granularities. Finer-grained allocation yields faster early improvements: step-level advantages outperform turn-level, which in turn outperform trajectory-level in the initial phase. As training continues, however, finer granularities exhibit earlier and more severe training collapse, while trajectory-level advantages remain more stable and continue to improve.</p><p>We attribute this trade-off to noise amplification in agentic RL. Checklist rewards reduce judge variance by turning open-ended scoring into binary, evidence-grounded decisions, but they do not eliminate stochasticity. With finer-grained assignment, this residual noise enters optimization more frequently and can be amplified by group-relative normalization, yielding higher-variance or sometimes misleading gradients. This motivates our principle of Sparse in assignment; Dense in criteria: we keep evaluation criteria fine-grained for informative supervision, while assigning rewards at coarser granularity to average out residual noise and improve stability.  </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5.2">Effect of Group Size</head><p>Figure <ref type="figure" target="#fig_3">3b</ref> shows the impact of group size G (e.g., G=24 vs. G=48) with trajectory-level Checklist rewards. A larger group size consistently achieves higher rewards. Intuitively, for multi-turn, multi-step trajectories, increasing G provides more samples for later turns, leading to a lower-variance advantage estimate more reliable gradient updates.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5.3">Results on Benchmarks</head><p>We evaluate our proposed CM2 using our final configuration (trajectory-level advantage estimation with group size G = 48) on three challenging multi-turn, multi-step tool-use benchmarks: τ 2 -Bench, BFCL-V4, and ToolSandbox. We compare against the SFT counterparts and open-source models of similar size. τ 2 -Bench Benchmark. The results on τ 2 -Bench are summarized in Table <ref type="table" target="#tab_1">2</ref>. For each question, we run evaluation four times and report average accuracy. As shown in Table <ref type="table" target="#tab_1">2</ref>, starting from an 8B base model, our RL model outperforms SFT by over 8 points, demonstrating the effectiveness of CM2. However, our RL training uses a maximum context length of 10k and up to 30 turns, whereas τ 2 -Bench can require &gt;30k context and up to 200 turns. Under this mismatch, CM2 lags behind some open-source models such as an 30B instruct model with 3B activation parameters, and a 8B reasoning model.</p><p>To mitigate this, we further perform RL on an in-domain dataset with 5k data, which substantially improves average performance and surpasses the open-source baselines. Overall, these results indicate that CM2 is particularly effective when paired with in-domain data.  improves consistently across nearly all scenario categories, with particularly notable gains on multi-turn and multi-tool settings. Our RL model (CM2) also outperforms the open-source models, including the judging model.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>BFCL Benchmark.</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Summary.</head><p>Our method consistently yields substantial gains over SFT, with improvements that are stable across benchmarks. Notably, the resulting policy matches and often surpasses the LLM-as-a-judge model on most evaluation measures, while remaining competitive with or exceeding similarly sized open-source baselines. We further find that a lightweight judge is sufficient to drive strong RL improvements, and the learned behavior generalizes well to previously unseen benchmarks.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="6.">Discussion: Scaling Up</head><p>There are several natural axes to scale up CM2. First, we can increase the number of checklists per turn by generating multiple, independently instantiated checklists for the same turn (e.g., with different paraphrases or decompositions). Aggregating their outcomes (e.g., averaging or majority voting) can further reduce residual stochasticity and improve robustness to occasional missing or ambiguous criteria, at the cost of additional judging compute. Second, we can reduce judge noise more directly via majority vote (or other ensembling schemes) over multiple independent judgments of the same checklist. Third, CM2 can benefit from stronger judge models, which provide more reliable evidence grounding and more consistent binary decisions. Beyond checklist-specific knobs, standard scaling strategies also apply, including using a stronger base model and a larger group size for advantage estimation, both of which typically improve optimization stability.</p><p>We expect these scaling directions to further stabilize training by suppressing residual stochasticity in tool use and judging. With sufficiently low-noise rewards, finer-grained reward assignment (e.g., step-level) may become viable, potentially retaining its fast early learning while avoiding premature collapse.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="7.">Conclusion</head><p>CM2 presents a scalable reinforcement learning framework for multi-turn, multi-step tool-using agents by replacing verifiable rewards with checklist rewards, which is fine-grained, binary, evidence-grounded criteria that make LLM judging more stable and interpretable. By adopting a "sparse in reward assignment, dense in evaluation criteria" strategy and training within an LLM-simulated tool environment, CM2 improves over supervised fine-tuning across multiple benchmarks and shows stronger generalization to complex, long-horizon tool-use behaviors where verifiable rewards are unavailable.</p><p>The initialization is as follows:</p><p>&lt;think&gt; ← avg("think", "begin") &lt;/think&gt; ← avg("think", "finish") &lt;tool_call&gt; ← avg("tool", "call", "start") &lt;/tool_call&gt; ← avg("tool", "call", "end") &lt;im_start&gt; ← avg("role", "enter") &lt;im_end&gt; ← avg("role", "exit")</p><p>The training loss curve is shown in Figure <ref type="figure">?</ref>?</p><p>.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3">RL Training Details</head><p>For reinforcement learning, we set the mini-batch size to 128 and the learning rate to 3e-6. The KL divergence loss coefficient is set to 0.001, and we sample 24 or 48 trajectories for one question as a group size. We adopt GRPO as our RL algorithm with the standard deviation term in the denominator set to 1, following <ref type="bibr" target="#b34">[35]</ref>. This improves the stability of the policy updates during training as we use a larger group size to ensure that later turns also receive a sufficient number of samples for sampling. We set the group number of 48 and use trajectory level reward for our final CM2 model.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>.4 Rule-based Filtering Criteria</head><p>The criteria include: (  ```json { "role": "user|assistant|tool", "turn": 0, "step": 0, "content": "string containing either hidden thinking, user-visible reply, or tool output", → "tool_calls": [ { "id": "", "type": "function", "function": { "name": "TOOL_NAME", "arguments": { "Param": "Value", "..  </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Prompt for LLM-based Filtering</head><p>This is a simulated set of messages among a user, an assistant, and tools. The tools listed are the candidate tools. The assistant will first think (inside &lt;think&gt; and &lt;/think&gt;; this part will be removed in post-processing and not shown to the user, and it should not be considered when judging whether there is an error), then decide whether to call a tool or produce a final response. -content: textual content -thinking (for assistant messages, there is a thinking section) -tool_call / tool_result # Task: For every assistant message that contains a thinking section, produce a concise rewritten thinking section that preserves all essential reasoning, decisions, constraints, and references needed to justify the reply, while removing verbosity, filler, repetitions, speculative or unneeded self-talk. </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head># Output Format</head><p>Return ONLY a single JSON object with exactly these keys: { "high_level_understanding_of_the_question": str, "analysis_of_if_focus_on": str, "analysis_of_pass_condition": str, "analysis_of_failure_examples": str, "answer": bool }</p></div><figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_0"><head>Figure 1 :</head><label>1</label><figDesc>Figure 1: Overview of our CM2. Starting from multi-turn, multi-step tool-use trajectories, we perform data filtering, CoT compression, and cold-start SFT, then annotate a per-turn checklist with evidence-grounded binary criteria and structured metadata. RL training is carried out in an LLM-simulated tool environment, where a LLM simulator produces tool responses and an LLM-as-a-Judge evaluates checklist items to compute rewards. The bottom panel contrasts dense criteria granularity with sparse reward assignment at different assignment granularities.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_1"><head>Figure 2 :</head><label>2</label><figDesc>Figure 2: Example of One Checklist Item</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_2"><head>ab</head><label></label><figDesc>Reward curves on the validation set for different advantage assignment granularities. Reward curves on the validation set between different group sizes (n).</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_3"><head>Figure 3 :</head><label>3</label><figDesc>Figure 3: Comparison results under different settings.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_4"><head>→ 4 .</head><label>4</label><figDesc>Conversation structure (multi-turn, multi-step) * The conversation is chronological and split into **turns**. * In each **turn**, there may be several steps from user, assistant, and tool: 1. The **user** message appears **once** with questions or requirements. 2. The **assistant** may think privately (Note: assistant content includes private thinking between &lt;think&gt; and &lt;/think&gt;) and then either: → * call one single tool or call multiple tools, **or** * generate a user-visible reply directly without calling tools. 3. **Tool** messages return results to the preceding assistant message with tool calls. Repeat steps 2 and 3 until the turn ends. * A turn **ends** when the assistant produces a user-visible reply after thinking. * Only the **user-visible reply** is seen by the user. ### Candidate tools You will also be given the schema of candidate tools for conversation. The tool calling should follow the schema (function name, required parameters, type of parameter) Message JSON schema (per step)</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_5"><head></head><label></label><figDesc>indexes start at **0**; `step`indexes start at **0** within each turn. ## Rules for the Checklist 1. Each item must be a **YES/NO** question with an **objective pass condition*</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_6"><head>→→</head><label></label><figDesc>Does the logic for tool calling by the assistant follow the user's query, have no ambiguities, and can realistically occur in real scenarios? Are there any mistakes or flaws? Is it something that could exist in reality? → If there is no problem, answer true; if there is a problem, answer false. You should be very strict. Response format: { "Reasoning": string, "NoError": true or false } Prompt for CoT Compression # Instruction You are given a multi-turn multi-step conversation consisting of messages. Each message has: → -role: one of [system | user | assistant | tool]</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_0"><head>Table 1 :</head><label>1</label><figDesc>Components of a checklist item.</figDesc><table /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_1"><head>Table 2 :</head><label>2</label><figDesc>Table3summarizes the results on BFCL-V4 (Multi-Turn and Web Search). Overall, our RL model trained on D RL (CM2) substantially improves over SFT variants: on Multi-Turn, it achieves 36.50 overall accuracy, outperforming cold-start SFT and further SFT on D RL by 10 points. On Web Search, RL also yields the best overall performance, improving over cold-start SFT and SFT on D RL by 13.5 and 14 points, respectively. Compared with open-source baselines, our RL model performs better than 30B-A3B-Instruct Results on the τ 2 -Bench benchmark. We run evaluation four times and report the average accuracy We follow the default evaluation setting of τ 2 -Bench, except that we retain the thinking content for our models to align with our training setup. We further conduct SFT and RL with a sythetic 5k in domain data of τ 2 -Bench. It shares the same tool functions on airline and retail subset while telecom is not covered.</figDesc><table><row><cell>Model / Method</cell><cell cols="2">Airline Retail Telecom Avg.</cell></row><row><cell cols="2">Open-source Baselines</cell></row><row><cell>30B-A3B-Instruct</cell><cell cols="2">32.50 50.88 12.72 32.03</cell></row><row><cell>8B-Thinking</cell><cell cols="2">30.00 43.64 22.37 32.00</cell></row><row><cell cols="2">Ours (from 8B-Base)</cell></row><row><cell>Cold-start SFT on D CS</cell><cell cols="2">25.50 18.42 11.84 18.59</cell></row><row><cell>→ SFT on D RL</cell><cell cols="2">23.50 19.52 12.06 18.36</cell></row><row><cell>→ RL on D RL (CM2)</cell><cell cols="2">27.00 36.40 16.89 26.76</cell></row><row><cell>Ours (from 8B-Thinking)</cell><cell></cell></row><row><cell>SFT on D In-domain</cell><cell cols="2">30.00 44.74 23.68 32.81</cell></row><row><cell cols="3">RL on D In-domain (CM2-τ 2 ) 33.00 54.17 37.00 41.39</cell></row><row><cell></cell><cell>Multi-Turn</cell><cell>Web Search</cell></row><row><cell>Model / Method</cell><cell></cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_2"><head>Base Miss Func Miss Param Long Ctx Overall Base No Snippet Overall</head><label></label><figDesc></figDesc><table><row><cell></cell><cell></cell><cell></cell><cell cols="2">Open-source Baselines</cell><cell></cell><cell></cell><cell></cell></row><row><cell cols="2">30B-A3B-Instruct-2507 45.0</cell><cell>28.0</cell><cell>21.0</cell><cell>42.5</cell><cell>34.25 24.00</cell><cell>17.00</cell><cell>20.50</cell></row><row><cell>8B-Thinking</cell><cell>42.5</cell><cell>38.5</cell><cell>31.5</cell><cell>35.5</cell><cell>37.00 19.00</cell><cell>11.00</cell><cell>15.00</cell></row><row><cell></cell><cell></cell><cell></cell><cell cols="2">Ours (from 8B-Base)</cell><cell></cell><cell></cell><cell></cell></row><row><cell cols="2">Cold-start SFT on D CS 24.5</cell><cell>19.0</cell><cell>14.5</cell><cell>19.5</cell><cell>19.37 18.00</cell><cell>10.00</cell><cell>14.00</cell></row><row><cell>→ SFT on D RL</cell><cell>30.0</cell><cell>27.5</cell><cell>24.5</cell><cell>25.0</cell><cell>26.75 18.00</cell><cell>9.00</cell><cell>13.50</cell></row><row><cell cols="2">→ RL on D RL (CM2) 44.5</cell><cell>32.0</cell><cell>35.0</cell><cell>34.5</cell><cell>36.50 41.00</cell><cell>14.00</cell><cell>27.50</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_3"><head>Table 3 :</head><label>3</label><figDesc>Results on the BFCL-V4 benchmark (Multi-Turn and Web Search subset). Reinforcement Learning with Checklist Rewards for Multi-Turn and Multi-Step Agentic Tool Use</figDesc><table><row><cell>model (judging model) on Multi-Turn and is comparable to 8B-Thinking model, while significantly surpassing</cell></row><row><cell>both baselines on Web Search.</cell></row></table><note>ToolSandbox Benchmark.Table 4 reports performance on ToolSandbox Benchmark. RL on D RL (CM2) yields a large improvement over both SFT variants, increasing the overall score by more than 12 points. It also CM2:</note></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_4"><head>Table 4 :</head><label>4</label><figDesc>Performance of ToolSandbox on various scenarios and tool augmentations. Our models are trained from 8B-Base; we do not report results for the base checkpoint since it is not instruction-tuned under this evaluation protocol. Here, D CS denotes the 8k cold-start SFT set, and D RL denotes the 8k complex multi-turn, multi-step RL training set.</figDesc><table /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_5"><head></head><label></label><figDesc>Target of the assistantThe assistant needs to resolve the user's query in each turn. It must analyze the user's intent in the private thinking, use tools to gather new information if necessary, plan the next steps based on the updated information and provide an user-visible reply to user.</figDesc><table><row><cell cols="2">Prompt for Checklist Labeling</cell></row><row><cell cols="2"># Instruction</cell></row><row><cell cols="2">You are an evaluation designer for **multi-turn, multi-step tool-use** dialogues.</cell></row><row><cell cols="2">## Your Task</cell></row><row><cell cols="2">Given a reference message list containing user, assistant, and tool steps,</cell></row><row><cell>→</cell><cell>**produce a concise, per-turn checklist** of binary, observable criteria for</cell></row><row><cell>→</cell><cell>judgment.</cell></row><row><cell cols="2">The checklist is used to judge whether another assistant meets the user's</cell></row><row><cell>→</cell><cell>requirements.</cell></row><row><cell cols="2">One checklist per turn.</cell></row><row><cell>##</cell><cell></cell></row><row><cell></cell><cell>1) violations of tool schemas; (2) incorrect role ordering; (3) mismatches between</cell></row><row><cell cols="2">tool calls and subsequent responses; (4) tool responses erroneously placed within assistant messages; (5)</cell></row><row><cell cols="2">invalid JSON formatting; (6) duplicate tool schemas or names; and (7) missing or redundant thinking tags</cell></row><row><cell cols="2">(&lt;think&gt;).</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_6"><head></head><label></label><figDesc>*. 2. Items must be **observable** from user messages, assistant private thinking/tool calls/user-visible reply, and tool responses. For each item, specify **evidence pointers** that reference specific assistant or tool step, not user at step 0. The question should focus on a specific part of the response, such as assistant.tool_calls, assistant.content.thinking, assistant.content.user_visible_reply, or tool.content (focus_on). ## Supplementary rules 1. Do not limit the number of tool calling. 2. Determine whether the value must match exactly or if a certain tolerance is acceptable. Do not make any assumptions in the question, e.g., using if or when is question. How the Checklist Will Be UsedWe evaluate **every assistant step with possible following tool response steps** within a turn to determine which checklist items become newly satisfied **relative to the previous assistant step** (for `step=0`there is no previous step). We **do not** require the model to complete items at specific, pre-ordained steps from the input log; instead, we assess whether **all requirements for that turn** are satisfied **by the end of the turn**, regardless of which assistant step achieved them or how assistant achieved them.</figDesc><table><row><cell>→</cell><cell></cell></row><row><cell cols="2">3. Determine whether the parameter of tool calling must match exactly or if a</cell></row><row><cell>→</cell><cell>certain tolerance is acceptable</cell></row><row><cell cols="2">4. The question about tool should align with the schema of candidate tool, e.g.,</cell></row><row><cell></cell><cell>argument with default value is not necessary.</cell></row><row><cell>→</cell><cell></cell></row><row><cell cols="2">6. turn and step index should not appear or be refered to in checklist focus_on,</cell></row><row><cell></cell><cell>question, pass_condition or failure_examples.</cell></row><row><cell>→</cell><cell></cell></row><row><cell>→</cell><cell></cell></row><row><cell>→</cell><cell></cell></row><row><cell>→</cell><cell></cell></row><row><cell>→</cell><cell></cell></row><row><cell>→</cell><cell></cell></row><row><cell>→</cell><cell></cell></row><row><cell cols="2">→ 4. If the task has prerequisite tool response (e.g., "search before analyze"), ## Examples</cell></row><row><cell>→</cell><cell>encode them via **`depends_on`**. The dependence must be a tool step.</cell></row><row><cell cols="2">5. Within a turn, the checklist should cover **key requirements** implied by that from should be one of user.content|assistant.tool_calls|assistant.content.thinkin ⌋ turn's user request, tool usage, constraints, and final reply (correctness, → g|assistant.content.user_visible_reply|tool.content → comprehensiveness, no hallucination, constraints, formatting, key reasoning → [ steps, etc.). → { 6. Keep items atomic: ensure each checklist item evaluates a single, independent "turn": 0, condition without combining multiple actions or operations. "checklist": [</cell></row><row><cell></cell><cell>{</cell></row><row><cell></cell><cell>"id": "C0", # start from 0 in each turn</cell></row><row><cell></cell><cell>"evidence": [{</cell></row><row><cell>→</cell><cell>"turn": TURN_INDEX,</cell></row><row><cell cols="2">→ 9. Allow procedurally different operations, intermediate conclusions, or derived "step": STEP_INDEX, "from": "...", facts **as long as they produce the same verifiable result and strictly follow → "snippet": "..." the user's requirements**. → }], 10. Provide a **weight** for every item (0-1) and normalize weights so they **sum "focus_on": "assistant.tool_calls", to 1.0 per turn**, reflecting each requirement's contribution and necessity to → "question": "Did the assistant call the required tool TOOL_NAME with the the final user-visible reply. → → correct parameter Param=Value?", 11. For each item, include a must_pass_to_continue boolean. True means this item "pass_condition": "There exists an assistant tool call with name=TOOL_NAME must pass; otherwise the conversation should not proceed to the next turn → and arguments.Param == Value or similar value.", (critical failure). False means non-critical; failure is tolerable but counted "failure_examples": [ against quality. "No tool call observed",</cell></row><row><cell></cell><cell>"Wrong parameter value"</cell></row><row><cell></cell><cell>],</cell></row><row><cell></cell><cell>"required_for_next_turn": true,</cell></row></table><note>→ 3. → 7. Avoid purely stylistic or format checks; focus on key step to solve the user's requirements. → 8. → → → 12. The reference messages may contain some failed attempts. The checklist should not mention anything about those unsuccessful attempts or self-correction. → 13. Assume there is no error in tool calling. #→ 5. → ##</note></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_7"><head></head><label></label><figDesc>Do not change conclusions, assumptions, selected tools, or rationale ordering unless reordering improves clarity without altering logic. Keep Necessary Steps: Retain key logical steps, intermediate conditions, disambiguations, and any constraints that influence the final answer or tool choice. Do NOT invent new facts or reasoning not present in the original thinking. 4. Do NOT shorten so aggressively that causal links or justification for tool calls become unclear. Maintain references to tool names, parameters, or required outputs if they affect the final answer.Prompt for LLM-as-a-Judge# RoleYou are a precise checklist evaluator. Your sole task is to judge whether the messages between user, assistant and tool satisfie the provided criteria. Special rule of tool call If there is no tool call in tool_call part but there are some tool calls in content.thinking part, it means these tools' format are not correct and all tool calls are not valid.If there is error in tool response. The previous tool calls in latest assistant (only the latest one) are not valid.# Evaluation Process (Align each step to a JSON output field) Check whether Focus on part presents in the Current Messages.3. analysis_of_pass_condition:-Determine if the 'Pass condition' is fully satisfied. 4. analysis_of_failure_examples: -For EACH failure example pattern: state clearly 'triggered' or 'not triggered' with a brief justification.</figDesc><table><row><cell>→ → → # Important Requirements: # Objective Produce a strict JSON verdict (no extra text) based on the instructions below. # Criteria **Question:** {this_turn_checklist['question']} **Focus on:** {this_turn_checklist['focus_on']} **Pass condition:** {this_turn_checklist['pass_condition']} **Failure examples:** {this_turn_checklist['failure_examples']} **Reference snippet:** {reference_snippet} # Previous Messages {{messages_str_before_this_turn}} # Current Messages to Evaluate {{messages_str_in_this_turn}} # → → → → 1. high_level_understanding_of_the_question: -Briefly restate what is being evaluated (the intent of the question + what compliance means here). → 5. answer: -Return true ONLY IF: 1. Preserve Meaning: → * Focus on part is present.</cell></row><row><cell>* The 'Pass condition' is fully met.</cell></row><row><cell>* No failure example pattern is triggered.</cell></row><row><cell>-Otherwise return false.</cell></row></table><note>→ 2. → → 3. → 5. → 6. If the original thinking is already minimal, keep it (possibly with tiny clarity edits).→ 7. If a thinking section is empty or missing, output one for that item. 8. Output Format must be strict JSON as described below (no extra commentary).→ 2. analysis_of_if_focus_on: -</note></figure>
+		</body>
+		<back>
+			<div type="annex">
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Appendix .1 Prompts</head><p>We force models to generate output in JSON format to ensure instruction following and the output can be parsed.</p><p>. <ref type="bibr" target="#b0">1</ref></p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>.1. Prompt of Checklist Labeling</head><p>The prompt for Checklist Annotation is shown in Prompt . <ref type="bibr" target="#b3">4</ref>. We use GPT-5 to label the Checklist. The parameter "effort" is set to "high" for high quality. Each trajectory only costs approximately $0.1 on average, making it practical to scale checklist labeling to large datasets without significant overhead.</p><p>.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="1.2.">Prompt of LLM-based Filtering</head><p>The prompt for LLM-based Filtering is shown in Prompt . <ref type="bibr" target="#b3">4</ref> We use GPT-5 <ref type="bibr" target="#b32">[33]</ref> as the filter model. To reduce API costs while maintaining high filtering quality, we adopt an aggressive, progressive evaluation strategy: each sample is sequentially evaluated twice at low effort, twice at medium effort, and twice at high effort. If any single evaluation flags the sample as problematic, it is immediately discarded without further processing. This aggressive early-exit mechanism ensures that only high-confidence, high-quality samples survive the filtering pipeline, at the cost of potentially discarding some borderline cases.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>.1.3. Prompt of CoT Compression</head><p>The prompt for CoT Compression is shown in Prompt .4. We use the default setting of GPT-5 .</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="1.4.">Prompt of LLM Judge</head><p>The prompt for LLM judge is shown in Prompt .4 .</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="1.5.">Prompt of Tool Simulation</head><p>The prompt for LLM judge is shown in Prompt .4</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>.2 Cold Start hyper-parameters</head><p>For cold-start training, we utilize the LLaMAFactory framework. The model is trained on the cold-start dataset for 2 epochs. We adopt the AdamW optimizer and a cosine learning rate schedule. The learning rate is set to 1e-6 with a warmup ratio of 0.1. The batch size is 64. The cold-start training is conducted on 8 H100 GPUs.</p><p>To better handle special tokens (e.g., &lt;think&gt;, &lt;tool_call&gt;) that are not trained during pre-training, we explicitly initialize their embeddings using the average of semantically related tokens. For example, the embedding of &lt;think&gt; is initialized as the mean of the embeddings for think and begin. This stabilizes optimization and speeds up convergence.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>}, {</head><p>"id": "C1", "evidence": [{ "turn": TURN_INDEX, "step": STEP_INDEX, "from": "...", "snippet": "..." }], "focus_on": "tool.content", "question": "Did the assistant get xxx by calling the tool TOOL_NAME?", "pass_condition": "The assistant gets xxx from the tool response", "failure_examples": [ "No tool response observed", "Wrong information from the tool" ], "required_for_next_turn": true, }, { "id": "C2", "evidence": [{ "turn": TURN_INDEX, "step": STEP_INDEX, "from": "...", "snippet": "..." }], "focus_on": "assistant.content.user_visible_reply", "question": "Does the final user-visible answer mentioned xxx?", "pass_condition": "The assistant's final reply content mentions xxx that answers user's question. </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>→</head><p>The total number should be the same. </p></div>			</div>
+			<div type="references">
+
+				<listBibl>
+
+<biblStruct xml:id="b0">
+	<monogr>
+		<author>
+			<persName><forename type="first">Carlos</forename><forename type="middle">E</forename><surname>Jimenez</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">John</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Alexander</forename><surname>Wettig</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shunyu</forename><surname>Yao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Kexin</forename><surname>Pei</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ofir</forename><surname>Press</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Karthik</forename><surname>Narasimhan</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2310.06770</idno>
+		<title level="m">Swe-bench: Can language models resolve real-world github issues?</title>
+				<imprint>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b1">
+	<monogr>
+		<title level="m" type="main">Humanity&apos;s last exam</title>
+		<author>
+			<persName><forename type="first">Long</forename><surname>Phan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Alice</forename><surname>Gatti</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ziwen</forename><surname>Han</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Nathaniel</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Josephina</forename><surname>Hu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Hugh</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Chen</forename><surname>Bo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Calvin</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mohamed</forename><surname>Shaaban</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">John</forename><surname>Ling</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sean</forename><surname>Shi</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2501.14249</idno>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b2">
+	<monogr>
+		<title level="m" type="main">Browsecomp: A simple yet challenging benchmark for browsing agents</title>
+		<author>
+			<persName><forename type="first">Jason</forename><surname>Wei</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhiqing</forename><surname>Sun</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Spencer</forename><surname>Papay</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Scott</forename><surname>Mckinney</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jeffrey</forename><surname>Han</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Isa</forename><surname>Fulford</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Hyung</forename><forename type="middle">Won</forename><surname>Chung</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Alex</forename><forename type="middle">Tachard</forename><surname>Passos</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">William</forename><surname>Fedus</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Amelia</forename><surname>Glaese</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2504.12516</idno>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b3">
+	<monogr>
+		<title level="m" type="main">Search-r1: Training llms to reason and leverage search engines with reinforcement learning</title>
+		<author>
+			<persName><forename type="first">Hansi</forename><surname>Bowen Jin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhenrui</forename><surname>Zeng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jinsung</forename><surname>Yue</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sercan</forename><surname>Yoon</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dong</forename><surname>Arik</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Hamed</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jiawei</forename><surname>Zamani</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Han</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2503.09516</idno>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b4">
+	<monogr>
+		<title level="m" type="main">R2e-gym: Procedural environments and hybrid verifiers for scaling open-weights swe agents</title>
+		<author>
+			<persName><forename type="first">Naman</forename><surname>Jain</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jaskirat</forename><surname>Singh</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Manish</forename><surname>Shetty</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Liang</forename><surname>Zheng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Koushik</forename><surname>Sen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ion</forename><surname>Stoica</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2504.07164</idno>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b5">
+	<analytic>
+		<title level="a" type="main">Evaluating open-domain question answering in the era of large language models</title>
+		<author>
+			<persName><forename type="first">Ehsan</forename><surname>Kamalloo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Nouha</forename><surname>Dziri</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Charles</forename><surname>Clarke</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Davood</forename><surname>Rafiei</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics</title>
+		<title level="s">Long Papers</title>
+		<meeting>the 61st Annual Meeting of the Association for Computational Linguistics</meeting>
+		<imprint>
+			<date type="published" when="2023">2023</date>
+			<biblScope unit="volume">1</biblScope>
+			<biblScope unit="page" from="5591" to="5606" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b6">
+	<monogr>
+		<title level="m" type="main">A survey on multi-turn interaction capabilities of large language models</title>
+		<author>
+			<persName><forename type="first">Chen</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xinyi</forename><surname>Dai</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yaxiong</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Qu</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yasheng</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ruiming</forename><surname>Tang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yong</forename><surname>Liu</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2501.09959</idno>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b7">
+	<monogr>
+		<title level="m" type="main">Deepseek-r1: Incentivizing reasoning capability in llms via reinforcement learning</title>
+		<author>
+			<persName><forename type="first">Daya</forename><surname>Guo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dejian</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Haowei</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Junxiao</forename><surname>Song</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ruoyu</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Runxin</forename><surname>Xu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Qihao</forename><surname>Zhu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shirong</forename><surname>Ma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Peiyi</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xiao</forename><surname>Bi</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2501.12948</idno>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b8">
+	<monogr>
+		<author>
+			<persName><forename type="first">Yuxiang</forename><surname>Wei</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Olivier</forename><surname>Duchenne</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jade</forename><surname>Copet</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Quentin</forename><surname>Carbonneaux</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Lingming</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Daniel</forename><surname>Fried</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Gabriel</forename><surname>Synnaeve</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Rishabh</forename><surname>Singh</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sida I</forename><surname>Wang</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2502.18449</idno>
+		<title level="m">Swe-rl: Advancing llm reasoning via reinforcement learning on open software evolution</title>
+				<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b9">
+	<monogr>
+		<title level="m" type="main">Rubrics as rewards: Reinforcement learning beyond verifiable domains</title>
+		<author>
+			<persName><forename type="first">Anisha</forename><surname>Gunjal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Anthony</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Elaine</forename><surname>Lau</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Vaskar</forename><surname>Nath</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yunzhong</forename><surname>He</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bing</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sean</forename><surname>Hendryx</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2507.17746</idno>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b10">
+	<monogr>
+		<title level="m" type="main">Openrubrics: Towards scalable synthetic rubric generation for reward modeling and llm alignment</title>
+		<author>
+			<persName><forename type="first">Tianci</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ran</forename><surname>Xu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tony</forename><surname>Yu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ilgee</forename><surname>Hong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Carl</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tuo</forename><surname>Zhao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Haoyu</forename><surname>Wang</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2510.07743</idno>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b11">
+	<monogr>
+		<title level="m" type="main">Checklists are better than reward models for aligning language models</title>
+		<author>
+			<persName><forename type="first">Vijay</forename><surname>Viswanathan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yanchao</forename><surname>Sun</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shuang</forename><surname>Ma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xiang</forename><surname>Kong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Meng</forename><surname>Cao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Graham</forename><surname>Neubig</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tongshuang</forename><surname>Wu</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2507.18624</idno>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b12">
+	<monogr>
+		<title level="m" type="main">Toolllm: Facilitating large language models to master 16000+ real-world apis</title>
+		<author>
+			<persName><forename type="first">Yujia</forename><surname>Qin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shihao</forename><surname>Liang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yining</forename><surname>Ye</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Kunlun</forename><surname>Zhu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Lan</forename><surname>Yan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yaxi</forename><surname>Lu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yankai</forename><surname>Lin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xin</forename><surname>Cong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xiangru</forename><surname>Tang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bill</forename><surname>Qian</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2307.16789</idno>
+		<imprint>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b13">
+	<monogr>
+		<title level="m" type="main">Steptool: Enhancing multi-step tool usage in llms through step-grained reinforcement learning</title>
+		<author>
+			<persName><forename type="first">Yuanqing</forename><surname>Yu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhefan</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Weizhi</forename><surname>Ma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shuai</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Chuhan</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhiqiang</forename><surname>Guo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Min</forename><surname>Zhang</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2410.07745</idno>
+		<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b14">
+	<monogr>
+		<title level="m" type="main">Toolace: Winning the points of llm function calling</title>
+		<author>
+			<persName><forename type="first">Weiwen</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xu</forename><surname>Huang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xingshan</forename><surname>Zeng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xinlong</forename><surname>Hao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shuai</forename><surname>Yu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dexun</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shuai</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Weinan</forename><surname>Gan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhengying</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yuanqing</forename><surname>Yu</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2409.00920</idno>
+		<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b15">
+	<monogr>
+		<title level="m" type="main">Identifying the risks of lm agents with an lm-emulated sandbox</title>
+		<author>
+			<persName><forename type="first">Yangjun</forename><surname>Ruan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Honghua</forename><surname>Dong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Andrew</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Silviu</forename><surname>Pitis</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yongchao</forename><surname>Zhou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jimmy</forename><surname>Ba</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yann</forename><surname>Dubois</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Chris</forename><forename type="middle">J</forename><surname>Maddison</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tatsunori</forename><surname>Hashimoto</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2309.15817</idno>
+		<imprint>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b16">
+	<monogr>
+		<title level="m" type="main">τ-bench: A benchmark for toolagent-user interaction in real-world domains</title>
+		<author>
+			<persName><forename type="first">Shunyu</forename><surname>Yao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Noah</forename><surname>Shinn</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Pedram</forename><surname>Razavi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Karthik</forename><surname>Narasimhan</surname></persName>
+		</author>
+		<ptr target="https://arxiv.org/abs/2406.12045" />
+		<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b17">
+	<monogr>
+		<title level="m" type="main">tau 2 -bench: Evaluating conversational agents in a dual-control environment</title>
+		<author>
+			<persName><forename type="first">Victor</forename><surname>Barres</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Honghua</forename><surname>Dong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Soham</forename><surname>Ray</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xujie</forename><surname>Si</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Karthik</forename><surname>Narasimhan</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2506.07982</idno>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b18">
+	<analytic>
+		<title level="a" type="main">The berkeley function calling leaderboard (bfcl): From tool use to agentic evaluation of large language models</title>
+		<author>
+			<persName><forename type="first">G</forename><surname>Shishir</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Huanzhi</forename><surname>Patil</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Charlie</forename><surname>Mao</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Cheng-Jie</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Fanjia</forename><surname>Ji</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Vishnu</forename><surname>Yan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ion</forename><surname>Suresh</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Joseph</forename><forename type="middle">E</forename><surname>Stoica</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Gonzalez</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Forty-second International Conference on Machine Learning</title>
+				<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b19">
+	<analytic>
+		<title level="a" type="main">Toolsandbox: A stateful, conversational, interactive evaluation benchmark for llm tool use capabilities</title>
+		<author>
+			<persName><forename type="first">Jiarui</forename><surname>Lu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Thomas</forename><surname>Holleis</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yizhe</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bernhard</forename><surname>Aumayer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Feng</forename><surname>Nan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Haoping</forename><surname>Bai</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shuang</forename><surname>Ma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shen</forename><surname>Ma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mengyu</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Guoli</forename><surname>Yin</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Findings of the Association for Computational Linguistics: NAACL 2025</title>
+				<imprint>
+			<date type="published" when="2025">2025</date>
+			<biblScope unit="page" from="1160" to="1183" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b20">
+	<monogr>
+		<title level="m" type="main">Proximal policy optimization algorithms</title>
+		<author>
+			<persName><forename type="first">John</forename><surname>Schulman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Filip</forename><surname>Wolski</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Prafulla</forename><surname>Dhariwal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Alec</forename><surname>Radford</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Oleg</forename><surname>Klimov</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1707.06347</idno>
+		<imprint>
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b21">
+	<analytic>
+		<title level="a" type="main">Direct preference optimization: Your language model is secretly a reward model</title>
+		<author>
+			<persName><forename type="first">Rafael</forename><surname>Rafailov</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Archit</forename><surname>Sharma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Eric</forename><surname>Mitchell</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Christopher</forename><forename type="middle">D</forename><surname>Manning</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Stefano</forename><surname>Ermon</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Chelsea</forename><surname>Finn</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Advances in neural information processing systems</title>
+		<imprint>
+			<biblScope unit="volume">36</biblScope>
+			<biblScope unit="page" from="53728" to="53741" />
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b22">
+	<monogr>
+		<title level="m" type="main">Think-rm: Enabling long-horizon reasoning in generative reward models</title>
+		<author>
+			<persName><forename type="first">Ilgee</forename><surname>Hong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Changlong</forename><surname>Yu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Liang</forename><surname>Qiu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Weixiang</forename><surname>Yan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhenghao</forename><surname>Xu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Haoming</forename><surname>Jiang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Qingru</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Qin</forename><surname>Lu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xin</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Chao</forename><surname>Zhang</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2505.16265</idno>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b23">
+	<monogr>
+		<title level="m" type="main">Generative reward models</title>
+		<author>
+			<persName><forename type="first">Dakota</forename><surname>Mahan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Duy</forename><surname>Van Phung</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Rafael</forename><surname>Rafailov</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Chase</forename><surname>Blagden</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Nathan</forename><surname>Lile</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Louis</forename><surname>Castricato</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jan-Philipp</forename><surname>Fränken</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Chelsea</forename><surname>Finn</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Alon</forename><surname>Albalak</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2410.12832</idno>
+		<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b24">
+	<analytic>
+		<title level="a" type="main">Rubric is all you need: Improving llm-based code evaluation with question-specific rubrics</title>
+		<author>
+			<persName><forename type="first">Aditya</forename><surname>Pathak</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Rachit</forename><surname>Gandhi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Vaibhav</forename><surname>Uttam</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Arnav</forename><surname>Ramamoorthy</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Pratyush</forename><surname>Ghosh</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Raj</forename><surname>Aaryan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shreyash</forename><surname>Jindal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Aditya</forename><surname>Verma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Aashna</forename><surname>Mittal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Chirag</forename><surname>Ased</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Khatri</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 2025 ACM Conference on International Computing Education Research V</title>
+				<meeting>the 2025 ACM Conference on International Computing Education Research V</meeting>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+			<biblScope unit="volume">1</biblScope>
+			<biblScope unit="page" from="181" to="195" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b25">
+	<monogr>
+		<title level="m" type="main">Mua-rl: Multi-turn user-interacting agent reinforcement learning for agentic tool use</title>
+		<author>
+			<persName><forename type="first">Weikang</forename><surname>Zhao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xili</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Chengdi</forename><surname>Ma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Lingbin</forename><surname>Kong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhaohua</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mingxiang</forename><surname>Tuo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xiaowei</forename><surname>Shi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yitao</forename><surname>Zhai</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xunliang</forename><surname>Cai</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2508.18669</idno>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b26">
+	<monogr>
+		<title level="m" type="main">Adapting web agents with synthetic supervision</title>
+		<author>
+			<persName><forename type="first">Zhaoyang</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yiming</forename><surname>Liang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xuchao</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Qianhui</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Siwei</forename><surname>Han</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Anson</forename><surname>Bastos</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Rujia</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Chetan</forename><surname>Bansal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Baolin</forename><surname>Peng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jianfeng</forename><surname>Gao</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2511.06101</idno>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b27">
+	<monogr>
+		<title level="m" type="main">Simulating environments with reasoning models for agent training</title>
+		<author>
+			<persName><forename type="first">Yuetai</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xiang</forename><surname>Huseyin A Inan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Wei-Ning</forename><surname>Yue</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Lukas</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Janardhan</forename><surname>Wutschitz</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Radha</forename><surname>Kulkarni</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Robert</forename><surname>Poovendran</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Saravan</forename><surname>Sim</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Rajmohan</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2511.01824</idno>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b28">
+	<monogr>
+		<title level="m" type="main">Gtm: Simulating the world of tools for ai agents</title>
+		<author>
+			<persName><forename type="first">Zhenzhen</forename><surname>Ren</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xinpeng</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhenxing</forename><surname>Qian</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yan</forename><surname>Gao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yu</forename><surname>Shi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shuxin</forename><surname>Zheng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jiyan</forename><surname>He</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2512.04535</idno>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b29">
+	<monogr>
+		<title level="m" type="main">Interleaved reasoning for large language models via reinforcement learning</title>
+		<author>
+			<persName><forename type="first">Roy</forename><surname>Xie</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">David</forename><surname>Qiu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Deepak</forename><surname>Gopinath</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dong</forename><surname>Lin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yanchao</forename><surname>Sun</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Chong</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Saloni</forename><surname>Potdar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bhuwan</forename><surname>Dhingra</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2505.19640</idno>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b30">
+	<monogr>
+		<author>
+			<persName><forename type="first">Dhruv</forename><surname>Nathawani</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Igor</forename><surname>Gitman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Somshubra</forename><surname>Majumdar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Evelina</forename><surname>Bakhturina</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ameya</forename><surname>Sunil Mahabaleshwarkar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">,</forename></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jian</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jane</forename><forename type="middle">Polak</forename><surname>Scowcroft</surname></persName>
+		</author>
+		<ptr target="https://huggingface.co/datasets/nvidia/Nemotron-Post-Training-Dataset-v1" />
+		<title level="m">Nemotron-Post-Training-Dataset-v1</title>
+				<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b31">
+	<monogr>
+		<title level="m" type="main">Llama-nemotron: Efficient reasoning models</title>
+		<author>
+			<persName><forename type="first">Akhiad</forename><surname>Bercovich</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Itay</forename><surname>Levy</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Izik</forename><surname>Golan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mohammad</forename><surname>Dabbah</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ran</forename><surname>El-Yaniv</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Omri</forename><surname>Puny</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ido</forename><surname>Galil</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zach</forename><surname>Moshe</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tomer</forename><surname>Ronen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Najeeb</forename><surname>Nabwani</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ido</forename><surname>Shahaf</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Oren</forename><surname>Tropp</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ehud</forename><surname>Karpas</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ran</forename><surname>Zilberstein</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jiaqi</forename><surname>Zeng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Soumye</forename><surname>Singhal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Alexander</forename><surname>Bukharin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yian</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tugrul</forename><surname>Konuk</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Gerald</forename><surname>Shen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ameya</forename><surname>Sunil Mahabaleshwarkar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bilal</forename><surname>Kartal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yoshi</forename><surname>Suhara</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Olivier</forename><surname>Delalleau</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zijia</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhilin</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">David</forename><surname>Mosallanezhad</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Adi</forename><surname>Renduchintala</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Haifeng</forename><surname>Qian</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dima</forename><surname>Rekesh</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Fei</forename><surname>Jia</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Somshubra</forename><surname>Majumdar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Vahid</forename><surname>Noroozi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Uddin</forename><surname>Wasi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sean</forename><surname>Ahmad</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Aleksander</forename><surname>Narenthiran</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mehrzad</forename><surname>Ficek</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jocelyn</forename><surname>Samadi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Siddhartha</forename><surname>Huang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Igor</forename><surname>Jain</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ivan</forename><surname>Gitman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Wei</forename><surname>Moshkov</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shubham</forename><surname>Du</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">George</forename><surname>Toshniwal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Branislav</forename><surname>Armstrong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Matvei</forename><surname>Kisacanin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Daria</forename><surname>Novikov</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Evelina</forename><surname>Gitman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jane</forename><forename type="middle">Polak</forename><surname>Bakhturina</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">John</forename><surname>Scowcroft</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dan</forename><surname>Kamalu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Kezhi</forename><surname>Su</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Markus</forename><surname>Kong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Rabeeh</forename><surname>Kliegl</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ying</forename><surname>Karimi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sanjeev</forename><surname>Lin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jupinder</forename><surname>Satheesh</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Pritam</forename><surname>Parmar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Brandon</forename><surname>Gundecha</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Joseph</forename><surname>Norick</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shrimai</forename><surname>Jennings</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Prabhumoye</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Nahida</forename><surname>Syeda</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mostofa</forename><surname>Akter</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Abhinav</forename><surname>Patwary</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Deepak</forename><surname>Khattar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Roger</forename><surname>Narayanan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jimmy</forename><surname>Waleffe</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bor-Yiing</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Guyue</forename><surname>Su</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Terry</forename><surname>Huang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Parth</forename><surname>Kong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sahil</forename><surname>Chadha</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Christine</forename><surname>Jain</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Elad</forename><surname>Harvey</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jining</forename><surname>Segal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sergey</forename><surname>Huang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Robert</forename><surname>Kashirsky</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Izzy</forename><surname>Mcqueen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">George</forename><surname>Putterman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Arun</forename><surname>Lam</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sherry</forename><surname>Venkatesan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Vinh</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Manoj</forename><surname>Nguyen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Andrew</forename><surname>Kilaru</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Anna</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Abhilash</forename><surname>Warno</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sandip</forename><surname>Somasamudramath</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Maka</forename><surname>Bhaskar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Nave</forename><surname>Dong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shahar</forename><surname>Assaf</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Omer</forename><forename type="middle">Ullman</forename><surname>Mor</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Scot</forename><surname>Argov</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Oleksandr</forename><surname>Junkin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Pedro</forename><surname>Romanenko</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Monika</forename><surname>Larroy</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Marco</forename><surname>Katariya</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Viji</forename><surname>Rovinelli</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Nicholas</forename><surname>Balas</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Anahita</forename><surname>Edelman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Muthu</forename><surname>Bhiwandiwalla</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Smita</forename><surname>Subramaniam</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Karthik</forename><surname>Ithape</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yuting</forename><surname>Ramamoorthy</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Suguna</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Omri</forename><surname>Varshini Velury</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Joyjit</forename><surname>Almog</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Denys</forename><surname>Daw</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Erick</forename><surname>Fridman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Michael</forename><surname>Galinkin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Katherine</forename><surname>Evans</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Leon</forename><surname>Luna</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Nikki</forename><surname>Derczynski</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Eileen</forename><surname>Pope</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Seth</forename><surname>Long</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Guillermo</forename><surname>Schneider</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tomasz</forename><surname>Siman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Pablo</forename><surname>Grzegorzek</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Monika</forename><surname>Ribalta</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Joey</forename><surname>Katariya</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Trisha</forename><surname>Conway</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ann</forename><surname>Saar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Krzysztof</forename><surname>Guan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shyamala</forename><surname>Pawelec</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Oleksii</forename><surname>Prayaga</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Boris</forename><surname>Kuchaiev</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Oluwatobi</forename><surname>Ginsburg</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Kari</forename><surname>Olabiyi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jonathan</forename><surname>Briski</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bryan</forename><surname>Cohen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jonah</forename><surname>Catanzaro</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yonatan</forename><surname>Alben</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Eric</forename><surname>Geifman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Chris</forename><surname>Chung</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Alexiuk</surname></persName>
+		</author>
+		<ptr target="https://arxiv.org/abs/2505.00949" />
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b32">
+	<monogr>
+		<author>
+			<persName><surname>Openai</surname></persName>
+		</author>
+		<ptr target="Ac-cessed:2026-01-05" />
+		<title level="m">Introducing GPT-5</title>
+				<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b33">
+	<monogr>
+		<author>
+			<persName><forename type="first">Akshara</forename><surname>Prabhakar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zuxin</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ming</forename><surname>Zhu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jianguo</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tulika</forename><surname>Awalgaonkar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shiyu</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhiwei</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Haolin</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Thai</forename><surname>Hoang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Juan</forename><surname>Carlos Niebles</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2504.03601</idno>
+		<title level="m">Apigen-mt: Agentic pipeline for multi-turn data generation via simulated agent-human interplay</title>
+				<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b34">
+	<monogr>
+		<author>
+			<persName><forename type="first">Lang</forename><surname>Feng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhenghai</forename><surname>Xue</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tingcong</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bo</forename><surname>An</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2505.10978</idno>
+		<title level="m">Group-in-group policy optimization for llm agent training</title>
+				<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+				</listBibl>
+			</div>
+		</back>
+	</text>
+</TEI>

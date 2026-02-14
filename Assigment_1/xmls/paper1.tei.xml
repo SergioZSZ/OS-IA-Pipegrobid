@@ -1,0 +1,1084 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xml:space="preserve" xmlns="http://www.tei-c.org/ns/1.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.tei-c.org/ns/1.0 https://raw.githubusercontent.com/kermitt2/grobid/master/grobid-home/schemas/xsd/Grobid.xsd"
+ xmlns:xlink="http://www.w3.org/1999/xlink">
+	<teiHeader xml:lang="en">
+		<fileDesc>
+			<titleStmt>
+				<title level="a" type="main">SynthAgent: A Multi-Agent LLM Framework for Realistic Patient Simulation -A Case Study in Obesity with Mental Health Comorbidities</title>
+			</titleStmt>
+			<publicationStmt>
+				<publisher/>
+				<availability status="unknown"><licence/></availability>
+				<date type="published" when="2026-02-09">9 Feb 2026</date>
+			</publicationStmt>
+			<sourceDesc>
+				<biblStruct>
+					<analytic>
+						<author>
+							<persName><forename type="first">Arman</forename><surname>Aghaee</surname></persName>
+							<email>aaghaee@klick.com</email>
+							<affiliation key="aff0">
+								<orgName type="institution">Klick Health</orgName>
+								<address>
+									<settlement>Toronto</settlement>
+									<region>ON</region>
+									<country key="CA">Canada</country>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Sepehr</forename><surname>Asgarian</surname></persName>
+							<email>sasgarian@klick.com</email>
+							<affiliation key="aff0">
+								<orgName type="institution">Klick Health</orgName>
+								<address>
+									<settlement>Toronto</settlement>
+									<region>ON</region>
+									<country key="CA">Canada</country>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Jouhyun</forename><surname>Jeon</surname></persName>
+							<email>cjeon@klick.com</email>
+							<affiliation key="aff0">
+								<orgName type="institution">Klick Health</orgName>
+								<address>
+									<settlement>Toronto</settlement>
+									<region>ON</region>
+									<country key="CA">Canada</country>
+								</address>
+							</affiliation>
+						</author>
+						<title level="a" type="main">SynthAgent: A Multi-Agent LLM Framework for Realistic Patient Simulation -A Case Study in Obesity with Mental Health Comorbidities</title>
+					</analytic>
+					<monogr>
+						<imprint>
+							<date type="published" when="2026-02-09">9 Feb 2026</date>
+						</imprint>
+					</monogr>
+					<idno type="MD5">FA80E1ECCA5644263F575DE86766A5A6</idno>
+					<idno type="arXiv">arXiv:2602.08254v1[cs.AI]</idno>
+				</biblStruct>
+			</sourceDesc>
+		</fileDesc>
+		<encodingDesc>
+			<appInfo>
+				<application version="0.7.2" ident="GROBID" when="2026-02-14T18:13+0000">
+					<desc>GROBID - A machine learning software for extracting information from scholarly documents</desc>
+					<ref target="https://github.com/kermitt2/grobid"/>
+				</application>
+			</appInfo>
+		</encodingDesc>
+		<profileDesc>
+			<abstract>
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>Simulating high-fidelity patients offers a powerful avenue for studying complex diseases while addressing the challenges of fragmented, biased, and privacy-restricted real-world data. In this study, we introduce SynthAgent, a novel Multi-Agent System (MAS) framework designed to model obesity patients with comorbid mental disorders, including depression, anxiety, social phobia, and binge eating disorder. SynthAgent integrates clinical and medical evidence from claims data, population surveys, and patient-centered literature to construct personalized virtual patients enriched with personality traits that influence adherence, emotion regulation, and lifestyle behaviors. Through autonomous agent interactions, the system simulates disease progression, treatment response, and life management across diverse psychosocial contexts. Evaluation of more than 100 generated patients demonstrated that GPT-5 and Claude 4.5 Sonnet achieved the highest fidelity as the core engine in the proposed MAS framework, outperforming Gemini 2.5 Pro and DeepSeek-R1. SynthAgent thus provides a scalable and privacy-preserving framework for exploring patient journeys, behavioral dynamics, and decision-making processes in both medical and psychological domains.</p></div>
+			</abstract>
+		</profileDesc>
+	</teiHeader>
+	<text xml:lang="en">
+		<body>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="1">Introduction</head><p>Obesity is a complex, multifaceted disease that involves not only metabolic dysfunction but also behavioral, emotional, and psychological components. People with obesity are more likely than the general population to develop depressive disorders, anxiety, social phobia, and disordered eating behaviors such as binge eating disorder. Recent studies have indicated a bidirectional relationship between obesity and depression, where each increases the risk of the other by approximately 1.5-fold across several cohorts <ref type="bibr" target="#b0">[1]</ref>. In clinical settings, the coexistence of mental health comorbidities complicates obesity treatment. Depressive symptoms can reduce motivation for physical activity <ref type="bibr" target="#b1">[2]</ref>, while anxiety and emotional dysregulation may trigger disordered eating patterns <ref type="bibr" target="#b2">[3]</ref>. Overall, mental health challenges are associated with poorer treatment adherence, reduced response to standard therapies, and a lower quality of life among individuals with obesity <ref type="bibr" target="#b3">[4]</ref>. Therefore, an effective obesity care model requires the incorporation of psychological, behavioral, and contextual dimensions, rather than an exclusive focus on weight and metabolism. It involves assessment, modeling, and personalization of interventions informed by patients' psychological and behavioral characteristics, ensuring that mental health is incorporated as a fundamental aspect of obesity management. However, our understanding of obesity patients with mental health comorbidities is constrained in practice by fragmented, sparse, and biased real-world clinical data. Many cohorts under-represent severe psychiatric phenotypes or lack consistent psychological assessments; missing modalities, inconsistent coding, and data sharing restrictions further limit joint modeling of metabolic and mental health dimensions. Synthetic data provide a viable means of generating artificial cohorts that preserve statistically realistic relationships among demographic, clinical, behavioral, and psychosocial variables, thereby allowing gap filling, feature interpolation, and investigation of rare or extreme phenotypes in silico while maintaining data privacy <ref type="bibr" target="#b4">[5]</ref>. Furthermore, in the medical domain, synthetic cohorts enable hypothesis testing, model prototyping, and cross-site validation, including stress testing under lowfrequency but clinically critical conditions that real datasets rarely capture <ref type="bibr" target="#b5">[6]</ref>.</p><p>To address these limitations, we introduce a Multi-Agent System (MAS) designed to simulate realistic patients in obesity research. The MAS integrates multi-source evidence, including diagnostic trajectories, interventions, and comorbidity histories derived from medical claims, along with insights from clinical literature and behavioral, lifestyle, and psychosocial distributions obtained from population surveys such as the Centers for Disease Control and Prevention (CDC)'s National Health and Nutrition Examination Survey (NHANES) and the Behavioral Risk Factor Surveillance System (BRFSS). Furthermore, personality dimensions, six-factor model of personality encompassing Honesty-Humility, Emotionality, Extraversion, Agreeableness, Conscientiousness, and Openness to Experience (HEXACO) <ref type="bibr" target="#b8">[9]</ref>, Five reinforcement sensitivity theory (RST) <ref type="bibr" target="#b9">[10]</ref>, and Temperament and Character Inventory (TCI) <ref type="bibr" target="#b10">[11]</ref>, are incorporated to assign each simulated patient a rich personality scale that modulates behavioral responses, emotional reactivity, and treatment adherence. This approach preserves the joint dependencies among metabolic, psychological, and personality-related features, enabling systematic exploration of personality traits relation with obesity-mental health trajectories and treatment outcomes. In doing so, this work bridges clinical, psychological, and behavioral data streams to simulate a more realistic obesity cohort. By uniting multi-agent modeling with generative synthesis, it lays the foundation for scalable, privacy-preserving, and psychologically informed research in obesity care.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2">Related Work</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.1">Early Approaches to Simulate Realistic Patients</head><p>Early approaches to simulate patients in healthcare used rulebased simulation engines. One prominent example, Synthea, employed modular disease and workflow scripts to simulate complete patient lifespans and produce structured electronic health records (EHRs) <ref type="bibr" target="#b11">[12]</ref>. Subsequent refinements introduced statistical calibration and multi-type event modeling to improve demographic and epidemiologic realism <ref type="bibr" target="#b12">[13,</ref><ref type="bibr" target="#b13">14]</ref>. These rule-based systems remain valuable because they produce interpretable and schema-consistent records aligned with healthcare standards. However, their largely deterministic design limits the ability to capture high-dimensional temporal variability and subtle comorbidity patterns.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.2">Deep Generative Models for Patient Simulation</head><p>To learn complex temporal and multimodal dependencies directly from real EHRs, researchers have adopted deep generative models. Early frameworks such as SynTEG and EVA introduced variational and adversarial autoencoders to generate longitudinal diagnosis sequences while quantifying fidelity and utility via Train-on-Synthetic-Test-on-Real (TSTR) evaluations <ref type="bibr" target="#b14">[15,</ref><ref type="bibr" target="#b15">16]</ref>. EHR-M-GAN extended this idea to mixed continuous and categorical Intensive Care Unit (ICU) time series, demonstrating that synthetic data can improve predictive performance <ref type="bibr" target="#b16">[17]</ref>. More recent transformer-and diffusion-based models improve realism by modeling irregular temporal gaps and heterogeneous data types <ref type="bibr" target="#b17">[18,</ref><ref type="bibr" target="#b18">19]</ref>. Together, these deep models advance fidelity and utility well beyond rule-based systems, yet they remain limited in representing clinical reasoning processes and multi-agent interactions across roles.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.3">LLMs, Multi-Agent Systems, and Clinical Narratives</head><p>Recent advances in large language models (LLMs) have shifted synthetic-EHR research toward producing narrativerich, context-aware records and agentic clinical simulations. Prompt-based approaches serialize structured EHRs as text for conditional generation <ref type="bibr" target="#b19">[20]</ref>, while methods that couple structured encounters with visit-level or longitudinal notes improve contextual coherence and downstream text-classification utility <ref type="bibr" target="#b20">[21]</ref>. Multi-role generative agents, in which clinician, patient, and coder LLMs collaborate to synthesize clinical documentation, mark a conceptual move toward agentic EHR generation <ref type="bibr" target="#b21">[22]</ref>. However, many such systems remain text-centric, lacking full structured-code outputs, standards enforcement, or quantitative privacy and utility audits. Prior psychiatricsimulation frameworks (e.g., conversational agents for mental health) demonstrate realism in dialogue but not longitudinal data fidelity <ref type="bibr" target="#b22">[23,</ref><ref type="bibr" target="#b23">24]</ref>.</p><p>3 Methods</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.1">Data</head><p>The ultimate goal in this study is to simulate realistic patients in all dimensions including demographic, behavioral, and clinical diversity. As a result, we integrated multiple complementary datasets in the MAS framework. These sources jointly provide population-level distributions, longitudinal disease patterns, and case-level clinical detail. The integration followed a layered strategy: (i) National-level survey data for demographic and behavioral baselines, (ii) Medical claim dataset to capture longitudinal disease trajectories, (iii) Epidemiological data for probabilistic calibration, and (iv) Patient case reports for clinical and psychological realism. This multimodal design enables the multi-agent system (MAS) to simulate demographically representative and clinically coherent patients grounded in empirical data.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.1.1">NHANES</head><p>We used 12 survey cycles (1999-2023) from the CDC's National Health and Nutrition Examination Surveys <ref type="bibr" target="#b6">[7]</ref>. These surveys integrates interviews, physical examinations, and laboratory tests to assess the health and nutrition of a nationally representative U.S. population. The combined dataset we extracted spans 21 health domains, covering demographic factors, anthropometric measurements, chronic and metabolic conditions, lifestyle behaviors, mental health indicators, clinical management, and specialized topics such as reproductive health and acculturation. Data across cycles were standardized and linked using the unique respondent identifier to create harmonized, participant-level records suitable for downstream synthesis.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.1.2">Medical Claims</head><p>We extracted 70,000 de-identified patients from the PurpleLab medical claims database (https://purplelab.com) who had at least one obesity-related claim within a 10-year lookback period. Each patient's longitudinal record included demographics, diagnoses, treatment procedures, and medications, enabling reconstruction of detailed disease and treatment trajectories suitable for temporal modeling.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.1.3">Epidemiological Data</head><p>Population-level probabilities for obesity and selected psychological comorbidities were derived from multiple authoritative sources, including the CDC's Behavioral Risk Factor Surveillance System Data <ref type="bibr" target="#b7">[8]</ref>, the World Obesity Federation <ref type="bibr" target="#b24">[25]</ref>, and National Comorbidity Survey Replication <ref type="bibr" target="#b25">[26]</ref>. These distributions defined sampling priors for demographic attributes (age, sex, race, education, occupation, income) and for targeted comorbidities of interest (binge-eating disorder, depression, anxiety disorder, and social phobia) ensuring that the simulated cohort reflects realistic obesity prevalence and comorbidity patterns observed in U.S. population data.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.1.4">Patient Case Reports</head><p>We collected patient case reports from the PubMed, a database of biomedical and life sciences literature. These reports, primarily published in peer-reviewed clinical and medical journals, contain detailed clinical narratives featuring diagnostic, therapeutic, and psychosocial information. Such content enables the targeted extraction of patient-level evidence relevant to specific conditions. Using this corpus, we curated case studies aligned with the diseases assigned to each simulated patient. The retrieved narratives provided empirical grounding for symptom patterns, behavioral characteristics, and treatment trajectories, which were subsequently utilized to enhance the realism and medically coherence of the simulated patient profiles.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.2">Generating Synthetic Patients Using MAS</head><p>Our proposed methodology follows a multi-stage framework designed to simulate realistic and coherent patient records.</p><p>The process begins with data pre-processing, where multiple sources, including NHANES surveys, medical claims, epidemiological datasets, and patient case reports, are standardized, harmonized, and integrated into unified patient-level records. After pre-processing, patient simulations are provided through a coordinated MAS composed of five different steps, each handled by a specialized agent. The summarizer agent condenses empirical data into structured inputs; the generator agent creates initial patient profiles; the augmenter agent enriches them with longitudinal details and evidence-based medical information; the evaluator agent audits for plausibility and consistency; and the refiner agent resolves the detected issues to produce the final validated profiles. Figure <ref type="figure" target="#fig_0">1</ref> illustrates the overall workflow.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.2.1">Summarizer Agent</head><p>The summarizer agent initiates the MAS framework by constructing a foundational profile for each simulated patient. This process integrates epidemiological probabilities with realworld clinical data to ensure a realistic starting point. The agent's operation begins with the probabilistic generation of a demographic profile and the assignment of a specific condition from one of the designated comorbidity groups (i.e., obe-sity alone or obesity co-occurring with binge eating disorder, anxiety disorder, depression, or social phobia).</p><p>To ground this profile in authentic data, the agent draws from two distinct sources: a repository of 10 representative individual samples from NHANES data and a database of 20 longitudinal patient records from medical claims data. The agent then employs a matching algorithm to identify the single NHANES sample that most closely aligns with the generated demographic and comorbidity profile. Following this, it selects the top three clinical trajectories from the medical claims data that best match the combined attributes of the generated profile and the chosen NHANES sample.</p><p>Finally, the agent summarizes this information to produce a structured blueprint that guides the subsequent Generator Agent. This blueprint contains the patient's demographics, a specific BMI range (Class I, II, or III), the assigned comorbidity, a summarized version of the matched NHANES sample, and concise summaries of the three selected disease trajectories. This output serves as the foundational framework for simulating a complete and lifelike patient record.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.2.2">Generator Agent</head><p>Once the summarizer agent defines each patient's profile and potential health trajectory through summarized reference samples, the generator agent then transforms this blueprint into a complete, lifelike simulation. It transforms the structured summary into a full, clinically coherent simulated patient profile that reads like a realistic medical record. Guided by demographic and clinical parameters, such as age, BMI, and comorbidity patterns, the agent fills in every detail of the patient's background, conditions, and experiences.</p><p>Each profile is generated through a controlled reasoning process that ensures accuracy and consistency. The agent constructs key sections that together define the patient's complete health narrative: demographics and medical history, current conditions, symptoms, habits, and laboratory values. It also describes treatment plans, psychological traits, and behavioral tendencies that influence motivation and adherence. To make each record feel authentic, the agent includes a disease timeline that traces the patient's journey over several years, showing how physical and psychological factors evolve over time.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.2.3">Augmenter Agent</head><p>Following the simulation of a base patient profile by the generator agent, the augmenter agent is tasked with enriching the simulation with evidence-based clinical and behavioral details to enhance its medical authenticity. The primary function of this agent is to revise the patient's record by integrating nuanced findings extracted directly from real-world medical literature.</p><p>The process begins by identifying all relevant disease keywords present in the generated patient profile. These keywords are used to query the PubMed database, retrieving 10 pertinent real-patient case reports for each term. This corpus of literature is then processed by the summarizer agent, which first filters the findings to exclude any cases that do not match the simulated patient's demographic profile, specifically age and gender. Subsequently, it analyzes the remaining case reports to synthesize a summary detailing how the documented conditions typically affect a patient's experiences, symptoms, behavioral patterns, and psychological states.</p><p>This synthesized clinical evidence is then passed to the augmenter agent, which concurrently receives the base patient profile from the generator agent. The augmenter agent meticulously integrates these insights into the profile, strategically refining sections such as symptoms, psychological scales, and the role-play Profile. For instance, if the synthesized evidence indicates a strong correlation between anxiety and sleep disturbances, this detail is woven into the synthetic patient's behavioral narrative and symptomology. By grounding each record in evidence from real patient cases, this process bridges the gap between statistical realism and authentic human nuance, resulting in a final output of an augmented synthetic patient who not only aligns with clinical expectations but also exhibits the subtle emotional and behavioral complexities characteristic of real-world individuals.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.2.4">Evaluator Agent</head><p>Once a simulated patient profile has been medically enriched, the evaluator agent acts as an automated clinical reviewer, ensuring that each record is logical, realistic, and internally consistent. It examines the complete profile through the lens of a virtual quality auditor, checking for errors or contradictions across multiple dimensions of a patient's life and health.</p><p>The agent reviews demographic details to confirm that occupations, income levels, and insurance types make sense for a person's age and background. It inspects medical information to verify that diseases, symptoms, and treatments align correctly and that no impossible combinations or temporal errors occur for example, a treatment appearing before a diagnosis. Psychological coherence is also assessed, ensuring that personality scores and behavioral traits match the patient's reported habits and emotional patterns. Finally, the agent evaluates lifestyle realism, confirming that diet, activity, and sleep behaviors are consistent with the clinical picture.</p><p>After completing this review, the evaluator agent compiles a report that summarizes all detected issues and rates their severity as major, moderate, or minor. This report guides the next stage of the framework, helping the refiner agent to come up with the final simulated patient's profile.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.2.5">Refiner Agent</head><p>The refiner agent serves as the final stage of the MAS framework, ensuring that every simulated patient's record is accurate, coherent, and ready for use. Acting like a clinical data expert, it reviews the report provided by the evaluator agent and makes precise adjustments to correct the simulated patient's profile. Rather than regenerating the entire record, the Refiner carefully edits only what is necessary to preserve the integrity of the patient's story and maintain consistency across demographic, clinical, and psychological dimensions. For instance, fixing a timeline inconsistency, adjusting a mismatched diagnosis, or refining a behavioral detail. When no major issues are found, the agent performs a final quality sweep to detect subtle inconsistencies or overlooked details. The result is a polished, validated simulated patient's profile that faithfully represents realistic health and behavioral dynamics.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.3">Simulated Patient's Profile Evaluation</head><p>We evaluated the MAS framework to assess the realism, coherence, and clinical quality of the generated synthetic patients. To fairly evaluate the impact of different core reasoning engines on the final simulation quality, we established four distinct MAS-configurations. The rationale for this design was to hold the input constant while varying the model responsible for the complex simulation tasks. To achieve this, the summarizer agent, powered by Gemini 2.0 Flash, was held constant across all experiments. This agent produced 30 standardized foundational profiles, which served as the identical inputs for all four pipeline configurations, ensuring a controlled comparison.</p><p>The primary variable differentiating the four MASconfigurations was the LLM used as the reasoning engine for the entire core agent suite: the generator, augmenter, evaluator, and refiner. We tested four leading LLM engines in this role: GPT-5 <ref type="bibr" target="#b27">[28]</ref>, Gemini 2.5 Pro <ref type="bibr" target="#b28">[29]</ref>, Claude 4.5 Sonnet <ref type="bibr" target="#b29">[30]</ref>, and DeepSeek-R1 <ref type="bibr" target="#b30">[31]</ref>.</p><p>The goal was to have high quality while the cohort is also diverse. Therefore, evaluation combined two complementary analyses: (i) Automated quality assessment, which used an LLM-as-a-Judge framework as an examiner to score based on the coherence, realism, and completeness, and (ii) Latent diversity visualization, which analyzed embedding-based variation among the simulated patients.</p><p>For the automated quality assessment, we implemented an LLM-as-a-Judge framework, leveraging GPT-4o <ref type="bibr" target="#b31">[32]</ref> as an independent evaluator to ensure consistent, human-like judgment across all 120 simulated patient profiles. Each profile was systematically scored using a detailed schema covering all dimensions to evaluate the reflection of both medical accuracy and narrative coherence: (1) demographics, (2) medical history, (3) current conditions, (4) symptoms, (5) habits, ( <ref type="formula">6</ref>) laboratory values, (7) treatments, (8) psychological scales, (9) role-play profile, and (10) disease timeline.</p><p>The scoring followed a deductive scheme, starting from a perfect score of 100, with points deducted for specific errors identified across three core criteria: Information Sufficiency, which determined if the details were comprehensive and wellproportioned; Logical Consistency, which verified internal coherence between different sections of the profile (e.g., ensuring psychological conditions aligned with behavioral patterns). and Medical Plausibility, which confirmed that clinical details were realistic (e.g., treatments were appropriate for the stated conditions and symptoms). This rigorous process produced both individual dimension scores and a final overall quality score for each simulated patient, allowing for granular and holistic evaluation.</p><p>To compare model performance, all scores were aggregated and measured using descriptive statistics (mean, median, standard deviation, and range). Pairwise model comparisons were conducted using Student's t-tests to determine whether performance were statistically different. We considered results statistically significant when p &lt; 0.05.</p><p>To assess the semantic diversity and distinctiveness of the simulated cohort, we performed a comprehensive embeddingbased analysis on the simulated patient cohort that was generated by different configuration of MAS framework (i.e., four LLM engines). Jina Embeddings v4 <ref type="bibr" target="#b32">[33]</ref> was employed to transform patient records into high-dimensional semantic representations (768 dimensions). Demographic information was excluded from the cohort diversity analysis to ensure that diversity measures reflected differences in clinical and behavioral content rather than demographic variation, allowing a fair comparison of overall patient record diversity. Next, we computed within MAS-configuration diversity scores by measuring the mean Euclidean distance from each patient embedding to the centroid of its respective MAS-configuration's cohort.</p><p>Between MAS-configuration similarity was assessed using cosine similarity and pairwise distances. For visualization, we applied t-SNE <ref type="bibr" target="#b33">[34]</ref> to project the embeddings into a 2D space, representing patients as segmented circles to indicate their comorbidity profiles (obesity with depression, anxiety disorder, social phobia, binge eating disorder, or obesity alone). This comprehensive evaluation provided an objective, scalable method for measuring the coherence and clinical fidelity of simulated patient data, while accounting for cohort diversity, thereby enabling quantitative comparisons of different language model backbones within the MAS framework.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4">Results</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.1">Qualitative Assessment</head><p>We evaluated four LLMs (GPT-5, Claude 4.5 Sonnet, Gemini 2.5 Pro, and DeepSeek-R1) as engines for patient simulation in the MAS framework. From 120 simulated patients (30 per engine), we found that GPT-5 achieved the highest mean quality score (76.27 ± 2.84), followed closely by Claude 4.5 Sonnet (76.17 ± 3.90), the engine that generated the single highestrated synthetic patient (score = 82; Table <ref type="table" target="#tab_0">1</ref>). The performance of these two leading models show similar performance of patient simulation (p = 0.91). In contrast, Gemini 2.5 Pro (71.2 ± 3.0) and DeepSeek-R1 (67.8 ± 3.3) exhibited significantly lower performance (Table <ref type="table">2</ref>). The dimension-level evaluation further supported our previous observations. While GPT-5 and Claude 4.5 Sonnet generally outperformed Gemini 2.5 Pro and DeepSeek-R1 at this granular level, DeepSeek-R1 notably excelled in simulating the patient's current condition. GPT-5 demonstrated superior performance in technical and structural categories, including medical history, treatments, role-play profile, and disease  These findings suggest that GPT-5's strengths lie in structural and temporal coherence, while Claude 4.5 Sonnet provides richer psychological realism. Detailed dimension-level comparisons are available in Table <ref type="table" target="#tab_1">3</ref>. </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.2">Cohort Diversity Analysis</head><p>Our embedding-based analysis revealed significant differences in the semantic diversity of the simulated patient cohort generated by the four different MAS configurations. Claude 4.5 Sonnet core engine produced the most varied patient profiles, achieving the highest diversity score (div = 0.353). Conversely, DeepSeek-R1 and GPT-5 generated more semantically homogenous cohorts, evidenced by lower diversity scores (div = 0.275 for both).</p><p>These quantitative findings are visually corroborated by the 2D t-SNE projection of the patient embeddings. As shown in Figure <ref type="figure" target="#fig_1">2</ref>, each circle represents a patient simulated with obesity, and colored segments indicate specific comorbidities such as depression or anxiety. The arrangement of these circles in the 2D space reflects their semantic similarity. We observed a dense clustering of patients generated by DeepSeek-R1 and Gemini 2.5 Pro, particularly for single-condition profiles (obesity only), indicating a high degree of semantic similarity within their respective cohorts. In contrast, the patient embeddings from GPT-5, and most notably Claude 4.5 Sonnet, are distributed more broadly across the semantic space. The dispersion for the Claude 4.5 Sonnet cohort is particularly pronounced, demonstrating clear separation and rich variability even among patients who share identical comorbidity profiles. This confirms its superior capacity for generating diverse and distinct clinical narratives in this simulation.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.3">Case Study</head><p>We provide details of one simulated patient as a case study to demonstrate our approach (Figure <ref type="figure" target="#fig_3">3</ref>). In our simulation, the patient profile shows a 51-year-old married male living in North Carolina, US, with Class I obesity (BMI 33) alongside comorbid conditions hypertension, hyperlipidemia, obstructive sleep apnea, Gastroesophageal reflux disease and osteoarthritis, and documented psychological/behavioural features such as insomnia. The comprehensive lab values (HbA1c 5.3%, fasting glucose 95 mg/dL, total cholesterol 185 mg/dL, LDL 105 mg/dL, HDL 44 mg/dL, triglycerides 160 mg/dL) align with known metabolic signatures of overweight or obesity class I patient and comorbid mental/behavioural disorders. For example, research in patients with stable mental disorders found a positive correlation of BMI with triglycerides and LDL-cholesterol in such populations <ref type="bibr" target="#b34">[35]</ref>. Furthermore, the documented psychological features, such as attentiondeficit/hyperactivity disorder traits, sleep-disturbance and behavioural habits, reflect the well-established link between obesity and mental health burdens (i.e. people living with obesity have increased odds of depression, anxiety or eating-disorders) <ref type="bibr" target="#b35">[36]</ref>. The richness of this profile, combining demographic, medical-history, symptoms, habits, psychological scales and disease timeline demonstrates that the proposed MAS framework has successfully produced a structurally coherent and clinically credible simulated patient. The overall score of 81 further confirms that the profile meets a high-quality threshold for multi-dimensional patient simulation.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5">Discussion</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5.1">Our Contributions</head><p>The emergence of multi-agent patient simulation framework represents a transformative step toward overcoming data scarcity and fragmentation in healthcare research. Traditional clinical datasets often lack the psychological, behavioral, and contextual richness required to understand complex, comorbid conditions such as obesity with mental disorders. By integrating diverse data sources (i.e., medical claims, NHANES surveys, and epidemiological data), SynthAgent demonstrates how coordinated multi-agent architectures can collectively emulate the multifactorial nature of real patients. Each agent contributes a specialized capability creating an adaptive simulation environment that mirrors real-world variability while maintaining privacy. This approach not only supports reproducible and ethically safe experimentation but also enables hypothesis testing under scenarios rarely observed in clinical datasets, such as treatment lapses triggered by emotional or cognitive stressors.</p><p>Beyond its application to obesity, SynthAgent highlights the potential of multi-agent frameworks to advance patientcentered healthcare modeling. By capturing decision-making processes, motivation shifts, and psychosocial adaptation over time, these systems provide a lens into the lived experience of patients, bridging clinical outcomes with behavioral dynamics. Such simulated cohorts can inform digital therapeutics, precision behavioral interventions, and AI-driven decision support tools by offering an interpretable, testable representation of patient diversity. As healthcare AI moves toward more human-centric models, multi-agent patient simulation frameworks like SynthAgent will play a pivotal role in enabling cross-disciplinary research, training next-generation clinical AI systems, and reimagining how we understand patients as dynamic, adaptive systems rather than static data points.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5.2">Comparative Performance of LLM Engines in Patient Simulation</head><p>The results demonstrate that while the overall quality of synthetic patients generated by GPT-5 and Claude 4.5 Sonnet is statistically equivalent, the underlying models exhibit distinct and complementary strengths. GPT-5 excels in producing structurally and temporally coherent patient narratives, evidenced by its superior performance in dimensions such as Medical History, Treatments, and Disease Timeline. This suggests its suitability for simulations where longitudinal consistency and historical accuracy are paramount. Conversely, Claude 4.5 Sonnet distinguishes itself by generating seman- tically diverse patient cohorts with greater psychological realism, outperforming other models in dimensions like Symptoms, Habits, and Psychological Scales. Crucially, the patient diversity for Claude 4.5 Sonnet was significantly higher than for GPT-5; this increased variety can compensate for any perceived minor differences in quality scores, positioning it as a potentially superior engine for the proposed MAS for patient simulations. The significantly lower performance of Gemini 2.5 Pro and DeepSeek-R1 suggests they are less optimal for this task, although DeepSeek-R1 showed a specific aptitude for articulating the patient's immediate condition. Ultimately, while GPT-5 is preferable for structural fidelity, Claude 4.5 Sonnet's proven strength in generating a diverse and psychologically rich cohort makes it an exceptionally strong choice.</p><p>These findings also suggest the potential for future hybrid systems that leverage the unique strengths of different models to create even more robust and realistic simulated patient data.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5.3">Limitation</head><p>While SynthAgent demonstrates the potential of a MAS for simulating medically and psychologically enriched patients, several limitations remain. First, the framework's performance depends on the quality and representativeness of input data such as medical claims and population surveys, which may introduce inherent biases or underrepresent rare psychiatric phenotypes. Second, although the MAS framework enables modular coordination among agents, inter-agent reasoning and conflict resolution remain partially rule-based, limiting emergent behavioral complexity. Third, psychological and behavioral modeling relies on proxy variables such as personality traits and survey-derived distributions, which cannot fully capture real-world variability or sociocultural nuance. Finally, the current evaluation focuses on internal quality and semantic diversity rather than external clinical validation. Future work should integrate clinician-in-the-loop assessment, reinforcement-driven agent adaptation, and cross-domain validation to ensure that simulated patients more faithfully reflect real patient dynamics and support translational healthcare research.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="6">Conclusion</head><p>In this study, we introduced SynthAgent, a multi-agent simulation framework capable of generating medically, psychologically, and behaviorally enriched patient profiles. Its capabilities were demonstrated using obesity with comorbid mental disorders as a representative condition. Unlike singlemodel generation approaches, SynthAgent employs coordinated agents for data fusion, behavioral simulation, and quality evaluation, integrating medical claims, clinical evidence, and psychosocial distributions to produce realistic patient trajectories. Our findings highlight the potential of multi-agent synthetic patient generation to fill data gaps, enable ethically safe experimentation, and capture complex patterns of treatment adherence, emotion regulation, and lifestyle adaptation. By combining medical realism with psychological depth, SynthAgent establishes a scalable foundation for advancing patientcentered modeling and offers broad applicability for understanding diverse patient populations, decision-making processes, and health management behaviors across conditions.</p></div><figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_0"><head>Figure 1 :</head><label>1</label><figDesc>Figure1: Overview of the SynthAgent multi-agent framework for obesity patient simulation. The system integrates data from multiple empirical sources, including NHANES, medical claims, epidemiological datasets, and patient case reports. After data pre-processing, the summarizer agent condenses empirical evidence into structured inputs for the generator agent, which creates initial patient profiles. The augmenter agent enriches these profiles using literature-based clinical evidence, while the evaluator agent checks for logical, temporal, and behavioral inconsistencies. The refiner agent then resolves any issues to produce the final validated synthetic patient.</figDesc><graphic coords="4,54.00,54.00,503.99,193.00" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_1"><head>Figure 2 :</head><label>2</label><figDesc>Figure 2: t-SNE visualization of clinical core embeddings across four LLMs. Segmented circles indicate comorbidity patterns (red=depression, blue=anxiety, green=social phobia, purple=binge eating, gray=obesity only).</figDesc><graphic coords="6,54.00,54.00,503.97,127.32" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_2"><head>Table 2 :</head><label>2</label><figDesc>Pairwise comparison of LLM engines. Comparison p-value Interpretation Claude vs GPT-5 0.910 Equivalent Claude vs Gemini &lt;0.001 Claude ≫ Gemini Claude vs DeepSeek &lt;0.001 Claude ≫ DeepSeek GPT-5 vs Gemini &lt;0.001 GPT-5 ≫ Gemini GPT-5 vs DeepSeek &lt;0.001 GPT-5 ≫ DeepSeek Gemini vs DeepSeek 0.0001 Gemini ≫ DeepSeek timeline. Conversely, Claude 4.5 Sonnet excelled in dimensions such as symptoms, habits, labs, and psychological scales.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_3"><head>Figure 3 :</head><label>3</label><figDesc>Figure 3: A sample simulated patient generated by the proposed Multi-Agent System (MAS) using the GPT-5 LLM engine. Several dimensions are truncated to fit within the available space, and ellipses (. . . ) indicate that the information continues. The patient's overall score is 81.</figDesc><graphic coords="7,313.45,53.99,242.08,583.94" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_0"><head>Table 1 :</head><label>1</label><figDesc>Overall performance evaluation of LLM engines.</figDesc><table><row><cell>LLM</cell><cell cols="4">Mean ± SD Min Max Median</cell></row><row><cell>GPT-5</cell><cell>76.27 ± 2.84</cell><cell>72</cell><cell>81</cell><cell>76.0</cell></row><row><cell>Claude</cell><cell>76.17 ± 3.90</cell><cell>69</cell><cell>82</cell><cell>76.0</cell></row><row><cell>Gemini</cell><cell>71.17 ± 2.96</cell><cell>65</cell><cell>77</cell><cell>71.0</cell></row><row><cell cols="2">DeepSeek 67.83 ± 3.26</cell><cell>63</cell><cell>76</cell><cell>68.0</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_1"><head>Table 3 :</head><label>3</label><figDesc>Dimension-level quality scores of LLM engines.</figDesc><table><row><cell>Dimension</cell><cell cols="4">Claude GPT-5 Gemini DeepSeek</cell></row><row><cell>Medical History</cell><cell>99.6</cell><cell>100.0</cell><cell>95.8</cell><cell>95.8</cell></row><row><cell>Current Conditions</cell><cell>84.9</cell><cell>84.4</cell><cell>84.4</cell><cell>86.2</cell></row><row><cell>Symptoms</cell><cell>79.1</cell><cell>76.2</cell><cell>73.6</cell><cell>70.7</cell></row><row><cell>Habits</cell><cell>61.7</cell><cell>53.8</cell><cell>52.5</cell><cell>43.3</cell></row><row><cell>Labs</cell><cell>61.1</cell><cell>52.3</cell><cell>52.3</cell><cell>59.0</cell></row><row><cell>Treatments</cell><cell>70.9</cell><cell>80.0</cell><cell>73.3</cell><cell>65.1</cell></row><row><cell>Psych Scales</cell><cell>71.3</cell><cell>67.7</cell><cell>53.3</cell><cell>49.3</cell></row><row><cell>Role Play</cell><cell>57.0</cell><cell>60.7</cell><cell>50.3</cell><cell>48.7</cell></row><row><cell>Timeline</cell><cell>81.0</cell><cell>82.3</cell><cell>77.2</cell><cell>69.5</cell></row></table></figure>
+		</body>
+		<back>
+			<div type="references">
+
+				<listBibl>
+
+<biblStruct xml:id="b0">
+	<analytic>
+		<title level="a" type="main">Overweight, obesity, and depression: a systematic review and meta-analysis of longitudinal studies</title>
+		<author>
+			<persName><forename type="first">F</forename><forename type="middle">S</forename><surname>Luppino</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><forename type="middle">M</forename><surname>De Wit</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><forename type="middle">F</forename><surname>Bouvy</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Stijnen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Cuijpers</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><forename type="middle">W</forename><surname>Penninx</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><forename type="middle">G</forename><surname>Zitman</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Archives of general psychiatry</title>
+		<imprint>
+			<biblScope unit="volume">67</biblScope>
+			<biblScope unit="issue">3</biblScope>
+			<biblScope unit="page" from="220" to="229" />
+			<date type="published" when="2010">2010</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b1">
+	<analytic>
+		<title level="a" type="main">Barriers and facilitators of physical activity for individuals with depression: a systematic review within the socio-ecological model framework</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Duina</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Santi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Carraro</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Frontiers in Sports and Active Living</title>
+		<imprint>
+			<biblScope unit="volume">7</biblScope>
+			<biblScope unit="page">1569335</biblScope>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b2">
+	<analytic>
+		<title level="a" type="main">The prospective relationship between anxiety symptoms and eating disorder symptoms among adolescents: a systematic review and meta-analysis of a bi-directional relationship</title>
+		<author>
+			<persName><forename type="first">N</forename><surname>Trompeter</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ş</forename><surname>Dârvariu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">V</forename><surname>Brieva-Toloza</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M.-C</forename><surname>Opitz</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><forename type="middle">D</forename><surname>Rabelo-Da Ponte</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Sharpe</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Desrivieres</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">U</forename><surname>Schmidt</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Micali</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">European Child &amp; Adolescent Psychiatry</title>
+		<imprint>
+			<biblScope unit="volume">34</biblScope>
+			<biblScope unit="issue">6</biblScope>
+			<biblScope unit="page" from="1691" to="1718" />
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b3">
+	<analytic>
+		<title level="a" type="main">Depression and obesity</title>
+		<author>
+			<persName><forename type="first">G</forename><surname>Gerardo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Peterson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Goodpaster</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Heinberg</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Current Obesity Reports</title>
+		<imprint>
+			<biblScope unit="volume">14</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page">5</biblScope>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b4">
+	<analytic>
+		<title level="a" type="main">Understanding synthetic data: artificial datasets for real-world evidence</title>
+		<author>
+			<persName><forename type="first">R</forename><surname>Foraker</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">D</forename><surname>Morrow</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">A</forename><surname>Johnson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">B</forename><surname>Wilcox</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">J</forename><surname>Forster</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><forename type="middle">R</forename><surname>Payne</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">BMJ Evidence-Based Medicine</title>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b5">
+	<analytic>
+		<title level="a" type="main">Synthetic data in health care: A narrative review</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Gonzales</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Guruswamy</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">R</forename><surname>Smith</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">PLOS Digital Health</title>
+		<imprint>
+			<biblScope unit="volume">2</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page">e0000082</biblScope>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b6">
+	<monogr>
+		<author>
+			<persName><surname>Nhanes</surname></persName>
+		</author>
+		<ptr target="https://wwwn.cdc.gov/nchs/nhanes/.Hyattsville" />
+		<title level="m">National Health and Nutrition Examination Survey (NHANES) Data</title>
+				<imprint>
+			<date type="published" when="1999">2023. 1999-2023</date>
+		</imprint>
+		<respStmt>
+			<orgName>U.S. Department of Health and Human Services, Centers for Disease Control and Prevention</orgName>
+		</respStmt>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b7">
+	<monogr>
+		<ptr target="https://www.cdc.gov/brfss/index.htm" />
+		<title level="m">Behavioral Risk Factor Surveillance System Data</title>
+				<imprint>
+			<date type="published" when="2024">2024</date>
+			<biblScope unit="page" from="2025" to="2035" />
+		</imprint>
+		<respStmt>
+			<orgName>BRFSS ; U.S. Department of Health and Human Services</orgName>
+		</respStmt>
+	</monogr>
+	<note>, Centers for Disease Control and Prevention</note>
+</biblStruct>
+
+<biblStruct xml:id="b8">
+	<monogr>
+		<title level="m" type="main">Exploring the impact of personality traits on llm bias and toxicity</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Yuan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">F</forename><surname>Wong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Yang</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2502.12566</idno>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b9">
+	<analytic>
+		<title level="a" type="main">Five reinforcement sensitivity theory (RST) of personality questionnaires: Comparison, validity and generalization</title>
+		<author>
+			<persName><forename type="first">D</forename><surname>Krupić</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><forename type="middle">J</forename><surname>Corr</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Ručević</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">V</forename><surname>Križanić</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Gračanin</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Personality and Individual Differences</title>
+		<imprint>
+			<biblScope unit="volume">97</biblScope>
+			<biblScope unit="page" from="19" to="24" />
+			<date type="published" when="2016">2016</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b10">
+	<analytic>
+		<title level="a" type="main">Factor structure of psychobiological seven-factor model of personality: a model-revision</title>
+		<author>
+			<persName><forename type="first">T</forename><surname>Tomita</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Aoyama</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Kitamura</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Sekiguchi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Murai</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Matsuda</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Personality and Individual Differences</title>
+		<imprint>
+			<biblScope unit="volume">29</biblScope>
+			<biblScope unit="issue">4</biblScope>
+			<biblScope unit="page" from="709" to="727" />
+			<date type="published" when="2000">2000</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b11">
+	<analytic>
+		<title level="a" type="main">Synthea: An approach, method, and software mechanism for generating synthetic patients and the synthetic electronic health care record</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Walonoski</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Kramer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Nichols</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Quina</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Moesel</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Hall</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Duffett</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Dube</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Gallagher</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Mclachlan</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of the American Medical Informatics Association</title>
+		<imprint>
+			<biblScope unit="volume">25</biblScope>
+			<biblScope unit="issue">3</biblScope>
+			<biblScope unit="page" from="230" to="238" />
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b12">
+	<analytic>
+		<title level="a" type="main">Ensuring electronic medical record simulation through better training, modeling, and evaluation</title>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Yan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">A</forename><surname>Mesa</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Sun</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><forename type="middle">A</forename><surname>Malin</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of the American Medical Informatics Association</title>
+		<imprint>
+			<biblScope unit="volume">27</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page" from="99" to="108" />
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b13">
+	<analytic>
+		<title level="a" type="main">Generating electronic health records with multiple data types and constraints</title>
+		<author>
+			<persName><forename type="first">C</forename><surname>Yan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Nyemba</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><forename type="middle">A</forename><surname>Malin</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">AMIA annual symposium proceedings</title>
+				<imprint>
+			<date type="published" when="2020">2021. 2020</date>
+			<biblScope unit="page">1335</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b14">
+	<analytic>
+		<title level="a" type="main">SynTEG: a framework for temporal structured electronic health data simulation</title>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Yan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><forename type="middle">A</forename><surname>Lasko</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Sun</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><forename type="middle">A</forename><surname>Malin</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of the American Medical Informatics Association</title>
+		<imprint>
+			<biblScope unit="volume">28</biblScope>
+			<biblScope unit="issue">3</biblScope>
+			<biblScope unit="page" from="596" to="604" />
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b15">
+	<analytic>
+		<title level="a" type="main">EVA: Generating longitudinal electronic health records using conditional variational autoencoders</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Biswal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Ghosh</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Duke</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Malin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><surname>Stewart</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Xiao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Sun</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Machine Learning for Healthcare Conference</title>
+				<imprint>
+			<publisher>PMLR</publisher>
+			<date type="published" when="2021">2021</date>
+			<biblScope unit="page" from="260" to="282" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b16">
+	<analytic>
+		<title level="a" type="main">Generating synthetic mixed-type longitudinal electronic health records for artificial intelligent applications</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Cairns</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Zhu</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">NPJ Digital Medicine</title>
+		<imprint>
+			<biblScope unit="volume">6</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page">98</biblScope>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b17">
+	<monogr>
+		<author>
+			<persName><forename type="first">H</forename><surname>Yuan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Zhou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Yu</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2303.05656</idno>
+		<title level="m">EHRDiff: exploring realistic EHR synthesis with diffusion models</title>
+				<imprint>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv. arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b18">
+	<monogr>
+		<title level="m" type="main">Synehrgy: Synthesizing mixed-type structured electronic health records using decoder-only transformers</title>
+		<author>
+			<persName><forename type="first">H</forename><surname>Karami</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Atienza</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Ionescu</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2411.13428</idno>
+		<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b19">
+	<monogr>
+		<title level="m" type="main">PromptEHR: Conditional Electronic Healthcare Records Generation with Prompt Learning</title>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Sun</surname></persName>
+		</author>
+		<imprint>
+			<date type="published" when="2022-05-23">2024. Oct. 11, 2022. May, 23</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv</note>
+</biblStruct>
+
+<biblStruct xml:id="b20">
+	<analytic>
+		<title level="a" type="main">Collaborative synthesis of patient records through multi-visit health state inference</title>
+		<author>
+			<persName><forename type="first">H</forename><surname>Sun</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Lin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Yan</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the AAAI Conference on Artificial Intelligence</title>
+				<meeting>the AAAI Conference on Artificial Intelligence</meeting>
+		<imprint>
+			<date type="published" when="2024">2024</date>
+			<biblScope unit="volume">38</biblScope>
+			<biblScope unit="page" from="19044" to="19052" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b21">
+	<analytic>
+		<title level="a" type="main">Privacy-, linguistic-, and information-preserving synthesis of clinical documentation through generative agents</title>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">V</forename><surname>Velzen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">F</forename><surname>Van Der Willigen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">V</forename><forename type="middle">J</forename><surname>De Beer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><forename type="middle">I</forename><surname>De Graaf-Waar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><forename type="middle">R</forename><surname>De Graaf-Waar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Van Leeuwen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">F</forename><surname>Van Der Willigen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">J</forename><surname>Van Der Willigen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Renardus</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>El Maaroufi</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Frontiers in Artificial Intelligence</title>
+		<imprint>
+			<biblScope unit="volume">8</biblScope>
+			<biblScope unit="page">1644084</biblScope>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b22">
+	<monogr>
+		<author>
+			<persName><forename type="first">R</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Milani</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Chiu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Zhi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Eack</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Labrum</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Murphy</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Jones</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Hardy</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Shen</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2405.19660</idno>
+		<idno>arXiv.</idno>
+		<title level="m">PATIENT-Ψ: Using Large Language Models to Simulate Patients for Training Mental Health Professionals</title>
+				<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b23">
+	<monogr>
+		<title level="m" type="main">Psyche: A multi-faceted patient simulation framework for evaluation of psychiatric assessment conversational agents</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Lee</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Lim</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y.-C</forename><surname>Jung</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B.-H</forename><surname>Kim</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2501.01594</idno>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b24">
+	<monogr>
+		<ptr target="https://data.worldobesity.org/country/united-states-227/.GlobalObesityObservatory" />
+		<title level="m">United States: Epidemiological Data Overview</title>
+				<meeting><address><addrLine>London</addrLine></address></meeting>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+		<respStmt>
+			<orgName>Global Obesity Observatory ; World Obesity Federation</orgName>
+		</respStmt>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b25">
+	<analytic>
+		<title level="a" type="main">The national comorbidity survey replication (NCS-R): background and aims</title>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">C</forename><surname>Kessler</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><forename type="middle">R</forename><surname>Merikangas</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">International journal of methods in psychiatric research</title>
+		<imprint>
+			<biblScope unit="volume">13</biblScope>
+			<biblScope unit="issue">2</biblScope>
+			<biblScope unit="page" from="60" to="68" />
+			<date type="published" when="2004">2004</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b26">
+	<analytic>
+		<title level="a" type="main">Waist-to-height ratio as an indicator of &apos;early health risk&apos;: simpler and more predictive than using a &apos;matrix&apos;based on BMI and waist circumference</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Ashwell</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Gibson</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">BMJ open</title>
+		<imprint>
+			<biblScope unit="volume">6</biblScope>
+			<biblScope unit="issue">3</biblScope>
+			<biblScope unit="page">e010159</biblScope>
+			<date type="published" when="2016">2016</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b27">
+	<monogr>
+		<title/>
+		<author>
+			<persName><surname>Openai</surname></persName>
+		</author>
+		<ptr target="https://openai.com/gpt-5/.Largelanguagemodel" />
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">GPT-</note>
+</biblStruct>
+
+<biblStruct xml:id="b28">
+	<monogr>
+		<title level="m" type="main">Gemini 2.5: Pushing the frontier with advanced reasoning, multimodality, long context, and next generation agentic capabilities</title>
+		<author>
+			<persName><forename type="first">G</forename><surname>Comanici</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Bieber</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Schaekermann</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">I</forename><surname>Pasupat</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Sachdeva</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">I</forename><surname>Dhillon</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Blistein</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">O</forename><surname>Ram</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Rosen</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2507.06261</idno>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b29">
+	<monogr>
+		<author>
+			<persName><surname>Anthropic</surname></persName>
+		</author>
+		<ptr target="https://www.anthropic.com/news/claude-sonnet-4-5.Largelanguagemodel" />
+		<title level="m">Claude Sonnet 4</title>
+				<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b30">
+	<monogr>
+		<author>
+			<persName><forename type="first">Deepseek-Ai</forename></persName>
+		</author>
+		<idno type="arXiv">arXiv:2501.12948</idno>
+		<title level="m">DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning</title>
+				<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+	<note>Large language model</note>
+</biblStruct>
+
+<biblStruct xml:id="b31">
+	<monogr>
+		<author>
+			<persName><surname>Openai</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2410.21276</idno>
+		<title level="m">GPT-4o System Card</title>
+				<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b32">
+	<monogr>
+		<author>
+			<persName><forename type="first">M</forename><surname>Günther</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Sturua</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">K</forename><surname>Akram</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">I</forename><surname>Mohr</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Ungureanu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Eslami</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Martens</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Werk</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Wang</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2506.18902</idno>
+		<title level="m">jina-embeddings-v4: Universal embeddings for multimodal multilingual retrieval</title>
+				<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b33">
+	<analytic>
+		<title level="a" type="main">Visualizing data using t-SNE</title>
+		<author>
+			<persName><forename type="first">L</forename><forename type="middle">V D</forename><surname>Maaten</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Hinton</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of machine learning research</title>
+		<imprint>
+			<biblScope unit="volume">9</biblScope>
+			<biblScope unit="page" from="2579" to="2605" />
+			<date type="published" when="2008-11">2008. Nov)</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b34">
+	<analytic>
+		<title level="a" type="main">Metabolic indexes of obesity in patients with common mental disorders in stable stage</title>
+		<author>
+			<persName><forename type="first">X</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Shi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Tan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Yu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Tang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Xu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Liao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Mai</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><surname>Chen</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">BMC psychiatry</title>
+		<imprint>
+			<biblScope unit="volume">22</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page">91</biblScope>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b35">
+	<monogr>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Segal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Gunturu</surname></persName>
+		</author>
+		<title level="m">Psychological issues associated with obesity</title>
+				<imprint>
+			<publisher>StatPearls Publishing</publisher>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+	<note>StatPearls [Internet</note>
+</biblStruct>
+
+				</listBibl>
+			</div>
+		</back>
+	</text>
+</TEI>
