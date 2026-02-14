@@ -21,7 +21,7 @@ try:
     response = requests.get("http://localhost:8070/api/isalive", timeout=5)
     active = True
 except requests.exceptions.RequestException:
-    print("ERROR: GROBID no está ejecutandose en su máquina, ejecútelo.")
+    print("ERROR: No se pudo conectar a GROBID, verifique si está en ejecución.")
 
 if active == True:
 

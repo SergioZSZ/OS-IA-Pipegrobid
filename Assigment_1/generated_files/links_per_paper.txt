@@ -6,6 +6,7 @@ xmls\paper1.tei.xml
   - https://data.worldobesity.org/country/united-states-227/.GlobalObesityObservatory
   - https://openai.com/gpt-5/.Largelanguagemodel
   - https://www.anthropic.com/news/claude-sonnet-4-5.Largelanguagemodel
+  - https://purplelab.com
 
 xmls\paper2.tei.xml
 -------------------
@@ -102,6 +103,7 @@ xmls\paper5.tei.xml
   - https://arxiv.org/abs/2406.12045
   - https://huggingface.co/datasets/nvidia/Nemotron-Post-Training-Dataset-v1
   - https://arxiv.org/abs/2505.00949
+  - https://github.com/namezhenzhang/CM2-RLCR-Tool-Agent
 
 xmls\paper6.tei.xml
 -------------------
@@ -195,6 +197,7 @@ xmls\paper9.tei.xml
   - https://www.twilio.com/docs/voice/twiml/gather
   - https://data.census.gov
   - https://www.sfexaminer.com/news/transit/sf-traffic-is-second-slowest-in-us-and-getting-worse/article_ebe26770-d45c-11ef-9a49-5fba319c395e.html
+  - https://github.c
 
 xmls\paper10.tei.xml
 --------------------

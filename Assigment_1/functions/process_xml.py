@@ -1,5 +1,6 @@
 from .clean_text import clean_text
 import os
+import re
 
 from natsort import natsorted # organiza strings de manera natural (paper1,paper2,paper3 ...)
 import xml.etree.ElementTree as et #extraccion de partes de un xml como si fuese un arbol
@@ -33,10 +34,11 @@ def process_xml():
     abstracts = []
     figures_count = []
     links_per_paper = {}
+    text: str
     
     ns = {"tei": "http://www.tei-c.org/ns/1.0"} #sin este namespace no encuentra el nodo debido al formato TEI
 
-    for xml in xmls:    
+    for i, xml in enumerate(xmls):    
         tree = et.parse(xml)    #parseamos en arbol el xml
         root = tree.getroot()   #sacamos el nodo raiz desde el que trabajamos
         
@@ -44,6 +46,8 @@ def process_xml():
         figures = root.findall(".//tei:figure",ns) #buscamos todas las figuras
         refs = root.findall(".//tei:ref", ns)      #buscamos las referencias(links)
         ptrs = root.findall(".//tei:ptr",ns)       #en ptr hay mas links
+        
+            
         if abstract is not None:
             text = " ".join(abstract.itertext()) #recorre los nodos hijos de abstract para unirlo con ""
             abstracts.append(text)
@@ -51,28 +55,59 @@ def process_xml():
         figures_count.append(len(figures))  #añadimos el nº de figuras que hay
         
         links = []
-        for ref in refs:                #buscamos en las refs encontradas(en sus target) las url
-            target = ref.get("target")
+        
+        #buscamos links en todas las etiquetas en las que suele haber de un xml y en el texto
+        elements = refs + ptrs
+        for el in elements:              
+            target = el.get("target")
             if target and target.startswith("http"):
                 links.append(target)
         
-        
-        for ptr in root.findall(".//tei:ptr", ns):  #lo mismo para las etiquetas ptr
-            target = ptr.get("target")
-            if target and target.startswith("http"):
-                links.append(target)
+        for el in root.iter():
+            if el.text:
+                lista = re.findall(r"https?://[^\s\"<>()]+", el.text)
+                for link in lista:
+                    links.append(link)
+
+
 
 
         links_per_paper[xml] = links
+
+        '''
+        PARTE 1
+        para validacion del paper1 (A Multi-Agent LLM Framework for Realistic Patient.pdf)
+        parte: abstract correspondiente al paper, nº figuras y links
+        '''
+        if i == 0:
+            print("***************************** VALIDACION ***************************** ")
+            print(f"\npaper: {xml} \n\nabstract: {abstracts[i]}\n\nnfigures: {figures_count[i]}\n\nlinks: {links_per_paper[xml]}")
+            print("\n\n\n")
+        '''
+        FIN PARTE 1
+        '''
         
         
     ################limpieza del abstract/tokenizacion/lemm
     print("\nLimpiando abstracts...")
 
     cleaned_abstracts = []
-    for abstract in abstracts:
+    for i, abstract in enumerate(abstracts):
         cleaned_abstracts.append(clean_text(abstract))
-
+        
+        
+        '''
+        PARTE 2
+        para validacion de limpieza del abstract, lematización etc
+        '''
+        if i == 0:
+            print(f"\ncleaned abstract: {cleaned_abstracts[i]}")
+            print("\n\n\n")
+            print("********************************************************** ")
+        '''
+        FIN PARTE 1
+        '''
+        
 
     ## hacemos return de xmls y nfigures para la visualización de figuras y abstrats para el wordcloud
     return {
