@@ -73,7 +73,7 @@ Assigment_1/
 
 ## Descripción
 
-Este proyecto consiste en la elaboración de un Pipe entre la API del software `GROBID` y el programa realizado para construir un Keyword Cloud, una gráfica de las figuras encontradas y los links de cada archivo `.pdf` que se le ofrezca al programa. Todo el flujo está diseñado para funcionar a partir de la ejecución del Script `/Assigment_1/main.py`, el cual llama a las funciones necesarias de los módulos codificados
+Este proyecto consiste en la elaboración de un Pipe entre la API del software `GROBID` y el programa realizado para construir un Keyword Cloud, una gráfica de las figuras encontradas y los links de cada archivo `.pdf` que se le ofrezca al programa. Todo el flujo está diseñado para funcionar a partir de la ejecución del Script `/Assigment_1/main.py` desde el directorio `/Assigment_1` mediante el mandato `python main.py`, el cual llama a las funciones necesarias de los módulos codificados
 
 ### Parte 1: Procesamiento de PDFs a formato .tei.xml mediante GROBID
 
