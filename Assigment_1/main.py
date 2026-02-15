@@ -43,13 +43,13 @@ if active == True:
 
             Una vez procesados los pdfs y generados los .tei.xml, la siguiente funcion 
             "process_xml()" se encargará de procesar los archivos con el formato dicho
-            de la carpeta "xmls" y devolverá un dict con 3 valores:
+            de la carpeta "xmls" y devolverá un dict con 4 valores:
             
                 -   xmls: lista de los nombres e los xmls ordenada 
                 -   abstracts: una lista con los abstracts sin stopwords, tokenizados y lematizados
-                                de todos los tei.xml procesados
-                                
+                                de todos los tei.xml procesados               
                 -   nfigures:  una lista con el nº de figuras encontradas en cada xml (ordenada)
+                .   links_per_paper: una lista con los links del propio paper
                 
             Si la funcion devuelve 1 significa que no había xml por lo que no sigue el flujo
             

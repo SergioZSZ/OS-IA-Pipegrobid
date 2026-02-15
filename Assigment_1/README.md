@@ -174,7 +174,7 @@ Además, si abrimos el pdf dicho, encontraremos las figuras en estas páginas, n
 5 - Table 3: página 6
 6 - Figure 3: página 7
 
-### Coherencia links
+#### Coherencia links
 A la izquierda están puestos los links listados por pantalla, mientras que a la derecha la línea del paper1 en la que se encuentra el link:
 
 ```
@@ -189,7 +189,7 @@ A la izquierda están puestos los links listados por pantalla, mientras que a la
 
 El primero es un link de referencia que se genera al procesar los `.pdf` con GROBID, y el resto sí son del `.pdf`. Se ha observado que algunos enlaces extraídos por GROBID contienen fragmentos adicionales que no forman parte real de la URL. Esto se debe a que el PDF no almacena el texto de forma semántica, sino como fragmentos posicionados, y durante el proceso de reconstrucción del contenido GROBID puede concatenar texto adyacente al enlace, aunque el programa consiga sacar todos los links que encuentre GROBID.
 
-### Limpieza del abstract
+#### Limpieza del abstract
 Como podemos observar en la comparación del abstract y del abstract limpio, podemos ver que tanto signos de puntuación han desaparecido, se ha pasado el texto entero a minúsculas, hay palabras que han sido pasadas a su lexema, como por ejemplo offers -> offer (4ª palabra del abstract original y 5ª palabra del abstract limpio) y se han eliminado stopwords como 'a' (5ª palabra del abstract original)
 
 
