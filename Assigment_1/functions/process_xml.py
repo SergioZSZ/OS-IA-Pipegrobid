@@ -74,18 +74,18 @@ def process_xml():
 
         links_per_paper[xml] = links
 
-        '''
-        PARTE 1
-        para validacion del paper1 (A Multi-Agent LLM Framework for Realistic Patient.pdf)
-        parte: abstract correspondiente al paper, nº figuras y links
-        '''
-        if i == 0:
-            print("***************************** VALIDACION ***************************** ")
-            print(f"\npaper: {xml} \n\nabstract: {abstracts[i]}\n\nnfigures: {figures_count[i]}\n\nlinks: {links_per_paper[xml]}")
-            print("\n\n\n")
-        '''
-        FIN PARTE 1
-        '''
+#        '''
+#        PARTE 1
+#        para validacion del paper1 (A Multi-Agent LLM Framework for Realistic Patient.pdf)
+#        parte: abstract correspondiente al paper, nº figuras y links
+#        '''
+#        if i == 0:
+#            print("***************************** VALIDACION ***************************** ")
+#            print(f"\npaper: {xml} \n\nabstract: {abstracts[i]}\n\nnfigures: {figures_count[i]}\n\nlinks: {links_per_paper[xml]}")
+#            print("\n\n\n")
+#        '''
+#        FIN PARTE 1
+#        '''
         
         
     ################limpieza del abstract/tokenizacion/lemm
@@ -96,17 +96,17 @@ def process_xml():
         cleaned_abstracts.append(clean_text(abstract))
         
         
-        '''
-        PARTE 2
-        para validacion de limpieza del abstract, lematización etc
-        '''
-        if i == 0:
-            print(f"\ncleaned abstract: {cleaned_abstracts[i]}")
-            print("\n\n\n")
-            print("********************************************************** ")
-        '''
-        FIN PARTE 1
-        '''
+#        '''
+#        PARTE 2
+#        para validacion de limpieza del abstract, lematización etc
+#        '''
+#        if i == 0:
+#            print(f"\ncleaned abstract: {cleaned_abstracts[i]}")
+#            print("\n\n\n")
+#            print("********************************************************** ")
+#        '''
+#        FIN PARTE 1
+#        '''
         
 
     ## hacemos return de xmls y nfigures para la visualización de figuras y abstrats para el wordcloud
