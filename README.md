@@ -1,6 +1,15 @@
 [DOI: 10.5281/zenodo.18664377](https://doi.org/10.5281/zenodo.18664377)
 
 # Software para procesamiento de documentos científicos mediante el software GROBID
+
+## Versiones
+
+### 1.0.0: 
+Primera release realizada funcional
+
+### 1.1.0
+Añadida funcionalidad al software para ejecutarse desde cualquier directorio sin que de problemas por direcciones relativas en el código
+
 ## Objetivo del proyecto
 
 El objetivo de este proyecto es construir un pipeline automatizado para:
