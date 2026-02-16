@@ -10,6 +10,7 @@ Primera release realizada funcional
 ### 1.1.0
 Añadida funcionalidad al software para ejecutarse desde cualquier directorio sin que de problemas por direcciones relativas en el código
 
+
 ## Objetivo del proyecto
 
 El objetivo de este proyecto es construir un pipeline automatizado para:
@@ -224,7 +225,5 @@ Como podemos observar en la comparación del abstract y del abstract limpio, pod
 - El programa depende de que GROBID esté correctamente ejecutándose
 - Algunos enlaces puede que GROBID no los procese bien del pdf al .tei.xml
 - El preprocesamiento elimina números, lo que puede suponer pérdida de información en ciertos contextos, en este caso se está usando únicamente para el conteo de palabras de los ficheros.
-
-
 
 
