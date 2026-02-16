@@ -1,0 +1,52 @@
+{
+    "@context": "https://w3id.org/codemeta/3.0",
+    "applicationCategory": "SoftwareSourceCode",
+    "author": [
+        {
+            "affiliation": {
+                "name": "Escuela Técnica Superior de Ingenieros Informáticos, Universidad Politécnica de Madrid",
+                "@type": "Organization"
+            },
+            "email": "s.zaballosh@gmail.com",
+            "familyName": "Zaballos Herrera",
+            "givenName": "Sergio",
+            "@id": "https://github.com/SergioZSZ",
+            "@type": "Person"
+        }
+    ],
+    "codeRepository": "https://github.com/SergioZSZ/Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering",
+    "dateCreated": "2026-02-15",
+    "dateModified": "2026-02-16",
+    "datePublished": "2026-02-16",
+    "description": "This software implements an automated pipeline for\n  processing scientific documents using GROBID. \n\n  It extracts structured TEI XML data from research papers\n  and performs analysis including abstract extraction, \n\n  figure counting, link extraction, and keyword cloud\n  generation.\n\n\n  The project follows open science and research software\n  engineering principles, \n\n  including versioning, DOI assignment, structured metadata,\n  and reproducibility practices. \n\n  It is designed as an educational and research-oriented\n  tool for exploring scholarly document processing\n  workflows.",
+    "downloadUrl": "https://github.com/SergioZSZ/Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering/releases",
+    "identifier": "https://doi.org/10.5281/zenodo.18664377",
+    "keywords": [
+        "grobid",
+        "tei xml",
+        "open science",
+        "research software engineering",
+        "scientific document processing",
+        "metadata extraction"
+    ],
+    "license": "https://spdx.org/licenses/Apache-2.0",
+    "name": "Software para procesamiento de documentos científicos mediante el software GROBID",
+    "operatingSystem": "Cross-platform",
+    "programmingLanguage": "Python",
+    "releaseNotes": "Ahora se puede ejecutar el programa desde cualquier directorio sin que de problemas de directorios relativos\n",
+    "runtimePlatform": "Python",
+    "softwareRequirements": [
+        {
+            "name": "GROBID (running locally via Docker)",
+            "version": "0.8.2"
+        },
+        {
+            "name": "Docker",
+            "version": "recent version"
+        }
+    ],
+    "version": "1.1.0",
+    "developmentStatus": "active",
+    "issueTracker": "https://github.com/SergioZSZ/Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering/issues",
+    "@type": "SoftwareSourceCode"
+}

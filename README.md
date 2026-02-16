@@ -20,7 +20,6 @@ PDF -> GROBID -> TEI XML -> Extracción -> Limpieza NLP -> Visualización y TXT
 
 - Docker y Docker Desktop
 - Python 3.13.2
-- Software GROBID (link mas adelante)
 - Dependencias de Python usadas:
 
     -   `requests`: realización de peticiones a APIs
@@ -28,6 +27,9 @@ PDF -> GROBID -> TEI XML -> Extracción -> Limpieza NLP -> Visualización y TXT
     -   `matplotlib`:   generación y visualización de imágenes (wordcloud y figuras)
     -   `natsort`:  ordenación natural de strings 
     -   `nltk`: procesamiento del lenguaje natural(stopwords, lemmatizer)
+
+- Dependencias externas:
+    - Software GROBID: Si usas este proyecto, por favor tambien cita : GROBID contributors. (2008--2026). GROBID. https://github.com/kermitt2/grobid
 
 ## Instrucciones de instalación y preparación del entorno:
 
@@ -57,6 +59,8 @@ Orden de instalación para ejecutar el proyecto:
 ├── xmls/                       # Archivos XML generados (por GROBID)
 │
 ├── CITATION.cff                # Cómo citar el software 
+│
+├── codemeta.json               # Metadatos del proyecto
 │
 ├── LICENSE                     # Licencia del Software
 │
