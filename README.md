@@ -1,4 +1,4 @@
-[DOI: 10.5281/zenodo.18665277](https://doi.org/10.5281/zenodo.18665277)
+[DOI: 10.5281/zenodo.18647861](https://doi.org/10.5281/zenodo.18647861)
 
 # Software para procesamiento de documentos científicos mediante el software GROBID
 
