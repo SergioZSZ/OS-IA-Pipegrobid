@@ -56,6 +56,8 @@ Orden de instalación para ejecutar el proyecto:
 │
 ├── xmls/                       # Archivos XML generados (por GROBID)
 │
+├── CITATION.cff                # Cómo citar el software 
+│
 ├── LICENSE                     # Licencia del Software
 │
 ├── README.md                   # Documentación         
