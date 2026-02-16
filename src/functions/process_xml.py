@@ -5,25 +5,29 @@ import re
 from natsort import natsorted # organiza strings de manera natural (paper1,paper2,paper3 ...)
 import xml.etree.ElementTree as et #extraccion de partes de un xml como si fuese un arbol
 
+#directorio base y xmls
+BASE_DIR = os.path.join(os.path.dirname(__file__),"..","..")
+XMLS_DIR = os.path.join(BASE_DIR,"xmls")
 
 def process_xml():
     
     print("\n************** XML PROCESS **************")
 
+    
     ##################### seleccion de xmls
 
     print("Seleccionando archivos xml:")
 
     xmls = []
-    for xml in os.listdir("xmls"):
+    for xml in os.listdir(XMLS_DIR):
         if xml.endswith(".tei.xml"): #solo metemos los archivos .tei.xml
             
-            path = os.path.join("xmls",xml) 
+            path = os.path.join(XMLS_DIR,xml) 
             xmls.append(path)  
             print(f"    {xml}")
     # si no hay pdfs warning al usuario y terminamos la ejecucion
     if not xmls:
-        print(f"WARNING: Ningún tei.xml en la carpeta '{os.path.abspath('xmls')}', por favor, genérelos mediante GROBID.")
+        print(f"WARNING: Ningún tei.xml en la carpeta '{XMLS_DIR}', por favor, genérelos mediante GROBID.")
         return 1    
 
 

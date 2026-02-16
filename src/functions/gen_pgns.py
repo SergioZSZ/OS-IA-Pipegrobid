@@ -2,9 +2,15 @@ from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 import os, re
 
+#directorio base y generated_files
+BASE_DIR = os.path.join(os.path.dirname(__file__),"..","..")
+FILES_DIR = os.path.join(BASE_DIR,"generated_files")
+    
 def keyword_gen(text):
     print("\n************** WORDCLOUD GENERATION **************")
 
+
+    
     #Generacion del WorldCloud
     wordcloud = WordCloud(
         width=1600,
@@ -18,11 +24,11 @@ def keyword_gen(text):
     plt.axis("off")
 
     
-    os.makedirs("generated_files",exist_ok=True)
-    plt.savefig("generated_files/keyword_cloud.png")
+    os.makedirs(FILES_DIR,exist_ok=True)
+    plt.savefig(f"{FILES_DIR}/keyword_cloud.png")
     #plt.show()
 
-    print("WordCloud guardado como keyword_cloud.png\n")
+    print(f"WordCloud guardado en {FILES_DIR} como keyword_cloud.png\n")
     
 
 
@@ -42,8 +48,8 @@ def figures_gen(papers, counts):
     plt.ylabel("nº de figuras")
     plt.title("figuras/paper")
 
-    os.makedirs("generated_files",exist_ok=True)
-    plt.savefig("generated_files/figures_visualization.png")
+    os.makedirs(f"{FILES_DIR}",exist_ok=True)
+    plt.savefig(f"{FILES_DIR}/figures_visualization.png")
     #plt.show()
     
-    print("Visualizacion de figuras guardado como figures_visualization.png\n")
+    print(f"Visualizacion de figuras guardada en {FILES_DIR} como figures_visualization.png\n")

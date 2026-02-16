@@ -1,11 +1,16 @@
 import os
 
+
+#directorio base y generated_files
+BASE_DIR = os.path.join(os.path.dirname(__file__),"..","..")
+FILES_DIR = os.path.join(BASE_DIR,"generated_files")
+
 def gen_txt(links_dict):
     print("\n************** LINKS TXT GENERATION **************")
 
-    os.makedirs("generated_files", exist_ok=True)
+    os.makedirs(FILES_DIR, exist_ok=True)
 
-    with open("generated_files/links_per_paper.txt", "w", encoding="utf-8") as txt:
+    with open(f"{FILES_DIR}/links_per_paper.txt", "w", encoding="utf-8") as txt:
 
         for paper, links in links_dict.items():
 
@@ -20,4 +25,4 @@ def gen_txt(links_dict):
 
             txt.write("\n")
 
-    print(f"Links guardados en generated_files como links_per_paper.txt\n")
+    print(f"Links guardados en {FILES_DIR} como links_per_paper.txt\n")

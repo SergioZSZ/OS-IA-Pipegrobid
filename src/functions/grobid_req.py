@@ -1,34 +1,41 @@
 import requests # libreria que usaremos para realizar peticiones a la API de grobid 
 import os,sys
 
+# dir del directorio base
+BASE_DIR = os.path.join(os.path.dirname(__file__),"..","..")
+#directorios de pdfs y de xmls
+PDFS_DIR = os.path.join(BASE_DIR,"pdfs")
+XMLS_DIR = os.path.join(BASE_DIR,"xmls")
+
 
 def grobid_request():
-    
+    print(PDFS_DIR)
     print("\n************** GROBID REQUEST **************")
     
     # url de la API que usaremos
     url_process_document = "http://localhost:8070/api/processFulltextDocument"
 
+    
     ########### preparacion del entorno y seleccion de pdfs
     print("Generando/Validando entorno...\n")
-
-    os.makedirs("pdfs",exist_ok=True)
-    os.makedirs("xmls", exist_ok=True)
+    
+    os.makedirs(PDFS_DIR, exist_ok=True)
+    os.makedirs(XMLS_DIR, exist_ok=True)
 
     print("Seleccionando archivos:")
 
     # solo metemos pdfs en el array de la carpeta pdfs
     pdfs = []
-    for pdf in os.listdir("pdfs"):  
+    for pdf in os.listdir(PDFS_DIR):  
         if pdf.endswith(".pdf"):
             
-            pdf_path = os.path.join("pdfs",pdf) 
+            pdf_path = os.path.join(PDFS_DIR,pdf) 
             pdfs.append(pdf_path)
             print(f"    {pdf}")   
 
     # si no hay pdfs warning al usuario y terminamos la ejecucion
     if not pdfs:
-        print(f"WARNING: Ningún PDF en la carpeta '{os.path.abspath('pdfs')}', por favor, introduzcalos")
+        print(f"WARNING: Ningún PDF en la carpeta '{PDFS_DIR}', por favor, introduzcalos")
         return 1
 
 
@@ -58,7 +65,7 @@ def grobid_request():
 
         # si se procesa bien la peticion lo escriba en un tei.xml
         if response.status_code == 200:
-            path_xml = f"xmls/paper{i+1}.tei.xml"
+            path_xml = f"{XMLS_DIR}/paper{i+1}.tei.xml"
             
             with open(path_xml,"w", encoding= "utf-8") as paper:
                 paper.write(response.text)

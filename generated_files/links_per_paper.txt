@@ -1,5 +1,5 @@
-xmls\paper1.tei.xml
--------------------
+C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering\src\functions\..\..\xmls\paper1.tei.xml
+-------------------------------------------------------------------------------------------------------------------------------------------------
   - https://github.com/kermitt2/grobid
   - https://wwwn.cdc.gov/nchs/nhanes/.Hyattsville
   - https://www.cdc.gov/brfss/index.htm
@@ -8,13 +8,13 @@ xmls\paper1.tei.xml
   - https://www.anthropic.com/news/claude-sonnet-4-5.Largelanguagemodel
   - https://purplelab.com
 
-xmls\paper2.tei.xml
--------------------
+C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering\src\functions\..\..\xmls\paper2.tei.xml
+-------------------------------------------------------------------------------------------------------------------------------------------------
   - https://github.com/kermitt2/grobid
   - https://x.com/karpathy
 
-xmls\paper3.tei.xml
--------------------
+C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering\src\functions\..\..\xmls\paper3.tei.xml
+-------------------------------------------------------------------------------------------------------------------------------------------------
   - https://github.com/kermitt2/grobid
   - https://doi.org/10.1609/aaai.v38i16.29720
   - https://arxiv.org/abs/2407.05291
@@ -53,8 +53,8 @@ xmls\paper3.tei.xml
   - https://doi.org/10.1145/3706598.3713600
   - https://openreview.net/forum?id=njwv9BsGHF
 
-xmls\paper4.tei.xml
--------------------
+C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering\src\functions\..\..\xmls\paper4.tei.xml
+-------------------------------------------------------------------------------------------------------------------------------------------------
   - https://github.com/kermitt2/grobid
   - https://arxiv.org/abs/2511.21631
   - https://www.sciencedirect.com/science/article/pii/B9780128203538000116
@@ -97,16 +97,16 @@ xmls\paper4.tei.xml
   - https://arxiv.org/abs/2509.25373
   - https://arxiv.org/abs/2504.10479
 
-xmls\paper5.tei.xml
--------------------
+C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering\src\functions\..\..\xmls\paper5.tei.xml
+-------------------------------------------------------------------------------------------------------------------------------------------------
   - https://github.com/kermitt2/grobid
   - https://arxiv.org/abs/2406.12045
   - https://huggingface.co/datasets/nvidia/Nemotron-Post-Training-Dataset-v1
   - https://arxiv.org/abs/2505.00949
   - https://github.com/namezhenzhang/CM2-RLCR-Tool-Agent
 
-xmls\paper6.tei.xml
--------------------
+C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering\src\functions\..\..\xmls\paper6.tei.xml
+-------------------------------------------------------------------------------------------------------------------------------------------------
   - https://github.com/kermitt2/grobid
   - https://arxiv.org/abs/2511.21631
   - https://arxiv.org/abs/2503.06486
@@ -138,8 +138,8 @@ xmls\paper6.tei.xml
   - https://arxiv.org/abs/2502.17422
   - https://arxiv.org/abs/2408.13257
 
-xmls\paper7.tei.xml
--------------------
+C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering\src\functions\..\..\xmls\paper7.tei.xml
+-------------------------------------------------------------------------------------------------------------------------------------------------
   - https://github.com/kermitt2/grobid
   - https://doi.org/10.1007/978-3-540-45193-8_8
   - https://doi.org/10.1145/1468075.1468121
@@ -173,8 +173,8 @@ xmls\paper7.tei.xml
   - https://doi.org/10.1016/j.inffus.2021.11.011
   - https://doi.org/10.1007/11564751_73
 
-xmls\paper8.tei.xml
--------------------
+C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering\src\functions\..\..\xmls\paper8.tei.xml
+-------------------------------------------------------------------------------------------------------------------------------------------------
   - https://github.com/kermitt2/grobid
   - https://arxiv.org/abs/2511.16719
   - https://www.rf100.org/
@@ -182,8 +182,8 @@ xmls\paper8.tei.xml
   - https://arxiv.org/abs/2504.02351
   - https://arxiv.org/abs/2501.18474
 
-xmls\paper9.tei.xml
--------------------
+C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering\src\functions\..\..\xmls\paper9.tei.xml
+-------------------------------------------------------------------------------------------------------------------------------------------------
   - https://github.com/kermitt2/grobid
   - https://sfmuseum.org/street/stnames2.html
   - https://arxiv.org/abs/2406.04904
@@ -199,8 +199,8 @@ xmls\paper9.tei.xml
   - https://www.sfexaminer.com/news/transit/sf-traffic-is-second-slowest-in-us-and-getting-worse/article_ebe26770-d45c-11ef-9a49-5fba319c395e.html
   - https://github.c
 
-xmls\paper10.tei.xml
---------------------
+C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering\src\functions\..\..\xmls\paper10.tei.xml
+--------------------------------------------------------------------------------------------------------------------------------------------------
   - https://github.com/kermitt2/grobid
   - https://doi.org/10.21105/joss.03994
   - https://arxiv.org/pdf/2405.16756
