@@ -1,4 +1,4 @@
-![DOI: 10.5281/zenodo.18647862](https://doi.org/10.5281/zenodo.18647862)
+[DOI: 10.5281/zenodo.18647862](https://doi.org/10.5281/zenodo.18647862)
 
 # Assigment 1: Procesamiento de documentos científicos mediante el software GROBID
 ## Objetivo del proyecto
