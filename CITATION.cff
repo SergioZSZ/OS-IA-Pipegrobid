@@ -19,7 +19,7 @@ authors:
     orcid: 'https://orcid.org/0009-0000-3795-2767'
 identifiers:
   - type: doi
-    value: 10.5281/zenodo.18664377
+    value: 10.5281/zenodo.18665277
     description: Zenodo DOI of this software release
 repository-code: >-
   https://github.com/SergioZSZ/Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering
@@ -58,6 +58,6 @@ preferred-citation:
   authors:
     - family-names: "Zaballos Herrera"
       given-names: "Sergio"
-  doi: "10.5281/zenodo.18664377"
+  doi: "10.5281/zenodo.18665277"
   year: "2026"
 
