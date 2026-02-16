@@ -25,4 +25,4 @@ def gen_txt(links_dict):
 
             txt.write("\n")
 
-    print(f"Links guardados en {FILES_DIR} como links_per_paper.txt\n")
+    print(f"Links guardados en '/generated_files' como links_per_paper.txt\n")

@@ -1,6 +1,5 @@
 C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering\src\functions\..\..\xmls\paper1.tei.xml
 -------------------------------------------------------------------------------------------------------------------------------------------------
-  - https://github.com/kermitt2/grobid
   - https://wwwn.cdc.gov/nchs/nhanes/.Hyattsville
   - https://www.cdc.gov/brfss/index.htm
   - https://data.worldobesity.org/country/united-states-227/.GlobalObesityObservatory
@@ -10,12 +9,10 @@ C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Rese
 
 C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering\src\functions\..\..\xmls\paper2.tei.xml
 -------------------------------------------------------------------------------------------------------------------------------------------------
-  - https://github.com/kermitt2/grobid
   - https://x.com/karpathy
 
 C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering\src\functions\..\..\xmls\paper3.tei.xml
 -------------------------------------------------------------------------------------------------------------------------------------------------
-  - https://github.com/kermitt2/grobid
   - https://doi.org/10.1609/aaai.v38i16.29720
   - https://arxiv.org/abs/2407.05291
   - https://arxiv.org/abs/2411.01101
@@ -55,7 +52,6 @@ C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Rese
 
 C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering\src\functions\..\..\xmls\paper4.tei.xml
 -------------------------------------------------------------------------------------------------------------------------------------------------
-  - https://github.com/kermitt2/grobid
   - https://arxiv.org/abs/2511.21631
   - https://www.sciencedirect.com/science/article/pii/B9780128203538000116
   - https://arxiv.org/abs/2405.19092
@@ -99,7 +95,6 @@ C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Rese
 
 C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering\src\functions\..\..\xmls\paper5.tei.xml
 -------------------------------------------------------------------------------------------------------------------------------------------------
-  - https://github.com/kermitt2/grobid
   - https://arxiv.org/abs/2406.12045
   - https://huggingface.co/datasets/nvidia/Nemotron-Post-Training-Dataset-v1
   - https://arxiv.org/abs/2505.00949
@@ -107,7 +102,6 @@ C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Rese
 
 C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering\src\functions\..\..\xmls\paper6.tei.xml
 -------------------------------------------------------------------------------------------------------------------------------------------------
-  - https://github.com/kermitt2/grobid
   - https://arxiv.org/abs/2511.21631
   - https://arxiv.org/abs/2503.06486
   - https://arxiv.org/abs/2403.20330
@@ -140,7 +134,6 @@ C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Rese
 
 C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering\src\functions\..\..\xmls\paper7.tei.xml
 -------------------------------------------------------------------------------------------------------------------------------------------------
-  - https://github.com/kermitt2/grobid
   - https://doi.org/10.1007/978-3-540-45193-8_8
   - https://doi.org/10.1145/1468075.1468121
   - https://doi.org/10.1109/TNNLS.2022.3229161
@@ -175,7 +168,6 @@ C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Rese
 
 C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering\src\functions\..\..\xmls\paper8.tei.xml
 -------------------------------------------------------------------------------------------------------------------------------------------------
-  - https://github.com/kermitt2/grobid
   - https://arxiv.org/abs/2511.16719
   - https://www.rf100.org/
   - https://arxiv.org/abs/2511.15833
@@ -184,7 +176,6 @@ C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Rese
 
 C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering\src\functions\..\..\xmls\paper9.tei.xml
 -------------------------------------------------------------------------------------------------------------------------------------------------
-  - https://github.com/kermitt2/grobid
   - https://sfmuseum.org/street/stnames2.html
   - https://arxiv.org/abs/2406.04904
   - https://www.cisa.gov/sites/default/files/2025-03/25_0328_s-n_ai-implemen-ecc_infographic_508C.pdf
@@ -201,7 +192,6 @@ C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Rese
 
 C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering\src\functions\..\..\xmls\paper10.tei.xml
 --------------------------------------------------------------------------------------------------------------------------------------------------
-  - https://github.com/kermitt2/grobid
   - https://doi.org/10.21105/joss.03994
   - https://arxiv.org/pdf/2405.16756
 

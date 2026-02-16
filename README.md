@@ -10,7 +10,6 @@ Primera release realizada funcional
 ### 1.1.0
 Añadida funcionalidad al software para ejecutarse desde cualquier directorio sin que de problemas por direcciones relativas en el código
 
-
 ## Objetivo del proyecto
 
 El objetivo de este proyecto es construir un pipeline automatizado para:
@@ -118,7 +117,7 @@ Antes de realizar la extraccion, se ejecuta la función `dw_stopwords()` del Scr
 Mediante la función `process_xml()` encontrada en el script `/src/functions/process_xml.py` se seleccionan todos todos los archivos `.tei.xml` del directorio `/xmls` y se ordenan de manera natural gracias a la función externa `natsorted` de la librería `natsort`. Posteriormente se recorrerán las etiquetas de los archivos como nodos gracias a la librería de Python `xml.etree.ElementTree` extrayendo
 - De los nodos abstract: El texto de todos los archivos para elaborar un Keyword Cloud.
 - De los nodos figure: El nº de figuras que se encuentran en cada archivo.
-- De los nodos ref y ptr y del texto del xml: los links de los ficheros (encontrados en esos nodos) para generar un `.txt` diciendo en qué fichero se encuentran
+- De los nodos ptr y del texto del xml: los links de los ficheros (encontrados en esos nodos) para generar un `.txt` diciendo en qué fichero se encuentran
 
 El texto extraído de los abstracts posteriormente es procesado con una función implementada llamada `clean_text(text)` que acaba limpiando el texto para eliminar de el URLs, etiquetas XML, stopwords y lematiza las palabras restantes para facilitar su procesamiento a su vez que las tokenifica.
 
@@ -205,16 +204,15 @@ Además, si abrimos el pdf dicho, encontraremos las figuras en estas páginas, n
 A la izquierda están puestos los links listados por pantalla, mientras que a la derecha la línea del paper1 en la que se encuentra el link:
 
 ```
-1. https://github.com/kermitt2/grobid   |   línea 61
-2. https://wwwn.cdc.gov/nchs/nhanes/.Hyattsville    |   línea 307
-3. https://www.cdc.gov/brfss/index.htm  |   línea 320
-4. https://data.worldobesity.org/country/united-states-227/.GlobalObesityObservatory    |  línea 806
-5. https://openai.com/gpt-5/.Largelanguagemodel |   línea 866
-6. https://www.anthropic.com/news/claude-sonnet-4-5.Largelanguagemodel  |   línea 920
-7. https://purplelab.com    |   línea 90
+1. https://wwwn.cdc.gov/nchs/nhanes/.Hyattsville    |   línea 307
+2. https://www.cdc.gov/brfss/index.htm  |   línea 320
+3. https://data.worldobesity.org/country/united-states-227/.GlobalObesityObservatory    |  línea 806
+4. https://openai.com/gpt-5/.Largelanguagemodel |   línea 866
+5. https://www.anthropic.com/news/claude-sonnet-4-5.Largelanguagemodel  |   línea 920
+6. https://purplelab.com    |   línea 90
 ```
 
-El primero es un link de referencia que se genera al procesar los `.pdf` con GROBID, y el resto sí son del `.pdf`. Se ha observado que algunos enlaces extraídos por GROBID contienen fragmentos adicionales que no forman parte real de la URL. Esto se debe a que el PDF no almacena el texto de forma semántica, sino como fragmentos posicionados, y durante el proceso de reconstrucción del contenido GROBID puede concatenar texto adyacente al enlace, aunque el programa consiga sacar todos los links que encuentre GROBID.
+Se ha observado que algunos enlaces extraídos por GROBID contienen fragmentos adicionales que no forman parte real de la URL. Esto se debe a que el PDF no almacena el texto de forma semántica, sino como fragmentos posicionados, y durante el proceso de reconstrucción del contenido GROBID puede concatenar texto adyacente al enlace, aunque el programa consiga sacar todos los links que encuentre GROBID.
 
 #### Limpieza del abstract
 Como podemos observar en la comparación del abstract y del abstract limpio, podemos ver que tanto signos de puntuación han desaparecido, se ha pasado el texto entero a minúsculas, hay palabras que han sido pasadas a su lexema, como por ejemplo offers -> offer (4ª palabra del abstract original y 5ª palabra del abstract limpio) y se han eliminado stopwords como 'a' (5ª palabra del abstract original)
@@ -225,5 +223,7 @@ Como podemos observar en la comparación del abstract y del abstract limpio, pod
 - El programa depende de que GROBID esté correctamente ejecutándose
 - Algunos enlaces puede que GROBID no los procese bien del pdf al .tei.xml
 - El preprocesamiento elimina números, lo que puede suponer pérdida de información en ciertos contextos, en este caso se está usando únicamente para el conteo de palabras de los ficheros.
+
+
 
 

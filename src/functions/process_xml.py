@@ -48,8 +48,7 @@ def process_xml():
         
         abstract = root.find(".//tei:abstract",ns) #buscamos desde el nodo root a cualquier profundidad abstract
         figures = root.findall(".//tei:figure",ns) #buscamos todas las figuras
-        refs = root.findall(".//tei:ref", ns)      #buscamos las referencias(links)
-        ptrs = root.findall(".//tei:ptr",ns)       #en ptr hay mas links
+        ptrs = root.findall(".//tei:ptr",ns)       #en ptr hay links(en texto mas adelante)
         
             
         if abstract is not None:
@@ -61,8 +60,7 @@ def process_xml():
         links = []
         
         #buscamos links en todas las etiquetas en las que suele haber de un xml y en el texto
-        elements = refs + ptrs
-        for el in elements:              
+        for el in ptrs:              
             target = el.get("target")
             if target and target.startswith("http"):
                 links.append(target)
