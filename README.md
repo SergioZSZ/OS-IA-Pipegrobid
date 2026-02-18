@@ -37,7 +37,7 @@ PDF -> GROBID -> TEI XML -> Extracción -> Limpieza NLP -> Visualización y TXT
 
 Este proyecto utiliza `poetry` para la gestión de dependencias y del entorno virtual, garantizando reproducibilidad y aislamiento del entorno de ejecución.
 
-Una vez instalado `poetry` es necesario seguir estos pasos para poder replicarlo:
+-   Una vez instalado `poetry` es necesario seguir estos pasos para poder replicarlo:
     
     1. Desde la raíz del proyecto, donde se encuentra `pyproyect.toml` ejecutar el mandato `poetry install` para crear el entorno e instalar dependencias necesarias
 
