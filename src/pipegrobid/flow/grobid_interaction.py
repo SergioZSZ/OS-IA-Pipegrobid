@@ -2,7 +2,7 @@ import requests # libreria que usaremos para realizar peticiones a la API de gro
 import os,sys
 
 # dir del directorio base
-BASE_DIR = os.path.join(os.path.dirname(__file__),"..","..")
+BASE_DIR = os.path.join(os.path.dirname(__file__),"..","..","..")
 #directorios de pdfs y de xmls
 PDFS_DIR = os.path.join(BASE_DIR,"pdfs")
 XMLS_DIR = os.path.join(BASE_DIR,"xmls")

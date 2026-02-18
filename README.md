@@ -16,7 +16,8 @@ El flujo del proyecto es:
 PDF -> GROBID -> TEI XML -> Extracción -> Limpieza NLP -> Visualización y TXT
 
 
-## Requisitos
+
+## Requisitos previos
 
 - Docker y Docker Desktop
 - Python 3.13.2
@@ -29,22 +30,22 @@ PDF -> GROBID -> TEI XML -> Extracción -> Limpieza NLP -> Visualización y TXT
     -   `nltk`: procesamiento del lenguaje natural(stopwords, lemmatizer)
 
 - Dependencias externas:
-    - Software GROBID: Si usas este proyecto, por favor tambien cita : GROBID contributors. (2008--2026). GROBID. https://github.com/kermitt2/grobid
+    - Software `GROBID`: Si usas este proyecto, por favor tambien cita : GROBID contributors. (2008--2026). GROBID. https://github.com/kermitt2/grobid
+    - Gestor de dependencias `poetry`
 
 ## Instrucciones de instalación y preparación del entorno:
 
-Se recomienda la creación de un entorno virtual en Python para la instalación de dependencias, por organización se puede crear en el directorio del código `/src` mediante el mandato `python -m venv nombre_del_entorno` y se debe activar para instalar las dependencias y usarlas.
-El entorno se activa diferente dependiendo del Sistema Operativo usado:
-    -   Linux: `nombre_del_entorno/bin/activate`
-    -   Windows: `nombre_del_entorno/Scripts/activate`
+Este proyecto utiliza `poetry` para la gestión de dependencias y del entorno virtual, garantizando reproducibilidad y aislamiento del entorno de ejecución.
 
-las dependencias pueden instalarse automáticamente mediante el archivo `requirements.txt` con el mandato `pip install -r requirements.txt` estando el entorno activo
+Una vez instalado `poetry` es necesario seguir estos pasos para poder replicarlo:
+    
+    1. Desde la raíz del proyecto, donde se encuentra `pyproyect.toml` ejecutar el mandato `poetry install` para crear el entorno e instalar dependencias necesarias
 
-Orden de instalación para ejecutar el proyecto:
-- Instalar Docker: https://www.docker.com/
-- Instalar GROBID, todo lo necesario para instalar se encuentra en https://github.com/grobidOrg/grobid
-- Creación del entorno virtual desde `src` con `python -m venv nombre_del_entorno`
-- Activar el entorno (mencionado anteriormente) e instalar dependencias con `pip install -r requirements.txt`, sin el entorno activado se instalará en la máquina en vez de en él
+    2. ejecutar uno de estos dos mandatos para ejecutarlo desde ese mismo directorio:
+        - `poetry run python -m pipegrobid` (ejecuta el __main__ del paquete pipegrobid con el flujo del proyecto)
+        - `poetry run pipegrobid` (usa el entry point declarado en el``pyproject.toml``)
+
+el entorno se desactiva con el mandato `deactivate`
 
 ## Estructura del proyecto
 ```
@@ -55,33 +56,29 @@ Orden de instalación para ejecutar el proyecto:
 │   └── links_per_paper.txt
 │
 ├── pdfs/                       # Input de PDFs (meterlos aquí)
-│
 ├── xmls/                       # Archivos XML generados (por GROBID)
-│
 ├── CITATION.cff                # Cómo citar el software 
-│
 ├── codemeta.json               # Metadatos del proyecto
-│
 ├── LICENSE                     # Licencia del Software
-│
 ├── README.md                   # Documentación         
-│
-├── requirements.txt            # Dependencias de Python a instalar
+├── poetry.lock                 # Resolución de dependencias de poetry
+├── poetry.toml                 # Metadatos, dependencias, declaraciones del entorno
 │
 └── src/
     │
-    ├── .venv/                      # Entorno virtual (lo tienes que generar)
-    │
-    ├── main.py                     # Main del proyecto
-    │
-    └── functions/                  # Modulos y funciones usados en el programa
-       ├── __init__.py
-       ├── clean_text.py           # Procesamiento de texto 
-       ├── dw_stopwords.py         # Gestión de Stopwords y Lemmatizer 
-       ├── gen_pgns.py             # Generación de pngs (Keyword Cloud y Figures visualization) 
-       ├── gen_txt.py              # Generación del txt de links
-       ├── grobid_req.py           # GROBID API requests
-       └── process_xml.py          # Procesamiento de los ficheros .tei.xml
+    └──pipegrobid/                  # Paquete con el main inicial del proyecto a ejecutar
+        ├── __main__.py             # Ejecutable del paquete pipegrobid con el flujo definido
+        │
+        └── flow/                   # Subpaquete con modulos sobre flujo del programa
+            ├── __init__.py
+            ├── generations.py       # Generación de los ficheros pedidos
+            ├── grobid_interaction.py   # Interacción con GROBID
+            ├── xml_processing.py       # Procesamiento de los ficheros .tei.xml
+            │
+            └── auxiliar/               # Subpaquete con modulos auxiliares
+                │
+                ├── clean_text.py           # Procesamiento de texto 
+                └── auxiliar/dw_stopwrods.py         # Gestión de Stopwords y Lemmatizer 
     
 
 
@@ -90,11 +87,11 @@ Orden de instalación para ejecutar el proyecto:
 
 ## Descripción
 
-Este proyecto consiste en la elaboración de un Pipe entre la API del software `GROBID` y el programa realizado para construir un Keyword Cloud, una gráfica de las figuras encontradas y los links de cada archivo `.pdf` que se le ofrezca al programa. Mediante la ejecución del script `main.py` con el mandato `python main.py`, el cual llama a las funciones necesarias de los módulos codificados. 
+Este proyecto consiste en la elaboración de un Pipe entre la API del software `GROBID` y el programa realizado para construir un Keyword Cloud, una gráfica de las figuras encontradas y los links de cada archivo `.pdf` que se le ofrezca al programa. Mediante la ejecución del paquete `pipegrobid` ` desde el entorno creado del paquete, el cual llama a las funciones necesarias de los módulos codificados. 
 
 ### Parte 1: Procesamiento de PDFs a formato .tei.xml mediante GROBID
 
-Con GROBID ejecutado, mediante la función `grobid_req()` encontrada el script `/src/functions/grobid_req.py`se le enviarán mediante peticiones request todos los `.pdf` encontrados en el directorio `/pdfs` para su procesamiento y recibir en el directorio `/xmls` la conversión de dichos archivos a formato `.tei.xml`, el cual es legible por máquinas para futuros procesamientos. 
+Con GROBID ejecutado, mediante la función `grobid_req()` del módulo `/src/pipegrobid/flow/grobid_req.py`se le enviarán mediante peticiones request todos los `.pdf` encontrados en el directorio `/pdfs` para su procesamiento y recibir en el directorio `/xmls` la conversión de dichos archivos a formato `.tei.xml`, el cual es legible por máquinas para futuros procesamientos. 
 
 - Si GROBID no está ejecutado en su máquina saltará un aviso y no se ejecutará el programa.
 - El programa solo aceptará archivos en formato `.pdf` y que se encuentren en el directorio mencionado. 
@@ -103,18 +100,18 @@ Con GROBID ejecutado, mediante la función `grobid_req()` encontrada el script `
 
 ### Parte 2: Extracción de abstracts, figures y links de los archivos .tei.xml
 
-Antes de realizar la extraccion, se ejecuta la función `dw_stopwords()` del Script `/src/functions/dw_stopwords.py`, la cual se encarga de descargar en el equipo (si no se ha descargado anteriormente) los paquetes necesarios para usar un lematizador de palabras y las stopwords de los idiomas (palabras muy concurrentes pero que no dan información util, como articulos o preposiciones), ya que este procesamiento es muy util para encontrar patrones y palabras clave para el entrenamiento de modelos o procesamiento de texto.
+Antes de realizar la extraccion, se ejecuta la función `auxiliar/dw_stopwrods()` del módulo `/src/pipegrobid/flow/auxiliar/dw_stopwords.py`, la cual se encarga de descargar en el equipo (si no se ha descargado anteriormente) los paquetes necesarios para usar un lematizador de palabras y las stopwords de los idiomas (palabras muy concurrentes pero que no dan información util, como articulos o preposiciones), ya que este procesamiento es muy util para encontrar patrones y palabras clave para el entrenamiento de modelos o procesamiento de texto.
 
-Mediante la función `process_xml()` encontrada en el script `/src/functions/process_xml.py` se seleccionan todos todos los archivos `.tei.xml` del directorio `/xmls` y se ordenan de manera natural gracias a la función externa `natsorted` de la librería `natsort`. Posteriormente se recorrerán las etiquetas de los archivos como nodos gracias a la librería de Python `xml.etree.ElementTree` extrayendo
+Mediante la función `process_xml()` encontrada en el módulo `/src/pipegrobid/flow/xml_processing.py` se seleccionan todos todos los archivos `.tei.xml` del directorio `/xmls` y se ordenan de manera natural gracias a la función externa `natsorted` de la librería `natsort`. Posteriormente se recorrerán las etiquetas de los archivos como nodos gracias a la librería de Python `xml.etree.ElementTree` extrayendo
 - De los nodos abstract: El texto de todos los archivos para elaborar un Keyword Cloud.
 - De los nodos figure: El nº de figuras que se encuentran en cada archivo.
 - De los nodos ptr y del texto del xml: los links de los ficheros (encontrados en esos nodos) para generar un `.txt` diciendo en qué fichero se encuentran
 
-El texto extraído de los abstracts posteriormente es procesado con una función implementada llamada `clean_text(text)` que acaba limpiando el texto para eliminar de el URLs, etiquetas XML, stopwords y lematiza las palabras restantes para facilitar su procesamiento a su vez que las tokenifica.
+El texto extraído de los abstracts posteriormente es procesado con una función implementada llamada `clean_text(text)` ubicada en el módulo `/src/pipegrobid/flow/auxiliar/clean_text.py` que acaba limpiando el texto para eliminar de el URLs, etiquetas XML, stopwords y lematiza las palabras restantes para facilitar su procesamiento a su vez que las tokenifica.
 
 Debido a la manera que han sido ordenados los archivos, las listas donde se guardan las extracciones coinciden con la posición del archivo `.tei.xml` al que pertenecen.
 
-Este Script acaba generando un diccionario con 4 elementos que recibirá el `main.py`:
+Este Script acaba generando un diccionario con 4 elementos que recibirá el `__main__.py`:
 '''
             "xmls": xmls,                   # lista con los nombres de los archivos ordenados
             "abstracts":cleaned_abstracts,  # lista con los abstracts tokenizados por archivo
@@ -127,14 +124,13 @@ Este Script acaba generando un diccionario con 4 elementos que recibirá el `mai
 
 ### Parte 3: Generación del Keyword Cloud, Visualización de nº de figuras y links.txt
 
-Tras recibir el Script `main.py` el diccionario mencionado anteriormente usará los datos contenidos para usarlos en las siguientes funciones:
+Tras recibir el Script `main.py` el diccionario mencionado anteriormente usará los datos contenidos para usarlos en las siguientes funciones del módulo `/src/pipegrobid/flow/generations.py`:
 
-- Script ``/src/functions/gen_pgns.py`:
-    - `keyword_gen(text)`: Generar el keyword cloud en una imagen `keyword_cloud.png` mediante la librería `matplotlib` siendo `text` un string con todo el texto guardado en `cleaned_abstracts`
-    - `figures_gen(papers, counts)`: Generar una imagen `figures_visualization.png` mediante la librería `matplotlib` usando `papers` como los nombres de los papers contenidos en la variable del diccionario `xmls` y siendo `counts` los valores de `nfigures` del diccionario
+- `keyword_gen(text)`: Generar el keyword cloud en una imagen `keyword_cloud.png` mediante la librería `matplotlib` siendo `text` un string con todo el texto guardado en `cleaned_abstracts`
 
-- Script `/src/functions/gen_txt.py`:
-    - `gen_txt(links_dict):` Generar el `.txt` indicando los links encontrados en `links_dict`cuyo valor es el de la variable del diccionario `links_per_paper` organizándolos por el paper al que corresponden
+- `figures_gen(papers, counts)`: Generar una imagen `figures_visualization.png` mediante la librería `matplotlib` usando `papers` como los nombres de los papers contenidos en la variable del diccionario `xmls` y siendo `counts` los valores de `nfigures` del diccionario
+
+- `gen_txt(links_dict):` Generar el `.txt` indicando los links encontrados en `links_dict`cuyo valor es el de la variable del diccionario `links_per_paper` organizándolos por el paper al que corresponden
 
 ## Validaciones
 
@@ -142,14 +138,14 @@ Para realizar las siguientes validaciones se usó el documento `.pdf` con ruta `
 
 ### 1. Funcionamiento de GROBID
 
-En el propio Script `/src/main.py` se codificó una peticion GET a la API de GROBID para verificar su funcionamiento con un timeout de 5 segundos. Pueden ocurrir 2 casos:
+En el propio Script `__main__.py` se codificó una peticion GET a la API de GROBID para verificar su funcionamiento con un timeout de 5 segundos. Pueden ocurrir 2 casos:
     - La petición GET devuelve un booleano `True` y se ejecuta el resto del código
     - La petición GET no recibe respuesta y salta un aviso de que no se pudo conectar a GROBID
 
 ### 2. Coherencia con la extracción de abstracts, nº figures y links
-Para verificar la Coherencia de los datos extraídos, se añadieron en el Script `/src/functions/process_xml.py` en la funcion `process_xml()` dos bloques de código:
+Para verificar la Coherencia de los datos extraídos, se añadieron en el Script `/src/pipegrobid/flow/xml_processing.py` en la funcion `process_xml()` dos bloques de código:
 
-- 1º (líneas 71-82): Para el primer paper generado (correspondiente al pdf mencionado al principio de este bloque) se imprime por pantalla el nombre del paper, el abstract extraído, su número de figuras y links (posteriormente añadidas al diccionario que se envía a `/src/main.py`), Saliendo por pantalla:
+- 1º (líneas 71-82): Para el primer paper generado (correspondiente al pdf mencionado al principio de este bloque) se imprime por pantalla el nombre del paper, el abstract extraído, su número de figuras y links (posteriormente añadidas al diccionario que se envía al `__main__.py`), Saliendo por pantalla:
 ```
 ***************************** VALIDACION ***************************** 
 

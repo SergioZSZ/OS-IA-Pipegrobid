@@ -1,4 +1,4 @@
-from .clean_text import clean_text
+from .auxiliar.clean_text import clean_text
 import os
 import re
 
@@ -6,7 +6,7 @@ from natsort import natsorted # organiza strings de manera natural (paper1,paper
 import xml.etree.ElementTree as et #extraccion de partes de un xml como si fuese un arbol
 
 #directorio base y xmls
-BASE_DIR = os.path.join(os.path.dirname(__file__),"..","..")
+BASE_DIR = os.path.join(os.path.dirname(__file__),"..","..","..")
 XMLS_DIR = os.path.join(BASE_DIR,"xmls")
 
 def process_xml():

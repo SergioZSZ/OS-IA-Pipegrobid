@@ -3,5 +3,10 @@
 **/__pycache__
 **/.venv
 
+**/.pytest_cache
+
 /pdfs/*
 !pdfs/.gitkeep
+
+/xmls/*
+!xmls/.gitkeep
