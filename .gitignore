@@ -1,5 +1,7 @@
 /grobid-master
-
 **/ignore
 **/__pycache__
 **/.venv
+
+/pdfs/*
+!pdfs/.gitkeep
