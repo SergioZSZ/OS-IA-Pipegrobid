@@ -2,7 +2,6 @@ from pipegrobid.flow.auxiliar.clean_text import clean_text
 from pipegrobid.flow.auxiliar.dw_stopwords import dw_stopwords
 import pytest
 
-dw_stopwords()
 
 def test_clean_text_lowercase():
     """

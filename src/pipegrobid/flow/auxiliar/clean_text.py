@@ -5,10 +5,11 @@ from nltk.stem import WordNetLemmatizer
 import nltk
 
 
-STOPWORDS = stopwords.words("english")
-lem = WordNetLemmatizer()
 
 def clean_text(text: str) -> str:
+    STOPWORDS = stopwords.words("english")
+    lem = WordNetLemmatizer()
+
     text = text.lower() #minus
     text = re.sub(r"<.*?>", " ", text)  #etiquetas xml
     text = re.sub(r"http\S+|www\.\S+", " ", text)   #urls
