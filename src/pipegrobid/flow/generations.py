@@ -55,15 +55,14 @@ def gen_txt(links_dict: dict, dir_files: str) -> None:
 
         for paper, links in links_dict.items():
             
-            txt.write(f"{os.path.basename(paper).replace(".tei.xml", "")}\n")
-            txt.write("-" * len(paper) + "\n")
+            txt.write(f"{os.path.basename(paper).replace(".tei.xml", "")}:\n\n")
 
             if links:
                 for link in links:
                     txt.write(f"  - {link}\n")
             else:
                 txt.write("  No links found.\n")
-
+            txt.write("-------------------------------------------------------------------------------------------------\n")
             txt.write("\n")
 
     print(f"Links guardados en '/generated_files' como links_per_paper.txt\n")
