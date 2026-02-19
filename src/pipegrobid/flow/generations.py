@@ -55,7 +55,7 @@ def gen_txt(links_dict: dict, dir_files: str) -> None:
 
         for paper, links in links_dict.items():
             
-            txt.write(f"{os.path.basename(paper).replace(".tei.xml", "")}:\n\n")
+            txt.write(f"{os.path.basename(paper).replace('.tei.xml', '')}:\n\n")
 
             if links:
                 for link in links:
