@@ -54,8 +54,8 @@ def gen_txt(links_dict: dict, dir_files: str) -> None:
     with open(f"{dir_files}/links_per_paper.txt", "w", encoding="utf-8") as txt:
 
         for paper, links in links_dict.items():
-
-            txt.write(f"{paper}\n")
+            
+            txt.write(f"{os.path.basename(paper).replace(".tei.xml", "")}\n")
             txt.write("-" * len(paper) + "\n")
 
             if links:
