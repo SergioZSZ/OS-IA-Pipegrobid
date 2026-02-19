@@ -8,7 +8,7 @@
 **/.pytest_cache
 
 /generated_files/*
-
+!generated_files/.gitkeep
 /pdfs/*
 !pdfs/.gitkeep
 
