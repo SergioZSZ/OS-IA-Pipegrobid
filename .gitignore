@@ -1,8 +1,10 @@
 /grobid-master
 **/ignore
-**/__pycache__
+/.vscode
+
 **/.venv
 
+**/__pycache__
 **/.pytest_cache
 
 /pdfs/*

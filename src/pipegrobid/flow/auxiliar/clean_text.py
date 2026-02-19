@@ -8,7 +8,7 @@ import nltk
 STOPWORDS = stopwords.words("english")
 lem = WordNetLemmatizer()
 
-def clean_text(text):
+def clean_text(text: str) -> str:
     text = text.lower() #minus
     text = re.sub(r"<.*?>", " ", text)  #etiquetas xml
     text = re.sub(r"http\S+|www\.\S+", " ", text)   #urls

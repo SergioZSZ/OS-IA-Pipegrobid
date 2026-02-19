@@ -1,5 +1,5 @@
-C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering\src\pipegrobid\flow\..\..\..\xmls\paper1.tei.xml
-----------------------------------------------------------------------------------------------------------------------------------------------------------
+C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering\src\pipegrobid\..\..\xmls\paper1.tei.xml
+--------------------------------------------------------------------------------------------------------------------------------------------------
   - https://wwwn.cdc.gov/nchs/nhanes/.Hyattsville
   - https://www.cdc.gov/brfss/index.htm
   - https://data.worldobesity.org/country/united-states-227/.GlobalObesityObservatory
@@ -7,12 +7,12 @@ C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Rese
   - https://www.anthropic.com/news/claude-sonnet-4-5.Largelanguagemodel
   - https://purplelab.com
 
-C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering\src\pipegrobid\flow\..\..\..\xmls\paper2.tei.xml
-----------------------------------------------------------------------------------------------------------------------------------------------------------
+C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering\src\pipegrobid\..\..\xmls\paper2.tei.xml
+--------------------------------------------------------------------------------------------------------------------------------------------------
   - https://x.com/karpathy
 
-C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering\src\pipegrobid\flow\..\..\..\xmls\paper3.tei.xml
-----------------------------------------------------------------------------------------------------------------------------------------------------------
+C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering\src\pipegrobid\..\..\xmls\paper3.tei.xml
+--------------------------------------------------------------------------------------------------------------------------------------------------
   - https://doi.org/10.1609/aaai.v38i16.29720
   - https://arxiv.org/abs/2407.05291
   - https://arxiv.org/abs/2411.01101
@@ -50,8 +50,8 @@ C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Rese
   - https://doi.org/10.1145/3706598.3713600
   - https://openreview.net/forum?id=njwv9BsGHF
 
-C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering\src\pipegrobid\flow\..\..\..\xmls\paper4.tei.xml
-----------------------------------------------------------------------------------------------------------------------------------------------------------
+C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering\src\pipegrobid\..\..\xmls\paper4.tei.xml
+--------------------------------------------------------------------------------------------------------------------------------------------------
   - https://arxiv.org/abs/2511.21631
   - https://www.sciencedirect.com/science/article/pii/B9780128203538000116
   - https://arxiv.org/abs/2405.19092
@@ -93,15 +93,15 @@ C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Rese
   - https://arxiv.org/abs/2509.25373
   - https://arxiv.org/abs/2504.10479
 
-C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering\src\pipegrobid\flow\..\..\..\xmls\paper5.tei.xml
-----------------------------------------------------------------------------------------------------------------------------------------------------------
+C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering\src\pipegrobid\..\..\xmls\paper5.tei.xml
+--------------------------------------------------------------------------------------------------------------------------------------------------
   - https://arxiv.org/abs/2406.12045
   - https://huggingface.co/datasets/nvidia/Nemotron-Post-Training-Dataset-v1
   - https://arxiv.org/abs/2505.00949
   - https://github.com/namezhenzhang/CM2-RLCR-Tool-Agent
 
-C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering\src\pipegrobid\flow\..\..\..\xmls\paper6.tei.xml
-----------------------------------------------------------------------------------------------------------------------------------------------------------
+C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering\src\pipegrobid\..\..\xmls\paper6.tei.xml
+--------------------------------------------------------------------------------------------------------------------------------------------------
   - https://arxiv.org/abs/2511.21631
   - https://arxiv.org/abs/2503.06486
   - https://arxiv.org/abs/2403.20330
@@ -132,8 +132,8 @@ C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Rese
   - https://arxiv.org/abs/2502.17422
   - https://arxiv.org/abs/2408.13257
 
-C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering\src\pipegrobid\flow\..\..\..\xmls\paper7.tei.xml
-----------------------------------------------------------------------------------------------------------------------------------------------------------
+C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering\src\pipegrobid\..\..\xmls\paper7.tei.xml
+--------------------------------------------------------------------------------------------------------------------------------------------------
   - https://doi.org/10.1007/978-3-540-45193-8_8
   - https://doi.org/10.1145/1468075.1468121
   - https://doi.org/10.1109/TNNLS.2022.3229161
@@ -166,16 +166,16 @@ C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Rese
   - https://doi.org/10.1016/j.inffus.2021.11.011
   - https://doi.org/10.1007/11564751_73
 
-C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering\src\pipegrobid\flow\..\..\..\xmls\paper8.tei.xml
-----------------------------------------------------------------------------------------------------------------------------------------------------------
+C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering\src\pipegrobid\..\..\xmls\paper8.tei.xml
+--------------------------------------------------------------------------------------------------------------------------------------------------
   - https://arxiv.org/abs/2511.16719
   - https://www.rf100.org/
   - https://arxiv.org/abs/2511.15833
   - https://arxiv.org/abs/2504.02351
   - https://arxiv.org/abs/2501.18474
 
-C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering\src\pipegrobid\flow\..\..\..\xmls\paper9.tei.xml
-----------------------------------------------------------------------------------------------------------------------------------------------------------
+C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering\src\pipegrobid\..\..\xmls\paper9.tei.xml
+--------------------------------------------------------------------------------------------------------------------------------------------------
   - https://sfmuseum.org/street/stnames2.html
   - https://arxiv.org/abs/2406.04904
   - https://www.cisa.gov/sites/default/files/2025-03/25_0328_s-n_ai-implemen-ecc_infographic_508C.pdf
@@ -190,8 +190,8 @@ C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Rese
   - https://www.sfexaminer.com/news/transit/sf-traffic-is-second-slowest-in-us-and-getting-worse/article_ebe26770-d45c-11ef-9a49-5fba319c395e.html
   - https://github.c
 
-C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering\src\pipegrobid\flow\..\..\..\xmls\paper10.tei.xml
------------------------------------------------------------------------------------------------------------------------------------------------------------
+C:\Users\jzaba\Documents\GitHub\Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering\src\pipegrobid\..\..\xmls\paper10.tei.xml
+---------------------------------------------------------------------------------------------------------------------------------------------------
   - https://doi.org/10.21105/joss.03994
   - https://arxiv.org/pdf/2405.16756
 

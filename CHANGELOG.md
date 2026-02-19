@@ -1,7 +1,17 @@
 # 1.2.0
 
--   Cambiado entorno virtual de `Python venv` a `poetry` debido a su buena gestión de dependencias, su compatibilidad con otros sistemas operativos y facilidad para replicar y lanzar el proyecto (modificado README.md con lo necesario para su uso)
+- cambiado entorno virtual de `Python venv` a `poetry` debido a su buena gestión de dependencias, su compatibilidad con otros sistemas operativos y facilidad para replicar y lanzar el proyecto (modificado README.md con lo necesario para su uso)
 
--   añadido entry point con `poetry` para mejorar la facilidad de ejecución del paquete `pipegrobid` usando solo el mandato `poetry run pipegrobid`
+- añadido entry point con `poetry` para mejorar la facilidad de ejecución del paquete `pipegrobid` usando solo el mandato `poetry run pipegrobid`
 
-in process...
+- modulado mejor el código para generar pruebas unitarias
+
+- añadido tipado a los inputs y  outputs de las funciones 
+
+- añadidos test unitarios
+
+# EN DESARROLLO
+
+-   GitHubActions
+-   Readthedocs documentation
+

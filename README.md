@@ -28,7 +28,8 @@ PDF -> GROBID -> TEI XML -> Extracción -> Limpieza NLP -> Visualización y TXT
     -   `matplotlib`:   generación y visualización de imágenes (wordcloud y figuras)
     -   `natsort`:  ordenación natural de strings 
     -   `nltk`: procesamiento del lenguaje natural(stopwords, lemmatizer)
-
+    -   `pytest`: opcional, usada para correr los test
+    
 - Dependencias externas:
     - Software `GROBID`: Si usas este proyecto, por favor tambien cita : GROBID contributors. (2008--2026). GROBID. https://github.com/kermitt2/grobid
     - Gestor de dependencias `poetry`

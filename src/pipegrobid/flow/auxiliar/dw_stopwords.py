@@ -1,6 +1,6 @@
 import nltk
 
-def dw_stopwords():
+def dw_stopwords()-> None:
     try:
         nltk.data.find("corpora/stopwords")
     except LookupError:
