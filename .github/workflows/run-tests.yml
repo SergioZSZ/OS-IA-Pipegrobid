@@ -34,10 +34,6 @@ jobs:
       run: |
         poetry install
 
-
-    - name: Instalar stopwords nltk
-      run: |
-        poetry run dw-stopwords
         
     - name: Correr test
       run: |
