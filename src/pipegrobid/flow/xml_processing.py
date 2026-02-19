@@ -17,6 +17,8 @@ def list_xmls(xmls_dir: str) -> list:
             path = os.path.join(xmls_dir,xml) 
             xmls.append(path)  
             print(f"    {xml}")
+    # ordenamos de menor a mayor los xmls
+    xmls = natsorted(xmls)
     return xmls
 
 
@@ -60,6 +62,19 @@ def extract_data(xml: str, abstracts: list[str], figures_count: list[int], links
     
     # busqueda de links
     links_per_paper[xml] = links_research(ptrs, root)
+    
+#   '''
+#    PARTE 1
+#    para validacion del paper1 (A Multi-Agent LLM Framework for Realistic Patient.pdf)
+#    parte: abstract correspondiente al paper, nº figuras y links
+#    '''
+#    if i == 0:
+#       print("***************************** VALIDACION ***************************** ")
+#       print(f"\npaper: {xml} \n\nabstract: {abstracts[i]}\n\nnfigures: {figures_count[i]}\n\nlinks: {links_per_paper[xml]}")
+#       print("\n\n\n")
+#    '''
+#    FIN PARTE 1
+#    '''
 
 
 
@@ -86,8 +101,6 @@ def process_xml(xmls_dir: str) -> dict:
         res["error"]= True
         return res    
 
-    # ordenamos de menor a mayor los xmls
-    xmls = natsorted(xmls)
     
     # extraccion de datos del xml
     abstracts = []
@@ -102,7 +115,17 @@ def process_xml(xmls_dir: str) -> dict:
     cleaned_abstracts = []
     for i,abstract in enumerate(abstracts):
         cleaned_abstracts.append(clean_text(abstract))
-
+#        '''
+#        PARTE 2
+#        para validacion de limpieza del abstract, lematización etc
+#        '''
+#        if i == 0:
+#            print(f"\ncleaned abstract: {cleaned_abstracts[i]}")
+#            print("\n\n\n")
+#            print("********************************************************** ")
+#        '''
+#        FIN PARTE 2
+#        '''
 
     res["xmls"] = xmls
     res["abstracts"] = cleaned_abstracts

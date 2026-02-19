@@ -10,8 +10,12 @@
 
 - añadidos test unitarios
 
+- añadida github action para correr los test al subir el proyecto
+
+- compatibilidad con python >= 3.10
+
 # EN DESARROLLO
 
--   GitHubActions
+
 -   Readthedocs documentation
 

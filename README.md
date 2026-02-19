@@ -20,9 +20,11 @@ PDF -> GROBID -> TEI XML -> Extracción -> Limpieza NLP -> Visualización y TXT
 ## Requisitos previos
 
 - Docker y Docker Desktop
-- Python 3.13.2
-- Dependencias de Python usadas:
+- Python >= 3.10
+- Software `GROBID`: https://github.com/kermitt2/grobid
+- Gestor de dependencias `poetry`
 
+- Dependencias de Python usadas:
     -   `requests`: realización de peticiones a APIs
     -   `wordcloud`:    creación del wordcloud
     -   `matplotlib`:   generación y visualización de imágenes (wordcloud y figuras)
@@ -30,14 +32,13 @@ PDF -> GROBID -> TEI XML -> Extracción -> Limpieza NLP -> Visualización y TXT
     -   `nltk`: procesamiento del lenguaje natural(stopwords, lemmatizer)
     -   `pytest`: opcional, usada para correr los test
     
-- Dependencias externas:
-    - Software `GROBID`: Si usas este proyecto, por favor tambien cita : GROBID contributors. (2008--2026). GROBID. https://github.com/kermitt2/grobid
-    - Gestor de dependencias `poetry`
+
 
 ## Instrucciones de instalación y preparación del entorno:
+Antes de nada, es necesario tener GROBID ejecutado. Para ello debemos abrir Docker Desktop/Docker y ejecutar en el terminal `docker run -t --rm -p 8070:8070 grobid/grobid:0.7.2`(para terminar su ejecución, desde el mismo terminal que se ejecutó hacer `Cntrl+C`) Una vez ejecutado, el siguiente paso es configurar el entorno.
 
 Este proyecto utiliza `poetry` para la gestión de dependencias y del entorno virtual, garantizando reproducibilidad y aislamiento del entorno de ejecución.
-
+-   Instalar poetry con `pip install poetry`
 -   Una vez instalado `poetry` es necesario seguir estos pasos para poder replicarlo:
     
     1. Desde la raíz del proyecto, donde se encuentra `pyproyect.toml` ejecutar el mandato `poetry install` para crear el entorno e instalar dependencias necesarias
@@ -46,7 +47,6 @@ Este proyecto utiliza `poetry` para la gestión de dependencias y del entorno vi
         - `poetry run python -m pipegrobid` (ejecuta el __main__ del paquete pipegrobid con el flujo del proyecto)
         - `poetry run pipegrobid` (usa el entry point declarado en el``pyproject.toml``)
 
-el entorno se desactiva con el mandato `deactivate`
 
 ## Estructura del proyecto
 ```
@@ -63,37 +63,58 @@ el entorno se desactiva con el mandato `deactivate`
 ├── LICENSE                     # Licencia del Software
 ├── README.md                   # Documentación         
 ├── poetry.lock                 # Resolución de dependencias de poetry
-├── poetry.toml                 # Metadatos, dependencias, declaraciones del entorno
+├── pyproject.toml              # Metadatos, dependencias, declaraciones del entorno
 │
 └── src/
-    │
-    └──pipegrobid/                  # Paquete con el main inicial del proyecto a ejecutar
-        ├── __main__.py             # Ejecutable del paquete pipegrobid con el flujo definido
-        │
-        └── flow/                   # Subpaquete con modulos sobre flujo del programa
-            ├── __init__.py
-            ├── generations.py       # Generación de los ficheros pedidos
-            ├── grobid_interaction.py   # Interacción con GROBID
-            ├── xml_processing.py       # Procesamiento de los ficheros .tei.xml
-            │
-            └── auxiliar/               # Subpaquete con modulos auxiliares
-                │
-                ├── clean_text.py           # Procesamiento de texto 
-                └── auxiliar/dw_stopwrods.py         # Gestión de Stopwords y Lemmatizer 
-    
-
+│   │
+│   └──pipegrobid/                  # Paquete con el main inicial del proyecto a ejecutar
+│       ├── __main__.py             # Ejecutable del paquete pipegrobid con el flujo definido
+│       │
+│       └── flow/                   # Subpaquete con modulos sobre flujo del programa
+│           ├── __init__.py
+│           ├── generations.py       # Generación de los ficheros pedidos
+│           ├── grobid_interaction.py   # Interacción con GROBID
+│           ├── xml_processing.py       # Procesamiento de los ficheros .tei.xml
+│           │
+│           └── auxiliar/               # Subpaquete con modulos auxiliares
+│               │
+│               ├── clean_text.py           # Procesamiento de texto 
+│               ├── environment.py          # Generación del entorno
+│               └── dw_stopwrods.py         # Gestión de Stopwords y Lemmatizer 
+│  
+│
+│
+└── test/       # Código de los test corridos con pytest
 
     
 ```
 
 ## Descripción
 
-Este proyecto consiste en la elaboración de un Pipe entre la API del software `GROBID` y el programa realizado para construir un Keyword Cloud, una gráfica de las figuras encontradas y los links de cada archivo `.pdf` que se le ofrezca al programa. Mediante la ejecución del paquete `pipegrobid` ` desde el entorno creado del paquete, el cual llama a las funciones necesarias de los módulos codificados. 
+Este proyecto consiste en la elaboración de un Pipe entre la API del software `GROBID` y el programa realizado para construir un Keyword Cloud, una gráfica de las figuras encontradas y los links de cada archivo `.pdf` que se le ofrezca al programa. Mediante la ejecución del paquete `pipegrobid` desde el entorno creado del paquete, el cual llama a las funciones necesarias de los módulos codificados. 
+
+Se usarán 2 endpoints de GROBID para el procedimiento
+-   ``http://localhost:8070/api/isactive`` para verificar que está GROBID ejecutado
+-   ``http://localhost:8070/api/processFulltextDocument`` para la extracción de los .pdfs
+
 
 ### Parte 1: Procesamiento de PDFs a formato .tei.xml mediante GROBID
+- Módulo principal: `/src/pipegrobid/flow/grobid_interaction.py`
 
-Con GROBID ejecutado, mediante la función `grobid_req()` del módulo `/src/pipegrobid/flow/grobid_req.py`se le enviarán mediante peticiones request todos los `.pdf` encontrados en el directorio `/pdfs` para su procesamiento y recibir en el directorio `/xmls` la conversión de dichos archivos a formato `.tei.xml`, el cual es legible por máquinas para futuros procesamientos. 
+- Descripción:
+    Con GROBID ejecutado, mediante la ejecución de `pipegrobid`, mediante `grobid_request(dir_pdfs: str, dir_xmls: str, url_process_docs: str) -> bool` del módulo se le enviarán mediante peticiones request todos los `.pdf` encontrados en el directorio `/pdfs` para su procesamiento y recibir en el directorio `/xmls` la conversión de dichos archivos a formato `.tei.xml`, el cual es legible por máquinas para futuros procesamientos. 
 
+- Funciones del módulo
+    - `list_pdfs(dir_pdfs: str)-> list`:
+    devuelve la lista de .pdf del directorio dado
+    - `request_post(pdf: str, url_process_docs: str) -> requests.Response`:
+     realiza una petición a GROBID enviándole un .pdf y obteniendo la respuesta(en caso de acierto con el texto procesado en .tei.xml)
+    - `write_xml(response: requests.Response, dir_xmls: str, i: int) -> None`:
+     escribe y guarda  en el directorio dado el texto de la respuesta de GROBID en un archivo formato paper{i+1}.tei.xml
+    - `grobid_request(dir_pdfs: str, dir_xmls: str, url_process_docs: str) -> bool`:
+    Viene definido el flujo principal del módulo, devolviendo True si se pudo resolver todo sin problemas o False si se encontraron (que no haya pdfs en el directorio `/pdfs`)
+
+#### Notas a tener en cuenta
 - Si GROBID no está ejecutado en su máquina saltará un aviso y no se ejecutará el programa.
 - El programa solo aceptará archivos en formato `.pdf` y que se encuentren en el directorio mencionado. 
 - Si no se encuentran archivos `.pdf` se interrumpirá el programa saltando un aviso.
@@ -101,9 +122,11 @@ Con GROBID ejecutado, mediante la función `grobid_req()` del módulo `/src/pipe
 
 ### Parte 2: Extracción de abstracts, figures y links de los archivos .tei.xml
 
-Antes de realizar la extraccion, se ejecuta la función `auxiliar/dw_stopwrods()` del módulo `/src/pipegrobid/flow/auxiliar/dw_stopwords.py`, la cual se encarga de descargar en el equipo (si no se ha descargado anteriormente) los paquetes necesarios para usar un lematizador de palabras y las stopwords de los idiomas (palabras muy concurrentes pero que no dan información util, como articulos o preposiciones), ya que este procesamiento es muy util para encontrar patrones y palabras clave para el entrenamiento de modelos o procesamiento de texto.
+Antes de realizar la extraccion, se ejecuta la función `/dw_stopwords()` del módulo `/src/pipegrobid/flow/auxiliar/dw_stopwords.py`, la cual se encarga de descargar en el equipo (si no se ha descargado anteriormente) los paquetes necesarios para usar un lematizador de palabras y las stopwords de los idiomas (palabras muy concurrentes pero que no dan información util, como articulos o preposiciones), ya que este procesamiento es muy util para encontrar patrones y palabras clave para el entrenamiento de modelos o procesamiento de texto.
 
-Mediante la función `process_xml()` encontrada en el módulo `/src/pipegrobid/flow/xml_processing.py` se seleccionan todos todos los archivos `.tei.xml` del directorio `/xmls` y se ordenan de manera natural gracias a la función externa `natsorted` de la librería `natsort`. Posteriormente se recorrerán las etiquetas de los archivos como nodos gracias a la librería de Python `xml.etree.ElementTree` extrayendo
+- Módulo principal `/src/pipegrobid/flow/xml_processing.py`
+
+Se seleccionan todos los archivos `.tei.xml` del directorio `/xmls` y se ordenan de manera natural. Posteriormente se recorrerán las etiquetas de los archivos como nodos gracias a la librería de Python `xml.etree.ElementTree` extrayendo
 - De los nodos abstract: El texto de todos los archivos para elaborar un Keyword Cloud.
 - De los nodos figure: El nº de figuras que se encuentran en cada archivo.
 - De los nodos ptr y del texto del xml: los links de los ficheros (encontrados en esos nodos) para generar un `.txt` diciendo en qué fichero se encuentran
@@ -113,15 +136,27 @@ El texto extraído de los abstracts posteriormente es procesado con una función
 Debido a la manera que han sido ordenados los archivos, las listas donde se guardan las extracciones coinciden con la posición del archivo `.tei.xml` al que pertenecen.
 
 Este Script acaba generando un diccionario con 4 elementos que recibirá el `__main__.py`:
-'''
+{
             "xmls": xmls,                   # lista con los nombres de los archivos ordenados
             "abstracts":cleaned_abstracts,  # lista con los abstracts tokenizados por archivo
             "nfigures":figures_count,       # nº de figuras encontradas por archivo
             "links_per_paper": links_per_paper  # links encontrado por archivo
-'''
-- Si no se encuentran archivos `.tei.xml` en el directorio `/xmls` saltará un aviso y se terminará la ejecución del programa.
-- Si no existe el directorio `/xmls` se creará al ejecutar el Script, pero saltará el aviso anterior
-- El programa solo aceptará archivos en formato `.tei.xml` y que se encuentren en el directorio mencionado. 
+}
+- Funciones:
+    - `list_xmls(xmls_dir: str) -> list:`:
+    Devuelve una lista ordenada naturalmente gracias a `natsort` de los `.tei.xml` del directorio `/xmls`
+    - `links_research(ptrs: list[et.Element] , root: et.Element) -> list`:
+    Devuelve una lista con los links encontrados tanto en los nodos <ptr> dados del archivo `.tei.xml` correspondiente como en el texto del fichero
+    - `extract_data(xml: str, abstracts: list[str], figures_count: list[int], links_per_paper: dict) -> None`:
+    Añade a la lista de abstracs, lista de nº de figuras y diccionario de links per paper las extracciones realizadas en los .tei.xml
+    - `process_xml(xmls_dir: str) -> dict`:
+    Contiene el flujo del módulo, haciendo que se ejecute en orden y devuelva un diccionario con 5 parámetros(abstracts, xmls, figures_count, links_per_paper, error).
+
+
+- Notas:
+    - Si no se encuentran archivos `.tei.xml` en el directorio `/xmls` saltará un aviso y se terminará la ejecución del programa.
+    - Si no existe el directorio `/xmls` se creará al ejecutar el Script, pero saltará el aviso anterior
+    - El programa solo aceptará archivos en formato `.tei.xml` y que se encuentren en el directorio mencionado. 
 
 ### Parte 3: Generación del Keyword Cloud, Visualización de nº de figuras y links.txt
 
@@ -135,18 +170,19 @@ Tras recibir el Script `main.py` el diccionario mencionado anteriormente usará 
 
 ## Validaciones
 
-Para realizar las siguientes validaciones se usó el documento `.pdf` con ruta `/pdfs/A Multi-Agent LLM Framework for Realistic Patient.pdf`
+Para realizar las siguientes validaciones se usó el documento `.pdf` encontrado en https://arxiv.org/pdf/2602.16435
+
 
 ### 1. Funcionamiento de GROBID
 
-En el propio Script `__main__.py` se codificó una peticion GET a la API de GROBID para verificar su funcionamiento con un timeout de 5 segundos. Pueden ocurrir 2 casos:
-    - La petición GET devuelve un booleano `True` y se ejecuta el resto del código
-    - La petición GET no recibe respuesta y salta un aviso de que no se pudo conectar a GROBID
+Se añadió un módulo en `src/pipegrobid/flow/auxiliar/isactive.py` codificando una función que realiza una peticion GET a la API de GROBID para verificar su funcionamiento con un timeout de 5 segundos. Se incorporó en el flujo del `src/pipegrobid/__main__.py` y puede ocurrir:
+    - Devuelve un booleano `True` y se ejecuta el resto del código
+    - Devuelve un booleano `False` y salta un aviso de que no se pudo conectar a GROBID
 
 ### 2. Coherencia con la extracción de abstracts, nº figures y links
 Para verificar la Coherencia de los datos extraídos, se añadieron en el Script `/src/pipegrobid/flow/xml_processing.py` en la funcion `process_xml()` dos bloques de código:
 
-- 1º (líneas 71-82): Para el primer paper generado (correspondiente al pdf mencionado al principio de este bloque) se imprime por pantalla el nombre del paper, el abstract extraído, su número de figuras y links (posteriormente añadidas al diccionario que se envía al `__main__.py`), Saliendo por pantalla:
+- 1º (líneas 66-77): Para el primer paper generado (correspondiente al pdf mencionado al principio de este bloque) se imprime por pantalla el nombre del paper, el abstract extraído, su número de figuras y links (posteriormente añadidas al diccionario que se envía al `__main__.py`), Saliendo por pantalla:
 ```
 ***************************** VALIDACION ***************************** 
 
@@ -160,7 +196,7 @@ nfigures: 6
 links: ['https://github.com/kermitt2/grobid', 'https://wwwn.cdc.gov/nchs/nhanes/.Hyattsville', 'https://www.cdc.gov/brfss/index.htm', 'https://data.worldobesity.org/country/united-states-227/.GlobalObesityObservatory', 'https://openai.com/gpt-5/.Largelanguagemodel', 'https://www.anthropic.com/news/claude-sonnet-4-5.Largelanguagemodel', 'https://purplelab.com']
 ```
 
-- 2º (líneas 100-109): se muestra por pantalla el abstract limpio y lematizado para ver qué palabras se repiten más, por pantalla muestra esa parte del código:
+- 2º (líneas 118-128): se muestra por pantalla el abstract limpio y lematizado para ver qué palabras se repiten más, por pantalla muestra esa parte del código:
 ```
 cleaned abstract: simulating high fidelity patient offer powerful avenue studying complex disease addressing challenge fragmented biased privacy restricted real world data study introduce synthagent novel multi agent system ma framework designed model obesity patient comorbid mental disorder including depression anxiety social phobia binge eating disorder synthagent integrates clinical medical evidence claim data population survey patient centered literature construct personalized virtual patient enriched personality trait influence adherence emotion regulation lifestyle behavior autonomous agent interaction system simulates disease progression treatment response life management across diverse psychosocial context evaluation generated patient demonstrated gpt claude sonnet achieved highest fidelity core engine proposed ma framework outperforming gemini pro deepseek r synthagent thus provides scalable privacy preserving framework exploring patient journey behavioral dynamic decision making process medical psychological domain
 
@@ -205,6 +241,9 @@ Se ha observado que algunos enlaces extraídos por GROBID contienen fragmentos a
 #### Limpieza del abstract
 Como podemos observar en la comparación del abstract y del abstract limpio, podemos ver que tanto signos de puntuación han desaparecido, se ha pasado el texto entero a minúsculas, hay palabras que han sido pasadas a su lexema, como por ejemplo offers -> offer (4ª palabra del abstract original y 5ª palabra del abstract limpio) y se han eliminado stopwords como 'a' (5ª palabra del abstract original)
 
+
+## Ejecución de los test
+Para ejecutar los test, se debe realizar en la carpeta raíz del proyecto el mandato `poetry run pytest -v`
 
 ## Limitaciones
 
