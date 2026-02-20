@@ -14,9 +14,8 @@
 
 - compatibilidad con python >= 3.10
 
-- añadido Readthedocs documentation
+# EN DESARROLLO
 
 
-
-
+-   Readthedocs documentation
 
