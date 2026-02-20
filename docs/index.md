@@ -1,8 +1,6 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18647861.svg)](https://doi.org/10.5281/zenodo.18647861)
-
 ![GitHub License](https://img.shields.io/github/license/SergioZSZ/Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering)
-
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/SergioZSZ/Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering)
+[![GitHub release](https://img.shields.io/github/v/release/SergioZSZ/Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering?include_prereleases)](https://github.com/SergioZSZ/Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering/releases)
 # Software para procesamiento de documentos científicos mediante el software GROBID
 ## Objetivo del proyecto
 
