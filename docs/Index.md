@@ -18,7 +18,7 @@ PDF -> GROBID -> TEI XML -> Extracción -> Limpieza NLP -> Visualización y TXT
 
 ## Estructura del proyecto
 ```
-/
+/ 
 ├── generated_files/                # Archivos generados tras ejecutar
 │   ├── figures_visualization.png   
 │   ├── keyword_cloud.png
