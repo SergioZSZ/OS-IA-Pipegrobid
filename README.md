@@ -3,6 +3,8 @@
 ![GitHub License](https://img.shields.io/github/license/SergioZSZ/Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering)
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/SergioZSZ/Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering)
+
+![ReadTheDocs documentation](https://pipegrobid-software.readthedocs.io/es/latest/)
 # Software para procesamiento de documentos científicos mediante el software GROBID
 ## Objetivo del proyecto
 
