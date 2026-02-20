@@ -1,10 +1,7 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18647861.svg)](https://doi.org/10.5281/zenodo.18647861)
-
-![GitHub License](https://img.shields.io/github/license/SergioZSZ/Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering)
-
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/SergioZSZ/Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering)
-
-![ReadTheDocs documentation](https://pipegrobid-software.readthedocs.io/es/latest/)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
+[![GitHub release](https://img.shields.io/github/v/release/SergioZSZ/Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering)](https://github.com/SergioZSZ/Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering/releases)
+[![Documentation Status](https://readthedocs.org/projects/pipegrobid-software/badge/?version=latest)](https://pipegrobid-software.readthedocs.io)
 # Software para procesamiento de documentos científicos mediante el software GROBID
 ## Objetivo del proyecto
 
