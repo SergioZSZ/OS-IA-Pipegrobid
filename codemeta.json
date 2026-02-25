@@ -33,7 +33,7 @@
     "name": "Software para extracción de documentos científicos mediante el software GROBID",
     "operatingSystem": "Cross-platform",
     "programmingLanguage": "Python",
-    "releaseNotes": "- Documentación Actualizada\n",
+    "releaseNotes": "- Actualizados metadatos\n",
     "runtimePlatform": "Python",
     "softwareRequirements": [
         {
@@ -49,7 +49,7 @@
             "version": "2.3.2"
         }
     ],
-    "version": "1.3.2",
+    "version": "1.3.3",
     "developmentStatus": "active",
     "issueTracker": "https://github.com/SergioZSZ/Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering/issues",
     "@type": "SoftwareSourceCode"
