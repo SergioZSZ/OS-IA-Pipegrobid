@@ -1,3 +1,7 @@
+# 1.3.2
+
+- Documentación Actualizada
+
 # 1.3.1
 
 - Eliminados test unitarios dependientes de GROBID
