@@ -14,8 +14,12 @@
     -   `pytest`: opcional, usada para correr los test
 
 
-## Instrucciones de instalación y preparación del entorno:
+## Instrucciones de preparación del entorno, instalación y ejecución:
 
+### Forma 1: Ejecución mediante docker-compose
+Teniendo abierto Docker Desktop, desde el terminal (en el directorio base del proyecto `/`) podemos ejecutar el mandato `docker compose up -d` para levantar tanto el servicio de GROBID como el de PipeGrobid. 
+
+### Forma 2: Instalación manual con poetry
 Antes de nada, es necesario tener GROBID ejecutado. Para ello debemos abrir Docker Desktop/Docker y ejecutar en el terminal `docker run -t --rm -p 8070:8070 grobid/grobid:0.7.2`(para terminar su ejecución, desde el mismo terminal que se ejecutó hacer `Cntrl+C`) Una vez ejecutado, el siguiente paso es configurar el entorno.
 
 Este proyecto utiliza `poetry` para la gestión de dependencias y del entorno virtual, garantizando reproducibilidad y aislamiento del entorno de ejecución.

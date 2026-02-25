@@ -17,7 +17,7 @@
     "codeRepository": "https://github.com/SergioZSZ/Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering",
     "dateCreated": "2026-02-15",
     "dateModified": "2026-02-17",
-    "datePublished": "2026-02-17",
+    "datePublished": "2026-02-25",
     "description": "This software implements an automated pipeline for\n  processing scientific documents using GROBID. \n\n  It extracts structured TEI XML data from research papers\n  and performs analysis including abstract extraction, \n\n  figure counting, link extraction, and keyword cloud\n  generation.\n\n\n  The project follows open science and research software\n  engineering principles, \n\n  including versioning, DOI assignment, structured metadata,\n  and reproducibility practices. \n\n  It is designed as an educational and research-oriented\n  tool for exploring scholarly document processing\n  workflows.",
     "downloadUrl": "https://github.com/SergioZSZ/Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering/releases",
     "identifier": "https://doi.org/10.5281/zenodo.18647861",
@@ -33,7 +33,7 @@
     "name": "Software para extracción de documentos científicos mediante el software GROBID",
     "operatingSystem": "Cross-platform",
     "programmingLanguage": "Python",
-    "releaseNotes": "- cambiado entorno virtual de `Python venv` a `poetry` debido a su buena gestión de dependencias, su compatibilidad con otros sistemas operativos y facilidad para replicar y lanzar el proyecto (modificado README.md con lo necesario para su uso)\n- añadido entry point con `poetry` para mejorar la facilidad de ejecución del paquete `pipegrobid` usando solo el mandato `poetry run pipegrobid`\n- modulado mejor el código para generar pruebas unitarias\n- añadido tipado a los inputs y  outputs de las funciones\n- añadidos test unitarios\n- añadida github action para correr los test al subir el proyecto\n- compatibilidad con python >= 3.10\n- añadido Readthedocs documentation\n",
+    "releaseNotes": "- Añadida dockerización del proyecto\n - Modificado __main__ para cambiar URL dependiendo de si se ejecutó mediante docker-compose o en local\n- Modificada función `isactive(url)` para esperar 30 segundos a que GROBID sea accesible",
     "runtimePlatform": "Python",
     "softwareRequirements": [
         {
@@ -49,7 +49,7 @@
             "version": "2.3.2"
         }
     ],
-    "version": "1.2.0",
+    "version": "1.3.0",
     "developmentStatus": "active",
     "issueTracker": "https://github.com/SergioZSZ/Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering/issues",
     "@type": "SoftwareSourceCode"

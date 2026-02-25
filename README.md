@@ -1,7 +1,7 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18647861.svg)](https://doi.org/10.5281/zenodo.18647861)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 [![GitHub release](https://img.shields.io/github/v/release/SergioZSZ/Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering?include_prereleases)](https://github.com/SergioZSZ/Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering/releases)
-# Software para procesamiento de documentos científicos mediante el software GROBID
+# Software para procesamiento de documentos científicos mediante el software GROBID (PipeGrobid)
 Más documentacion en: https://pipegrobid-software.readthedocs.io/es/latest/
 ## Objetivo del proyecto
 
@@ -36,12 +36,17 @@ PDF -> GROBID -> TEI XML -> Extracción -> Limpieza NLP -> Visualización y TXT
     
 
 
-## Instrucciones de instalación y preparación del entorno:
-Antes de nada, es necesario tener GROBID ejecutado. Para ello debemos abrir Docker Desktop/Docker y ejecutar en el terminal `docker run -t --rm -p 8070:8070 grobid/grobid:0.7.2`(para terminar su ejecución, desde el mismo terminal que se ejecutó hacer `Cntrl+C`) Una vez ejecutado, el siguiente paso es configurar el entorno.
+## Instrucciones de preparación del entorno, instalación y ejecución:
+
+### Forma 1: Ejecución mediante docker-compose
+Teniendo abierto Docker Desktop, desde el terminal (en el directorio base del proyecto `/`) podemos ejecutar el mandato `docker compose up -d` para levantar tanto el servicio de GROBID como el de PipeGrobid. 
+
+### Forma 2: Instalación manual con poetry
+Antes de nada, para el funcionamiento del software es necesario tener GROBID ejecutado. Para ello debemos abrir Docker Desktop/Docker y ejecutar en el terminal `docker run -t --rm -p 8070:8070 grobid/grobid:0.7.2`(para terminar su ejecución, desde el mismo terminal que se ejecutó hacer `Cntrl+C`) Una vez ejecutado, el siguiente paso es configurar el entorno.
 
 Este proyecto utiliza `poetry` para la gestión de dependencias y del entorno virtual, garantizando reproducibilidad y aislamiento del entorno de ejecución.
 -   Instalar poetry con `pip install poetry`
--   Una vez instalado `poetry` es necesario seguir estos pasos para poder replicarlo:
+-   Una vez instalado `poetry` es necesario seguir estos pasos para poder replicarlo y ejecutarlo:
     
     1. Desde la raíz del proyecto, donde se encuentra `pyproyect.toml` ejecutar el mandato `poetry install` para crear el entorno e instalar dependencias necesarias
 

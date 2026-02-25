@@ -1,6 +1,10 @@
+/.git
+/.github
 /grobid-master
 /ignore
 /.vscode
+/docs
+/test
 
 **/.venv
 
@@ -15,3 +19,4 @@
 
 /xmls/*
 !xmls/.gitkeep
+

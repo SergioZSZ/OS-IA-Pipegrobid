@@ -1,0 +1,17 @@
+services:
+  grobid:
+    image: grobid/grobid:0.7.2
+    ports: 
+      - "8070:8070"
+
+  pipegrobid:
+    build: .
+    depends_on:
+      - grobid 
+    environment:
+      - GROBID_URL=http://grobid:8070
+    volumes:
+      - ./pdfs:/app/pdfs
+      - ./xmls:/app/xmls
+      - ./generated_files:/app/generated_files
+      

@@ -10,12 +10,15 @@ from .flow.auxiliar import gen_env                      # environment.py
 import requests, os
 
 
-# Directorio base
+# Directorios base
 BASE_DIR = os.path.join(os.path.dirname(__file__),"..","..")
 
 #direcciones de la api
-URL_ISACTIVE = "http://localhost:8070/api/isalive"
-URL_PROCESS_DOCS = "http://localhost:8070/api/processFulltextDocument"
+
+# grobid base dependiendo se si dockerizado o lanzado en localhost
+GROBID_BASE =  os.getenv("GROBID_URL","http://localhost:8070")
+URL_ISACTIVE = f"{GROBID_BASE}/api/isalive"
+URL_PROCESS_DOCS = f"{GROBID_BASE}/api/processFulltextDocument"
 
 def main():
     
