@@ -33,7 +33,7 @@
     "name": "Software para extracción de documentos científicos mediante el software GROBID",
     "operatingSystem": "Cross-platform",
     "programmingLanguage": "Python",
-    "releaseNotes": "- Añadida dockerización del proyecto\n - Modificado __main__ para cambiar URL dependiendo de si se ejecutó mediante docker-compose o en local\n- Modificada función `isactive(url)` para esperar 30 segundos a que GROBID sea accesible",
+    "releaseNotes": "- Eliminados test unitarios dependientes de GROBID\n",
     "runtimePlatform": "Python",
     "softwareRequirements": [
         {
@@ -49,7 +49,7 @@
             "version": "2.3.2"
         }
     ],
-    "version": "1.3.0",
+    "version": "1.3.1",
     "developmentStatus": "active",
     "issueTracker": "https://github.com/SergioZSZ/Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering/issues",
     "@type": "SoftwareSourceCode"
