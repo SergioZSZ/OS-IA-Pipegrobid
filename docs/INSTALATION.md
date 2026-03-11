@@ -17,7 +17,7 @@
 ## Instrucciones de preparación del entorno, instalación y ejecución:
 
 ### Forma 1: Ejecución mediante docker-compose
-Teniendo abierto Docker Desktop, desde el terminal (en el directorio base del proyecto `/`), donde está ubicado el fichero `docker-compose.yml` podemos ejecutar el mandato `docker compose up -d` para levantar tanto el servicio de GROBID como el de PipeGrobid. Para que funcione, antes de realizar el mandato se deben meter en la carpeta pdfs los `.pdf` que se quieran procesar.
+Teniendo abierto Docker Desktop, desde el terminal (en el directorio base del proyecto `/`), donde está ubicado el fichero `docker-compose.yml` podemos ejecutar el mandato `docker compose up --build pipegrobid` para levantar tanto el servicio de GROBID como el de PipeGrobid y ver los logs de ``pipegrobid``. Para que funcione, antes de realizar el mandato se deben meter en la carpeta pdfs los `.pdf` que se quieran procesar.
 
 Tras la ejecución y generación de archivos en el directorio `/generated_files` se debe realizar el mandato `docker compose down` para terminar el servicio de GROBID (ya que PipeGrobid terminará tras la generación de archivos).
 
