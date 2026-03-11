@@ -14,6 +14,12 @@
             "@type": "Person"
         }
     ],
+    "maintainer": {
+        "@type": "Person",
+        "givenName": "Sergio",
+        "familyName": "Zaballos Herrera",
+        "email": "s.zaballosh@gmail.com"
+        },
     "codeRepository": "https://github.com/SergioZSZ/Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering",
     "dateCreated": "2026-02-15",
     "dateModified": "2026-02-17",
@@ -29,7 +35,7 @@
         "scientific document processing",
         "metadata extraction"
     ],
-    "license": "https://spdx.org/licenses/Apache-2.0",
+    "license": "Apache-2.0",
     "name": "Software para extracción de documentos científicos mediante el software GROBID",
     "operatingSystem": "Cross-platform",
     "programmingLanguage": "Python",
@@ -42,14 +48,14 @@
         },
         {
             "name": "Docker",
-            "version": "recent version"
+            "version": "29.0.1"
         },
         {
             "name": "poetry",
             "version": "2.3.2"
         }
     ],
-    "version": "1.3.7",
+    "version": "1.3.8",
     "developmentStatus": "active",
     "issueTracker": "https://github.com/SergioZSZ/Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering/issues",
     "@type": "SoftwareSourceCode"
