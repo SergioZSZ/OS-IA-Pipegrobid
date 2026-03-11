@@ -12,7 +12,7 @@ COPY ./src/ ./src/
 
 RUN poetry install
 
-CMD ["start"]
+CMD ["pipegrobid"]
 
 
 
