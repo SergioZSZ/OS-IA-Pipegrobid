@@ -26,5 +26,5 @@ requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [project.scripts]
-pipegrobid = "pipegrobid.__main__:main"
+start = "pipegrobid.__main__:main"
 dw-stopwords = "pipegrobid.flow.auxiliar.dw_stopwords:dw_stopwords"

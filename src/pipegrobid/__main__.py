@@ -22,22 +22,25 @@ URL_PROCESS_DOCS = f"{GROBID_BASE}/api/processFulltextDocument"
 
 def main():
     
+    print("Generando entorno...")
     # generación del entorno    
     dirs = gen_env(BASE_DIR)
     
-    
+    print("Comprobando si Grobid activo...")
     # envío de peticion get a GROBID para ver si está activo
     if not is_active_api(URL_ISACTIVE):
         print("ERROR: No se pudo conectar a GROBID, verifique si está en ejecución.")
-    
+        return
     else:
             #  envío de pdfs a grobid y generación de xmls
             error = grobid_request(dirs["pdfs"], dirs["xmls"], URL_PROCESS_DOCS)
             if error:
                 print(f"WARNING: Ningún PDF en la carpeta 'pdfs', por favor, introduzcalos")
+                return
             else:
 
                 # descarga de stopwords y lemmatizer en caso de no tenerlo ya
+                print("\nComprobando stopwords y lemmatizers...\n")
                 dw_stopwords()
                 
                 # extraccion de nombres de xmls, abstracts, nºfiguras y links de los xmls
@@ -45,7 +48,7 @@ def main():
                 
                 if xmls_abstracts_figures_links["error"]:
                     print(f"WARNING: Ningún tei.xml en la carpeta 'xmls', por favor, genérelos mediante GROBID.")
-
+                    return
                 else:
                     # juntar en un unico texto los abstracts y generar el keyword cloud
                     text = " ".join(xmls_abstracts_figures_links.get("abstracts"))

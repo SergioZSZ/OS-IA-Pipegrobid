@@ -40,9 +40,11 @@ PDF -> GROBID -> TEI XML -> Extracción -> Limpieza NLP -> Visualización y TXT
 ## Instrucciones de preparación del entorno, instalación y ejecución:
 
 ### Forma 1: Ejecución mediante docker-compose
-Teniendo abierto Docker Desktop, desde el terminal (en el directorio base del proyecto `/`), donde está ubicado el fichero `docker-compose.yml` podemos ejecutar el mandato `docker compose up -d` para levantar tanto el servicio de GROBID como el de PipeGrobid. Para que funcione, antes de realizar el mandato se deben meter en la carpeta pdfs los `.pdf` que se quieran procesar.
+Teniendo abierto Docker Desktop, desde el terminal (en el directorio base del proyecto `/`), donde está ubicado el fichero `docker-compose.yml` podemos ejecutar el mandato `docker compose up --build pipegrobid` para levantar tanto el servicio de GROBID como el de PipeGrobid y ver los logs de ``pipegrobid``. Para que funcione, antes de realizar el mandato se deben meter en la carpeta pdfs los `.pdf` que se quieran procesar.
 
-Tras la ejecución y generación de archivos en el directorio `/generated_files` se debe realizar el mandato `docker compose down` para terminar el servicio de GROBID (ya que PipeGrobid terminará tras la generación de archivos).
+Tras la ejecución, se generarán los ficheros correspondientes en el directorio `/generated_files`.
+
+ para terminar el servicio de GROBID (ya que PipeGrobid terminará tras la generación de archivos) se debe realizar el mandato `docker compose down`.
 
 ### Forma 2: Instalación manual con poetry
 Antes de nada, para el funcionamiento del software es necesario tener GROBID ejecutado. Para ello debemos abrir Docker Desktop/Docker y ejecutar en el terminal `docker run -t --rm -p 8070:8070 grobid/grobid:0.7.2`(para terminar su ejecución, desde el mismo terminal que se ejecutó hacer `Cntrl+C`) Una vez ejecutado, el siguiente paso es configurar el entorno.
