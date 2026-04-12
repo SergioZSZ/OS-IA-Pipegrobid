@@ -1,0 +1,2496 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xml:space="preserve" xmlns="http://www.tei-c.org/ns/1.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.tei-c.org/ns/1.0 https://raw.githubusercontent.com/kermitt2/grobid/master/grobid-home/schemas/xsd/Grobid.xsd"
+ xmlns:xlink="http://www.w3.org/1999/xlink">
+	<teiHeader xml:lang="en">
+		<fileDesc>
+			<titleStmt>
+				<title level="a" type="main">Agentic Test-Time Scaling for WebAgents</title>
+			</titleStmt>
+			<publicationStmt>
+				<publisher/>
+				<availability status="unknown"><licence/></availability>
+				<date type="published" when="2026-02-12">12 Feb 2026</date>
+			</publicationStmt>
+			<sourceDesc>
+				<biblStruct>
+					<analytic>
+						<author>
+							<persName><forename type="first">Nicholas</forename><surname>Lee</surname></persName>
+						</author>
+						<author>
+							<persName><forename type="first">Eren</forename><surname>Lutfi</surname></persName>
+						</author>
+						<author>
+							<persName><surname>Erdogan</surname></persName>
+						</author>
+						<author>
+							<persName><forename type="first">Chris</forename><forename type="middle">Joseph</forename><surname>John</surname></persName>
+						</author>
+						<author>
+							<persName><forename type="first">Surya</forename><surname>Krishnapillai</surname></persName>
+						</author>
+						<author>
+							<persName><forename type="first">Michael</forename><forename type="middle">W</forename><surname>Mahoney</surname></persName>
+						</author>
+						<author>
+							<persName><forename type="first">Kurt</forename><surname>Keutzer</surname></persName>
+						</author>
+						<author>
+							<persName><forename type="first">Amir</forename><surname>Gholami</surname></persName>
+						</author>
+						<title level="a" type="main">Agentic Test-Time Scaling for WebAgents</title>
+					</analytic>
+					<monogr>
+						<imprint>
+							<date type="published" when="2026-02-12">12 Feb 2026</date>
+						</imprint>
+					</monogr>
+					<idno type="MD5">801828335463CC438E5E82A6DC6E4DB5</idno>
+					<idno type="arXiv">arXiv:2602.12276v1[cs.AI]</idno>
+				</biblStruct>
+			</sourceDesc>
+		</fileDesc>
+		<encodingDesc>
+			<appInfo>
+				<application version="0.7.2" ident="GROBID" when="2026-03-11T10:22+0000">
+					<desc>GROBID - A machine learning software for extracting information from scholarly documents</desc>
+					<ref target="https://github.com/kermitt2/grobid"/>
+				</application>
+			</appInfo>
+		</encodingDesc>
+		<profileDesc>
+			<abstract>
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>Test-time scaling has become a standard way to improve performance and boost reliability of neural network models. However, its behavior on agentic, multi-step tasks remains less wellunderstood: small per-step errors can compound over long horizons; and we find that naive policies that uniformly increase sampling show diminishing returns. In this work, we present CATTS, a simple technique for dynamically allocating compute for multi-step agents. We first conduct an empirical study of inference-time scaling for web agents. We find that uniformly increasing perstep compute quickly saturates in long-horizon environments. We then investigate stronger aggregation strategies, including an LLM-based Arbiter that can outperform naive voting, but that can overrule high-consensus decisions. We show that uncertainty statistics derived from the agent's own vote distribution (entropy and top-1/top-2 margin) correlate with downstream success and provide a practical signal for dynamic compute allocation. Based on these findings, we introduce Confidence-Aware Test-Time Scaling (CATTS), which uses vote-derived uncertainty to allocate compute only when decisions are genuinely contentious. CATTS improves performance on WebArena-Lite and GoBrowse by up to 9.1% over React while using up to 2.3× fewer tokens than uniform scaling, providing both efficiency gains and an interpretable decision rule.</p><p>* Equal contribution 1 UC Berkeley 2 ICSI 3 LBNL.</p></div>
+			</abstract>
+		</profileDesc>
+	</teiHeader>
+	<text xml:lang="en">
+		<body>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="1.">Introduction</head><p>Large language models (LLMs) are increasingly used not only to produce text, but to take actions: they can call tools, navigate websites, operate software, and execute multi-step procedures in interactive environments. In these settings, an agent must repeatedly choose a next action, e.g., clicking a Preprint. <ref type="bibr">February 13, 2026.</ref> button, typing into a form, or issuing a search query, based on the current observation and the history of what it has already done <ref type="bibr" target="#b33">(Patil et al., 2024;</ref><ref type="bibr" target="#b38">Schick et al., 2023;</ref><ref type="bibr" target="#b10">Erdogan et al., 2024)</ref>. The sequential nature of these tasks makes reliability much more challenging than simpler single-shot question answering: a single poor decision can send the trajectory into an unrecoverable state, and small per-step error rates can compound over many steps <ref type="bibr" target="#b11">(Erdogan et al., 2025)</ref>.</p><p>A widely used strategy for improving LLM capabilities at test time is test-time scaling <ref type="bibr" target="#b41">(Snell et al., 2024;</ref><ref type="bibr" target="#b2">Brown et al., 2024;</ref><ref type="bibr" target="#b5">Cobbe et al., 2021;</ref><ref type="bibr" target="#b54">Zelikman et al., 2022)</ref>. The core idea is to spend compute at test-time generating more tokens, rather than spending this compute during pretraining. For single-shot reasoning tasks, this can yield large gains because different samples can explore different reasoning paths: even if the first attempt fails, additional attempts often contain a correct solution, and majority voting <ref type="bibr" target="#b47">(Wang et al., 2023)</ref> or verification <ref type="bibr" target="#b40">(Shinn et al., 2023)</ref>) can exploit this diversity.</p><p>An important question that remains to be answered is: What does inference-time scaling look like for multi-step, toolusing agents? A direct analogue of the single-shot recipe is to consider each step separately, treating each step the same way one would treat an ordinary reasoning task. At each step t, instead of generating one action, we can sample N candidate actions from the base model and then choose which action to execute. Repeating this procedure throughout a trajectory yields a simple and appealing "knob" for scaling up compute <ref type="bibr" target="#b47">(Wang et al., 2023;</ref><ref type="bibr" target="#b43">Venkatraman et al., 2025)</ref>.</p><p>However, a naive strategy, i.e., uniform scaling, where we always sample the same number of candidates and apply the same selection rule at every step, runs into two issues:</p><p>1. Wasted computation on easy steps. In many cases, a majority of steps are obvious based on the state and goal (e.g., continuing a form fill, clicking submit, etc.). Therefore, performing test time scaling for these easy steps results in wasted compute and higher inference cost.</p><p>2. High-Variance Decisions. Using majority voting when the votes exhibit very high variance and voting results are close is often not helpful. This particularly happens when the model has to solve a hard step, or when there are multiple plausible actions that can compete. In these cases, simply sampling more actions and taking a majority vote can be ineffective, especiallly when votes spread across many distinct options with no clear winner.</p><p>Recent work typically uses deeper rollouts to iteratively refine and improve solutions <ref type="bibr" target="#b43">(Venkatraman et al., 2025;</ref><ref type="bibr" target="#b56">Zhang et al., 2024;</ref><ref type="bibr" target="#b28">Muennighoff et al., 2025)</ref>. The most common pattern is to have an additional LLM that takes the current state and the list of candidate actions and then chooses the best one. We refer to this reranker-style mechanism as an arbiter.</p><p>While using additional LLMs can help with difficult decisions, they are also prone to overthinking <ref type="bibr" target="#b6">(Cuadron et al., 2025)</ref>, where even though the samples all agree on the best action, the additional selection step can override the consensus and choose a harmful action. In other words, extra compute is not automatically beneficial; it matters where and how we spend it inside the loop.</p><p>In this work, we study this design space systematically in order to understand where current inference-time scaling techniques are helpful and where they are harmful, in agentic settings. We begin by adapting several common inferencetime scaling techniques, such as best-of-N sampling and voting, reranking/aggregation via additional rollouts <ref type="bibr" target="#b43">(Venkatraman et al., 2025)</ref>, and confidence-aware filtering methods <ref type="bibr" target="#b12">(Fu et al., 2025)</ref>, to long-horizon web agents. We then analyze where these methods help, where they fail, and what signals predict those regimes. The outcome of this analysis is a simple principle: Inference-time compute should be allocated where it is likely to change the decision. Critically, we find that the distribution of answers generated at each step can be used as a measure for how likely the task will succeed (Section 4).</p><p>Using this insight, we present CATTS (CONFIDENCE-AWARE TEST-TIME SCALING), where we use the uncertainty at each step in order to dynamically allocate additional compute when necessary. We evaluate on WebArena-Lite and GoBrowse, and we find that CATTS achieves consistent improvements while using 2× fewer tokens than uniform scaling. This is accomplished by concentrating compute on uncertain and difficult steps, rather than spending it uniformly across all decisions.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.">Related Work</head><p>Inference-Time Scaling and Test-Time Compute. Vast amounts of recent work have explored how to improve the performance and reliability of LLMs by spending additional test-time compute. Self-consistency decoding <ref type="bibr" target="#b47">(Wang et al., 2023)</ref> demonstrated substantial gains on reasoning tasks by sampling multiple chain-of-thought traces <ref type="bibr" target="#b48">(Wei et al., 2022;</ref><ref type="bibr" target="#b23">Kojima et al., 2022)</ref> and taking a majority vote over final answers, treating it as an ensemble problem. Subsequent work has explored richer aggregation strategies including ranked voting and diversity-aware selection <ref type="bibr" target="#b46">(Wang et al., 2025;</ref><ref type="bibr" target="#b30">Naik et al., 2023;</ref><ref type="bibr" target="#b44">Wan et al., 2024)</ref>, although several studies highlight fundamental limits when sampled outputs share correlated errors <ref type="bibr" target="#b3">(Byerly &amp; Khashabi, 2024;</ref><ref type="bibr" target="#b42">Turpin et al., 2023)</ref>.</p><p>Alternative approaches allocate compute via structured search over reasoning steps <ref type="bibr">(Yao et al., 2023a;</ref><ref type="bibr" target="#b0">Besta et al., 2024;</ref><ref type="bibr" target="#b58">Zhou et al., 2024;</ref><ref type="bibr" target="#b21">Kim et al., 2024)</ref> or use confidenceaware filtering to gate computation <ref type="bibr" target="#b12">(Fu et al., 2025;</ref><ref type="bibr" target="#b19">Kadavath et al., 2022)</ref>. Recent work formalizes compute-optimal policies that trade off parallel sampling and sequential refinement <ref type="bibr" target="#b41">(Snell et al., 2024)</ref>, connecting to adaptive computation ideas in neural models <ref type="bibr" target="#b17">(Graves, 2016)</ref>. Another related line of work is DeepConf <ref type="bibr" target="#b12">(Fu et al., 2025)</ref>, which uses the model's own confidence scores to dynamically filter out uncertain and low-quality chain-of-thought. The tokenlevel probability distribution is used to compute confidence scores which can be used for confidence-weighted majority voting or filtering.</p><p>Our work applies these principles to sequential decisionmaking in long-horizon tool-use settings. We use votederived uncertainty to gate arbitration at each step, enabling dynamic allocation without requiring token-level confidence access. Unlike prior confidence-filtering approaches that operate on single-shot reasoning traces, we derive uncertainty from agreement among sampled candidates, and we operate online in environments where errors compound across steps.</p><p>Tool-Using Agents and Long-Horizon Tasks. Recent progress in building LLM-driven agents has been driven by frameworks that interleave reasoning and tool execution. ReAct <ref type="bibr">(Yao et al., 2023b)</ref> demonstrated that intermixing reasoning with tool invocations improves performance, while subsequent work introduced structured decomposition such as decoupling planning from execution <ref type="bibr" target="#b11">(Erdogan et al., 2025;</ref><ref type="bibr" target="#b50">Xu et al., 2023;</ref><ref type="bibr" target="#b10">Erdogan et al., 2024)</ref> or leveraging code for numerical reasoning <ref type="bibr">(Gao et al., 2023b;</ref><ref type="bibr" target="#b4">Chen et al., 2023)</ref>. To enable robust tool use, several frameworks teach models to invoke external APIs through self-supervised learning <ref type="bibr" target="#b38">(Schick et al., 2023)</ref>, retrieval-aware training <ref type="bibr" target="#b33">(Patil et al., 2024;</ref><ref type="bibr" target="#b35">Qin et al., 2024)</ref>, or structured integration layers <ref type="bibr" target="#b20">(Karpas et al., 2022;</ref><ref type="bibr" target="#b24">Li et al., 2023)</ref>. Complementary lines of work improve agent policies through reinforcement learning <ref type="bibr" target="#b25">(Liu et al., 2018)</ref>, iterative refinement via selfreflection <ref type="bibr" target="#b40">(Shinn et al., 2023;</ref><ref type="bibr" target="#b54">Zelikman et al., 2022)</ref>, or retrieval-augmented reasoning <ref type="bibr">(Gao et al., 2023a)</ref>.  Evaluation of these methods relies on increasingly realistic benchmarks. For web navigation, environments range from early workflow-based tasks <ref type="bibr" target="#b39">(Shi et al., 2017)</ref> to modern suites spanning e-commerce, forums, and content management <ref type="bibr" target="#b59">(Zhou et al., 2023;</ref><ref type="bibr" target="#b22">Koh et al., 2024;</ref><ref type="bibr" target="#b7">Deng et al., 2023;</ref><ref type="bibr" target="#b51">Yao et al., 2022;</ref><ref type="bibr" target="#b31">Nakano et al., 2021;</ref><ref type="bibr" target="#b8">Drouin et al., 2024;</ref><ref type="bibr" target="#b1">Boisvert et al., 2024)</ref>, while computer-use benchmarks extend to desktops and OS-level interaction <ref type="bibr" target="#b49">(Xie et al., 2024;</ref><ref type="bibr" target="#b36">Rawles et al., 2023;</ref><ref type="bibr">2024;</ref><ref type="bibr" target="#b55">Zhang et al., 2025;</ref><ref type="bibr" target="#b34">Pawlowski et al., 2025)</ref>. Multi-domain suites evaluate generalization across diverse tasks <ref type="bibr" target="#b26">(Liu et al., 2024;</ref><ref type="bibr" target="#b18">Guo et al., 2024;</ref><ref type="bibr" target="#b45">Wang et al., 2024;</ref><ref type="bibr" target="#b32">Park et al., 2023;</ref><ref type="bibr" target="#b29">Murty et al., 2024)</ref>.</p><p>Multi-agent debate and voting strategies <ref type="bibr" target="#b9">(Du et al., 2024)</ref> and extreme decomposition via massive redundancy <ref type="bibr" target="#b27">(Meyerson et al., 2025)</ref> offer alternative paths to reliability, often at prohibitive computational costs. Our work is orthogonal to these training-based and architectural improvements: we assume a fixed base agent, and we focus on how to allocate inference-time compute efficiently at test time. The central motivation is practical deployment, where unnecessary model calls translate directly to latency, cost, and energy use, making adaptive allocation essential for real-world viability.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.">From Static to Dynamic Inference-Time Scaling</head><p>This section presents the main study on inference-time scaling techniques for agents. We start from the most direct adaptation of inference-time scaling to web agents: sampling multiple candidate actions and aggregating them, progressively refining the selection mechanism based on empirical failure modes. We find that uniformly allocating inference-time compute inconsistently and inefficiently affects performance, and that the distribution of the actions themselves is an effective test-time signal for performance. This insight is used to propose a simple and interpretable inference-time scaling policy that dynamically allocates compute only when it is uncertain.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.1.">Experimental Setup</head><p>We study tool-using web agents that interact with a browser over multiple steps. The underlying agent is prompted with ReAct <ref type="bibr">(Yao et al., 2023b)</ref> and uses gpt-oss-120b as the base model. At each step t, the agent observes a cleaned HTML representation of the current page state and outputs a structured action space of 8 tools including click, type text, scroll, etc. The full action space, agent prompts, conversation format, and error handling mechanisms are detailed in Appendices A and B.</p><p>We evaluate on WebArena-Lite <ref type="bibr" target="#b22">(Koh et al., 2024)</ref>, which has 165 tasks with programmatic success checks as well as 341 tasks sampled from GoBrowse <ref type="bibr" target="#b13">(Gandhi &amp; Neubig, 2025)</ref>, where we use an LLM-as-a-judge <ref type="bibr" target="#b57">(Zheng et al., 2023)</ref> evaluation using Qwen3-VL-30B-A3B-Instruct (See Appendix C). We measure compute cost using the total token count per task, defined as the sum of prompt (input) and completion (output) tokens across all model calls, as a vast majority of the tokens consumed come from the input prompt. All results are averaged across three different seeds unless otherwise noted.</p><p>Action Clustering and Vote Distributions. At each time step t, the agent observes o t and samples N candidate actions from the base model:</p><formula xml:id="formula_0">ã(i) t ∼ M( • | o t ), i = 1, . . . , N.<label>(1)</label></formula><p>We parse candidates into structured actions to obtain a set of action clusters A t . Let n t (a) denote the number of candidates assigned to cluster a ∈ A t . This induces a distribution over the sampled actions</p><formula xml:id="formula_1">p t (a) = n t (a) N ,<label>(2)</label></formula><p>which parameterizes how much the sampled candidates agree on each distinct action at step t.</p><p>One problem that arises when trying to do majority voting in this action space is that different outputs are semantically the same, but have different text representations (e.g., "N/A" vs. "Not found"). We therefore use a lightweight semantic deduplicator LLM to cluster candidate actions into semantically equivalent buckets before counting votes (See Appendix B for the prompt and Appendix D for additional analysis).</p><p>The central question of our study is this: Given the current observation o t and a multi-set of candidates { ã(i) t } N i=1 , how should we select the executed action a t to maximize task success under a token budget? We begin with static aggregation rules (majority voting and uniform arbitration) and then show how vote-derived uncertainty enables a dynamic allocation of computation. Figure <ref type="figure" target="#fig_0">1</ref> provides a visual overview of the selection strategies we evaluate.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.2.">Static Baseline: Majority Voting</head><p>The most direct adaptation of inference-time scaling to an agent loop is to sample multiple candidate next actions and execute the action with the most support. Concretely, after clustering candidates into A t , the executed action is</p><formula xml:id="formula_2">a t = arg max a∈A t p t (a).</formula><p>(3)</p><p>We refer to this as majority voting (or frequency voting). Most importantly, the compute allocation is uniform: the same number of candidates N is sampled at every step, and the same selection rule in Eq. 3 is applied throughout the trajectory.</p><p>Observation: Majority Vote Yields Diminishing Returns.</p><p>As we can see in Table <ref type="table" target="#tab_1">1</ref>, for both WebArena-Lite and GoBrowse, we find that simply increasing candidate-generation compute yields diminishing returns. Scaling from N=1 to N=10 improves success from 38.8% to 43.2%, but the doubling compute from N=10 to N=20 produces only 0.2% additional gain despite doubling tokens. We also evaluated Plan-and-Act style agents <ref type="bibr" target="#b11">(Erdogan et al., 2025)</ref> with factorized candidate-generation budgets across plan and action sampling, and the results exhibits similar non-monotonic scaling behavior, establishing that the issue affects different agent architectures (see Appendix E for full results).</p><p>Takeaway. For long-horizon tool use, uniformly scaling up compute is often inefficient. Empirically, we observe that some steps produce highly diverse candidate sets, votes are spread across many distinct actions rather than converging on a clear winner. In these uncertain regimes, simple vote counting provides weak signal for selecting the correct action. This motivates selection mechanisms that can reason about ambiguous candidate sets, which we explore next.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.3.">From Voting to Arbitration</head><p>When majority vote produces diverse, uncertain candidate sets, a natural idea is to introduce an additional inferencetime mechanism that reasons over the candidate set. Concretely, after sampling N candidates and clustering into A t , we construct a short prompt containing the current observation o t and a list of representative actions (one per cluster).</p><p>An arbiter model then chooses the action to execute:</p><formula xml:id="formula_3">a t = ARBITER(o t , A t , {n t (a)} a∈A t ).<label>(4)</label></formula><p>In all experiments, the arbiter uses the same model as the agent (gpt-oss-120b), and semantic deduplication is applied prior to selection. See Appendix B for implementation details.</p><p>Observation: Arbitration Improves Over Majority Vote.</p><p>Replacing frequency voting with an arbiter yields a consistent improvement over static majority voting across both benchmarks in our setting. Intuitively, the arbiter can use the Arbiter Scaling. Because the arbiter model itself is an LLM call, we can also apply inference-time scaling to the selection mechanism. With "Arbiter Scaling," we query K independent selectors and aggregate their chosen actions by majority vote:</p><formula xml:id="formula_4">a t = arg max a∈A t 1 K K ∑ j=1 I SELECT j (•)=a .<label>(5)</label></formula><p>Empirically, increasing K yields further gains beyond a single selector call, and it consistently outperforms spending an equivalent token budget solely on increasing N under majority vote.</p><p>Observation: Arbitration is not Uniformly Beneficial.</p><p>Although arbitration improves average performance, we also observe regimes where an additional selector call reduces success, particularly when the candidate set already exhibits strong agreement. For example, in Table <ref type="table" target="#tab_2">2</ref>, increasing from K=10 to K=20 at N=5 causes performance to drop from 44.6% to 42.0%. Section 4 analyzes this failure mode in detail and shows it is predictable from vote-derived uncertainty statistics. See Appendix F for full results.</p><p>Deeper Aggregation Methods. We also evaluated Recursive Self-Aggregation (RSA) <ref type="bibr" target="#b43">(Venkatraman et al., 2025)</ref>, which iteratively refines candidates over multiple rounds. Despite substantially higher compute (up to 80 LLM calls per step vs. 10-11 for majority vote and single arbiter), RSA achieved comparable but not better performance than simpler methods. Thus, we focus on single-round arbitration for the remainder of our study; full RSA results are provided in Appendix G. </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.4.">DeepConf-Style Confidence Filtering</head><p>We additionally evaluated DeepConf-style confidence-aware filtering <ref type="bibr" target="#b12">(Fu et al., 2025)</ref>, which leverages model-internal confidence signals to dynamically filter out low-quality reasoning traces during inference. DeepConf computes confidence scores from token-level probabilities and uses them to perform confidence filtering (retaining only top-η% traces) and confidence-weighted majority voting.</p><p>We experimented with three confidence variants adapted to our setting: (i) average trace confidence (mean across all tokens), (ii) tail confidence (final token segment), and (iii) bottom percent confidence (minimum confidence segment, focusing on the weakest part as a proxy for quality). Table <ref type="table" target="#tab_3">3</ref> summarizes results across both benchmarks.</p><p>On WebArena-Lite, DeepConf variants achieve 38.8-43.8% success rates, with the best configuration (average trace at N=10) reaching 43.8%, improving over majority voting (43.2%). On GoBrowse, DeepConf achieves 86.6-90.3%, with average trace at N=20 reaching 90.3% compared to 88.0% for majority voting. These results confirm that confidence-based methods can benefit multi-step web agents. However, DeepConf requires access to token-level log probabilities, which limits applicability to API-only models where such signals are unavailable. In the next section, we explore an alternative uncertainty signal, derived purely from the vote distribution over candidates, that achieves comparable benefits while remaining applicable to any model that supports sampling.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.">Using Vote-Derived Uncertainty as a Test-Time Signal</head><p>We saw (in Section 3.3) that replacing frequency voting with an arbiter improves average performance, and that scaling the selectors can improve performance further (see Table <ref type="table" target="#tab_2">2</ref>). However, closer inspection of trajectories revealed a consistent pattern: the selector is most helpful on contentious steps, where multiple plausible actions compete, but it can be harmful on high-consensus steps where candidates already agree. On such steps, arbitration risks overriding a correct consensus action (see Figure <ref type="figure">7</ref>). This motivates the main question of this subsection: Can we distinguish between regimes where arbitration improves decisions and where it introduces harmful overrides?</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.1.">Analyzing Action Distributions</head><p>Given the vote distribution p t (•) over action clusters A t , we compute two uncertainty statistics:</p><formula xml:id="formula_5">H t = − ∑ a∈A t p t (a) log p t (a),<label>(6)</label></formula><formula xml:id="formula_6">∆ t = p t (a (1) t ) − p t (a (2) t ),<label>(7)</label></formula><p>where a</p><p>(1) t and a</p><p>(2) t are the highest-and second-highestprobability clusters under p t (•). Intuitively, H t measures overall disagreement (higher entropy means votes are spread across multiple options), while ∆ t measures decisiveness (larger gaps indicate a clear winner). High-consensus regimes correspond to low H t and high ∆ t , contentious regimes correspond to high H t and low ∆ t .</p><p>Uncertainty profiles differ between successful and failed trajectories. We compare successful and failed tasks by their uncertainty statistics across steps. Let T be the number of steps in a trajectory, and define task-level averages</p><formula xml:id="formula_7">H = 1 T T ∑ t=1 H t , ∆ = 1 T T ∑ t=1 ∆ t .<label>(8)</label></formula><p>Empirically, successful trajectories tend to exhibit lower entropy and higher margins, whereas failed trajectories show the opposite trend. Figure <ref type="figure">2</ref> plots H t and ∆ t against the index of each step, separately for successful and failed runs, showing that disagreement typically spikes at pivotal decision points and that these spikes are more pronounced (or more frequent) in failed runs.</p><p>Uncertainty can predicts when arbitration helps versus hurts. The failure case in Figure <ref type="figure">7</ref> illustrates this distinction: at the pivotal step, the sampled candidates exhibit overwhelming agreement (vote split 9/10), corresponding to a large margin ∆ t and low entropy H t . In this highconsensus regime, the arbiter overrides the dominant cluster and chooses a minority alternative that derails the trajectory.</p><p>A frequency-based rule would instead execute the consensus action, which in our logs for this task, leads to success.</p><p>To quantify this pattern, we analyzed all 495 task-runs from our arbiter experiments, classifying each task by whether the arbiter overrode the majority vote on any high-consensus step (∆ t &gt; 0.7). Figure <ref type="figure">3</ref> summarizes the results. Tasks without high-consensus overrides succeed at 46.9%, compared to 35.0% for tasks with at least one such override: a significant 11.9% difference (p = 0.026, Fisher's exact test). This effect exhibits a dose-response pattern: tasks with zero overrides succeed at 46.9%, those with exactly one at 36.6%, and those with two or more at 29.6%. The pattern is consistent across all five website categories.</p><p>Conversely, we find that arbitration provides benefit when uncertainty is high. Figure <ref type="figure">4</ref> groups tasks by average trajectory entropy and compares arbiter versus majority voting outcomes across all N configurations. At low entropy (0.0-0.3), the arbiter shows a net disadvantage of −4.4%, consistent with the override failures above. However, at higher entropy levels, the arbiter yields positive net advantages (+4-6%), demonstrating that arbitration adds value when votes are diverse and majority voting lacks a clear signal.  </p><formula xml:id="formula_8">U (ent) t = H t , U (mrg) t = 1 − ∆ t . (<label>10</label></formula><formula xml:id="formula_9">)</formula><p>Both entropy-gated and margin-gated CATTS improved the accuracy-compute tradeoff in our experiments. For both settings, we tuned τ via running a simple grid over thresholds (e.g., τ ∈ {0.2, 0.3, . . . , 0.8}) and report results across this sweep (with the best-performing setting indicated where relevant).</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.3.">Results</head><p>CATTS consistently improves over static baselines across both benchmarks. Figure <ref type="figure">5</ref> plots success rate versus total tokens per episode for majority voting, uniform arbitration, DeepConf, and CATTS. The key outcome is that CATTS achieves higher success than majority voting at comparable token budgets, while using fewer tokens than always-arbitrate and DeepConf for comparable success levels. At the best threshold (τ=0.2 for entropy-gated), CATTS achieves 47.9% on WebArena-Lite compared to 43.2% for majority voting, a 4.7% improvement. Averaging across all thresholds in our sweep, CATTS achieves 45.6%, which is still a consistent 2.4% gain that does not depend on threshold selection (See Appendix H for more analysis).</p><p>Because CATTS invokes the arbiter only on uncertain steps, it reduces the number of arbitration calls substantially. In our experiments, the selector is invoked on approximately 40-60% of steps on average (see Table <ref type="table" target="#tab_6">4</ref>), concentrating compute on the steps most likely to benefit. Notably, margingated CATTS achieves 47.9% success on WebArena-Lite using only 405K tokens while simultaneously reducing the number of tokens by 56% compared to majority voting (920K tokens). This efficiency advantage over DeepConf (which achieves 42.6% at similar token budgets) demonstrates that vote-derived uncertainty provides a practical and efficient signal for compute allocation. </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.4.">Discussion</head><p>A key observation from our experiments is that inferencetime scaling behaves differently in long-horizon tool use than in single-shot reasoning. In our setting, per-step candidate sampling produces a distribution over actions, which falls into two different regimes.</p><p>Regime 1: Redundancy (high consensus). Many steps are routine, the next action is obvious and candidate generations concentrate on a single cluster (low entropy, high margin). In this regime, increasing the sampled candidates produces duplicates of the same decision. Figure <ref type="figure">6</ref> visualizes this redundancy by showing that a large fraction of steps have extremely high margins. Furthermore, additional arbitration introduces a distinct failure mode where it can override a correct consensus action (Figure <ref type="figure">7</ref>). Together, these effects help explain why uniform compute allocation does not yield monotonic gains. See Appendices I and J for more analysis.</p><p>Regime 2: Contention (genuine uncertainty). On the other hand, a smaller number of steps act as trajectory pivots, where multiple plausible actions compete, and the vote distribution becomes diffuse (higher entropy, lower margin). These are precisely the steps where selection quality matters most, because a single wrong decision can send the agent into an unrecoverable part of the state space. In our logs, once an agent makes an incorrect pivot decision, returning to the correct path via backtracking or recovery is rare, as errors tend to compound rather than self-correct. In this contentious regime, arbitration can add value by using the observation to reason about plausible candidates.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5.">Conclusion</head><p>We present a systematic study of inference-time scaling for tool-using, long-horizon web agents. Unlike single-shot reasoning, naive per-step scaling does not reliably improve performance: many steps are redundant, while difficult pivot steps produce diverse, uncertain candidate sets where majority voting alone provides weak signal. We found that LLM-based arbitration improves decisions in contentious regimes, but it can override correct high-consensus decisions. To analyze these observations, we characterized perstep vote distributions using simple uncertainty statistics and showed that they correlate with downstream outcomes and identify when additional selection helps. We used this insight to propose CATTS, a dynamic inference-time policy that preserves majority voting when the model is confident and invokes deeper selection only when uncertainty is high. CATTS achieves consistent improvements across configurations and benchmarks while using fewer tokens, demonstrating that vote-derived uncertainty provides a practical signal for efficient compute allocation in agentic settings.</p><p>thermore, we appreciate the support from Google Cloud, the Google TRC team Prof. David Patterson, along with support from Google Gemini team, and Divy Thakkar.</p><p>Prof. Keutzer's lab is also sponsored by funding through BDD and BAIR. We also acknowledge support by the Director, Office of Science, Office of Advanced Scientific Computing Research, of the U.S. Department of Energy under Contract No. DE-AC02-05CH11231. MWM would also like to acknowledge DARPA, DOE, NSF, and ONR. DOE SciGPT grant. Our conclusions do not necessarily reflect the position or the policy of our sponsors, and no official endorsement should be inferred.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Impact Statement</head><p>This paper presents work whose goal is to advance the field of Machine Learning. There are many potential societal consequences of our work, none which we feel must be specifically highlighted here.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>B.4. External Planner (Plan-and-Act)</head><p>For the Plan-and-Act baseline, we use a two-agent system where an external planner generates high-level plans and a separate executor agent follows them. The planner's system prompt establishes its role:</p><p>You are a web-navigation agent that normally completes browser tasks by thinking in an analysis channel and then emitting exactly one function call (using the provided tools) per step.</p><p>In this role, you are acting as the Planner in a two-agent system:</p><p>-You see the overall User task, your earlier plans, the executed tool calls, and the latest HTML snapshot (inside the most recent tool observation).</p><p>-A separate Executor agent will later read your plan and actually perform the function calls in the browser.</p><p>For this planner turn:</p><p>-Use the analysis channel for deep, step-by-step reasoning and scratchpad.</p><p>-Use the final channel to output a clear, concrete plan for the next actions.</p><p>-Do not actually call tools in this turn; only describe how the tools should be used in the future steps.</p><p>The developer prompt provides additional guidance on plan quality:</p><p>Planner reasoning guidance:</p><p>• Think step by step and deeply in your own natural style.</p><p>• Focus on the next several actions and how to verify progress on the page.</p><p>• Ground your plan in: the user task, prior plans, executed tool calls and their results, the latest HTML. • Avoid unsupported assumptions about elements or states that you have not observed.</p><p>Recovery and loop-avoidance:</p><p>• Do not repeat plans or actions that failed or produced no state change.</p><p>• When something did not work, explicitly include recovery steps: different id, scroll, search, hover, go back, or another sensible control. • Clarify how the Executor should adapt if the page does not look as expected.</p><p>Referencing future actions:</p><p>• Refer to tools by their names (for example: click, type text, hover, scroll, select dropdown option, search, go back, exit), as they appear in the tool schemas.</p><p>• Describe how the Executor should pick the target element: use the integer id from the latest HTML when known, otherwise reference robust cues (labels, nearby text, attributes, structural context). • Predict how the DOM or URL should change after key actions.</p><p>• Specify what the Executor should look for to confirm success vs. failure (new headings, result lists, modals, disappearance of buttons, etc.).</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>C. Benchmark Characteristics and LLM-as-Judge Reliability</head><p>Benchmark difficulty comparison. WebArena-Lite and the GoBrowse-style benchmark differ substantially in task difficulty and evaluation methodology:</p><p>• WebArena-Lite (165 tasks): Uses programmatic success checks that verify specific page states or database entries. Tasks often require longer trajectories with precise multi-step reasoning. Average trajectory length is approximately 8-12 steps, and success rates are generally lower (40-47% in our experiments).</p><p>• GoBrowse-style (341 tasks): Uses an LLM-as-judge evaluation protocol. Tasks tend to be shorter and more straightforward, with average trajectory lengths of 4-6 steps. Success rates are substantially higher (86-90% in our experiments), reflecting easier task specifications.</p><p>The higher baseline performance on GoBrowse means there is less room for improvement from inference-time scaling methods. Nevertheless, CATTS achieves consistent gains on both benchmarks, suggesting the underlying principles generalize across difficulty levels.</p><p>LLM-as-judge reliability. For the GoBrowse-style benchmark, we employ the LLM-as-judge evaluation protocol introduced in the original GoBrowse work. Based on validation studies reported in that work, the judge achieves approximately 90% agreement with human evaluations on task success determination. This reliability level is comparable to inter-annotator agreement on similar web navigation benchmarks.</p><p>While LLM-as-judge evaluation introduces some noise compared to programmatic checks, the 90% agreement rate suggests that relative comparisons between methods (e.g., CATTS vs. majority voting) remain valid. The consistent improvement pattern observed on both benchmarks (WebArena-Lite with programmatic evaluation and GoBrowse with LLM-as-judge) provides additional confidence in our findings.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>D. Semantic Deduplication Ablation</head><p>Table <ref type="table" target="#tab_8">5</ref> demonstrates the importance of semantic deduplication for majority voting. Without deduplication ("Before fixes"), increasing the number of candidates N can hurt performance on GoBrowse: accuracy drops from 83.3% at N=1 to 80.1% at N=32. This counterintuitive result occurs because semantically equivalent actions (e.g., "N/A" vs. "Not found", or minor rephrasing of search queries) split votes, causing the majority vote to select incorrect minority actions.</p><p>After applying semantic deduplication ("After fixes"), scaling behavior normalizes and performance improves. For ReAct at N=8, accuracy increases from 83.3% to 84.5%. The per-website breakdown shows consistent improvements across domains, with particularly large gains on Reddit (84.8%→94.9%) where text input variations are common. This ablation addresses a potential concern that semantic deduplication artificially inflates results. On the contrary, the data shows that deduplication is required for majority voting to function as intended. Without it, the method exhibits behavior where more samples lead to worse outcomes. The improvement from deduplication (e.g., 80.1%→84.5% at N=8) reflects the restoration of correct voting semantics, and is not an artificial boost.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>E. Plan-and-Act Scaling Results</head><p>We evaluated Plan-and-Act agents <ref type="bibr" target="#b11">(Erdogan et al., 2025)</ref> with factorized candidate-generation budgets to determine whether non-monotonic scaling is specific to ReAct-style agents or a more general phenomenon. Let P denote the number of plan candidates sampled and A the number of action candidates per plan, yielding total budget C = P × A. Table <ref type="table" target="#tab_9">6</ref> presents results on GoBrowse.</p><p>The results mirror what we observe with ReAct: scaling up compute via more samples does not reliably improve performance.</p><p>In fact, performance decreases from 83.3% to 80.6% when moving from budget C=1 to C=8. This establishes that the non-monotonic scaling phenomenon affects multiple agent architectures, providing additional motivation for the dynamic </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>F. Complete Arbiter Scaling Results</head><p>Table <ref type="table" target="#tab_10">7</ref> presents the complete arbiter scaling results on WebArena-Lite across all combinations of candidate count N ∈ {3, 5, 10, 20} and arbiter scaling factor K ∈ {1, 5, 10, 20}. Success rates are averaged over 3 independent runs. </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>G. RSA and PlanRSA Full Results</head><p>We evaluated Recursive Self-Aggregation (RSA) <ref type="bibr" target="#b43">(Venkatraman et al., 2025)</ref> as an alternative to single-round arbitration. RSA iteratively refines candidates over T rounds, with K aggregation calls per round. Building ontop of Plan-and-Act, we combine it with RSA to create PlanRSA, where we apply RSA at the plan level. Table <ref type="table" target="#tab_11">8</ref> presents results across all configurations tested on WebArena-Lite. (2) Bimodal entropy: The normalized entropy distribution is bimodal (mean 0.474), with approximately 40% of steps at zero entropy (perfect consensus) and approximately 49% showing entropy above 0.6. (3) Two-regime interpretation: The distributions strongly support the two-regime interpretation from Section 4.4: a large fraction of steps are routine (high consensus) while a comparable fraction are contentious (genuine uncertainty), motivating dynamic compute allocation.</p><p>These empirical profiles directly motivate the dynamic gating approach in CATTS: by allocating extra arbitration compute to the high-entropy tail while preserving consensus on the dominant low-entropy steps, we can improve the accuracy-compute tradeoff without the overhead of uniform scaling.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>J. Failure Node Examples</head><p>This section provides a concrete example from our experiments where the arbiter's override of high-consensus decisions led to task failure. Theis example illustrate the core failure mode discussed in Section 4: when the vote distribution already exhibits strong agreement (high margin ∆ t , low entropy H t ), arbitration introduces override risk rather than improving decision quality. Figure <ref type="figure">7</ref> presents an example from a WebArena-Lite task requiring the agent to find "Meat Substitutes" in an online grocery store. At a critical decision point, the sampled candidates show 90% consensus for "Scroll Down", the correct action, since the target category lies below the current viewport. However, the arbiter overrides this strong consensus and selects "Click Pantry Staples," a minority action that navigates to an incorrect category and derails the trajectory.</p><p>This failure pattern is particularly instructive because the vote distribution provides a clear signal: with 9 out of 10 candidates agreeing on "Scroll," the normalized entropy is low (H t ≈ 0.3) and the margin is high (∆ t = 0.6). Under CATTS, this step would be classified as high-confidence and the arbiter would be bypassed entirely, preserving the consensus action. The example thus demonstrates both (i) why uniform arbitration can be harmful, and (ii) how vote-derived uncertainty enables selective intervention.</p></div><figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_0"><head>Figure 1 .</head><label>1</label><figDesc>Figure 1. Comparing agentic inference-time scaling methods. Visual comparison of selection strategies at each agent step. Left: Majority Voting samples N candidates and selects the most frequent action via argmax over vote distribution p t (a). Center-Left: Arbiter samples N candidates and uses an additional LLM call to reason over candidates and select the best action. Center-Right: CATTS conditionally invokes the arbiter only when vote-derived uncertainty (entropy H t or margin ∆ t ) exceeds threshold τ, otherwise falls back to majority voting.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_0"><head>Majority Vote Arbiter Confidence-Aware Test-Time Scaling (CATTS)</head><label></label><figDesc></figDesc><table><row><cell>Base Model</cell><cell>Base Model</cell><cell></cell><cell></cell><cell>Base Model</cell><cell></cell><cell></cell></row><row><cell>Candidates Candidates Candidates</cell><cell>Candidates Candidates Candidates</cell><cell></cell><cell></cell><cell>Candidates Candidates Candidates</cell><cell></cell><cell></cell></row><row><cell>Majority Vote</cell><cell>Arbiter</cell><cell>Maj. Vote</cell><cell>Yes</cell><cell>Confident?</cell><cell>No</cell><cell>Arbiter</cell></row><row><cell>Selected Action</cell><cell>Selected Action</cell><cell></cell><cell></cell><cell>Selected Action</cell><cell></cell><cell></cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_1"><head>Table 1 .</head><label>1</label><figDesc>Static inference-time scaling with majority vote. Success rates on WebArena-Lite (WA) and GoBrowse (GB) under varying candidate counts N. Scaling from N=1 to N=20 yields diminishing returns: on WebArena-Lite, the final doubling (N=10 → N=20) produces negligible gain despite 2× tokens; on GoBrowse, gains are smaller and non-monotonic. This motivates stronger selection mechanisms beyond simple majority voting.</figDesc><table><row><cell></cell><cell cols="2">WebArena-Lite</cell><cell cols="2">GoBrowse</cell></row><row><cell cols="5">Budget Success Tokens Success Tokens</cell></row><row><cell>N=1 N=5 N=10 N=20</cell><cell>38.8% 42.4% 43.2% 43.0%</cell><cell>96K 460K 920K 1.8M</cell><cell>86.9% 87.8% 88.0% 87.8%</cell><cell>47K 249K 481K 995K</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_2"><head>Table 2 .</head><label>2</label><figDesc>Arbiter scaling (N=5).</figDesc><table><row><cell cols="5">Comparison of majority voting, single arbiter call (K=1), and Arbiter Scaling (K&gt;1) on both benchmarks. On WebArena-Lite, Arbiter Scaling improves from 42.8% (K=1) to 44.6% (K=10), a +1.8% gain, but K=20 degrades to 42.0%. On GoBrowse, scaling yields steady improvement from 88.6% (K=1) to 89.6% (K=20). Success rates are averaged over 3 runs.</cell></row><row><cell></cell><cell cols="2">WebArena-Lite</cell><cell cols="2">GoBrowse</cell></row><row><cell>Method</cell><cell cols="4">Success Tokens Success Tokens</cell></row><row><cell cols="2">Majority vote (N=5) Arbiter (K=1) Arbiter scaling (K=5) Arbiter scaling (K=10) 44.6% 42.4% 42.8% 44.2% Arbiter scaling (K=20) 42.0%</cell><cell>460K 442K 645K 899K 1.4M</cell><cell>87.8% 88.6% 88.2% 88.7% 89.6%</cell><cell>249K 227K 351K 541K 733K</cell></row><row><cell cols="5">observation context to break ties among plausible actions and to discard candidates that look superficially popular but are contextually inappropriate. Table 2 summarizes the comparison between (i) majority vote, (ii) a single arbiter call per step, and (iii) scaled arbitration described below.</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_3"><head>Table 3 .</head><label>3</label><figDesc>DeepConf variants on WebArena-Lite and GoBrowse. Success rates for three confidence estimation methods across varying candidate counts N. All variants can improve over majority voting baselines (WA: 43.2%, GB: 88.0% at N=10). Average trace achieves 43.8% on WA at N=10, while on GoBrowse, average trace at N=20 reaches 90.3%. Unlike CATTS, DeepConf requires access to token-level log probabilities, limiting applicability for API-only models.</figDesc><table><row><cell></cell><cell></cell><cell cols="2">WebArena-Lite</cell><cell cols="2">GoBrowse</cell></row><row><cell>Variant</cell><cell>N</cell><cell cols="4">Success Tokens Success Tokens</cell></row><row><cell>Avg. Trace</cell><cell>3 5 10 20</cell><cell>40.2% 42.0% 43.8% 39.8%</cell><cell>262K 408K 828K 1.8M</cell><cell>87.7% 89.4% 89.1% 90.3%</cell><cell>134K 235K 475K 968K</cell></row><row><cell>Tail</cell><cell>3 5 10 20</cell><cell>38.8% 40.4% 42.4% 42.6%</cell><cell>252K 408K 813K 1.7M</cell><cell>86.8% 88.3% 86.6% 88.1%</cell><cell>138K 230K 452K 951K</cell></row><row><cell>Bottom %</cell><cell>3 5 10 20</cell><cell>40.6% 42.6% 40.6% 42.0%</cell><cell>254K 409K 835K 1.7M</cell><cell>88.4% 88.1% 89.0% 88.2%</cell><cell>145K 240K 463K 973K</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_5"><head></head><label></label><figDesc>High-consensus override analysis. Task success rate decreases as the number of high-consensus overrides (∆ t &gt; 0.7) increases, showing a dose-response pattern. The red dashed line indicates the overall success rate (44.0%). The effect is significant (p = 0.026, Fisher's exact test) and consistent across all websites.</figDesc><table><row><cell>Task Success Rate (%)</cell><cell>20 40</cell><cell>46.9%</cell><cell cols="2">36.6%</cell><cell>Overall 44.0% 29.6%</cell></row><row><cell></cell><cell>0</cell><cell>0</cell><cell>1</cell><cell></cell><cell>2+</cell></row><row><cell></cell><cell></cell><cell cols="4">Number of High-Consensus Overrides</cell></row><row><cell cols="3">(0.0-0.3) Figure 3. Low −10 0 10 -4.4% Net Arbiter Advantage</cell><cell>Med-Low (0.3-0.5) +5.6%</cell><cell cols="2">Med-High (0.5-0.7) +4.1%</cell><cell>High (0.7+) +4.4%</cell></row><row><cell></cell><cell></cell><cell cols="4">Average Trajectory Entropy</cell></row><row><cell cols="6">Figure 4. Arbiter effectiveness varies with uncertainty. Tasks are grouped by average trajectory entropy and evaluated under both arbiter and majority voting, aggregated across all runs. Net advantage measures the difference in win rates: positive values indicate that arbitration succeeds on more tasks where majority voting fails than vice versa. At low entropy, arbitration provides no benefit and can hurt performance (−4.4%). At higher entropy lev-els, arbitration consistently outperforms majority voting (+4-6%), demonstrating that its reasoning capabilities are most valuable when the candidate distribution lacks a clear signal.</cell></row><row><cell cols="6">and H t is low, the model is already confident, and arbi-tration introduces override risk, rather than improving the decision; conversely, when entropy is high and votes are diverse, arbitration can reason over the candidate set and improve selection. This motivates a dynamic allocation rule: invoke arbitration primarily when vote-derived uncertainty indicates that the decision is genuinely contentious.</cell></row><row><cell cols="6">4.2. CATTS: Confidence-Aware Test-Time Scaling</cell></row><row><cell cols="6">We use vote-derived uncertainty to decide whether to spend extra compute on arbitration at each step. Let U t be a scalar uncertainty score computed from the vote distribution p t (•).</cell></row><row><cell></cell><cell></cell><cell></cell><cell></cell><cell></cell><cell>These findings illustrate a core principle: when ∆ t is high</cell></row></table><note>CATTS applies a threshold τ to gate arbitration:a t = arg max a p t (a), U t ≤ τ ARBITER(o t , A t , {n t (a)} a∈A t ), U t &gt; τ. (9)</note></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_6"><head>Table 4 .</head><label>4</label><figDesc>CATTS results. We report success rates and token usage for majority vote, always-arbitrate, and CATTS at N=10.</figDesc><table><row><cell cols="5">CATTS with entropy gating (H; τ=0.2 for WebArena-Lite, τ=0.5 for GoBrowse) achieves 47.9% and 90.2% respectively, resulting in a 4.7% and 2.2% gain over majority vote. Margin-gated CATTS (∆) achieves similar performance on GoBrowse (90.4%) while using only 405K tokens (56% reduction vs. major-ity vote). Both variants substantially outperform always-arbitrate baselines.</cell></row><row><cell></cell><cell cols="2">WebArena-Lite</cell><cell cols="2">GoBrowse</cell></row><row><cell>Method</cell><cell cols="4">Success Tokens Success Tokens</cell></row><row><cell cols="2">Majority vote Always-arbitrate CATTS (H, best τ) 47.9% 43.2% 44.0% CATTS (∆, best τ) 47.9%</cell><cell>920K 762K 745K 405K</cell><cell>88.0% 88.3% 90.2% 90.4%</cell><cell>481K 443K 422K 372K</cell></row><row><cell cols="4">We instantiate U t in two effective variants:</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_7"><head></head><label></label><figDesc>GoBrowseFigure5. Accuracy-compute frontier across all methods. Success rate versus total tokens per episode on WebArena-Lite (left) and GoBrowse (right). Each point represents a different configuration: Majority Vote varies N ∈ {1, 3, 5, 10, 20}; Arbiter shows K=1 (one Arbiter used) with varying N; Arbiter Scaling shows increasing K at fixed N=5; CATTS (Entropy/Margin) sweeps thresholds τ at N=10; DeepConf varies N ∈ {3, 5, 10, 20}. CATTS achieves Pareto improvements: on WebArena-Lite, it reaches 47.9% success at ∼750K tokens (vs. 43.2% for Majority Vote at 920K tokens). DeepConf also performs strongly, achieving competitive accuracy at lower token budgets than majority vote.</figDesc><table><row><cell></cell><cell>0.48</cell><cell></cell><cell>WebArena-Lite</cell><cell></cell><cell></cell><cell>0.905</cell><cell></cell><cell></cell><cell></cell></row><row><cell></cell><cell>0.47</cell><cell></cell><cell></cell><cell></cell><cell></cell><cell>0.900</cell><cell></cell><cell></cell><cell></cell></row><row><cell></cell><cell>0.46</cell><cell></cell><cell></cell><cell></cell><cell></cell><cell>0.895</cell><cell></cell><cell></cell><cell></cell></row><row><cell>Success Rate</cell><cell>0.43 0.44 0.45</cell><cell></cell><cell>Majority Vote Arbiter (K=1)</cell><cell></cell><cell>Success Rate</cell><cell>0.880 0.885 0.890</cell><cell></cell><cell></cell><cell></cell></row><row><cell></cell><cell>0.42</cell><cell></cell><cell>Arbiter Scaling</cell><cell></cell><cell></cell><cell>0.875</cell><cell></cell><cell></cell><cell></cell></row><row><cell></cell><cell></cell><cell></cell><cell>CATTS (Entropy)</cell><cell></cell><cell></cell><cell></cell><cell></cell><cell></cell><cell></cell></row><row><cell></cell><cell>0.41</cell><cell></cell><cell>CATTS (Margin)</cell><cell></cell><cell></cell><cell>0.870</cell><cell></cell><cell></cell><cell></cell></row><row><cell></cell><cell></cell><cell></cell><cell>DeepConf</cell><cell></cell><cell></cell><cell></cell><cell></cell><cell></cell><cell></cell></row><row><cell></cell><cell>0.40</cell><cell></cell><cell>Pareto Frontier</cell><cell></cell><cell></cell><cell>0.865</cell><cell></cell><cell></cell><cell></cell></row><row><cell></cell><cell>0.25</cell><cell>0.50</cell><cell>0.75 Total Tokens / Episode 1.00 1.25</cell><cell>1.50</cell><cell>1.75 1 × 10 6</cell><cell>0.0</cell><cell>0.2</cell><cell>0.4 Total Tokens / Episode 0.6</cell><cell>0.8</cell><cell>1.0 1 × 10 6</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_8"><head>Table 5 .</head><label>5</label><figDesc>Impact of semantic deduplication on GoBrowse. Without deduplication, majority voting degrades with more samples due to vote splitting among semantically equivalent actions. With deduplication, expected scaling behavior is restored and performance improves. This ablation confirms that semantic deduplication is a necessary preprocessing step for meaningful vote aggregation, not a confounding factor.</figDesc><table><row><cell></cell><cell></cell><cell cols="4">After Deduplication (per-website)</cell></row><row><cell cols="3">Setting Before Overall GitLab</cell><cell>Map</cell><cell cols="2">Reddit Shopping Shop.Admin</cell></row><row><cell>ReAct N=1 N=8 N=16 81.8% 83.3% 83.3% N=32 80.1%</cell><cell>83.3% 84.5% 82.1% -</cell><cell cols="3">84.7% 76.3% 84.8% 81.9% 77.6% 94.9% 83.3% 73.7% 94.8% ---</cell><cell>89.8% 86.4% 88.1% -</cell><cell>82.7% 84.0% 74.7% -</cell></row><row><cell>Plan&amp;Act (1, 1) 82.4% (2, 4) 81.2% (4, 2) 84.2%</cell><cell>82.4% 81.2% 85.3%</cell><cell cols="3">--87.5% 77.6% 91.4% ----</cell><cell>--91.5%</cell><cell>--81.3%</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_9"><head>Table 6 .</head><label>6</label><figDesc>Plan-and-Act scaling on WebArena-Lite and GoBrowse. Success rates under different budget allocations (P, A) with total compute C = P × A. Non-monotonic scaling is evident on both benchmarks: on WebArena-Lite, (2, 4) achieves the best result (43.2%) but (4, 4) drops to 43.0% despite 2× the budget; on GoBrowse, the baseline (1, 1) achieves 83.3%, while (2, 4) with 8× the budget drops to 80.6%. This confirms that the non-monotonic scaling phenomenon affects multiple agent architectures, not just ReAct, strengthening the motivation for dynamic compute allocation.</figDesc><table><row><cell cols="2">(P, A) Budget C</cell><cell>WA</cell><cell>GB</cell><cell>Tokens</cell></row><row><cell>(1, 1) (2, 4) (4, 4)</cell><cell>1 8 16</cell><cell cols="2">38.8% 83.3% 43.2% 80.6% 43.0% 81.5%</cell><cell>104K 731K 1.4M</cell></row><row><cell cols="2">compute allocation approach developed in Section 4.2.</cell><cell></cell><cell></cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_10"><head>Table 7 .</head><label>7</label><figDesc>Complete arbiter scaling on WebArena-Lite. Success rates for all (N, K) configurations, averaged over 3 runs. Best result for each N is bolded. The optimal arbiter scaling factor K varies by candidate count N: small N benefits from high K (N=3, K=20: 45.7%), while larger N prefers moderate K (N=10, K=5: 44.6%). No single (N, K) dominates, and gains from arbiter scaling plateau or decline beyond optimal K. This non-monotonic behavior motivates selective arbiter use via dynamic gating rather than uniform high-K allocation.</figDesc><table><row><cell></cell><cell cols="3">Arbiter Scaling Factor K</cell><cell></cell></row><row><cell>Candidates N</cell><cell>K=1</cell><cell>K=5</cell><cell>K=10</cell><cell>K=20</cell></row><row><cell>N=3 N=5 N=10 N=20</cell><cell cols="4">43.0% 41.2% 42.8% 44.2% 44.6% 42.0% 43.4% 45.7% 44.0% 44.6% 42.0% 43.0% 43.2% 42.8% 44.0% 43.6%</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_11"><head>Table 8 .</head><label>8</label><figDesc>Full RSA and PlanRSA results on WebArena-Lite. RSA applies iterative refinement at the action level, while PlanRSA applies it at the plan level for Plan-and-Act agents. Despite substantially higher compute costs (up to 80 LLM calls per step), RSA achieves at best comparable performance to single-round arbitration. PlanRSA underperforms all baselines, suggesting that aggregation noise accumulates more severely at higher levels of abstraction. Figure6. Vote distribution profiles across all steps. Histograms aggregated over all decision steps from N=10 experiments on WebArena-Lite. (A) Top-1 probability distribution shows strong right skew: ∼42% of steps have near-deterministic consensus (top-1 probability &gt;0.9), and mean top-1 probability is 0.762. This indicates many steps fall into a redundancy regime where additional candidates duplicate the dominant action. (B) Normalized entropy distribution is bimodal (mean 0.474): ∼40% of steps have zero entropy (perfect consensus), while ∼49% of steps have entropy &gt;0.6, identifying contentious steps where arbitration is most valuable. These profiles motivate dynamic gating: allocate extra compute to high-entropy steps while preserving consensus elsewhere.</figDesc><table><row><cell>Method</cell><cell cols="5">N/P K T Success Calls/Step</cell></row><row><cell cols="2">Baselines Majority Vote Arbiter (K=1) CATTS (entropy, best) RSA (action-level aggregation) 10 10 10 RSA 8 RSA 8 RSA 16 RSA 16</cell><cell>-1 1 2 2 4 4</cell><cell>---2 4 2 4</cell><cell>43.2% 44.0% 47.9% 41.0% 41.0% 42.0% 43.6%</cell><cell>10 11 ∼7 24 40 48 80</cell></row><row><cell cols="2">PlanRSA (plan-level aggregation) PlanRSA (arbiter select) 8 PlanRSA (random select) 8</cell><cell>4 4</cell><cell>2 2</cell><cell>35.2% 35.2%</cell><cell>40 40</cell></row></table></figure>
+		</body>
+		<back>
+
+			<div type="acknowledgement">
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Acknowledgements</head><p>We acknowledge the gracious support from the Furiosa AI, Intel, Apple, NVIDIA, Macronix, and Mozilla team. Fur-</p></div>
+			</div>
+
+			<div type="annex">
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>A. Agent Design Decisions</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>A.1. Action Space</head><p>Our agents use a minimal action space with 8 tools designed for web navigation:</p><p>• click(element id): Click on a DOM element by its unique identifier • type text(element id, text): Enter text into an input field without submitting • hover(element id): Hover over an element to reveal tooltips or dropdown menus • scroll(direction): Scroll the page up or down to reveal more content • select dropdown option(element id, value): Select an option from a dropdown menu • search(element id, text): Type text and submit (equivalent to type + Enter) • go back(): Navigate to the previous page in browser history • exit(message): Terminate the episode with a final answer or status message All element-targeting tools require an element id parameter that corresponds to an injected integer id attribute in the DOM. This simplifies element identification compared to CSS selectors or XPaths.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>A.2. Error Handling and Validation</head><p>The agent framework includes several error checks that provide feedback during the retry loop:</p><p>• MustCallExactlyOneToolCheck: Ensures exactly one function call per step • InvalidActionSchemaCheck: Validates that function arguments match the expected schema • ElementMustExistCheck: Verifies that referenced element IDs exist in the current DOM • MustProvideReasoningCheck: Requires the agent to provide reasoning in the analysis channel • RepeatingActionLoopCheck: Detects and prevents repeated ineffective actions When a check fails, the agent receives an error message and has up to 5 retry attempts to produce a valid action.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>A.3. Conversation Format</head><p>Each agent turn follows a structured format with the GPT-OSS Harmony interface:</p><p>1. System message: Establishes agent role and channel usage 2. Developer message: Provides detailed instructions and constraints 3. User message: Contains the task, current HTML state, and any error feedback 4. Assistant response: Analysis in the analysis channel, function call in commentary 5. Tool observation: Result of the action with updated HTML state The conversation history preserves prior reasoning and actions but only includes full HTML in the most recent tool observation to manage context length. This allows the agent to reference its own reasoning trajectory while grounding decisions in the current page state.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>B. Agent Prompts</head><p>This section provides the key prompts used in our system components.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>B.1. Base Agent (ReAct Executor)</head><p>The base agent uses a channel-based prompting format with separate channels for reasoning (analysis) and action emission (commentary). The system prompt establishes the agent's role:</p><p>You are a web-execution agent that completes browser tasks by emitting function calls in each step. How each step works: The developer prompt provides detailed instructions for element targeting, function-calling discipline, and recovery from errors:</p><p>Element targeting via numeric id (must-follow):</p><p>• The environment injects a special id attribute that is an integer string (e.g., ''15''). • When a function requires an element, supply this integer id exactly as shown in the latest HTML. • Do not provide CSS selectors, XPaths, inner text, or made-up ids.</p><p>Recovery and loop-avoidance:</p><p>• Do not repeat an ineffective action more than once.</p><p>• After an error or no-op, re-analyze the latest HTML before choosing a different action.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>B.2. Semantic Deduplicator</head><p>The semantic deduplicator clusters equivalent actions before voting. Its prompt instructs:</p><p>You are a deterministic semantic action deduplicator for a web-navigation system.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Context:</head><p>• All inputs in one call are the same action type (TYPE | SEARCH | STOP).</p><p>• All inputs act on the same element target (already checked upstream).</p><p>• Your task: group semantically equivalent actions and pick a representative per group.</p><p>What ''equivalent'' means:</p><p>• Same intent after trivial normalization (case, spacing, punctuation) and minor paraphrase/synonymy. • Do NOT merge items that change intent/topic (e.g., ''apple store'' ̸ = ''apple id login''). Analysis. RSA with N=16, K=4, T=4 achieves 43.6%, comparable to single-round arbitration (44.0%) but at ∼7× the compute cost per step. The marginal benefit of additional aggregation rounds is minimal: increasing T from 2 to 4 improves performance by only 0-1.6% while roughly doubling compute. We hypothesize that RSA's iterative refinement, designed for single-shot reasoning tasks where solutions can be progressively improved, does not transfer well to per-step action selection where the "correct" answer depends heavily on environmental context that cannot be improved through reasoning alone.</p><p>PlanRSA performs substantially worse than all baselines (35.2% vs. 43.2% for majority vote). Notably, the selection method within PlanRSA (arbiter vs. random) makes no difference, suggesting the bottleneck is the plan aggregation process itself rather than final selection. This may reflect error accumulation: aggregating plans introduces noise at a higher level of abstraction, and errors in plan formulation propagate to all downstream actions.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>H. Threshold Sensitivity Analysis</head><p>Tables 9 and 10 present the full threshold sweep results for CATTS on WebArena-Lite across different values of N ∈ {3, 5, 10, 20}. Both entropy-gated and margin-gated variants show robust performance across a range of thresholds τ ∈ {0.2, 0.3, . . . , 0.8}. The best-performing threshold for each N is highlighted in bold. The results demonstrate that CATTS is relatively robust to the choice of threshold across different values of N. For entropy-gated CATTS, the best thresholds vary by N but most configurations outperform the majority vote baseline. For margin-gated CATTS, similar robustness is observed with peak performance typically at τ ∈ {0.4, 0.5, 0.7, 0.8}. In practice, a default threshold of τ = 0.5 provides good performance across both benchmarks without extensive tuning.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>I. Vote Distribution Analysis</head><p>Figure <ref type="figure">6</ref> presents the detailed analysis of vote distributions across all decision steps from our experiments. This analysis provides empirical support for the two-regime interpretation discussed in Section 4.4.</p><p>The distributions reveal several key patterns: (1) Right-skewed top-1 probability: Approximately 42% of steps exhibit neardeterministic consensus with top-1 probability exceeding 0.9, indicating that many decisions fall into a redundant regime.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Base Model Arbiter Model</head><p>Click "Pantry Staples"</p><p>Query: Buy highest rated meat substitute product. Thought: The majority action is too generic. Clicking "Pantry Staples" will take me to the meat substitutes.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Task Failed</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Scroll Down</head><p>Scroll Down Scroll Down</p><p>Figure <ref type="figure">7</ref>. Arbiter failure on high-consensus step. Example trajectory where the sampled candidates exhibit strong consensus (e.g., 9/10 votes for one action), but the arbiter overrides the majority and selects a minority action, leading to task failure. This illustrates that arbitration can be harmful when vote-derived uncertainty is already low.</p></div>			</div>
+			<div type="references">
+
+				<listBibl>
+
+<biblStruct xml:id="b0">
+	<analytic>
+		<title level="a" type="main">Graph of thoughts: Solving elaborate problems with large language models</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Besta</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Blach</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Kubicek</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Gerstenberger</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Podstawski</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Gianinazzi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Gajda</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Lehmann</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Niewiadomski</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Nyczyk</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Hoefler</surname></persName>
+		</author>
+		<idno type="DOI">10.1609/aaai.v38i16.29720</idno>
+		<ptr target="https://doi.org/10.1609/aaai.v38i16.29720" />
+	</analytic>
+	<monogr>
+		<title level="m">Thirty-Eighth AAAI Conference on Artificial Intelligence, AAAI 2024, Thirty-Sixth Conference on Innovative Applications of Artificial Intelligence, IAAI 2024, Fourteenth Symposium on Educational Advances in Artificial Intelligence, EAAI 2014</title>
+				<editor>
+			<persName><forename type="first">M</forename><forename type="middle">J</forename><surname>Wooldridge</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">J</forename><forename type="middle">G</forename><surname>Dy</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">S</forename><surname>Natarajan</surname></persName>
+		</editor>
+		<meeting><address><addrLine>Vancouver, Canada</addrLine></address></meeting>
+		<imprint>
+			<publisher>AAAI Press</publisher>
+			<date type="published" when="2024">February 20-27, 2024. 2024</date>
+			<biblScope unit="page" from="17682" to="17690" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b1">
+	<monogr>
+		<title level="m" type="main">Workarena++: Towards compositional planning and reasoning-based common knowledge work tasks</title>
+		<author>
+			<persName><forename type="first">L</forename><surname>Boisvert</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Thakkar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Gasse</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Caccia</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Le</forename><surname>Sellier De Chezelles</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Cappart</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Q</forename><surname>Chapados</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Lacoste</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Drouin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename></persName>
+		</author>
+		<ptr target="https://arxiv.org/abs/2407.05291" />
+		<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b2">
+	<monogr>
+		<title level="m" type="main">Large language monkeys: Scaling inference compute with repeated sampling</title>
+		<author>
+			<persName><forename type="first">B</forename><surname>Brown</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Juravsky</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Ehrlich</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Clark</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Q</forename><forename type="middle">V</forename><surname>Le</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Ré</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Mirhoseini</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2407.21787</idno>
+		<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b3">
+	<monogr>
+		<title level="m" type="main">How effective is selfconsistency for long-context problems?</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Byerly</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Khashabi</surname></persName>
+		</author>
+		<ptr target="https://arxiv.org/abs/2411.01101" />
+		<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b4">
+	<analytic>
+		<title level="a" type="main">Program of thoughts prompting: Disentangling computation from reasoning for numerical reasoning tasks</title>
+		<author>
+			<persName><forename type="first">W</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Ma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><forename type="middle">W</forename><surname>Cohen</surname></persName>
+		</author>
+		<ptr target="https://openreview.net/forum?id=YfZ4ZPt8zd" />
+	</analytic>
+	<monogr>
+		<title level="j">Trans. Mach. Learn. Res</title>
+		<imprint>
+			<date type="published" when="2023">2023. 2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b5">
+	<monogr>
+		<title level="m" type="main">Training verifiers to solve math word problems</title>
+		<author>
+			<persName><forename type="first">K</forename><surname>Cobbe</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">V</forename><surname>Kosaraju</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Bavarian</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Jun</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Kaiser</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Plappert</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Tworek</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Hilton</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Nakano</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2110.14168</idno>
+		<imprint>
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b6">
+	<monogr>
+		<title level="m" type="main">The danger of overthinking: Examining the reasoning-action dilemma in agentic tasks</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Cuadron</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><surname>Ma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Zhuang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><forename type="middle">G</forename><surname>Schroeder</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Xia</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Mao</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2502.08235</idno>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b7">
+	<analytic>
+		<title level="a" type="main">Mind2web: Towards a generalist agent for the web</title>
+		<author>
+			<persName><forename type="first">X</forename><surname>Deng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Gu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Zheng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Stevens</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Sun</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Su</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Advances in Neural Information Processing Systems</title>
+		<imprint>
+			<biblScope unit="volume">36</biblScope>
+			<biblScope unit="page" from="28091" to="28114" />
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b8">
+	<analytic>
+		<title level="a" type="main">How capable are web agents at solving common knowledge work tasks?</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Drouin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Gasse</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Caccia</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">I</forename><forename type="middle">H</forename><surname>Laradji</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">D</forename><surname>Verme</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Marty</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Vázquez</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Chapados</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Lacoste</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Workarena</surname></persName>
+		</author>
+		<ptr target="https://openreview.net/forum?id=BRfqYrikdo" />
+	</analytic>
+	<monogr>
+		<title level="m">Forty-first International Conference on Machine Learning, ICML 2024</title>
+				<meeting><address><addrLine>Vienna, Austria</addrLine></address></meeting>
+		<imprint>
+			<publisher>OpenReview</publisher>
+			<date type="published" when="2024">July 21-27, 2024. 2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b9">
+	<analytic>
+		<title level="a" type="main">Improving factuality and reasoning in language models through multiagent debate</title>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Du</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Torralba</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">B</forename><surname>Tenenbaum</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">I</forename><surname>Mordatch</surname></persName>
+		</author>
+		<ptr target="https://openreview.net/forum?id=zj7YuTE4t8" />
+	</analytic>
+	<monogr>
+		<title level="m">Forty-first International Conference on Machine Learning, ICML 2024</title>
+				<meeting><address><addrLine>Vienna, Austria</addrLine></address></meeting>
+		<imprint>
+			<publisher>OpenReview</publisher>
+			<date type="published" when="2024">July 21-27, 2024. 2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b10">
+	<analytic>
+		<title level="a" type="main">Tinyagent: Function calling at the edge</title>
+		<author>
+			<persName><forename type="first">L</forename><forename type="middle">E</forename><surname>Erdogan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Lee</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Jha</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Kim</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Tabrizi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Moon</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><forename type="middle">R C</forename><surname>Hooper</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Anumanchipalli</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Keutzer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Gholami</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing: System Demonstrations</title>
+				<meeting>the 2024 Conference on Empirical Methods in Natural Language Processing: System Demonstrations</meeting>
+		<imprint>
+			<date type="published" when="2024">2024</date>
+			<biblScope unit="page" from="80" to="88" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b11">
+	<analytic>
+		<title level="a" type="main">Planand-act: Improving planning of agents for long-horizon tasks</title>
+		<author>
+			<persName><forename type="first">L</forename><forename type="middle">E</forename><surname>Erdogan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Furuta</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Kim</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Lee</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Moon</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Anumanchipalli</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Keutzer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Gholami</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Forty-second International Conference on Machine Learning</title>
+				<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b12">
+	<monogr>
+		<title level="m" type="main">Deep think with confidence</title>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Fu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Tian</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Zhao</surname></persName>
+		</author>
+		<ptr target="https://arxiv.org/abs/2508.15260" />
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b13">
+	<monogr>
+		<title level="m" type="main">Go-browse: Training web agents with structured exploration</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Gandhi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Neubig</surname></persName>
+		</author>
+		<ptr target="https://arxiv.org/abs/2506.03533" />
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b14">
+	<analytic>
+		<title level="a" type="main">RARR: researching and revising what language models say, using language models</title>
+		<author>
+			<persName><forename type="first">L</forename><surname>Gao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Dai</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Pasupat</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">T</forename><surname>Chaganty</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Fan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">V</forename><forename type="middle">Y</forename><surname>Zhao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Lao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Lee</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Juan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Guu</surname></persName>
+		</author>
+		<idno type="DOI">10.18653/v1/2023.acl-long.910</idno>
+		<ptr target="https://doi.org/10.18653/v1/2023.acl-long.910" />
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics</title>
+				<editor>
+			<persName><forename type="first">A</forename><surname>Rogers</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">J</forename><forename type="middle">L</forename><surname>Boyd-Graber</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">N</forename><surname>Okazaki</surname></persName>
+		</editor>
+		<meeting>the 61st Annual Meeting of the Association for Computational Linguistics<address><addrLine>Toronto, Canada</addrLine></address></meeting>
+		<imprint>
+			<date type="published" when="2023">July 9-14, 2023</date>
+			<biblScope unit="volume">1</biblScope>
+			<biblScope unit="page">2023</biblScope>
+		</imprint>
+	</monogr>
+	<note>Association for Computational Linguistics</note>
+</biblStruct>
+
+<biblStruct xml:id="b15">
+	<analytic>
+		<title level="a" type="main">PAL: program-aided language models</title>
+		<author>
+			<persName><forename type="first">L</forename><surname>Gao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Madaan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Zhou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">U</forename><surname>Alon</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Callan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Neubig</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">International Conference on Machine Learning, ICML 2023</title>
+		<title level="s">Proceedings of Machine Learning Research</title>
+		<editor>
+			<persName><forename type="first">A</forename><surname>Krause</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">E</forename><surname>Brunskill</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">K</forename><surname>Cho</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">B</forename><surname>Engelhardt</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">S</forename><surname>Sabato</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">J</forename><surname>Scarlett</surname></persName>
+		</editor>
+		<meeting><address><addrLine>Honolulu, Hawaii, USA</addrLine></address></meeting>
+		<imprint>
+			<date type="published" when="2023-07">July 2023</date>
+			<biblScope unit="volume">202</biblScope>
+			<biblScope unit="page" from="10764" to="10799" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b16">
+	<monogr>
+		<title/>
+		<author>
+			<persName><surname>Pmlr</surname></persName>
+		</author>
+		<ptr target="https://proceedings.mlr.press/v202/gao23f.html" />
+		<imprint>
+			<date type="published" when="2023">2023b</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b17">
+	<monogr>
+		<title level="m" type="main">Adaptive computation time for recurrent neural networks</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Graves</surname></persName>
+		</author>
+		<ptr target="https://arxiv.org/abs/1603.08983" />
+		<imprint>
+			<date type="published" when="2016">2016</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b18">
+	<analytic>
+		<title level="a" type="main">Stabletoolbench: Towards stable large-scale benchmarking on tool learning of large language models</title>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Guo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Cheng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Liang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Qin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Sun</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Liu</surname></persName>
+		</author>
+		<ptr target="https://aclanthology.org/2024.findings-acl.664/" />
+	</analytic>
+	<monogr>
+		<title level="m">Findings of the Association for Computational Linguistics: ACL 2024</title>
+				<meeting><address><addrLine>Bangkok, Thailand</addrLine></address></meeting>
+		<imprint>
+			<date type="published" when="2024-08">August 2024</date>
+			<biblScope unit="page" from="11143" to="11156" />
+		</imprint>
+	</monogr>
+	<note>Association for Computational Linguistics</note>
+</biblStruct>
+
+<biblStruct xml:id="b19">
+	<monogr>
+		<title level="m" type="main">Language models (mostly) know what they know</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Kadavath</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Conerly</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Askell</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Henighan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Drain</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Perez</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Schiefer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Hatfield-Dodds</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Dassarma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Tran-Johnson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Johnston</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">E</forename><surname>Showk</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Jones</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Elhage</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Hume</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Bai</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Bowman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Fort</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Ganguli</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Hernandez</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Jacobson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Kernion</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Kravec</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Lovitt</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Ndousse</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Olsson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Ringer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Amodei</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Brown</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Clark</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Joseph</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Mann</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Mccandlish</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Olah</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Kaplan</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2207.05221</idno>
+		<ptr target="https://doi.org/10.48550/arXiv.2207.05221" />
+		<imprint>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b20">
+	<monogr>
+		<title level="m" type="main">MRKL systems: A modular, neurosymbolic architecture that combines large language models, external knowledge sources and discrete reasoning</title>
+		<author>
+			<persName><forename type="first">E</forename><surname>Karpas</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">O</forename><surname>Abend</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Belinkov</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Lenz</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">O</forename><surname>Lieber</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Ratner</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Shoham</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Bata</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Levine</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Leyton-Brown</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Muhlgay</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Rozen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Schwartz</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Shachaf</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Shalev-Shwartz</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Shashua</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Tennenholtz</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2205.00445</idno>
+		<ptr target="https://doi.org/10.48550/arXiv.2205.00445" />
+		<imprint>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b21">
+	<analytic>
+		<title level="a" type="main">An llm compiler for parallel function calling</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Kim</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Moon</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Tabrizi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Lee</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">W</forename><surname>Mahoney</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Keutzer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Gholami</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Forty-first International Conference on Machine Learning</title>
+				<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b22">
+	<analytic>
+		<title level="a" type="main">Visualwebarena: Evaluating multimodal agents on realistic visual web tasks</title>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">Y</forename><surname>Koh</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Lo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Jang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">V</forename><surname>Duvvur</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">C</forename><surname>Lim</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Huang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Neubig</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Zhou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Salakhutdinov</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Fried</surname></persName>
+		</author>
+		<idno type="DOI">10.18653/v1/2024.acl-long.50</idno>
+		<ptr target="https://doi.org/10.18653/v1/2024.acl-long.50" />
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), ACL 2024</title>
+				<editor>
+			<persName><forename type="first">L</forename><surname>Ku</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">A</forename><surname>Martins</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">V</forename><surname>Srikumar</surname></persName>
+		</editor>
+		<meeting>the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), ACL 2024<address><addrLine>Bangkok, Thailand</addrLine></address></meeting>
+		<imprint>
+			<publisher>Association for Computational Linguistics</publisher>
+			<date type="published" when="2024">August 11-16, 2024. 2024</date>
+			<biblScope unit="page" from="881" to="905" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b23">
+	<analytic>
+		<title level="a" type="main">Large language models are zero-shot reasoners</title>
+		<author>
+			<persName><forename type="first">T</forename><surname>Kojima</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">S</forename><surname>Gu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Reid</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Matsuo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Iwasawa</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Advances in neural information processing systems</title>
+		<imprint>
+			<biblScope unit="volume">35</biblScope>
+			<biblScope unit="page" from="22199" to="22213" />
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b24">
+	<monogr>
+		<title level="m" type="main">Api-bank: A benchmark for tool-augmented llms</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Song</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Yu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Yu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Huang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Li</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2304.08244</idno>
+		<ptr target="https://doi.org/10.48550/arXiv.2304.08244" />
+		<imprint>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b25">
+	<analytic>
+		<title level="a" type="main">Reinforcement learning on web interfaces using workflowguided exploration</title>
+		<author>
+			<persName><forename type="first">E</forename><forename type="middle">Z</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Guu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Pasupat</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Shi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Liang</surname></persName>
+		</author>
+		<ptr target="https://openreview.net/forum?id=ryTp3f-0-" />
+	</analytic>
+	<monogr>
+		<title level="m">6th International Conference on Learning Representations, ICLR 2018</title>
+				<meeting><address><addrLine>Vancouver, BC, Canada</addrLine></address></meeting>
+		<imprint>
+			<date type="published" when="2018-05-03">April 30 -May 3, 2018. 2018</date>
+		</imprint>
+	</monogr>
+	<note>Conference Track Proceedings. OpenReview.net</note>
+</biblStruct>
+
+<biblStruct xml:id="b26">
+	<analytic>
+		<title level="a" type="main">Agentbench: Evaluating llms as agents</title>
+		<author>
+			<persName><forename type="first">X</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Yu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Xu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Lei</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Lai</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Gu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Ding</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Men</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Deng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Zeng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Du</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Shen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Su</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Sun</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Huang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Dong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Tang</surname></persName>
+		</author>
+		<ptr target="https://openreview.net/forum?id=zAdUB0aCTQ" />
+	</analytic>
+	<monogr>
+		<title level="m">The Twelfth International Conference on Learning Representations, ICLR 2024</title>
+				<meeting><address><addrLine>Vienna, Austria</addrLine></address></meeting>
+		<imprint>
+			<publisher>OpenReview</publisher>
+			<date type="published" when="2024">May 7-11, 2024. 2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b27">
+	<monogr>
+		<title level="m" type="main">Solving a million-step llm task with zero errors</title>
+		<author>
+			<persName><forename type="first">E</forename><surname>Meyerson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Paolo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Dailey</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Shahrzad</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">O</forename><surname>Francon</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><forename type="middle">F</forename><surname>Hayes</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Qiu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Hodjat</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Miikkulainen</surname></persName>
+		</author>
+		<ptr target="https://arxiv.org/abs/2511.09030" />
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b28">
+	<analytic>
+		<title level="a" type="main">s1: Simple test-time scaling</title>
+		<author>
+			<persName><forename type="first">N</forename><surname>Muennighoff</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><surname>Shi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><forename type="middle">L</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Fei-Fei</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Hajishirzi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Zettlemoyer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Liang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Candès</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><forename type="middle">B</forename><surname>Hashimoto</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 2025 Conference on Empirical Methods in Natural Language Processing</title>
+				<meeting>the 2025 Conference on Empirical Methods in Natural Language Processing</meeting>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+			<biblScope unit="page" from="20286" to="20332" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b29">
+	<analytic>
+		<title level="a" type="main">Bootstrapping agents by guiding exploration with language</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Murty</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><forename type="middle">D</forename><surname>Manning</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Shaw</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Joshi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Lee</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Bagel</surname></persName>
+		</author>
+		<ptr target="https://proceedings.mlr.press/v235/murty24a.html" />
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 41st International Conference on Machine Learning</title>
+				<editor>
+			<persName><forename type="first">R</forename><surname>Salakhutdinov</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">Z</forename><surname>Kolter</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">K</forename><surname>Heller</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">A</forename><surname>Weller</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">N</forename><surname>Oliver</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">J</forename><surname>Scarlett</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">F</forename><surname>Berkenkamp</surname></persName>
+		</editor>
+		<meeting>the 41st International Conference on Machine Learning</meeting>
+		<imprint>
+			<publisher>PMLR</publisher>
+			<date type="published" when="2024-07">Jul 2024</date>
+			<biblScope unit="volume">235</biblScope>
+			<biblScope unit="page" from="21" to="27" />
+		</imprint>
+	</monogr>
+	<note>Proceedings of Machine Learning Research</note>
+</biblStruct>
+
+<biblStruct xml:id="b30">
+	<monogr>
+		<title level="m" type="main">Diversity of thought improves reasoning abilities of llms</title>
+		<author>
+			<persName><forename type="first">R</forename><surname>Naik</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">V</forename><surname>Chandrasekaran</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Yuksekgonul</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Palangi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Nushi</surname></persName>
+		</author>
+		<ptr target="https://arxiv.org/abs/2310.07088" />
+		<imprint>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b31">
+	<monogr>
+		<title level="m" type="main">Webgpt: Browser-assisted question-answering with human feedback</title>
+		<author>
+			<persName><forename type="first">R</forename><surname>Nakano</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Hilton</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Balaji</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Ouyang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Kim</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Hesse</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Jain</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">V</forename><surname>Kosaraju</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><surname>Saunders</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Jiang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Cobbe</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Eloundou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Krueger</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Button</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Knight</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Chess</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Schulman</surname></persName>
+		</author>
+		<idno>CoRR, abs/2112.09332</idno>
+		<ptr target="https://arxiv.org/abs/2112.09332" />
+		<imprint>
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b32">
+	<analytic>
+		<title level="a" type="main">Generative agents: Interactive simulacra of human behavior</title>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">S</forename><surname>Park</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">C</forename><surname>O'brien</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><forename type="middle">J</forename><surname>Cai</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">R</forename><surname>Morris</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Liang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">S</forename><surname>Bernstein</surname></persName>
+		</author>
+		<idno type="DOI">10.1145/3586183.3606763</idno>
+		<ptr target="https://doi.org/10.1145/3586183.3606763" />
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 36th Annual ACM Symposium on User Interface Software and Technology, UIST 2023</title>
+				<editor>
+			<persName><forename type="first">S</forename><surname>Follmer</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">J</forename><surname>Han</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">J</forename><surname>Steimle</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">N</forename><forename type="middle">H</forename><surname>Riche</surname></persName>
+		</editor>
+		<meeting>the 36th Annual ACM Symposium on User Interface Software and Technology, UIST 2023<address><addrLine>San Francisco, CA, USA</addrLine></address></meeting>
+		<imprint>
+			<publisher>ACM</publisher>
+			<date type="published" when="2023-10-29">29 October 2023-1 November 2023. 2023</date>
+			<biblScope unit="page">22</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b33">
+	<analytic>
+		<title level="a" type="main">Gorilla: Large language model connected with massive apis</title>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">G</forename><surname>Patil</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">E</forename><surname>Gonzalez</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Advances in Neural Information Processing Systems</title>
+		<imprint>
+			<biblScope unit="volume">37</biblScope>
+			<biblScope unit="page" from="126544" to="126565" />
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b34">
+	<analytic>
+		<title level="a" type="main">Tinyclick: Single-turn agent for empowering GUI automation</title>
+		<author>
+			<persName><forename type="first">P</forename><surname>Pawlowski</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Zawistowski</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><surname>Lapacz</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Wiacek</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Skorupa</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Postansque</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Hoscilowicz</surname></persName>
+		</author>
+		<idno type="DOI">10.21437/Interspeech.2025-176</idno>
+		<ptr target="https://doi.org/10.21437/Interspeech.2025-176" />
+	</analytic>
+	<monogr>
+		<title level="m">26th Annual Conference of the International Speech Communication Association, Interspeech 2025</title>
+				<editor>
+			<persName><forename type="first">O</forename><surname>Scharenborg</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">C</forename><surname>Oertel</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">K</forename><surname>Truong</surname></persName>
+		</editor>
+		<meeting><address><addrLine>Rotterdam, The Netherlands</addrLine></address></meeting>
+		<imprint>
+			<publisher>ISCA</publisher>
+			<date type="published" when="2025-08">August 2025. 2025</date>
+			<biblScope unit="page" from="17" to="21" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b35">
+	<analytic>
+		<title level="a" type="main">Toolllm: Facilitating large language models to master 16000+ real-world apis</title>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Qin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Liang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Ye</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Zhu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Yan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Lu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Lin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Cong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Tang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Qian</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Zhao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Hong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Tian</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Xie</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Zhou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Gerstein</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Sun</surname></persName>
+		</author>
+		<ptr target="https://openreview.net/forum?id=dHng2O0Jjr" />
+	</analytic>
+	<monogr>
+		<title level="m">The Twelfth International Conference on Learning Representations, ICLR 2024</title>
+				<meeting><address><addrLine>Vienna, Austria</addrLine></address></meeting>
+		<imprint>
+			<publisher>OpenReview</publisher>
+			<date type="published" when="2024">May 7-11, 2024. 2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b36">
+	<analytic>
+		<title level="a" type="main">Androidinthewild: A large-scale dataset for android device control</title>
+		<author>
+			<persName><forename type="first">C</forename><surname>Rawles</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Rodriguez</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">O</forename><surname>Riva</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Lillicrap</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Advances in Neural Information Processing Systems</title>
+		<imprint>
+			<biblScope unit="volume">36</biblScope>
+			<biblScope unit="page" from="59708" to="59728" />
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b37">
+	<monogr>
+		<author>
+			<persName><forename type="first">C</forename><surname>Rawles</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Clinckemaillie</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Chang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Waltz</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Lau</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Fair</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><surname>Bishop</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Campbell-Ajala</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2405.14573</idno>
+		<title level="m">Androidworld: A dynamic benchmarking environment for autonomous agents</title>
+				<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b38">
+	<analytic>
+		<title level="a" type="main">Toolformer: Language models can teach themselves to use tools</title>
+		<author>
+			<persName><forename type="first">T</forename><surname>Schick</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Dwivedi-Yu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Dessì</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Raileanu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Lomeli</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Hambro</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Zettlemoyer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Cancedda</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Scialom</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Advances in Neural Information Processing Systems</title>
+		<imprint>
+			<biblScope unit="volume">36</biblScope>
+			<biblScope unit="page" from="68539" to="68551" />
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b39">
+	<analytic>
+		<title level="a" type="main">World of bits: An open-domain platform for web-based agents</title>
+		<author>
+			<persName><forename type="first">T</forename><surname>Shi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Karpathy</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Fan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Hernandez</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Liang</surname></persName>
+		</author>
+		<ptr target="http://proceedings.mlr.press/v70/shi17a.html" />
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 34th International Conference on Machine Learning, ICML 2017</title>
+				<editor>
+			<persName><forename type="first">D</forename><surname>Precup</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">Y</forename><forename type="middle">W</forename><surname>Teh</surname></persName>
+		</editor>
+		<meeting>the 34th International Conference on Machine Learning, ICML 2017<address><addrLine>Sydney, NSW, Australia</addrLine></address></meeting>
+		<imprint>
+			<publisher>PMLR</publisher>
+			<date type="published" when="2017-08-11">6-11 August 2017. 2017</date>
+			<biblScope unit="volume">70</biblScope>
+			<biblScope unit="page" from="3135" to="3144" />
+		</imprint>
+	</monogr>
+	<note>Proceedings of Machine Learning Research</note>
+</biblStruct>
+
+<biblStruct xml:id="b40">
+	<analytic>
+		<title level="a" type="main">Reflexion: Language agents with verbal reinforcement learning</title>
+		<author>
+			<persName><forename type="first">N</forename><surname>Shinn</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Cassano</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Gopinath</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Narasimhan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Yao</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Advances in Neural Information Processing Systems</title>
+		<imprint>
+			<biblScope unit="volume">36</biblScope>
+			<biblScope unit="page" from="8634" to="8652" />
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b41">
+	<monogr>
+		<title level="m" type="main">Scaling llm testtime compute optimally can be more effective than scaling model parameters</title>
+		<author>
+			<persName><forename type="first">C</forename><surname>Snell</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Lee</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Xu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Kumar</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2408.03314</idno>
+		<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b42">
+	<analytic>
+		<title level="a" type="main">Language models don&apos;t always say what they think: Unfaithful explanations in chain-of-thought prompting</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Turpin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Michael</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Perez</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Bowman</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Advances in Neural Information Processing Systems</title>
+		<imprint>
+			<biblScope unit="volume">36</biblScope>
+			<biblScope unit="page" from="74952" to="74965" />
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b43">
+	<monogr>
+		<title level="m" type="main">Recursive self-aggregation unlocks deep thinking in large language models</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Venkatraman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">V</forename><surname>Jain</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Mittal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">V</forename><surname>Shah</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Obando-Ceron</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Bengio</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><forename type="middle">R</forename><surname>Bartoldson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Kailkhura</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Lajoie</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Berseth</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Malkin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Jain</surname></persName>
+		</author>
+		<ptr target="https://arxiv.org/abs/2509.26626" />
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b44">
+	<monogr>
+		<title level="m" type="main">Reasoning aware selfconsistency: Leveraging reasoning paths for efficient llm sampling</title>
+		<author>
+			<persName><forename type="first">G</forename><surname>Wan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Li</surname></persName>
+		</author>
+		<ptr target="https://arxiv.org/abs/2408.17017" />
+		<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b45">
+	<analytic>
+		<title level="a" type="main">Voyager: An open-ended embodied agent with large language models</title>
+		<author>
+			<persName><forename type="first">G</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Xie</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Jiang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Mandlekar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Xiao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Zhu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Fan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Anandkumar</surname></persName>
+		</author>
+		<ptr target="https://openreview.net/forum?id=ehfRiF0R3a" />
+	</analytic>
+	<monogr>
+		<title level="j">Trans. Mach. Learn. Res</title>
+		<imprint>
+			<date type="published" when="2024">2024. 2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b46">
+	<analytic>
+		<title level="a" type="main">Ranked voting based self-consistency of large language models</title>
+		<author>
+			<persName><forename type="first">W</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Huang</surname></persName>
+		</author>
+		<ptr target="https://aclanthology.org/2025.findings-acl.744/" />
+	</analytic>
+	<monogr>
+		<title level="m">Findings of the Association for Computational Linguistics: ACL 2025</title>
+				<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b47">
+	<analytic>
+		<title level="a" type="main">Self-consistency improves chain of thought reasoning in language models</title>
+		<author>
+			<persName><forename type="first">X</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Wei</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Schuurmans</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Q</forename><forename type="middle">V</forename><surname>Le</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><forename type="middle">H</forename><surname>Chi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Zhou</surname></persName>
+		</author>
+		<ptr target="https://openreview.net/forum?id=1PL1NIMMrw" />
+	</analytic>
+	<monogr>
+		<title level="m">International Conference on Learning Representations (ICLR)</title>
+				<imprint>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b48">
+	<analytic>
+		<title level="a" type="main">Chain-of-thought prompting elicits reasoning in large language models</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Wei</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Schuurmans</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Bosma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Xia</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Chi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Q</forename><forename type="middle">V</forename><surname>Le</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Zhou</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Advances in neural information processing systems</title>
+		<imprint>
+			<biblScope unit="volume">35</biblScope>
+			<biblScope unit="page" from="24824" to="24837" />
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b49">
+	<analytic>
+		<title level="a" type="main">Osworld: Benchmarking multimodal agents for open-ended tasks in real computer environments</title>
+		<author>
+			<persName><forename type="first">T</forename><surname>Xie</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Zhao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Cao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><forename type="middle">J</forename><surname>Hua</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Cheng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Shin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Lei</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Advances in Neural Information Processing Systems</title>
+		<imprint>
+			<biblScope unit="volume">37</biblScope>
+			<biblScope unit="page" from="52040" to="52094" />
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b50">
+	<monogr>
+		<title level="m" type="main">Decoupling reasoning from observations for efficient augmented language models</title>
+		<author>
+			<persName><forename type="first">B</forename><surname>Xu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Peng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Lei</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Mukherjee</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Xu</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Rewoo</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2305.18323</idno>
+		<ptr target="https://doi.org/10.48550/arXiv.2305.18323" />
+		<imprint>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b51">
+	<analytic>
+		<title level="a" type="main">Webshop: Towards scalable real-world web interaction with grounded language agents</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Yao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Narasimhan</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Advances in Neural Information Processing Systems</title>
+		<imprint>
+			<biblScope unit="volume">35</biblScope>
+			<biblScope unit="page" from="20744" to="20757" />
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b52">
+	<analytic>
+		<title level="a" type="main">Tree of thoughts: Deliberate problem solving with large language models</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Yao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Yu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Zhao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">I</forename><surname>Shafran</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><forename type="middle">L</forename><surname>Griffiths</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Cao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><forename type="middle">R</forename><surname>Narasimhan</surname></persName>
+		</author>
+		<ptr target="https://arxiv.org/abs/2305.10601" />
+	</analytic>
+	<monogr>
+		<title level="m">Advances in Neural Information Processing Systems (NeurIPS)</title>
+				<imprint>
+			<biblScope unit="page">2023</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b53">
+	<analytic>
+		<title level="a" type="main">React: Synergizing reasoning and acting in language models</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Yao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Zhao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Yu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Du</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">I</forename><surname>Shafran</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><forename type="middle">R</forename><surname>Narasimhan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Cao</surname></persName>
+		</author>
+		<ptr target="https://openreview.net/forum?id=WE_vluYUL-X" />
+	</analytic>
+	<monogr>
+		<title level="m">International Conference on Learning Representations (ICLR)</title>
+				<imprint>
+			<biblScope unit="page">2023</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b54">
+	<analytic>
+		<title level="a" type="main">Star: Bootstrapping reasoning with reasoning</title>
+		<author>
+			<persName><forename type="first">E</forename><surname>Zelikman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Mu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Goodman</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Advances in Neural Information Processing Systems</title>
+		<imprint>
+			<biblScope unit="volume">35</biblScope>
+			<biblScope unit="page" from="15476" to="15488" />
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b55">
+	<analytic>
+		<title level="a" type="main">Appagent: Multimodal agents as smartphone users</title>
+		<author>
+			<persName><forename type="first">C</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Han</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Huang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Fu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Yu</surname></persName>
+		</author>
+		<idno type="DOI">10.1145/3706598.3713600</idno>
+		<ptr target="https://doi.org/10.1145/3706598.3713600" />
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 2025 CHI Conference on Human Factors in Computing Systems, CHI 2025</title>
+				<editor>
+			<persName><forename type="first">N</forename><surname>Yamashita</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">V</forename><surname>Evers</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">K</forename><surname>Yatani</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">S</forename><forename type="middle">X</forename><surname>Ding</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">B</forename><surname>Lee</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">M</forename><surname>Chetty</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">P</forename><forename type="middle">O T</forename><surname>Dugas</surname></persName>
+		</editor>
+		<meeting>the 2025 CHI Conference on Human Factors in Computing Systems, CHI 2025<address><addrLine>YokohamaJapan</addrLine></address></meeting>
+		<imprint>
+			<publisher>ACM</publisher>
+			<date type="published" when="2025-04-26">26 April 2025-1 May 2025. 2025</date>
+			<biblScope unit="volume">70</biblScope>
+			<biblScope unit="page">20</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b56">
+	<monogr>
+		<title level="m" type="main">Generative verifiers: Reward modeling as next-token prediction</title>
+		<author>
+			<persName><forename type="first">L</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Hosseini</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Bansal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Kazemi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Kumar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Agarwal</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2408.15240</idno>
+		<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b57">
+	<analytic>
+		<title level="a" type="main">Judging llm-as-a-judge with mt-bench and chatbot arena</title>
+		<author>
+			<persName><forename type="first">L</forename><surname>Zheng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W.-L</forename><surname>Chiang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Sheng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Zhuang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Zhuang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Lin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Xing</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Advances in neural information processing systems</title>
+		<imprint>
+			<biblScope unit="volume">36</biblScope>
+			<biblScope unit="page" from="46595" to="46623" />
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b58">
+	<analytic>
+		<title level="a" type="main">Language agent tree search unifies reasoning, acting, and planning in language models</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Zhou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Yan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Shlapentokh-Rothman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Wang</surname></persName>
+		</author>
+		<ptr target="https://openreview.net/forum?id=njwv9BsGHF" />
+	</analytic>
+	<monogr>
+		<title level="m">Forty-first International Conference on Machine Learning, ICML 2024</title>
+				<meeting><address><addrLine>Vienna, Austria</addrLine></address></meeting>
+		<imprint>
+			<publisher>OpenReview</publisher>
+			<date type="published" when="2024">July 21-27, 2024. 2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b59">
+	<analytic>
+		<title level="a" type="main">Webarena: A realistic web environment for building autonomous agents</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Zhou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><forename type="middle">F</forename><surname>Xu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Zhu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Zhou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Lo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Sridhar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Cheng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Ou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Bisk</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Fried</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">The Twelfth International Conference on Learning Representations</title>
+				<imprint>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+				</listBibl>
+			</div>
+		</back>
+	</text>
+</TEI>

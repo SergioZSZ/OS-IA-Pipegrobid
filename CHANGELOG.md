@@ -1,3 +1,6 @@
+# 2.0.0
+- añadido ROCRATE
+
 # 1.3.3
 
 - Actualizados metadatos

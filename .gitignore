@@ -15,3 +15,5 @@
 
 /xmls/*
 !xmls/.gitkeep
+
+/ro-crate.py
