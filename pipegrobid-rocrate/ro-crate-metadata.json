@@ -7,13 +7,10 @@
             "author": {
                 "@id": "https://orcid.org/0009-0000-3795-2767"
             },
-            "citation": {
-                "@id": "CITATION.cff"
-            },
             "creator": {
                 "@id": "https://orcid.org/0009-0000-3795-2767"
             },
-            "datePublished": "2026-04-12T22:56:38+00:00",
+            "datePublished": "2026-04-12T23:36:28+00:00",
             "description": "Research Object for PipeGrobid, a software project that processes scientific PDFs and generates structured XML outputs using a reproducible environment",
             "hasPart": [
                 {
@@ -76,15 +73,10 @@
             "mainEntity": {
                 "@id": "#pipegrobid-software"
             },
-            "mentions": [
-                {
-                    "@id": "#pipegrobid-service"
-                }
-            ],
-            "name": "PipeGrobid RO",
-            "subjectOf": {
-                "@id": "https://pipegrobid-software.readthedocs.io/es/latest/"
+            "mentions": {
+                "@id": "#pipegrobid-service"
             },
+            "name": "PipeGrobid RO",
             "url": {
                 "@id": "https://github.com/SergioZSZ/Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering"
             }
@@ -113,6 +105,9 @@
             "@id": "#pipegrobid-service",
             "@type": "Action",
             "description": "Execution of the PipeGrobid service using docker-compose. The service builds the container from the Dockerfile and runs the 'pipegrobid' command as its default CMD, processing PDF files and generating XML outputs and the final generated files.",
+            "instrument": {
+                "@id": "#pipegrobid-software"
+            },
             "isBasedOn": [
                 {
                     "@id": "docker-compose.yml"
@@ -135,18 +130,45 @@
             ]
         },
         {
+            "@id": "https://github.com/kermitt2/grobid",
+            "@type": "SoftwareApplication",
+            "description": "Machine learning library for extracting, parsing and re-structuring raw documents such as PDFs into structured TEI XML",
+            "name": "GROBID",
+            "url": "https://github.com/kermitt2/grobid"
+        },
+        {
             "@id": "#pipegrobid-software",
             "@type": "SoftwareSourceCode",
             "author": {
                 "@id": "https://orcid.org/0009-0000-3795-2767"
             },
+            "citation": {
+                "@id": "CITATION.cff"
+            },
             "codeRepository": {
                 "@id": "https://github.com/SergioZSZ/Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering"
             },
             "license": {
-                "@id": "https://www.apache.org/licenses/LICENSE-2.0"
+                "@id": "LICENSE"
             },
-            "name": "PipeGrobid"
+            "name": "PipeGrobid",
+            "programmingLanguage": "Python",
+            "runtimePlatform": "Docker",
+            "softwareRequirements": {
+                "@id": "https://github.com/kermitt2/grobid"
+            },
+            "softwareVersion": "1.3.8",
+            "subjectOf": [
+                {
+                    "@id": "https://pipegrobid-software.readthedocs.io/es/latest/"
+                },
+                {
+                    "@id": "codemeta.json"
+                },
+                {
+                    "@id": "README.md"
+                }
+            ]
         },
         {
             "@id": "pdfs/",
