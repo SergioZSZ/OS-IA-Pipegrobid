@@ -10,7 +10,7 @@
             "creator": {
                 "@id": "https://orcid.org/0009-0000-3795-2767"
             },
-            "datePublished": "2026-04-14T14:44:19+00:00",
+            "datePublished": "2026-04-14T14:47:55+00:00",
             "description": "Research Object for PipeGrobid, a software project that processes scientific PDFs and generates structured XML outputs using a reproducible environment",
             "hasPart": [
                 {
@@ -26,9 +26,6 @@
                     "@id": "src/"
                 },
                 {
-                    "@id": "docs/"
-                },
-                {
                     "@id": "Dockerfile"
                 },
                 {
@@ -36,9 +33,6 @@
                 },
                 {
                     "@id": "pyproject.toml"
-                },
-                {
-                    "@id": "poetry.lock"
                 },
                 {
                     "@id": "CITATION.cff"
@@ -51,9 +45,6 @@
                 },
                 {
                     "@id": "README.md"
-                },
-                {
-                    "@id": "ci-test.yml"
                 }
             ],
             "keywords": [
@@ -211,12 +202,6 @@
             "name": "Source code"
         },
         {
-            "@id": "docs/",
-            "@type": "Dataset",
-            "description": "Additional documentation for the project",
-            "name": "Project documentation"
-        },
-        {
             "@id": "Dockerfile",
             "@type": "File",
             "description": "Container definition for reproducible execution",
@@ -236,12 +221,6 @@
             "description": "Project metadata and dependency configuration for the Python package",
             "encodingFormat": "text/plain",
             "name": "Python project configuration"
-        },
-        {
-            "@id": "poetry.lock",
-            "@type": "File",
-            "encodingFormat": "text/plain",
-            "name": "Locked dependencies"
         },
         {
             "@id": "CITATION.cff",
@@ -267,13 +246,6 @@
             "description": "Main documentation for installation, usage and project overview",
             "encodingFormat": "text/markdown",
             "name": "Project README"
-        },
-        {
-            "@id": "ci-test.yml",
-            "@type": "File",
-            "description": "GitHub Actions workflow for continuous integration",
-            "encodingFormat": "text/yaml",
-            "name": "CI workflow"
         }
     ]
 }
