@@ -1,6 +1,6 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18647861.svg)](https://doi.org/10.5281/zenodo.18647861)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
-[![GitHub release](https://img.shields.io/github/v/release/SergioZSZ/Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering?include_prereleases)](https://github.com/SergioZSZ/Artificial-Intelligence-And-Open-Science-In-Research-Software-Engineering/releases)
+[![GitHub release](https://img.shields.io/github/v/release/SergioZSZ/OS-IA-Pipegrobid?include_prereleases)](https://github.com/SergioZSZ/OS-IA-Pipegrobid/releases)
 [![Project Status: Active](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 # Software para procesamiento de documentos científicos mediante el software GROBID (PipeGrobid)
 Más documentacion en: https://pipegrobid-software.readthedocs.io/es/latest/
