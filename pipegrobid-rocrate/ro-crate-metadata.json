@@ -10,7 +10,7 @@
             "creator": {
                 "@id": "https://orcid.org/0009-0000-3795-2767"
             },
-            "datePublished": "2026-04-14T14:40:34+00:00",
+            "datePublished": "2026-04-14T14:44:19+00:00",
             "description": "Research Object for PipeGrobid, a software project that processes scientific PDFs and generates structured XML outputs using a reproducible environment",
             "hasPart": [
                 {
@@ -24,9 +24,6 @@
                 },
                 {
                     "@id": "src/"
-                },
-                {
-                    "@id": "test/"
                 },
                 {
                     "@id": "docs/"
@@ -212,12 +209,6 @@
             "@type": "Dataset",
             "description": "Source code of the PipeGrobid project",
             "name": "Source code"
-        },
-        {
-            "@id": "test/",
-            "@type": "Dataset",
-            "description": "Validation and testing resources for the software",
-            "name": "Tests"
         },
         {
             "@id": "docs/",
