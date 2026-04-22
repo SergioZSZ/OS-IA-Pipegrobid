@@ -1,0 +1,407 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="https://g4.org/ontology/research-funding#"
+     xml:base="https://g4.org/ontology/research-funding"
+     xmlns:dc="http://purl.org/dc/elements/1.1/"
+     xmlns:my="https://g4.org/ontology/research-funding#"
+     xmlns:mod="https://w3id.org/mod#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:foaf="http://xmlns.com/foaf/0.1/"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:schema="https://schema.org/"
+     xmlns:dcterms="http://purl.org/dc/terms/">
+    <owl:Ontology rdf:about="https://g4.org/ontology/research-funding#">
+        <dc:creator>G4_OPENSCIENCE</dc:creator>
+        <dc:title>Ontology for funding researching</dc:title>
+        <dcterms:license>https://www.apache.org/licenses/LICENSE-2.0</dcterms:license>
+        <owl:versionInfo>0.0.1</owl:versionInfo>
+        <mod:createdWith rdf:resource="https://chowlk.linkeddata.es/"/>
+    </owl:Ontology>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Annotation properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://purl.org/dc/elements/1.1/creator -->
+
+    <owl:AnnotationProperty rdf:about="http://purl.org/dc/elements/1.1/creator"/>
+    
+
+
+    <!-- http://purl.org/dc/elements/1.1/title -->
+
+    <owl:AnnotationProperty rdf:about="http://purl.org/dc/elements/1.1/title">
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://purl.org/dc/terms/license -->
+
+    <owl:AnnotationProperty rdf:about="http://purl.org/dc/terms/license"/>
+    
+
+
+    <!-- http://www.w3.org/2002/07/owl#versionInfo -->
+
+    <owl:AnnotationProperty rdf:about="http://www.w3.org/2002/07/owl#versionInfo"/>
+    
+
+
+    <!-- https://w3id.org/mod#createdWith -->
+
+    <owl:AnnotationProperty rdf:about="https://w3id.org/mod#createdWith"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Datatypes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.w3.org/2001/XMLSchema#date -->
+
+    <rdfs:Datatype rdf:about="http://www.w3.org/2001/XMLSchema#date"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://purl.org/dc/elements/1.1/subject -->
+
+    <owl:ObjectProperty rdf:about="http://purl.org/dc/elements/1.1/subject">
+        <rdfs:domain rdf:resource="https://g4.org/ontology/research-funding#Paper"/>
+        <rdfs:range rdf:resource="https://g4.org/ontology/research-funding#Topic"/>
+        <rdfs:label>subject</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://g4.org/ontology/research-funding#acknowledges -->
+
+    <owl:ObjectProperty rdf:about="https://g4.org/ontology/research-funding#acknowledges">
+        <rdfs:label>acknowledges</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://g4.org/ontology/research-funding#fundedByProject -->
+
+    <owl:ObjectProperty rdf:about="https://g4.org/ontology/research-funding#fundedByProject">
+        <rdfs:domain rdf:resource="https://g4.org/ontology/research-funding#Paper"/>
+        <rdfs:range rdf:resource="https://schema.org/Project"/>
+        <rdfs:label>funded by project</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://schema.org/affiliation -->
+
+    <owl:ObjectProperty rdf:about="https://schema.org/affiliation">
+        <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+        <rdfs:range rdf:resource="https://schema.org/Organization"/>
+        <rdfs:label>affiliation</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://schema.org/author -->
+
+    <owl:ObjectProperty rdf:about="https://schema.org/author">
+        <rdfs:domain rdf:resource="https://g4.org/ontology/research-funding#Paper"/>
+        <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+        <rdfs:label>author</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://schema.org/funder -->
+
+    <owl:ObjectProperty rdf:about="https://schema.org/funder">
+        <rdfs:domain rdf:resource="https://schema.org/Project"/>
+        <rdfs:range rdf:resource="https://schema.org/Organization"/>
+        <rdfs:label>funder</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://schema.org/isSimilarTo -->
+
+    <owl:ObjectProperty rdf:about="https://schema.org/isSimilarTo">
+        <rdfs:domain rdf:resource="https://g4.org/ontology/research-funding#Paper"/>
+        <rdfs:range rdf:resource="https://g4.org/ontology/research-funding#Paper"/>
+        <rdfs:label>is similar to</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://schema.org/location -->
+
+    <owl:ObjectProperty rdf:about="https://schema.org/location">
+        <rdfs:domain rdf:resource="https://schema.org/Organization"/>
+        <rdfs:range rdf:resource="https://schema.org/Country"/>
+        <rdfs:label>location</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Data properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://purl.org/dc/elements/1.1/date -->
+
+    <owl:DatatypeProperty rdf:about="http://purl.org/dc/elements/1.1/date">
+        <rdfs:domain rdf:resource="https://g4.org/ontology/research-funding#Paper"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#dateTime"/>
+        <rdfs:label>date</rdfs:label>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://purl.org/dc/elements/1.1/title -->
+
+    <owl:DatatypeProperty rdf:about="http://purl.org/dc/elements/1.1/title">
+        <rdfs:domain rdf:resource="https://g4.org/ontology/research-funding#Paper"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- https://g4.org/ontology/research-funding#fundingAmount -->
+
+    <owl:DatatypeProperty rdf:about="https://g4.org/ontology/research-funding#fundingAmount">
+        <rdfs:domain rdf:resource="https://schema.org/Project"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+        <rdfs:label>funding amount</rdfs:label>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- https://schema.org/abstract -->
+
+    <owl:DatatypeProperty rdf:about="https://schema.org/abstract">
+        <rdfs:domain rdf:resource="https://g4.org/ontology/research-funding#Paper"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <rdfs:label>abstract</rdfs:label>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- https://schema.org/description -->
+
+    <owl:DatatypeProperty rdf:about="https://schema.org/description">
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <rdfs:label>description</rdfs:label>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- https://schema.org/endDate -->
+
+    <owl:DatatypeProperty rdf:about="https://schema.org/endDate">
+        <rdfs:domain rdf:resource="https://schema.org/Project"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#date"/>
+        <rdfs:label>end date</rdfs:label>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- https://schema.org/identifier -->
+
+    <owl:DatatypeProperty rdf:about="https://schema.org/identifier">
+        <rdfs:domain rdf:resource="https://g4.org/ontology/research-funding#Paper"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <rdfs:label>identifier</rdfs:label>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- https://schema.org/keywords -->
+
+    <owl:DatatypeProperty rdf:about="https://schema.org/keywords">
+        <rdfs:domain rdf:resource="https://g4.org/ontology/research-funding#Paper"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <rdfs:label>keywords</rdfs:label>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- https://schema.org/latitude -->
+
+    <owl:DatatypeProperty rdf:about="https://schema.org/latitude">
+        <rdfs:domain rdf:resource="https://schema.org/Country"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+        <rdfs:label>latitude</rdfs:label>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- https://schema.org/longitude -->
+
+    <owl:DatatypeProperty rdf:about="https://schema.org/longitude">
+        <rdfs:domain rdf:resource="https://schema.org/Country"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+        <rdfs:label>longitude</rdfs:label>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- https://schema.org/name -->
+
+    <owl:DatatypeProperty rdf:about="https://schema.org/name">
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <rdfs:label>name</rdfs:label>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- https://schema.org/sameAs -->
+
+    <owl:DatatypeProperty rdf:about="https://schema.org/sameAs">
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#anyURI"/>
+        <rdfs:label>same as</rdfs:label>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- https://schema.org/startDate -->
+
+    <owl:DatatypeProperty rdf:about="https://schema.org/startDate">
+        <rdfs:domain rdf:resource="https://schema.org/Project"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#date"/>
+        <rdfs:label>start date</rdfs:label>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://xmlns.com/foaf/0.1/Person -->
+
+    <owl:Class rdf:about="http://xmlns.com/foaf/0.1/Person">
+        <rdfs:label>Person</rdfs:label>
+    </owl:Class>
+    
+
+
+    <!-- https://g4.org/ontology/research-funding#Paper -->
+
+    <owl:Class rdf:about="https://g4.org/ontology/research-funding#Paper">
+        <rdfs:label>Paper</rdfs:label>
+    </owl:Class>
+    
+
+
+    <!-- https://g4.org/ontology/research-funding#Topic -->
+
+    <owl:Class rdf:about="https://g4.org/ontology/research-funding#Topic">
+        <rdfs:label>Topic</rdfs:label>
+    </owl:Class>
+    
+
+
+    <!-- https://schema.org/Country -->
+
+    <owl:Class rdf:about="https://schema.org/Country">
+        <rdfs:label>Country</rdfs:label>
+    </owl:Class>
+    
+
+
+    <!-- https://schema.org/Organization -->
+
+    <owl:Class rdf:about="https://schema.org/Organization">
+        <rdfs:label>Organization</rdfs:label>
+    </owl:Class>
+    
+
+
+    <!-- https://schema.org/Project -->
+
+    <owl:Class rdf:about="https://schema.org/Project">
+        <rdfs:label>Project</rdfs:label>
+    </owl:Class>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Annotations
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <rdf:Description rdf:about="http://purl.org/dc/elements/1.1/title">
+        <rdfs:label>title</rdfs:label>
+    </rdf:Description>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // General axioms
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <rdf:Description>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AllDisjointClasses"/>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="http://xmlns.com/foaf/0.1/Person"/>
+            <rdf:Description rdf:about="https://g4.org/ontology/research-funding#Paper"/>
+            <rdf:Description rdf:about="https://g4.org/ontology/research-funding#Topic"/>
+            <rdf:Description rdf:about="https://schema.org/Country"/>
+            <rdf:Description rdf:about="https://schema.org/Organization"/>
+            <rdf:Description rdf:about="https://schema.org/Project"/>
+        </owl:members>
+    </rdf:Description>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 4.5.29.2024-05-13T12:11:03Z) https://github.com/owlcs/owlapi -->
+

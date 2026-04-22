@@ -1,0 +1,7 @@
+# Caso de uso
+
+Queremos desarrollar una aplicación basada en un Knowledge Graph (KG) que analice la relación entre publicaciones científicas, sus autores y las entidades financiadoras. El objetivo principal es identificar patrones en la distribución geográfica de la financiación científica, conectando los artículos con organizaciones financiadoras y los países de origen de dicha financiación.
+
+Al proporcionar un conjunto de artículos científicos, la aplicación podrá identificar qué entidades han financiado cada uno de ellos, mostrando métricas como el porcentaje de financiación por país, los principales organismos financiadores o las redes de colaboración entre países.
+
+Por ejemplo, si un usuario introduce un conjunto de artículos científicos del área de Inteligencia Arificial, el sistema podrá identificar automáticamente las entidades financiadoras de cada publicación y relacionarlas con sus países de origen. A partir de esta información, se podrán obtener resultados como la distribución porcentual de la financiación por país, la identificación de los principales organismos financiadores o la detección de colaboraciones internacionales entre autores y entidades, proporcionando así una visión clara de los patrones de financiación en ese campo de investigación.

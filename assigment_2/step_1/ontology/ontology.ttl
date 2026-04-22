@@ -1,0 +1,146 @@
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix mod: <https://w3id.org/mod#> .
+@prefix my: <https://g4.org/ontology/research-funding#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <https://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+dc:creator a owl:AnnotationProperty .
+
+dc:date a owl:DatatypeProperty ;
+    rdfs:label "date" ;
+    rdfs:domain my:Paper ;
+    rdfs:range xsd:dateTime .
+
+dc:subject a owl:ObjectProperty ;
+    rdfs:label "subject" ;
+    rdfs:domain my:Paper ;
+    rdfs:range my:Topic .
+
+dc:title a owl:AnnotationProperty,
+        owl:DatatypeProperty ;
+    rdfs:label "title" ;
+    rdfs:domain my:Paper ;
+    rdfs:range xsd:string .
+
+dcterms:license a owl:AnnotationProperty .
+
+owl:versionInfo a owl:AnnotationProperty .
+
+my: a owl:Ontology ;
+    dc:creator "G4_OPENSCIENCE" ;
+    dc:title "Ontology for funding researching" ;
+    dcterms:license "https://www.apache.org/licenses/LICENSE-2.0" ;
+    owl:versionInfo "0.0.1" ;
+    mod:createdWith <https://chowlk.linkeddata.es/> .
+
+my:acknowledges a owl:ObjectProperty ;
+    rdfs:label "acknowledges" .
+
+my:fundedByProject a owl:ObjectProperty ;
+    rdfs:label "funded by project" ;
+    rdfs:domain my:Paper ;
+    rdfs:range schema:Project .
+
+my:fundingAmount a owl:DatatypeProperty ;
+    rdfs:label "funding amount" ;
+    rdfs:domain schema:Project ;
+    rdfs:range xsd:decimal .
+
+schema:abstract a owl:DatatypeProperty ;
+    rdfs:label "abstract" ;
+    rdfs:domain my:Paper ;
+    rdfs:range xsd:string .
+
+schema:affiliation a owl:ObjectProperty ;
+    rdfs:label "affiliation" ;
+    rdfs:domain foaf:Person ;
+    rdfs:range schema:Organization .
+
+schema:author a owl:ObjectProperty ;
+    rdfs:label "author" ;
+    rdfs:domain my:Paper ;
+    rdfs:range foaf:Person .
+
+schema:description a owl:DatatypeProperty ;
+    rdfs:label "description" ;
+    rdfs:range xsd:string .
+
+schema:endDate a owl:DatatypeProperty ;
+    rdfs:label "end date" ;
+    rdfs:domain schema:Project ;
+    rdfs:range xsd:date .
+
+schema:funder a owl:ObjectProperty ;
+    rdfs:label "funder" ;
+    rdfs:domain schema:Project ;
+    rdfs:range schema:Organization .
+
+schema:identifier a owl:DatatypeProperty ;
+    rdfs:label "identifier" ;
+    rdfs:domain my:Paper ;
+    rdfs:range xsd:string .
+
+schema:isSimilarTo a owl:ObjectProperty ;
+    rdfs:label "is similar to" ;
+    rdfs:domain my:Paper ;
+    rdfs:range my:Paper .
+
+schema:keywords a owl:DatatypeProperty ;
+    rdfs:label "keywords" ;
+    rdfs:domain my:Paper ;
+    rdfs:range xsd:string .
+
+schema:latitude a owl:DatatypeProperty ;
+    rdfs:label "latitude" ;
+    rdfs:domain schema:Country ;
+    rdfs:range xsd:decimal .
+
+schema:location a owl:ObjectProperty ;
+    rdfs:label "location" ;
+    rdfs:domain schema:Organization ;
+    rdfs:range schema:Country .
+
+schema:longitude a owl:DatatypeProperty ;
+    rdfs:label "longitude" ;
+    rdfs:domain schema:Country ;
+    rdfs:range xsd:decimal .
+
+schema:name a owl:DatatypeProperty ;
+    rdfs:label "name" ;
+    rdfs:range xsd:string .
+
+schema:sameAs a owl:DatatypeProperty ;
+    rdfs:label "same as" ;
+    rdfs:range xsd:anyURI .
+
+schema:startDate a owl:DatatypeProperty ;
+    rdfs:label "start date" ;
+    rdfs:domain schema:Project ;
+    rdfs:range xsd:date .
+
+my:Topic a owl:Class ;
+    rdfs:label "Topic" .
+
+foaf:Person a owl:Class ;
+    rdfs:label "Person" .
+
+schema:Country a owl:Class ;
+    rdfs:label "Country" .
+
+schema:Organization a owl:Class ;
+    rdfs:label "Organization" .
+
+schema:Project a owl:Class ;
+    rdfs:label "Project" .
+
+my:Paper a owl:Class ;
+    rdfs:label "Paper" .
+
+[] a owl:AllDisjointClasses ;
+    owl:members ( my:Topic foaf:Person schema:Organization schema:Country my:Paper schema:Project ) .
+

@@ -1,0 +1,65 @@
+
+____________________________________________________________________________________________________________________________________________________________________________________________
+
+Results for P11: Missing domain or range in properties.Important4 cases
+Object and/or datatype properties without domain or range (or none of them) are included in the ontology.
+
+• This pitfall appears in the following elements:
+› https://g4.org/ontology/research-funding#acknowledges
+› https://schema.org/sameAs
+› https://schema.org/description
+› https://schema.org/name
+
+• Tip: Solving this pitfall may lead to new results for other pitfalls and suggestions. We encourage you to solve all cases when needed and see what else you can get from OOPS!
+
+____________________________________________________________________________________________________________________________________________________________________________________________
+
+NOT IMPORTANT:
+
+____________________________________________________________________________________________________________________________________________________________________________________________
+
+Results for P08: Missing annotations.Minor27 cases
+This pitfall consists in creating an ontology element and failing to provide human readable annotations attached to it. Consequently, ontology elements lack annotation properties that label them (e.g. rdfs:label, lemon:LexicalEntry, skos:prefLabel or skos:altLabel) or that define them (e.g. rdfs:comment or dc:description). This pitfall is related to the guidelines provided in [5].
+
+• The following elements have neither rdfs:comment or skos:definition defined:
+› https://schema.org/Project
+› https://schema.org/Organization
+› https://schema.org/Country
+› https://g4.org/ontology/research-funding#Topic
+› https://g4.org/ontology/research-funding#Paper
+› http://xmlns.com/foaf/0.1/Person
+› https://schema.org/location
+› https://schema.org/isSimilarTo
+› https://schema.org/funder
+› https://schema.org/author
+› https://schema.org/affiliation
+› https://g4.org/ontology/research-funding#fundedByProject
+› https://g4.org/ontology/research-funding#acknowledges
+› http://purl.org/dc/elements/1.1/subject
+› http://purl.org/dc/elements/1.1/title
+› http://purl.org/dc/elements/1.1/date
+› https://schema.org/endDate
+› https://schema.org/name
+› https://schema.org/startDate
+› https://schema.org/identifier
+› https://schema.org/longitude
+› https://schema.org/latitude
+› https://schema.org/additional
+› https://schema.org/description
+› https://schema.org/abstract
+› https://schema.org/sameAs
+› https://schema.org/keywords
+____________________________________________________________________________________________________________________________________________________________________________________________
+
+Results for P13: Inverse relationships not explicitly declared.Minor8 cases
+This pitfall appears when any relationship (except for those that are defined as symmetric properties using owl:SymmetricProperty) does not have an inverse relationship (owl:inverseOf) defined within the ontology.
+
+• This pitfall appears in the following elements:
+› https://schema.org/location
+› https://schema.org/isSimilarTo
+› https://schema.org/funder
+› https://schema.org/author
+› https://schema.org/affiliation
+› https://g4.org/ontology/research-funding#fundedByProject
+› https://g4.org/ontology/research-funding#acknowledges
+› http://purl.org/dc/elements/1.1/subject
