@@ -38,7 +38,10 @@
     "license": "Apache-2.0",
     "name": "Software para extracción de documentos científicos mediante el software GROBID",
     "operatingSystem": "Cross-platform",
-    "programmingLanguage": "Python 3.10",
+    "programmingLanguage":{
+        "name": "Python",
+        "version": "3.10"
+    },
     "releaseNotes": "- Actualizados metadatos\n",
     "runtimePlatform": "Python",
     "softwareRequirements": [
