@@ -93,16 +93,6 @@
     
 
 
-    <!-- http://purl.org/dc/elements/1.1/subject -->
-
-    <owl:ObjectProperty rdf:about="http://purl.org/dc/elements/1.1/subject">
-        <rdfs:domain rdf:resource="https://g4.org/ontology/research-funding#Paper"/>
-        <rdfs:range rdf:resource="https://g4.org/ontology/research-funding#Topic"/>
-        <rdfs:label>subject</rdfs:label>
-    </owl:ObjectProperty>
-    
-
-
     <!-- https://g4.org/ontology/research-funding#acknowledges -->
 
     <owl:ObjectProperty rdf:about="https://g4.org/ontology/research-funding#acknowledges">
@@ -117,6 +107,46 @@
         <rdfs:domain rdf:resource="https://g4.org/ontology/research-funding#Paper"/>
         <rdfs:range rdf:resource="https://schema.org/Project"/>
         <rdfs:label>funded by project</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://g4.org/ontology/research-funding#paper -->
+
+    <owl:ObjectProperty rdf:about="https://g4.org/ontology/research-funding#paper">
+        <rdfs:domain rdf:resource="https://g4.org/ontology/research-funding#PaperTopicSimilarity"/>
+        <rdfs:range rdf:resource="https://g4.org/ontology/research-funding#Paper"/>
+        <rdfs:label>paper</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://g4.org/ontology/research-funding#paper1 -->
+
+    <owl:ObjectProperty rdf:about="https://g4.org/ontology/research-funding#paper1">
+        <rdfs:domain rdf:resource="https://g4.org/ontology/research-funding#PaperSimilarity"/>
+        <rdfs:range rdf:resource="https://g4.org/ontology/research-funding#Paper"/>
+        <rdfs:label>paper1</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://g4.org/ontology/research-funding#paper2 -->
+
+    <owl:ObjectProperty rdf:about="https://g4.org/ontology/research-funding#paper2">
+        <rdfs:domain rdf:resource="https://g4.org/ontology/research-funding#PaperSimilarity"/>
+        <rdfs:range rdf:resource="https://g4.org/ontology/research-funding#Paper"/>
+        <rdfs:label>paper2</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://g4.org/ontology/research-funding#topic -->
+
+    <owl:ObjectProperty rdf:about="https://g4.org/ontology/research-funding#topic">
+        <rdfs:domain rdf:resource="https://g4.org/ontology/research-funding#PaperTopicSimilarity"/>
+        <rdfs:range rdf:resource="https://g4.org/ontology/research-funding#Topic"/>
+        <rdfs:label>topic</rdfs:label>
     </owl:ObjectProperty>
     
 
@@ -147,16 +177,6 @@
         <rdfs:domain rdf:resource="https://schema.org/Project"/>
         <rdfs:range rdf:resource="https://schema.org/Organization"/>
         <rdfs:label>funder</rdfs:label>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- https://schema.org/isSimilarTo -->
-
-    <owl:ObjectProperty rdf:about="https://schema.org/isSimilarTo">
-        <rdfs:domain rdf:resource="https://g4.org/ontology/research-funding#Paper"/>
-        <rdfs:range rdf:resource="https://g4.org/ontology/research-funding#Paper"/>
-        <rdfs:label>is similar to</rdfs:label>
     </owl:ObjectProperty>
     
 
@@ -200,12 +220,40 @@
     
 
 
+    <!-- https://g4.org/ontology/research-funding#algorihtm -->
+
+    <owl:DatatypeProperty rdf:about="https://g4.org/ontology/research-funding#algorihtm">
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <rdfs:label>algorihtm</rdfs:label>
+    </owl:DatatypeProperty>
+    
+
+
     <!-- https://g4.org/ontology/research-funding#fundingAmount -->
 
     <owl:DatatypeProperty rdf:about="https://g4.org/ontology/research-funding#fundingAmount">
         <rdfs:domain rdf:resource="https://schema.org/Project"/>
         <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
         <rdfs:label>funding amount</rdfs:label>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- https://g4.org/ontology/research-funding#keywordVector -->
+
+    <owl:DatatypeProperty rdf:about="https://g4.org/ontology/research-funding#keywordVector">
+        <rdfs:domain rdf:resource="https://g4.org/ontology/research-funding#Topic"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <rdfs:label>keyword vector</rdfs:label>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- https://g4.org/ontology/research-funding#score -->
+
+    <owl:DatatypeProperty rdf:about="https://g4.org/ontology/research-funding#score">
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+        <rdfs:label>score</rdfs:label>
     </owl:DatatypeProperty>
     
 
@@ -252,29 +300,9 @@
     <!-- https://schema.org/keywords -->
 
     <owl:DatatypeProperty rdf:about="https://schema.org/keywords">
-        <rdfs:domain rdf:resource="https://g4.org/ontology/research-funding#Paper"/>
+        <rdfs:domain rdf:resource="https://g4.org/ontology/research-funding#Topic"/>
         <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
         <rdfs:label>keywords</rdfs:label>
-    </owl:DatatypeProperty>
-    
-
-
-    <!-- https://schema.org/latitude -->
-
-    <owl:DatatypeProperty rdf:about="https://schema.org/latitude">
-        <rdfs:domain rdf:resource="https://schema.org/Country"/>
-        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
-        <rdfs:label>latitude</rdfs:label>
-    </owl:DatatypeProperty>
-    
-
-
-    <!-- https://schema.org/longitude -->
-
-    <owl:DatatypeProperty rdf:about="https://schema.org/longitude">
-        <rdfs:domain rdf:resource="https://schema.org/Country"/>
-        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
-        <rdfs:label>longitude</rdfs:label>
     </owl:DatatypeProperty>
     
 
@@ -330,6 +358,22 @@
 
     <owl:Class rdf:about="https://g4.org/ontology/research-funding#Paper">
         <rdfs:label>Paper</rdfs:label>
+    </owl:Class>
+    
+
+
+    <!-- https://g4.org/ontology/research-funding#PaperSimilarity -->
+
+    <owl:Class rdf:about="https://g4.org/ontology/research-funding#PaperSimilarity">
+        <rdfs:label>Paper Similarity</rdfs:label>
+    </owl:Class>
+    
+
+
+    <!-- https://g4.org/ontology/research-funding#PaperTopicSimilarity -->
+
+    <owl:Class rdf:about="https://g4.org/ontology/research-funding#PaperTopicSimilarity">
+        <rdfs:label>Paper Topic Similarity</rdfs:label>
     </owl:Class>
     
 

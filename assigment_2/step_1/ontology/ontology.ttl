@@ -16,11 +16,6 @@ dc:date a owl:DatatypeProperty ;
     rdfs:domain my:Paper ;
     rdfs:range xsd:dateTime .
 
-dc:subject a owl:ObjectProperty ;
-    rdfs:label "subject" ;
-    rdfs:domain my:Paper ;
-    rdfs:range my:Topic .
-
 dc:title a owl:AnnotationProperty,
         owl:DatatypeProperty ;
     rdfs:label "title" ;
@@ -41,6 +36,10 @@ my: a owl:Ontology ;
 my:acknowledges a owl:ObjectProperty ;
     rdfs:label "acknowledges" .
 
+my:algorihtm a owl:DatatypeProperty ;
+    rdfs:label "algorihtm" ;
+    rdfs:range xsd:string .
+
 my:fundedByProject a owl:ObjectProperty ;
     rdfs:label "funded by project" ;
     rdfs:domain my:Paper ;
@@ -50,6 +49,35 @@ my:fundingAmount a owl:DatatypeProperty ;
     rdfs:label "funding amount" ;
     rdfs:domain schema:Project ;
     rdfs:range xsd:decimal .
+
+my:keywordVector a owl:DatatypeProperty ;
+    rdfs:label "keyword vector" ;
+    rdfs:domain my:Topic ;
+    rdfs:range xsd:string .
+
+my:paper a owl:ObjectProperty ;
+    rdfs:label "paper" ;
+    rdfs:domain my:PaperTopicSimilarity ;
+    rdfs:range my:Paper .
+
+my:paper1 a owl:ObjectProperty ;
+    rdfs:label "paper1" ;
+    rdfs:domain my:PaperSimilarity ;
+    rdfs:range my:Paper .
+
+my:paper2 a owl:ObjectProperty ;
+    rdfs:label "paper2" ;
+    rdfs:domain my:PaperSimilarity ;
+    rdfs:range my:Paper .
+
+my:score a owl:DatatypeProperty ;
+    rdfs:label "score" ;
+    rdfs:range xsd:float .
+
+my:topic a owl:ObjectProperty ;
+    rdfs:label "topic" ;
+    rdfs:domain my:PaperTopicSimilarity ;
+    rdfs:range my:Topic .
 
 schema:abstract a owl:DatatypeProperty ;
     rdfs:label "abstract" ;
@@ -85,30 +113,15 @@ schema:identifier a owl:DatatypeProperty ;
     rdfs:domain my:Paper ;
     rdfs:range xsd:string .
 
-schema:isSimilarTo a owl:ObjectProperty ;
-    rdfs:label "is similar to" ;
-    rdfs:domain my:Paper ;
-    rdfs:range my:Paper .
-
 schema:keywords a owl:DatatypeProperty ;
     rdfs:label "keywords" ;
-    rdfs:domain my:Paper ;
+    rdfs:domain my:Topic ;
     rdfs:range xsd:string .
-
-schema:latitude a owl:DatatypeProperty ;
-    rdfs:label "latitude" ;
-    rdfs:domain schema:Country ;
-    rdfs:range xsd:decimal .
 
 schema:location a owl:ObjectProperty ;
     rdfs:label "location" ;
     rdfs:domain schema:Organization ;
     rdfs:range schema:Country .
-
-schema:longitude a owl:DatatypeProperty ;
-    rdfs:label "longitude" ;
-    rdfs:domain schema:Country ;
-    rdfs:range xsd:decimal .
 
 schema:name a owl:DatatypeProperty ;
     rdfs:label "name" ;
@@ -123,14 +136,20 @@ schema:startDate a owl:DatatypeProperty ;
     rdfs:domain schema:Project ;
     rdfs:range xsd:date .
 
-my:Topic a owl:Class ;
-    rdfs:label "Topic" .
+my:PaperSimilarity a owl:Class ;
+    rdfs:label "Paper Similarity" .
+
+my:PaperTopicSimilarity a owl:Class ;
+    rdfs:label "Paper Topic Similarity" .
+
+schema:Country a owl:Class ;
+    rdfs:label "Country" .
 
 foaf:Person a owl:Class ;
     rdfs:label "Person" .
 
-schema:Country a owl:Class ;
-    rdfs:label "Country" .
+my:Topic a owl:Class ;
+    rdfs:label "Topic" .
 
 schema:Organization a owl:Class ;
     rdfs:label "Organization" .
