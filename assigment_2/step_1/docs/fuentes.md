@@ -5,3 +5,6 @@
  
  ## WIKIDATA (SPARQL)
   Nos decantamos por usar wikidata para conseguir la información de las organizaciones financiadoras y los países donde se localizan estas organizaciones
+
+## OpenAire (API REST)
+Decidimos utilizarlo para obtener información sobre los proyectos de investigación mencionados en los artículos científicos, como su identificador, título, acrónimo, convocatoria, entidad financiadora, fechas y cantidad financiada cuando esté disponible.

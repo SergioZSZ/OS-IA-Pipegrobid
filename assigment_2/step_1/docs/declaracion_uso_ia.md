@@ -1,0 +1,1 @@
+- Se usó la IA para la búsqueda de los prefijos/namespaces en la ontología. Se revisó posteriormente que los vocabularios se adecuaban a lo necesario.
