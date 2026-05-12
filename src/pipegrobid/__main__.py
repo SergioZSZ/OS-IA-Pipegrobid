@@ -50,6 +50,7 @@ def main():
                     print(f"WARNING: Ningún tei.xml en la carpeta 'xmls', por favor, genérelos mediante GROBID.")
                     return
                 else:
+                
                     # juntar en un unico texto los abstracts y generar el keyword cloud
                     text = " ".join(xmls_abstracts_figures_links.get("abstracts"))
                     keyword_gen(text,dirs["files"])

@@ -12,6 +12,6 @@ services:
       - GROBID_URL=http://grobid:8070
     volumes:
       - ./pdfs:/app/pdfs
-      - ./xmls:/app/xmls
-      - ./generated_files:/app/generated_files
+      - ./outputs/xmls:/app/xmls
+      - ./outputs/generated_files:/app/generated_files
       

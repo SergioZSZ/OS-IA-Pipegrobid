@@ -17,3 +17,5 @@
 !xmls/.gitkeep
 
 /ro-crate.py
+
+/outputs/*

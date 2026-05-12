@@ -1,45 +1,24 @@
-# 2.0.0
-- añadido ROCRATE
 
-# 1.3.3
+# Novedades
 
-- Actualizados metadatos
+## Parseo de XMLs generados por grobid
 
-# 1.3.2
+- añadidos scripts para la extracción de información estructurada:
 
-- Documentación Actualizada
+    - initial_parse.py:
+        contiene funciones para el parseo de los datos estructurados del xml generado a partir
+        del pdf con los que se puede nutrir el KG
 
-# 1.3.1
+    - parse_grobid_xml.py:
+        contiene el flujo de parseo del xml para obtener los datos estructurados y creación
+        de jsons estructurados con dichos datos
 
-- Eliminados test unitarios dependientes de GROBID
+## Próximas integraciones
+- Generación de TopicModeling mediante Transformers (BERTopic) usado para nutrir el KG con los Topics generados y con qué papers está relacionado.
 
-# 1.3.0
+- Uso de LLM para reconocimiento de entidades en "acknowledgements" para nutrir el KG con las relaciones de acknowledges y sus rangos(Person,Organization) y posiblemente Projects
 
-- Añadida dockerización del proyecto
+- Creación del KG a partir de los datos obtenidos tanto de manera estructurada como gracias a IA.
 
-- Modificado __main__ para cambiar URL dependiendo de si se ejecutó mediante docker-compose o en local
-
-- Modificada función `isactive(url)` para esperar 30 segundos a que GROBID sea accesible
-
-# 1.2.0
-
-- cambiado entorno virtual de `Python venv` a `poetry` debido a su buena gestión de dependencias, su compatibilidad con otros sistemas operativos y facilidad para replicar y lanzar el proyecto (modificado README.md con lo necesario para su uso)
-
-- añadido entry point con `poetry` para mejorar la facilidad de ejecución del paquete `pipegrobid` usando solo el mandato `poetry run pipegrobid`
-
-- modulado mejor el código para generar pruebas unitarias
-
-- añadido tipado a los inputs y  outputs de las funciones 
-
-- añadidos test unitarios
-
-- añadida github action para correr los test al subir el proyecto
-
-- compatibilidad con python >= 3.10
-
-- añadido Readthedocs documentation
-
-
-
-
+- Nutrir KG creado con información obtenida de otros KGs (OpenAire, ORCID, Wikidata) 
 
