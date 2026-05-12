@@ -9,16 +9,66 @@
         contiene funciones para el parseo de los datos estructurados del xml generado a partir
         del pdf con los que se puede nutrir el KG
 
+        Actualmente permite extraer:
+
+        - Información del paper:
+            - título
+            - abstract
+            - fecha de publicación
+            - identificador local
+            - DOI pendiente de enriquecimiento externo
+
+        - Información de autores:
+            - nombre
+            - orden de autoría
+            - ORCID pendiente de enriquecimiento externo
+
+        - Información de acknowledgements:
+            - texto bruto de la sección
+            - marcado como pendiente de extracción mediante LLM/NER
+
     - parse_grobid_xml.py:
-        contiene el flujo de parseo del xml para obtener los datos estructurados y creación
-        de jsons estructurados con dichos datos
+        Contiene el flujo de parseo de los XML.
+
+        Su función es:
+
+        1. Recorrer los XML generados por GROBID.
+        2. Aplicar las funciones de parseo definidas en `initial_parse.py`.
+        3. Generar un JSON estructurado por cada paper.
+        4. Guardar los resultados en la carpeta de salida correspondiente.
+        
 
 ## Próximas integraciones
-- Generación de TopicModeling mediante Transformers (BERTopic) usado para nutrir el KG con los Topics generados y con qué papers está relacionado.
+- Generación de TopicModeling mediante Transformers (BERTopic) Estos resultados se utilizarán para nutrir el KG con:
 
-- Uso de LLM para reconocimiento de entidades en "acknowledgements" para nutrir el KG con las relaciones de acknowledges y sus rangos(Person,Organization) y posiblemente Projects
+    - instancias de `Topic`
+    - keyword strings representativos
+    - relación entre papers y topics
+    - puntuación de pertenencia paper-topic
 
-- Creación del KG a partir de los datos obtenidos tanto de manera estructurada como gracias a IA.
 
-- Nutrir KG creado con información obtenida de otros KGs (OpenAire, ORCID, Wikidata) 
+- Uso de LLM para reconocimiento de entidades en "acknowledgements". El objetivo es extraer:
+
+    - personas mencionadas
+    - organizaciones financiadoras
+    - proyectos
+    - identificadores de grants/awards
+    - posibles relaciones entre proyectos y financiadores
+
+    Estos resultados servirán para nutrir relaciones como:
+
+    - `acknowledges`
+    - `fundedByProject`
+    - `funder`
+
+- Creación del KG a partir de:
+    - datos estructurados extraídos directamente del XML
+    - entidades extraídas mediante IA
+    - topics generados mediante topic modeling
+
+- Nutrir el KG con información procedente de fuentes externas:
+
+    - **OpenAIRE**: proyectos de investigación, identificadores, acrónimos, convocatorias, financiadores, fechas y financiación cuando esté disponible.
+    - **ORCID**: identificadores y metadatos públicos de autores.
+    - **Wikidata**: información sobre organizaciones, países, identificadores externos y enlaces semánticos.
 
