@@ -1,35 +1,65 @@
 {
   "paper": {
     "local_id": "paper20",
-    "title": "CAUSAL INTERPRETATION OF NEURAL NETWORK COMPUTATIONS WITH CONTRIBUTION DECOMPOSITION",
-    "abstract": "Understanding how neural networks transform inputs into outputs is crucial for interpreting and manipulating their behavior. Most existing approaches analyze internal representations by identifying hidden-layer activation patterns correlated with human-interpretable concepts. Here we take a direct approach to examine how hidden neurons act to drive network outputs. We introduce CODEC (Contribution Decomposition), a method that uses sparse autoencoders to decompose network behavior into sparse motifs of hidden-neuron contributions, revealing causal processes that cannot be determined by analyzing activations alone. Applying CODEC to benchmark image-classification networks, we find that contributions grow in sparsity and dimensionality across layers and, unexpectedly, that they progressively decorrelate positive and negative effects on network outputs. We further show that decomposing contributions into sparse modes enables greater control and interpretation of intermediate layers, supporting both causal manipulations of network output and human-interpretable visualizations of distinct image components that combine to drive that output. Finally, by analyzing state-of-the-art models of neural activity in the vertebrate retina, we demonstrate that CODEC uncovers combinatorial actions of model interneurons and identifies the sources of dynamic receptive fields. Overall, CODEC provides a rich and interpretable framework for understanding how nonlinear computations evolve across hierarchical layers, establishing contribution modes as an informative unit of analysis for mechanistic insights into artificial neural networks.",
-    "published_date": "2026-03-06",
+    "title": "Household size can explain 40% of the variance in cumulative COVID-19 incidence across Europe",
+    "abstract": "Household size impacts the spread of respiratory infectious diseases: Larger households tend to boost transmission by acquiring external infections more frequently and subsequently transmitting them back into the community. Furthermore, mandatory interventions primarily modulate contagion between households rather than within them. We developed an approach to quantify the role of household size in epidemics by separating within-household from out-household transmission, and found that household size explains 41% of the variability in cumulative COVID-19 incidence across 34 European countries (95% confidence interval: [15%, 46%]). The contribution of households to the overall dynamics can be quantified by a boost factor that increases with the effective household size, implying that countries with larger households require more stringent interventions to achieve the same levels of containment. This suggests that households constitute a structural (dis-)advantage that must be considered when designing and evaluating mitigation strategies.",
+    "published_date": "2026-02-17",
     "doi": null
   },
   "people": [
     {
-      "name": "Joshua Brendan Melander",
+      "name": "Seba Contreras",
       "author_order": 1,
       "orcid": null
     },
     {
-      "name": "Zaki Alaoui",
+      "name": "Philipp Dönges",
       "author_order": 2,
       "orcid": null
     },
     {
-      "name": "Shenghua Liu",
+      "name": "Maciej Filinski",
       "author_order": 3,
       "orcid": null
     },
     {
-      "name": "Surya Ganguli",
+      "name": "Joel Wagner",
       "author_order": 4,
       "orcid": null
     },
     {
-      "name": "Stephen A Baccus",
+      "name": "Viktor Bezborodov",
       "author_order": 5,
+      "orcid": null
+    },
+    {
+      "name": "Marcin Bodych",
+      "author_order": 6,
+      "orcid": null
+    },
+    {
+      "name": "Barbara Pabjan",
+      "author_order": 7,
+      "orcid": null
+    },
+    {
+      "name": "Franciszek Rakowski",
+      "author_order": 8,
+      "orcid": null
+    },
+    {
+      "name": "Jan Pablo Burgard",
+      "author_order": 9,
+      "orcid": null
+    },
+    {
+      "name": "Tyll Krueger",
+      "author_order": 10,
+      "orcid": null
+    },
+    {
+      "name": "Viola Priesemann",
+      "author_order": 11,
       "orcid": null
     }
   ],
@@ -38,7 +68,7 @@
   "topics": [],
   "acknowledgements": [
     {
-      "text": "ACKNOWLEDGEMENTS This work was supported by grants from the National Eye Institute (NEI): R01EY022933, R01EY025087 and P30EY026877 (SAB). S.G. thanks the Simons Foundation Collaboration on the Physics of Learning and Neural Computation and a Schmidt Sciences Polymath Award for support. Z.A. was supported by the Stanford Medicine Post-Baccalaureate Experience In Research program.",
+      "text": "Acknowledgements We thank the Priesemann group for the exciting discussions and their valuable input. Authors with affiliation \"1\" received support from the Max-Planck-Society. SC, PD, VP, and TK were funded by the German Federal Ministry for Education and Research for the RESPINOW project (031L0298G), and SC, VP, and JW by the infoXpand project (031L0300A). VP was supported by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) under Germany's Excellence Strategy -EXC 2067/1-390729940. VP also acknowledges the support of the Ministry of Science and Culture of Lower Saxony through funds from the program zukunft.niedersachsen of the Volkswagen Foundation for the 'CAIMed -Lower Saxony Center for Artificial Intelligence and Causal Methods in Medicine' project (grant no. ZN4257), \"Niedersächsisches Vorab\", and the Niedersachsen-Profil-Professur. TK acknowledges support from the Government of Saxony through the SaxoCOV grant. Grammarly Pro AI has been used for grammar checks.",
       "needs_llm_extraction": true
     }
   ]

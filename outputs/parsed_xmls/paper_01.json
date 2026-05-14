@@ -1,0 +1,80 @@
+{
+  "paper": {
+    "local_id": "paper1",
+    "title": "Recurrent Structural Policy Gradient for Partially Observable Mean Field Games",
+    "abstract": "Mean Field Games (MFGs) provide a principled framework for modeling interactions in large population models: at scale, population dynamics become deterministic, with uncertainty entering only through aggregate shocksor common noise. However, algorithmic progress has been limited since model-free methods are too high variance and exact methods scale poorly. Recent Hybrid Structural Methods (HSMs) use Monte Carlo rollouts for the common noise in combination with exact estimation of the expected return, conditioned on those samples. However, HSMs have not been scaled to Partially Observable settings. We propose Recurrent Structural Policy Gradient (RSPG), the first history-aware HSM for settings involving shared aggregate observations. We also introduce MFAX, our JAX-based framework for MFGs. By leveraging known transition dynamics, RSPG achieves state-ofthe-art performance as well as an order-of-magnitude faster convergence and solves, for the first time, a macroeconomics MFG with heterogeneous agents, common noise and history-aware policies. MFAX is publicly available at: https://github.com/CWibault/mfax.",
+    "published_date": "2026-02-23",
+    "doi": null
+  },
+  "people": [
+    {
+      "name": "Clarisse Wibault",
+      "author_order": 1,
+      "orcid": null
+    },
+    {
+      "name": "Johannes Forkel",
+      "author_order": 2,
+      "orcid": null
+    },
+    {
+      "name": "Sebastian Towers",
+      "author_order": 3,
+      "orcid": null
+    },
+    {
+      "name": "Tiphaine Wibault",
+      "author_order": 4,
+      "orcid": null
+    },
+    {
+      "name": "Juan Duque",
+      "author_order": 5,
+      "orcid": null
+    },
+    {
+      "name": "George Whittle",
+      "author_order": 6,
+      "orcid": null
+    },
+    {
+      "name": "Andreas Schaab",
+      "author_order": 7,
+      "orcid": null
+    },
+    {
+      "name": "Yucheng Yang",
+      "author_order": 8,
+      "orcid": null
+    },
+    {
+      "name": "Chiyuan Wang",
+      "author_order": 9,
+      "orcid": null
+    },
+    {
+      "name": "Michael Osborne",
+      "author_order": 10,
+      "orcid": null
+    },
+    {
+      "name": "Benjamin Moll",
+      "author_order": 11,
+      "orcid": null
+    },
+    {
+      "name": "Jakob Foerster",
+      "author_order": 12,
+      "orcid": null
+    }
+  ],
+  "organizations": [],
+  "countries": [],
+  "topics": [],
+  "acknowledgements": [
+    {
+      "text": "B.2 MFAX Algorithms We implement the following algorithms in MFAX: SPG We implement SPG (Yang et al., 2025) using an MLP rather than a tabular policy. SPG is implemented in the same way as RSPG (pseudo-code given in Appendix A.1), but without history. RSPG We implement RSPG (pseudo-code given in Appendix A.1). IPPO We implement a mean-field version of Independent Proximal Policy Optimization (Schulman et al., 2017; Witt et al., 2020; Algumaei et al., 2023) as, despite its theoretical shortcomings, it has been shown to outperform joint learning approaches in various Multi-Agent Reinforcement Learning tasks due to its robustness to environment non-stationarity (Witt et al., 2020) . We provide the pseudo-code for our implementation below. Algorithm 4 IPPO input: Policy π with parameters θ π repeat for E environments in parallel do ▷ Generate mean-field sequence using sample-based mean-field distribution end for ▷ Return {µ 0:T , z 0:T } 1:E ▷Update θ π using single-agent PPO for N agents within each environment. until convergence RIPPO We implement a mean-field version of Recurrent IPPO (Ni et al., 2022) . The pseudo-code is identical to that of IPPO, but the policy includes an RNN.",
+      "needs_llm_extraction": true
+    }
+  ]
+}

@@ -1,45 +1,40 @@
 {
   "paper": {
     "local_id": "paper16",
-    "title": "DC-Merge: Improving Model Merging with Directional Consistency",
-    "abstract": "Model merging aims to integrate multiple task-adapted models into a unified model that preserves the knowledge of each task. In this paper, we identify that the key to this knowledge retention lies in maintaining the directional consistency of singular spaces between merged multi-task vector and individual task vectors. However, this consistency is frequently compromised by two issues: i) an imbalanced energy distribution within task vectors, where a small fraction of singular values dominate the total energy, leading to the neglect of semantically important but weaker components upon merging, and ii) the geometric inconsistency of task vectors in parameter space, which causes direct merging to distort their underlying directional geometry. To address these challenges, we propose DC-Merge, a method for directional-consistent model merging. It first balances the energy distribution of each task vector by smoothing its singular values, ensuring all knowledge components are adequately represented. These energy-balanced vectors are then projected onto a shared orthogonal subspace to align their directional geometries with minimal reconstruction error. Finally, the aligned vectors are aggregated in the shared orthogonal subspace and projected back to the original parameter space. Extensive experiments on vision and vision-language benchmarks show that DC-Merge consistently achieves state-of-the-art performance in both full fine-tuning and LoRA settings. The implementation code is available at https://github.com/Tobeginwith/DC-Merge.",
-    "published_date": "2026-03-06",
+    "title": "Spatiotemporal noise stabilizes unbounded diversity in strongly-competitive communities",
+    "abstract": "Classical ecological models predict that large, diverse communities should be unstable, presenting a central challenge to explaining the stable biodiversity seen in nature. We revisit this long-standing problem by extending the generalized Lotka-Volterra model to include both spatial structure and environmental fluctuations across space and time. We find that neither space nor environmental noise alone can resolve the tension between diversity and stability, but that their combined effects permit arbitrarily many species to stably coexist despite strongly disordered competitive interactions. We analytically characterize the noise-induced transition to coexistence, showing that spatiotemporal noise drives an anomalous scaling of abundance fluctuations, known empirically as Taylor's law. At the community level, this manifests as an effective sublinear self-inhibition that renders the community stable and asymptotically neutral in the high-diversity limit. Spatiotemporal noise thus provides a novel resolution to the diversity-stability paradox and a generic mechanism by which complex communities can persist.",
+    "published_date": "2026-02-17",
     "doi": null
   },
   "people": [
     {
-      "name": "Han-Chen Zhang",
+      "name": "Amer Al-Hiyasat",
       "author_order": 1,
       "orcid": null
     },
     {
-      "name": "Zi-Hao Zhou",
+      "name": "Daniel W Swartz",
       "author_order": 2,
       "orcid": null
     },
     {
-      "name": "Mao-Lin Luo",
+      "name": "Jeff Gore",
       "author_order": 3,
       "orcid": null
     },
     {
-      "name": "Shimin Di",
+      "name": "Mehran Kardar",
       "author_order": 4,
-      "orcid": null
-    },
-    {
-      "name": "Min-Ling Zhang",
-      "author_order": 5,
-      "orcid": null
-    },
-    {
-      "name": "Tong Wei",
-      "author_order": 6,
       "orcid": null
     }
   ],
   "organizations": [],
   "countries": [],
   "topics": [],
-  "acknowledgements": []
+  "acknowledgements": [
+    {
+      "text": "Acknowledgments. We are grateful to Yizhou Liu for an early derivation of Eq. ( 12 ) in the weaklyinteracting case. We thank Thibaut Arnoulx de Pirey, Jiliang Hu, and Julien Tailleur for helpful discussions. A.A. acknowledges the support of the Tushar Shah and Sarah Zion Physics Fellowship, as well as a grant from the Institute for Complex Adaptive Matter (ICAM). M.K. was supported by the NSF through Grant No. DMR-2218849.",
+      "needs_llm_extraction": true
+    }
+  ]
 }

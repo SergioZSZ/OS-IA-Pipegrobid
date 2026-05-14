@@ -1,55 +1,30 @@
 {
   "paper": {
     "local_id": "paper14",
-    "title": "REFERENCE-GUIDED POLICY OPTIMIZATION FOR MOLECULAR OPTIMIZATION VIA LLM REASONING",
-    "abstract": "Large language models (LLMs) benefit substantially from supervised fine-tuning (SFT) and reinforcement learning with verifiable rewards (RLVR) in reasoning tasks. However, these recipes perform poorly in instruction-based molecular optimization, where each data point typically provides only a single optimized reference molecule and no step-by-step optimization trajectory. We reveal that answer-only SFT on the reference molecules collapses reasoning, and RLVR provides sparse feedback under similarity constraints due to the model's lack of effective exploration, which slows learning and limits optimization. To encourage the exploration of new molecules while balancing the exploitation of the reference molecules, we introduce Reference-guided Policy Optimization (RePO), an optimization approach that learns from reference molecules without requiring trajectory data. At each update, RePO samples candidate molecules with their intermediate reasoning trajectories from the model and trains the model using verifiable rewards that measure property satisfaction under similarity constraints in an RL manner. Meanwhile, it applies reference guidance by keeping the policy's intermediate reasoning trajectory as context and training only the answer in a supervised manner. Together, the RL term promotes exploration, while the guidance term mitigates reward sparsity and stabilizes training by grounding outputs to references when many valid molecular edits exist. Across molecular optimization benchmarks, RePO consistently outperforms SFT and RLVR baselines (e.g., GRPO), achieving improvements on the optimization metric (Success Rate × Similarity), improving balance across competing objectives, and generalizing better to unseen instruction styles. Our code is publicly available at https://github.com/tmlr-group/RePO.",
-    "published_date": "2026-03-06",
+    "title": "Collaboration drives phase transitions towards cooperation in prisoner's dilemma",
+    "abstract": "We present a collaboration ring model-a network of players playing the prisoner's dilemma game and collaborating among the nearest neighbours by forming coalitions. The microscopic stochastic updating of the players' strategies are driven by their innate nature of seeking selfish gains and shared intentionality. Cooperation emerges in such a structured population through non-equilibrium phase transitions driven by propensity of the players to collaborate and by the benefit that a cooperator generates. The robust results are qualitatively independent of number of neighbours and collaborators.",
+    "published_date": "2026-02-12",
     "doi": null
   },
   "people": [
     {
-      "name": "Xuan Li",
+      "name": "Joy Das Bairagya",
       "author_order": 1,
       "orcid": null
     },
     {
-      "name": "Zhanke Zhou",
+      "name": "Jonathan Newton",
       "author_order": 2,
       "orcid": null
     },
     {
-      "name": "Zongze Li",
+      "name": "Sagar Chakraborty",
       "author_order": 3,
-      "orcid": null
-    },
-    {
-      "name": "Jiangchao Yao",
-      "author_order": 4,
-      "orcid": null
-    },
-    {
-      "name": "Yu Rong",
-      "author_order": 5,
-      "orcid": null
-    },
-    {
-      "name": "Lu Zhang",
-      "author_order": 6,
-      "orcid": null
-    },
-    {
-      "name": "Bo Han",
-      "author_order": 7,
       "orcid": null
     }
   ],
   "organizations": [],
   "countries": [],
   "topics": [],
-  "acknowledgements": [
-    {
-      "text": "ACKNOWLEDGEMENT XL, ZKZ, ZZL, and BH were supported by Guangdong Basic and Applied Basic Research Foundation Nos. 2024A1515012399, NSFC General Program No. 62376235, and HKBU CSD Departmental Incentive Scheme. JCY was supported by National Natural Science Foundation of China (No. 62306178) and STCSM (No. 22DZ2229005).",
-      "needs_llm_extraction": true
-    }
-  ]
+  "acknowledgements": []
 }

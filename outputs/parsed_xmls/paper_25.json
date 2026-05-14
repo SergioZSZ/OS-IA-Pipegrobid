@@ -1,15 +1,20 @@
 {
   "paper": {
     "local_id": "paper25",
-    "title": "The Navigation Paradox in Large-Context Agentic Coding: Graph-Structured Dependency Navigation Outperforms Retrieval in Architecture-Heavy Tasks *",
-    "abstract": "Agentic coding assistants powered by Large Language Models (LLMs) are increasingly deployed on repository-level software tasks. As context windows expand toward millions of tokens, a tacit assumption holds that retrieval bottlenecks dissolve -the model can simply ingest the whole codebase. We challenge this assumption by introducing the Navigation Paradox: larger context windows do not eliminate the need for structural navigation; they shift the failure mode from retrieval capacity to navigational salience. When architecturally critical but semantically distant files are absent from the model's attention, errors may occur that additional context budget alone is unlikely to resolve.",
-    "published_date": "2026-02",
+    "title": "COLD-STEER: STEERING LARGE LANGUAGE MODELS VIA IN-CONTEXT ONE-STEP LEARNING DYNAMICS",
+    "abstract": "Activation steering methods enable inference-time control of large language model (LLM) behavior without retraining, but current approaches face a fundamental trade-off: sample-efficient methods suboptimally capture steering signals from labeled examples, while methods that better extract these signals require hundreds to thousands of examples. We introduce COLD-Steer 1 , a training-free framework that steers LLM activations by approximating the representational changes that would result from gradient descent on in-context examples. Our key insight is that the effect of fine-tuning on a small set of examples can be efficiently approximated at inference time without actual parameter updates. We formalize this through two complementary approaches: (i) a unit kernel approximation method that updates the activations directly using gradients with respect to them, normalized across examples, and (ii) a finite-difference approximation requiring only two forward passes regardless of example count. Experiments across a variety of steering tasks and benchmarks demonstrate that COLD-Steer achieves upto 95% steering effectiveness while using 50 times fewer samples compared to the best baseline. COLD-Steer facilitates accommodating diverse perspectives without extensive demonstration data, which we validate through our experiments on pluralistic alignment tasks. Our framework opens new possibilities for adaptive, context-aware model control that can flexibly address varying loss-driven human preferences through principled approximation of learning dynamics rather than specialized training procedures.",
+    "published_date": "2026-03-06",
     "doi": null
   },
   "people": [
     {
-      "name": "Tarakanath Paipuru",
+      "name": "Kartik Sharma",
       "author_order": 1,
+      "orcid": null
+    },
+    {
+      "name": "Rakshit S Trivedi",
+      "author_order": 2,
       "orcid": null
     }
   ],

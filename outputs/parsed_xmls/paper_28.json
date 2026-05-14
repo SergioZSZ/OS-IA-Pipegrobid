@@ -1,20 +1,45 @@
 {
   "paper": {
     "local_id": "paper28",
-    "title": "Beyond Mimicry: Toward Lifelong Adaptability in Imitation Learning Blue Sky Ideas Track",
-    "abstract": "Imitation learning stands at a crossroads: despite decades of progress, current imitation learning agents remain sophisticated memorisation machines, excelling at replay but failing when contexts shift or goals evolve. This paper argues that this failure is not technical but foundational: imitation learning has been optimised for the wrong objective. We propose a research agenda that redefines success from perfect replay to compositional adaptability. Such adaptability hinges on learning behavioural primitives once and recombining them through novel contexts without retraining. We establish metrics for compositional generalisation, propose hybrid architectures, and outline interdisciplinary research directions drawing on cognitive science and cultural evolution. Agents that embed adaptability at the core of imitation learning thus have an essential capability for operating in an open-ended world.",
-    "published_date": null,
+    "title": "A recipe for scalable attention-based MLIPs: unlocking long-range accuracy with all-to-all node attention",
+    "abstract": "Machine-learning interatomic potentials (MLIPs) have advanced rapidly, with many top models relying on strong physics-based inductive biases. However, as models scale to larger systems like biomolecules and electrolytes, they struggle to accurately capture long-range (LR) interactions, leading current approaches to rely on explicit physics-based terms or components. In this work, we propose AllScAIP, a straightforward, attention-based, and energy-conserving MLIP model that scales to O(100 million) training samples. It addresses the long-range challenge using an all-to-all node attention component that is data-driven. Extensive ablations reveal that in low-data/small-model regimes, inductive biases improve sample efficiency. However, as data and model size scale, these benefits diminish or even reverse, while all-to-all attention remains critical for capturing LR interactions. Our model achieves state-of-the-art energy/force accuracy on molecular systems, as well as a number of physics-based evaluations (OMol25), while being competitive on materials (OMat24) and catalysts (OC20). Furthermore, it enables stable, long-timescale MD simulations that accurately recover experimental observables, including density and heat of vaporization predictions.",
+    "published_date": "2026-03-09",
     "doi": null
   },
   "people": [
     {
-      "name": "Felipe Meneguzzi",
+      "name": "Eric Qu",
       "author_order": 1,
       "orcid": null
     },
     {
-      "name": "Odinaldo Rodrigues",
+      "name": "Brandon M Wood",
       "author_order": 2,
+      "orcid": null
+    },
+    {
+      "name": "Aditi S Krishnapriyan",
+      "author_order": 3,
+      "orcid": null
+    },
+    {
+      "name": "Zachary W Ulissi",
+      "author_order": 4,
+      "orcid": null
+    },
+    {
+      "name": "Fair At Meta",
+      "author_order": 5,
+      "orcid": null
+    },
+    {
+      "name": "U C Berkeley",
+      "author_order": 6,
+      "orcid": null
+    },
+    {
+      "name": "Lbnl",
+      "author_order": 7,
       "orcid": null
     }
   ],
@@ -23,7 +48,7 @@
   "topics": [],
   "acknowledgements": [
     {
-      "text": "ACKNOWLEDGMENTS This work was supported by UK Research and Innovation [grant number EP/S023356/1], in the UKRI Centre for Doctoral Training in Safe and Trusted Artificial Intelligence (www.safeandtrustedai.org).",
+      "text": "Acknowledgements This work was partially supported by Scialog grant #SA-AUT-2024-015b from Research Corporation for Science Advancement and Arnold and Mabel Beckman Foundation. We thank Ishan Amin for the initial idea and discussion around the LAE encoding. We thank Tobias Kreiman, Sam Blau, Ryan Liu, Ritwik Gupta, Sanjeev Raja, Nithin Chalapathi, Yue Jian, Yiheng Du, Michael Psenka, Boyu Qie, Kai Nelson, Rasmus Hoegh from UC Berkeley / LBNL for the helpful discussions. We thank C. Lawrence Zitnick, Misko Dzamba, Meng Gao, Muhammed Shuaibi, Daniel S. Levine, Luis Barroso-Luque and others from the FAIR Chemistry group for helpful discussions and comments.",
       "needs_llm_extraction": true
     }
   ]

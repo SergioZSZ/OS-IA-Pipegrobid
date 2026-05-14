@@ -1,200 +1,35 @@
 {
   "paper": {
     "local_id": "paper27",
-    "title": "Agents of Chaos",
-    "abstract": "We report an exploratory red-teaming study of autonomous languagemodel-powered agents deployed in a live laboratory environment with persistent memory, email accounts, Discord access, file systems, and shell execution. Over a two-week period, twenty AI researchers interacted with the agents under benign and adversarial conditions. Focusing on failures emerging from the integration of language models with autonomy, tool use, and multi-party communication, we document eleven representative case studies. Observed behaviors include unauthorized compliance with non-owners, disclosure of sensitive information, execution of destructive system-level actions, denial-of-service conditions, uncontrolled resource consumption, identity spoofing vulnerabilities, cross-agent propagation of unsafe practices, and partial system takeover. In several cases, agents reported task completion while the underlying system state contradicted those reports. We also report on some of the failed attempts. Our findings establish the existence of security-, privacy-, and governance-relevant vulnerabilities in realistic deployment settings. These behaviors raise unresolved questions regarding accountability, delegated authority, and responsibility for downstream harms, and warrant urgent attention from legal scholars, policymakers, and researchers across disciplines. This report serves as an initial empirical contribution to that broader conversation. 1",
-    "published_date": "2026-02-23",
+    "title": "CAUSAL INTERPRETATION OF NEURAL NETWORK COMPUTATIONS WITH CONTRIBUTION DECOMPOSITION",
+    "abstract": "Understanding how neural networks transform inputs into outputs is crucial for interpreting and manipulating their behavior. Most existing approaches analyze internal representations by identifying hidden-layer activation patterns correlated with human-interpretable concepts. Here we take a direct approach to examine how hidden neurons act to drive network outputs. We introduce CODEC (Contribution Decomposition), a method that uses sparse autoencoders to decompose network behavior into sparse motifs of hidden-neuron contributions, revealing causal processes that cannot be determined by analyzing activations alone. Applying CODEC to benchmark image-classification networks, we find that contributions grow in sparsity and dimensionality across layers and, unexpectedly, that they progressively decorrelate positive and negative effects on network outputs. We further show that decomposing contributions into sparse modes enables greater control and interpretation of intermediate layers, supporting both causal manipulations of network output and human-interpretable visualizations of distinct image components that combine to drive that output. Finally, by analyzing state-of-the-art models of neural activity in the vertebrate retina, we demonstrate that CODEC uncovers combinatorial actions of model interneurons and identifies the sources of dynamic receptive fields. Overall, CODEC provides a rich and interpretable framework for understanding how nonlinear computations evolve across hierarchical layers, establishing contribution modes as an informative unit of analysis for mechanistic insights into artificial neural networks.",
+    "published_date": "2026-03-06",
     "doi": null
   },
   "people": [
     {
-      "name": "Natalie Shapira",
+      "name": "Joshua Brendan Melander",
       "author_order": 1,
       "orcid": null
     },
     {
-      "name": "Chris Wendler",
+      "name": "Zaki Alaoui",
       "author_order": 2,
       "orcid": null
     },
     {
-      "name": "Avery Yen",
+      "name": "Shenghua Liu",
       "author_order": 3,
       "orcid": null
     },
     {
-      "name": "Gabriele Sarti",
+      "name": "Surya Ganguli",
       "author_order": 4,
       "orcid": null
     },
     {
-      "name": "Koyena Pal",
+      "name": "Stephen A Baccus",
       "author_order": 5,
-      "orcid": null
-    },
-    {
-      "name": "Olivia Floody",
-      "author_order": 6,
-      "orcid": null
-    },
-    {
-      "name": "Adam Belfki",
-      "author_order": 7,
-      "orcid": null
-    },
-    {
-      "name": "Alex Loftus",
-      "author_order": 8,
-      "orcid": null
-    },
-    {
-      "name": "Aditya Ratan Jannali",
-      "author_order": 9,
-      "orcid": null
-    },
-    {
-      "name": "Nikhil Prakash",
-      "author_order": 10,
-      "orcid": null
-    },
-    {
-      "name": "Jasmine Cui",
-      "author_order": 11,
-      "orcid": null
-    },
-    {
-      "name": "Giordano Rogers",
-      "author_order": 12,
-      "orcid": null
-    },
-    {
-      "name": "Jannik Brinkmann",
-      "author_order": 13,
-      "orcid": null
-    },
-    {
-      "name": "Can Rager",
-      "author_order": 14,
-      "orcid": null
-    },
-    {
-      "name": "Amir Zur",
-      "author_order": 15,
-      "orcid": null
-    },
-    {
-      "name": "Michael Ripa",
-      "author_order": 16,
-      "orcid": null
-    },
-    {
-      "name": "Aruna Sankaranarayanan",
-      "author_order": 17,
-      "orcid": null
-    },
-    {
-      "name": "David Atkinson",
-      "author_order": 18,
-      "orcid": null
-    },
-    {
-      "name": "Rohit Gandikota",
-      "author_order": 19,
-      "orcid": null
-    },
-    {
-      "name": "Jaden Fiotto-Kaufman",
-      "author_order": 20,
-      "orcid": null
-    },
-    {
-      "name": "Eunjeong Hwang",
-      "author_order": 21,
-      "orcid": null
-    },
-    {
-      "name": "Hadas Orgad",
-      "author_order": 22,
-      "orcid": null
-    },
-    {
-      "name": "P Sam Sahil",
-      "author_order": 23,
-      "orcid": null
-    },
-    {
-      "name": "Negev Taglicht",
-      "author_order": 24,
-      "orcid": null
-    },
-    {
-      "name": "Tomer Shabtay",
-      "author_order": 25,
-      "orcid": null
-    },
-    {
-      "name": "Atai Ambus",
-      "author_order": 26,
-      "orcid": null
-    },
-    {
-      "name": "Nitay Alon",
-      "author_order": 27,
-      "orcid": null
-    },
-    {
-      "name": "Shiri Oron",
-      "author_order": 28,
-      "orcid": null
-    },
-    {
-      "name": "Ayelet Gordon-Tapiero",
-      "author_order": 29,
-      "orcid": null
-    },
-    {
-      "name": "Yotam Kaplan",
-      "author_order": 30,
-      "orcid": null
-    },
-    {
-      "name": "Vered Shwartz",
-      "author_order": 31,
-      "orcid": null
-    },
-    {
-      "name": "Tamar Rott",
-      "author_order": 32,
-      "orcid": null
-    },
-    {
-      "name": "Christoph Riedl",
-      "author_order": 33,
-      "orcid": null
-    },
-    {
-      "name": "Reuth Mirsky",
-      "author_order": 34,
-      "orcid": null
-    },
-    {
-      "name": "Maarten Sap",
-      "author_order": 35,
-      "orcid": null
-    },
-    {
-      "name": "David Manheim",
-      "author_order": 36,
-      "orcid": null
-    },
-    {
-      "name": "Tomer Ullman",
-      "author_order": 37,
-      "orcid": null
-    },
-    {
-      "name": "David Bau",
-      "author_order": 38,
       "orcid": null
     }
   ],
@@ -203,7 +38,7 @@
   "topics": [],
   "acknowledgements": [
     {
-      "text": "Acknowledgments We want to thank Andi Ardity, for actively engaging in discussions about agents and their consequences. His participation, including his critical perspective, meaningfully shaped the evolution of this project, led him to install the agents, and later encouraged additional researchers to follow suit. We are grateful as well for the support throughout and for the careful revisions to the manuscript, especially (but not only!) the setup section. We also want to thank Yonatan Belinkov, Ram Rachum, Grace Proebsting, Eric Todd, Arnab Sen Sharma, Angela Grosse, Ziv Katzir, Jeremy Wertheimer, James W. Pennebaker, Clément Dumas, Alice Rigg and Ori Shapira for their time to listen to research, conversations or helpful advice.",
+      "text": "ACKNOWLEDGEMENTS This work was supported by grants from the National Eye Institute (NEI): R01EY022933, R01EY025087 and P30EY026877 (SAB). S.G. thanks the Simons Foundation Collaboration on the Physics of Learning and Neural Computation and a Schmidt Sciences Polymath Award for support. Z.A. was supported by the Stanford Medicine Post-Baccalaureate Experience In Research program.",
       "needs_llm_extraction": true
     }
   ]

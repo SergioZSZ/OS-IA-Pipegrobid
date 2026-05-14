@@ -1,30 +1,45 @@
 {
   "paper": {
     "local_id": "paper12",
-    "title": "Quasilocalization under coupled mutation-selection dynamics",
-    "abstract": "When mutations are rampant, quasispecies theory or Eigen's model predicts that the fittest type in a population may not dominate. Beyond a critical mutation rate, the population may even be delocalized completely from the peak of the fitness landscape and the fittest is ironically lost. Extensive efforts have been made to understand this exceptional scenario. But in general, there is no simple prescription that predicts the eventual degree of localization for arbitrary fitness landscapes and mutation rates. Here, we derive a simple and general relation linking the quasispecies' Hill numbers, which are diversity metrics in ecology, and the ratio of an effective fitness variance to the mean mutation rate squared. This ratio, which we call the localization factor, emerges from mean approximations of decomposed surprisal or stochastic entropy change rates. On the side of application, the relation we obtained here defines a combination of Hill numbers that may complement other complexity or diversity measures for real viral quasispecies. Its advantage being that there is an underlying biological interpretation under Eigen's model.",
-    "published_date": "2026-02-17",
+    "title": "MuCO: Generative Peptide Cyclization Empowered by Multi-stage Conformation Optimization",
+    "abstract": "Modeling peptide cyclization is critical for the virtual screening of candidate peptides with desirable physical and pharmaceutical properties. This task is challenging because a cyclic peptide often exhibits diverse, ring-shaped conformations, which cannot be well captured by deterministic prediction models derived from linear peptide folding. In this study, we propose MuCO (Multi-stage Conformation Optimization), a generative peptide cyclization method that models the distribution of cyclic peptide conformations conditioned on the corresponding linear peptide. In principle, MuCO decouples the peptide cyclization task into three stages: topology-aware backbone design, generative side-chain packing, and physics-aware all-atom optimization, thereby generating and optimizing conformations of cyclic peptides in a coarse-to-fine manner. This multi-stage framework enables an efficient parallel sampling strategy for conformation generation and allows for rapid exploration of diverse, low-energy conformations. Experiments on the large-scale CPSea dataset demonstrate that MuCO significantly outperforms state-of-the-art methods in consistently in physical stability, structural diversity, secondary structure recovery, and computational efficiency, making it a promising computational tool for exploring and designing cyclic peptides.",
+    "published_date": "2026-02-13",
     "doi": null
   },
   "people": [
     {
-      "name": "C J Palpal-Latoc",
+      "name": "Yitian Wang",
       "author_order": 1,
       "orcid": null
     },
     {
-      "name": "Ian Vega",
+      "name": "Fanmeng Wang",
       "author_order": 2,
+      "orcid": null
+    },
+    {
+      "name": "Angxiao Yue",
+      "author_order": 3,
+      "orcid": null
+    },
+    {
+      "name": "Wentao Guo",
+      "author_order": 4,
+      "orcid": null
+    },
+    {
+      "name": "Yaning Cui",
+      "author_order": 5,
+      "orcid": null
+    },
+    {
+      "name": "Hongteng Xu",
+      "author_order": 6,
       "orcid": null
     }
   ],
   "organizations": [],
   "countries": [],
   "topics": [],
-  "acknowledgements": [
-    {
-      "text": "ACKNOWLEDGMENTS CJP thanks F. Tablizo for encouraging feedback and useful discussions. CJP was supported in part by grants to the Philippine Genome Center from the Department of Health -Epidemiology Bureau for the national SARS-CoV-2 biosurveillance initiative.",
-      "needs_llm_extraction": true
-    }
-  ]
+  "acknowledgements": []
 }

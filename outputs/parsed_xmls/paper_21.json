@@ -1,44 +1,44 @@
 {
   "paper": {
     "local_id": "paper21",
-    "title": "A recipe for scalable attention-based MLIPs: unlocking long-range accuracy with all-to-all node attention",
-    "abstract": "Machine-learning interatomic potentials (MLIPs) have advanced rapidly, with many top models relying on strong physics-based inductive biases. However, as models scale to larger systems like biomolecules and electrolytes, they struggle to accurately capture long-range (LR) interactions, leading current approaches to rely on explicit physics-based terms or components. In this work, we propose AllScAIP, a straightforward, attention-based, and energy-conserving MLIP model that scales to O(100 million) training samples. It addresses the long-range challenge using an all-to-all node attention component that is data-driven. Extensive ablations reveal that in low-data/small-model regimes, inductive biases improve sample efficiency. However, as data and model size scale, these benefits diminish or even reverse, while all-to-all attention remains critical for capturing LR interactions. Our model achieves state-of-the-art energy/force accuracy on molecular systems, as well as a number of physics-based evaluations (OMol25), while being competitive on materials (OMat24) and catalysts (OC20). Furthermore, it enables stable, long-timescale MD simulations that accurately recover experimental observables, including density and heat of vaporization predictions.",
-    "published_date": "2026-03-09",
+    "title": "REFERENCE-GUIDED POLICY OPTIMIZATION FOR MOLECULAR OPTIMIZATION VIA LLM REASONING",
+    "abstract": "Large language models (LLMs) benefit substantially from supervised fine-tuning (SFT) and reinforcement learning with verifiable rewards (RLVR) in reasoning tasks. However, these recipes perform poorly in instruction-based molecular optimization, where each data point typically provides only a single optimized reference molecule and no step-by-step optimization trajectory. We reveal that answer-only SFT on the reference molecules collapses reasoning, and RLVR provides sparse feedback under similarity constraints due to the model's lack of effective exploration, which slows learning and limits optimization. To encourage the exploration of new molecules while balancing the exploitation of the reference molecules, we introduce Reference-guided Policy Optimization (RePO), an optimization approach that learns from reference molecules without requiring trajectory data. At each update, RePO samples candidate molecules with their intermediate reasoning trajectories from the model and trains the model using verifiable rewards that measure property satisfaction under similarity constraints in an RL manner. Meanwhile, it applies reference guidance by keeping the policy's intermediate reasoning trajectory as context and training only the answer in a supervised manner. Together, the RL term promotes exploration, while the guidance term mitigates reward sparsity and stabilizes training by grounding outputs to references when many valid molecular edits exist. Across molecular optimization benchmarks, RePO consistently outperforms SFT and RLVR baselines (e.g., GRPO), achieving improvements on the optimization metric (Success Rate × Similarity), improving balance across competing objectives, and generalizing better to unseen instruction styles. Our code is publicly available at https://github.com/tmlr-group/RePO.",
+    "published_date": "2026-03-06",
     "doi": null
   },
   "people": [
     {
-      "name": "Eric Qu",
+      "name": "Xuan Li",
       "author_order": 1,
       "orcid": null
     },
     {
-      "name": "Brandon M Wood",
+      "name": "Zhanke Zhou",
       "author_order": 2,
       "orcid": null
     },
     {
-      "name": "Aditi S Krishnapriyan",
+      "name": "Zongze Li",
       "author_order": 3,
       "orcid": null
     },
     {
-      "name": "Zachary W Ulissi",
+      "name": "Jiangchao Yao",
       "author_order": 4,
       "orcid": null
     },
     {
-      "name": "Fair At Meta",
+      "name": "Yu Rong",
       "author_order": 5,
       "orcid": null
     },
     {
-      "name": "U C Berkeley",
+      "name": "Lu Zhang",
       "author_order": 6,
       "orcid": null
     },
     {
-      "name": "Lbnl",
+      "name": "Bo Han",
       "author_order": 7,
       "orcid": null
     }
@@ -48,7 +48,7 @@
   "topics": [],
   "acknowledgements": [
     {
-      "text": "Acknowledgements This work was partially supported by Scialog grant #SA-AUT-2024-015b from Research Corporation for Science Advancement and Arnold and Mabel Beckman Foundation. We thank Ishan Amin for the initial idea and discussion around the LAE encoding. We thank Tobias Kreiman, Sam Blau, Ryan Liu, Ritwik Gupta, Sanjeev Raja, Nithin Chalapathi, Yue Jian, Yiheng Du, Michael Psenka, Boyu Qie, Kai Nelson, Rasmus Hoegh from UC Berkeley / LBNL for the helpful discussions. We thank C. Lawrence Zitnick, Misko Dzamba, Meng Gao, Muhammed Shuaibi, Daniel S. Levine, Luis Barroso-Luque and others from the FAIR Chemistry group for helpful discussions and comments.",
+      "text": "ACKNOWLEDGEMENT XL, ZKZ, ZZL, and BH were supported by Guangdong Basic and Applied Basic Research Foundation Nos. 2024A1515012399, NSFC General Program No. 62376235, and HKBU CSD Departmental Incentive Scheme. JCY was supported by National Natural Science Foundation of China (No. 62306178) and STCSM (No. 22DZ2229005).",
       "needs_llm_extraction": true
     }
   ]

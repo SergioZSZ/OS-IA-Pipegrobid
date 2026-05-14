@@ -1,45 +1,20 @@
 {
   "paper": {
     "local_id": "paper19",
-    "title": "Hierarchical Industrial Demand Forecasting with Temporal and Uncertainty Explanations",
-    "abstract": "Hierarchical time-series forecasting is essential for demand prediction across various industries. While machine learning models have obtained significant accuracy and scalability on such forecasting tasks, the interpretability of their predictions, informed by application, is still largely unexplored. To bridge this gap, we introduce a novel interpretability method for large hierarchical probabilistic time-series forecasting, adapting generic interpretability techniques while addressing challenges associated with hierarchical structures and uncertainty. Our approach offers valuable interpretative insights in response to real-world industrial supply chain scenarios, including 1) the significance of various time-series within the hierarchy and external variables at specific time points, 2) the impact of different variables on forecast uncertainty, and 3) explanations for forecast changes in response to modifications in the training dataset. To evaluate the explainability method, we generate semi-synthetic datasets based on realworld scenarios of explaining hierarchical demands for over ten thousand products at a large chemical company. The experiments showed that our explainability method successfully explained state-of-the-art industrial forecasting methods with significantly higher explainability accuracy, both in point and probabilistic forecasts, across a wide range of benchmarks with good scalability. Furthermore, we provide multiple real-world case studies that show the efficacy of our approach in identifying important patterns and explanations that help various stakeholders better understand the forecasts. Additionally, our method facilitates the identification of key drivers behind forecasted demand, enabling more informed decision-making and strategic planning. By offering a transparent view of the forecasting process, our approach helps build trust and confidence among users, ultimately leading to better adoption and utilization of hierarchical forecasting models in practice.",
-    "published_date": null,
+    "title": "Quasilocalization under coupled mutation-selection dynamics",
+    "abstract": "When mutations are rampant, quasispecies theory or Eigen's model predicts that the fittest type in a population may not dominate. Beyond a critical mutation rate, the population may even be delocalized completely from the peak of the fitness landscape and the fittest is ironically lost. Extensive efforts have been made to understand this exceptional scenario. But in general, there is no simple prescription that predicts the eventual degree of localization for arbitrary fitness landscapes and mutation rates. Here, we derive a simple and general relation linking the quasispecies' Hill numbers, which are diversity metrics in ecology, and the ratio of an effective fitness variance to the mean mutation rate squared. This ratio, which we call the localization factor, emerges from mean approximations of decomposed surprisal or stochastic entropy change rates. On the side of application, the relation we obtained here defines a combination of Hill numbers that may complement other complexity or diversity measures for real viral quasispecies. Its advantage being that there is an underlying biological interpretation under Eigen's model.",
+    "published_date": "2026-02-17",
     "doi": null
   },
   "people": [
     {
-      "name": "Harshavardhan Kamarthi",
+      "name": "C J Palpal-Latoc",
       "author_order": 1,
       "orcid": null
     },
     {
-      "name": "Shangqing Xu",
+      "name": "Ian Vega",
       "author_order": 2,
-      "orcid": null
-    },
-    {
-      "name": "Xinjie Tong",
-      "author_order": 3,
-      "orcid": null
-    },
-    {
-      "name": "Xingyu Zhou",
-      "author_order": 4,
-      "orcid": null
-    },
-    {
-      "name": "James Peters",
-      "author_order": 5,
-      "orcid": null
-    },
-    {
-      "name": "Joseph Czyzyk",
-      "author_order": 6,
-      "orcid": null
-    },
-    {
-      "name": "B Aditya Prakash",
-      "author_order": 7,
       "orcid": null
     }
   ],
@@ -48,7 +23,7 @@
   "topics": [],
   "acknowledgements": [
     {
-      "text": "VII. ACKNOWLEDGEMENTS This paper was supported in part by The Dow Chemical Company, the NSF (Expeditions CCF-1918770, CAREER IIS-2028586, Medium IIS-1955883, Medium IIS-2403240, Medium IIS-2106961), NIH (1R01HL184139), CDC MInD program, Meta, and Dolby faculty gifts.",
+      "text": "ACKNOWLEDGMENTS CJP thanks F. Tablizo for encouraging feedback and useful discussions. CJP was supported in part by grants to the Philippine Genome Center from the Department of Health -Epidemiology Bureau for the national SARS-CoV-2 biosurveillance initiative.",
       "needs_llm_extraction": true
     }
   ]
