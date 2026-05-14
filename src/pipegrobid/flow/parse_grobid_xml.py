@@ -13,15 +13,14 @@ NS = {"tei": "http://www.tei-c.org/ns/1.0"}
 ROOT_DIR = Path(__file__).resolve().parents[3]
 
 
-
-
+global count
 
     
 
 # crea el json y le hace dump
 def create_json(paper: dict, people: dict, acknowledgements: dict):
 
-    count = 0
+
     # Carpeta de salida.
     output_dir = ROOT_DIR / "outputs" / "parsed_xmls"
     output_dir.mkdir(parents=True, exist_ok=True)

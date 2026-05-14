@@ -10,11 +10,12 @@
 /generated_files/*
 !generated_files/.gitkeep
 
-/pdfs/*
-!pdfs/.gitkeep
+#/pdfs/*
+# !pdfs/.gitkeep
 
 /xmls/*
 !xmls/.gitkeep
 
 /ro-crate.py
 
+#outputs
