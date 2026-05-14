@@ -17,11 +17,11 @@ ROOT_DIR = Path(__file__).resolve().parents[3]
 
 
     
-    
+
 # crea el json y le hace dump
 def create_json(paper: dict, people: dict, acknowledgements: dict):
 
-    global count
+    count = 0
     # Carpeta de salida.
     output_dir = ROOT_DIR / "outputs" / "parsed_xmls"
     output_dir.mkdir(parents=True, exist_ok=True)

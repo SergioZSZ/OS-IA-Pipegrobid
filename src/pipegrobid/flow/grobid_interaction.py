@@ -1,17 +1,31 @@
 import requests # libreria que usaremos para realizar peticiones a la API de grobid 
 import os
 
-# devolver una lista de los pdfs encontrados en el directorio dir_pdfs
-def list_pdfs(dir_pdfs: str)-> list:
+import os
+import re
+
+# devolver una lista de los pdfs encontrados en el directorio dir_pdfs ordenados por número
+def list_pdfs(dir_pdfs: str) -> list:
+
+    def get_paper_number(filename: str) -> int:
+        match = re.search(r'paper[_-]?(\d+)', filename.lower())
+        if match:
+            return int(match.group(1))
+        return float("inf")  # los que no sigan paper_1, paper_2... van al final
+
+    pdf_names = [
+        pdf for pdf in os.listdir(dir_pdfs)
+        if pdf.endswith(".pdf")
+    ]
+
+    pdf_names = sorted(pdf_names, key=get_paper_number)
 
     pdfs = []
-    for pdf in os.listdir(dir_pdfs):  
-        if pdf.endswith(".pdf"):
-            
-            pdf_path = os.path.join(dir_pdfs, pdf) 
-            pdfs.append(pdf_path)
-            print(f"    {pdf}")   
-            
+    for pdf in pdf_names:
+        pdf_path = os.path.join(dir_pdfs, pdf)
+        pdfs.append(pdf_path)
+        print(f"    {pdf}")
+
     return pdfs
 
 
