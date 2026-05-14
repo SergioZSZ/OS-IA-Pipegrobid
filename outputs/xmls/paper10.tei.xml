@@ -50,7 +50,7 @@ xsi:schemaLocation="http://www.tei-c.org/ns/1.0 https://raw.githubusercontent.co
 		</fileDesc>
 		<encodingDesc>
 			<appInfo>
-				<application version="0.7.2" ident="GROBID" when="2026-05-14T17:26+0000">
+				<application version="0.7.2" ident="GROBID" when="2026-05-14T17:47+0000">
 					<desc>GROBID - A machine learning software for extracting information from scholarly documents</desc>
 					<ref target="https://github.com/kermitt2/grobid"/>
 				</application>
@@ -130,8 +130,8 @@ xsi:schemaLocation="http://www.tei-c.org/ns/1.0 https://raw.githubusercontent.co
 <figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_6"><head>Figure 8 :</head><label>8</label><figDesc>Figure 8: Start-aligned (left) and end-aligned (right) average instantaneous scores for Humans and the main models. Two plots are needed to accommodate the varying number of locations per case.</figDesc><graphic coords="25,299.63,251.88,229.71,125.85" type="bitmap" /></figure>
 <figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_7"><head>Fig 9 :</head><label>9</label><figDesc>Fig 9: Histogram of Residuals. Left: GPT-5 vs. av. Human regression prediction. Right: GPT-4.1 vs. av Human -regression prediction.</figDesc><graphic coords="26,74.80,398.71,228.44,141.70" type="bitmap" /></figure>
 <figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_8"><head>Feature</head><label></label><figDesc></figDesc></figure>
-<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_9"><head>Figure 10 :</head><label>10</label><figDesc>Figure 10: Performance summary of the main models and human performance.</figDesc></figure>
-<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_10"><head>Figure 11</head><label>11</label><figDesc>Figure 11 puts the performance of the best models in temporal context, showing a trend of increasing performance with release date, and a step change with the extension from cModels to rModels.</figDesc><graphic coords="28,166.93,316.36,278.15,198.39" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_9"><head>Figure 10 :</head><label>10</label><figDesc>Figure 10: Performance summary of the main models and human performance.</figDesc><graphic coords="28,166.93,316.36,278.15,198.39" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_10"><head>Figure 11</head><label>11</label><figDesc>Figure 11 puts the performance of the best models in temporal context, showing a trend of increasing performance with release date, and a step change with the extension from cModels to rModels.</figDesc></figure>
 <figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_11"><head>Figure 11 :</head><label>11</label><figDesc>Figure 11: Overall scores of models by release date, compared against human performance. Lines added to indicate trends.</figDesc><graphic coords="29,114.50,72.00,382.99,189.90" type="bitmap" /></figure>
 <figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_12"><head>Figure 13 :</head><label>13</label><figDesc>Figure 13: Plot showing the correlation between players' average case-solving time and their average overall score.</figDesc><graphic coords="31,140.70,72.00,330.60,246.89" type="bitmap" /></figure>
 <figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_13"><head>Figure 14 :</head><label>14</label><figDesc>Figure 14: Overall Score by case length: Human vs rModel vs cModel. Lines are best fit trends.</figDesc><graphic coords="32,145.40,72.00,321.16,191.60" type="bitmap" /></figure>

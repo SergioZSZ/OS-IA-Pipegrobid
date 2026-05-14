@@ -46,7 +46,7 @@ def request_post(pdf: str, url_process_docs: str) -> requests.Response:
 def write_xml(response: requests.Response, dir_xmls: str, i: int) -> None:
             # si se procesa bien la peticion lo escriba en un tei.xml
         if response.status_code == 200:
-            path_xml = f"{dir_xmls}/paper{i+1}.tei.xml"
+            path_xml = f"{dir_xmls}/paper{i+1:02d}.tei.xml"
             
             with open(path_xml,"w", encoding= "utf-8") as paper:
                 paper.write(response.text)

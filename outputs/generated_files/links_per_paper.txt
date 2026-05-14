@@ -1,4 +1,4 @@
-paper1:
+paper01:
 
   - http://arxiv.org/abs/1710.08991.arXiv:1710.08991[math
   - http://arxiv.org/abs/2304.01547.arXiv:2304.01547[cs
@@ -36,7 +36,7 @@ paper1:
   - https://github.com/CWibault/mfax.
 -------------------------------------------------------------------------------------------------
 
-paper2:
+paper02:
 
   - https://github.com/camel-ai/loong
   - https://arxiv.org/abs/2501.12948
@@ -57,12 +57,12 @@ paper2:
   - http://localhost:8265
 -------------------------------------------------------------------------------------------------
 
-paper3:
+paper03:
 
   No links found.
 -------------------------------------------------------------------------------------------------
 
-paper4:
+paper04:
 
   - https://arxiv.org/abs/2005.14165
   - https://arxiv.org/abs/1604.06174
@@ -100,7 +100,7 @@ paper4:
   - https://github.com/Yuzhe-W/CausalFlip.
 -------------------------------------------------------------------------------------------------
 
-paper5:
+paper05:
 
   - https://lmsys.org/blog/2023-03-30-vicuna/
   - https://aclanthology.org/2024.findings-naacl.211/
@@ -113,12 +113,12 @@ paper5:
   - https://www.moltbook.com/
 -------------------------------------------------------------------------------------------------
 
-paper6:
+paper06:
 
   - https://github.com/tpaip607/research-codecompass
 -------------------------------------------------------------------------------------------------
 
-paper7:
+paper07:
 
   - https://x.com/repligate/status/1965960676104712451.3,12
   - https://transformer-circuits.pub/2025/introspection/index.html.1
@@ -128,7 +128,7 @@ paper7:
   - https://github.com/acsresearch/latent-introspection-code.
 -------------------------------------------------------------------------------------------------
 
-paper8:
+paper08:
 
   - https://api.semanticscholar.org/CorpusID:259373158
   - https://arxiv.org/abs/2405.01870
@@ -216,7 +216,7 @@ paper8:
   - https://www.isaca.org/resources/isaca-journal/issues/2024/volume-5/human-riskmanagement-a-practical-approach
 -------------------------------------------------------------------------------------------------
 
-paper9:
+paper09:
 
   - https://doi.org/10.1007/978-3-030-88538-0_35
   - https://openreview.net/forum?id=rf8c4zw9lO
