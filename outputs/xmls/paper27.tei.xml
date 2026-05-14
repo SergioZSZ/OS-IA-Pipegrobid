@@ -1,0 +1,880 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xml:space="preserve" xmlns="http://www.tei-c.org/ns/1.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.tei-c.org/ns/1.0 https://raw.githubusercontent.com/kermitt2/grobid/master/grobid-home/schemas/xsd/Grobid.xsd"
+ xmlns:xlink="http://www.w3.org/1999/xlink">
+	<teiHeader xml:lang="en">
+		<fileDesc>
+			<titleStmt>
+				<title level="a" type="main">CAUSAL INTERPRETATION OF NEURAL NETWORK COMPUTATIONS WITH CONTRIBUTION DECOMPOSITION</title>
+			</titleStmt>
+			<publicationStmt>
+				<publisher/>
+				<availability status="unknown"><licence/></availability>
+				<date type="published" when="2026-03-06">6 Mar 2026</date>
+			</publicationStmt>
+			<sourceDesc>
+				<biblStruct>
+					<analytic>
+						<author>
+							<persName><forename type="first">Joshua</forename><forename type="middle">Brendan</forename><surname>Melander</surname></persName>
+						</author>
+						<author>
+							<persName><forename type="first">Zaki</forename><surname>Alaoui</surname></persName>
+						</author>
+						<author>
+							<persName><forename type="first">Shenghua</forename><surname>Liu</surname></persName>
+						</author>
+						<author>
+							<persName><forename type="first">Surya</forename><surname>Ganguli</surname></persName>
+						</author>
+						<author>
+							<persName><forename type="first">Stephen</forename><forename type="middle">A</forename><surname>Baccus</surname></persName>
+						</author>
+						<author>
+							<affiliation key="aff0">
+								<orgName type="department">Department of Neurobiology</orgName>
+								<orgName type="institution">Stanford University</orgName>
+							</affiliation>
+						</author>
+						<author>
+							<affiliation key="aff1">
+								<orgName type="department">Department of Neurobiology</orgName>
+								<orgName type="institution">Stanford University</orgName>
+							</affiliation>
+						</author>
+						<author>
+							<affiliation key="aff2">
+								<orgName type="department">Department of Physics</orgName>
+								<orgName type="institution">Stanford University</orgName>
+							</affiliation>
+						</author>
+						<author>
+							<affiliation key="aff3">
+								<orgName type="department">Department of Applied Physics</orgName>
+								<orgName type="institution">Stanford University</orgName>
+							</affiliation>
+						</author>
+						<author>
+							<affiliation key="aff4">
+								<orgName type="department">Department of Neurobiology</orgName>
+								<orgName type="institution">Stanford University</orgName>
+							</affiliation>
+						</author>
+						<title level="a" type="main">CAUSAL INTERPRETATION OF NEURAL NETWORK COMPUTATIONS WITH CONTRIBUTION DECOMPOSITION</title>
+					</analytic>
+					<monogr>
+						<imprint>
+							<date type="published" when="2026-03-06">6 Mar 2026</date>
+						</imprint>
+					</monogr>
+					<idno type="MD5">B519CAE12609FDD944BBD418C962BAEA</idno>
+					<idno type="arXiv">arXiv:2603.06557v1[cs.LG]</idno>
+				</biblStruct>
+			</sourceDesc>
+		</fileDesc>
+		<encodingDesc>
+			<appInfo>
+				<application version="0.7.2" ident="GROBID" when="2026-05-14T17:27+0000">
+					<desc>GROBID - A machine learning software for extracting information from scholarly documents</desc>
+					<ref target="https://github.com/kermitt2/grobid"/>
+				</application>
+			</appInfo>
+		</encodingDesc>
+		<profileDesc>
+			<abstract>
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>Understanding how neural networks transform inputs into outputs is crucial for interpreting and manipulating their behavior. Most existing approaches analyze internal representations by identifying hidden-layer activation patterns correlated with human-interpretable concepts. Here we take a direct approach to examine how hidden neurons act to drive network outputs. We introduce CODEC (Contribution Decomposition), a method that uses sparse autoencoders to decompose network behavior into sparse motifs of hidden-neuron contributions, revealing causal processes that cannot be determined by analyzing activations alone. Applying CODEC to benchmark image-classification networks, we find that contributions grow in sparsity and dimensionality across layers and, unexpectedly, that they progressively decorrelate positive and negative effects on network outputs. We further show that decomposing contributions into sparse modes enables greater control and interpretation of intermediate layers, supporting both causal manipulations of network output and human-interpretable visualizations of distinct image components that combine to drive that output. Finally, by analyzing state-of-the-art models of neural activity in the vertebrate retina, we demonstrate that CODEC uncovers combinatorial actions of model interneurons and identifies the sources of dynamic receptive fields. Overall, CODEC provides a rich and interpretable framework for understanding how nonlinear computations evolve across hierarchical layers, establishing contribution modes as an informative unit of analysis for mechanistic insights into artificial neural networks.</p></div>
+			</abstract>
+		</profileDesc>
+	</teiHeader>
+	<text xml:lang="en">
+		<body>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="1">A FRAMEWORK FOR UNDERSTANDING BIOLOGICAL AND ARTIFICIAL NEURAL NETWORKS</head><p>Biological and artificial neural networks both produce computations using cascading nonlinear operations that do not lend themselves to simple interpretations. Despite the widespread study and use of neural networks, there is no standardized framework to understand how a given network output is generated from its input through its intermediate stages. Understanding the mechanisms by which networks behave promises to accelerate studies of the nervous system, lead to more effective design of efficient networks, reveal general principles of information processing in complex systems, and is also important for guiding the development of safe AI systems <ref type="bibr" target="#b13">(Murdoch et al. (2019)</ref>; Doshi-Velez and <ref type="bibr">Kim (2017)</ref>; <ref type="bibr" target="#b10">Lipton (2017)</ref>; <ref type="bibr" target="#b18">Rudin (2019)</ref>).</p><p>An essential aspect of both artificial and biological neural networks is that their behavior is created by sets of internal components. The question we approach here is: How do the components of a network act together to construct the output from the input? ‡ These authors contributed equally to this work. Sensory systems provide a natural framework for this question, with a well-defined input-output structure, clearly described tasks, and hierarchical architectures that inspired the development of convolutional neural networks (CNNs) <ref type="bibr" target="#b6">(Fukushima (1980)</ref>).</p><p>A neural network unit transforms inputs through its receptive field, and influences downstream processing through its projective field <ref type="bibr" target="#b9">(Lehky and Sejnowski (1988)</ref>). The composition of these transformations defines a unit's contribution to the system's output, which is a direct causal measure <ref type="bibr">(Tanaka et al. (2019)</ref>; <ref type="bibr" target="#b12">Maheswaranathan et al. (2023)</ref>).</p><p>Most interpretability methods focus on unit activations, which reflect only the receptive field stage. Causal influence of a unit must then be demonstrated via ablations or perturbations. Direct analyses of contributions, rather than activations, offer a more principled route, and contribution analysis in CNN models of the retina has led to specific hypotheses for how neural cell types perform specific functions <ref type="bibr">(Tanaka et al. (2019)</ref>; <ref type="bibr" target="#b12">Maheswaranathan et al. (2023)</ref>). Yet existing approaches studying contributions have not examined how groups of units act together. This is a significant limitation, as both biological <ref type="bibr" target="#b14">(Olshausen and Field (2004)</ref>) and artificial networks compute through coordinated population activity. In CNNs, the output of feature-selective populations can be combined to classify images <ref type="bibr" target="#b17">(Rawat and Wang (2017)</ref>). In the visual system, the parallel parvocellular and magnocellular pathways roughly support chromatic and high acuity vision vs. achromatic vision and motion sensitivity <ref type="bibr" target="#b23">(Solomon (2021)</ref>), and recent neuroscientific theories suggest that groups of retinal ganglion cells operate in structured modes with specific computational roles <ref type="bibr" target="#b16">(Prentice et al. (2016)</ref>). Understanding a network thus requires not just identifying features in the internal representation, but also explaining how combinations of those features are used to construct different outputs.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>EXISTING TOOLS FOR INTERPRETING ANNS</head><p>For artificial neural networks (ANNs) with millions of parameters, identifying causal structure is challenging because computation arises from nonlinear interactions, making the effects of single units strongly dependent on the input and activity of other units. In both biological and artificial networks, much attention has been devoted to studying latent representations at intermediate stages in the network by analyzing network activity. Although these methods have found patterns in activations via clustering or sparse autoencoders <ref type="bibr" target="#b5">(Fel et al. (2023)</ref>), analyzing representations fundamentally does not address the causal question of how internal elements act to influence the output.</p><p>More recently, methods like Integrated Gradients, SmoothGrad, and Grad-CAM have focused on revealing the influence of inputs on model outputs via saliency maps <ref type="bibr" target="#b20">(Selvaraju et al. (2020)</ref>; <ref type="bibr" target="#b22">Smilkov et al. (2017)</ref>; <ref type="bibr" target="#b25">Sundararajan et al. (2017)</ref>). However, these approaches offer limited insight into the actions of intermediate stages. Visual components such as edges and textures may be needed to dis- criminate objects, but those same features in other locations may be unrelated to the target object yet still represented in hidden activations. Thus, compared to the analysis of activations, contribution analysis distinguishes between building blocks of computation that causally drive the output and those that are irrelevant. Accordingly, a key open problem is to characterize how networks causally integrate distributed latent features across channels and neurons to generate outputs, analogous to how biological networks produce functional effects through circuit interactions.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>A NEUROSCIENCE-INSPIRED ANN INTERPRETABILITY FRAMEWORK</head><p>We introduce a method for analyzing how intermediate neurons drive network output. The first step extends attribution techniques such as Integrated Gradients to measure contributions in internal layers. We compute each hidden neuron's contributions across all stimuli, capturing the combined effects of their receptive and projective fields. These contributions represent the actions neurons take to construct the output.</p><p>Next, we decompose these contributions across inputs into a set of modes reflecting coordinated neuronal actions, an approach we call contribution decomposition (CODEC). Unlike analyses of activations, CODEC directly captures causal effects on outputs and can be applied to any trained feedforward model without access to training data or labels. This general-purpose framework quantifies how groups of neurons drive behaviors. In the context of image recognition, the receptive fields of hidden neurons define visual features that are building blocks, and the contribution modes are the assembly instructions that show how those components are used to construct classes.</p><p>CODEC is a general framework composed of different stages that can be adapted for artificial and biological neural networks:</p><p>1. Contribution target: The specific output neuron or behavior (a scalar function of output neurons) whose computational basis we wish to understand.</p><p>2. Contribution algorithm: Quantification of how each hidden unit contributes to the target output for a given input.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.">Decomposition of contributions:</head><p>The core computational modes representing common patterns of how neurons act together across inputs and outputs.</p><p>4. Visualization in input space: Contribution mapping to reveal how the input features that drove the key channels or neurons within each mode are used for output identification. These methods establish a new interpretability tool that examines the intermediate neurons in a network, identifies what input features they are sensitive to and their individual effects on network output, and reveals how their combined actions ultimately influence the network's behavior.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2">MEASURING CONTRIBUTIONS OF HIDDEN-LAYER NEURONS</head><p>The contribution of a hidden neuron to network output is a composition of its overall input and its overall output (Fig. <ref type="figure" target="#fig_0">1</ref>) , and several methods have been used to calculate such effects. Integrated Gradients has most commonly been applied from network output to input <ref type="bibr" target="#b25">(Sundararajan et al. (2017)</ref>), but have also been applied to analyze the effects of hidden neurons in models of biological networks <ref type="bibr">(Tanaka et al. (2019)</ref>; <ref type="bibr" target="#b12">Maheswaranathan et al. (2023)</ref>). An alternative attribution method, ActGrad <ref type="bibr" target="#b20">(Selvaraju et al. (2020)</ref>), is defined as the element-wise product of activations and gradients (ActGrad j = h j • ∂y ∂hj ) where h j is the activation of hidden unit j, but is prone to noisy fluctuations when evaluated locally.</p><p>Formulating a single contribution target was crucial to avoid intractable 3D decompositions, which would yield an array of shape n inputs × n neurons × n logits for each layer if contributions were computed separately for each logit. We found that computing contributions to the top logit for a given input was sufficient for an accurate reconstruction. Additional scalar objectives are offered in the code:</p><p>(1) the sum of top-k output logits, reflecting the model's confidence in its strongest predictions, and (2) the entropy of the output distribution, measuring prediction uncertainty. </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>CONTRIBUTIONS OF CONVOLUTIONAL LAYERS IN IMAGE CLASSIFICATION NETWORKS</head><p>Biological visual systems, such as the retina, primary visual cortex, and inferotemporal cortex, share many architectural features with <ref type="bibr">CNNs (Yamins et al. (2014)</ref>). Thus, we characterized the computational structure of each layer in benchmark CNNs such as ResNet-50 <ref type="bibr" target="#b7">(He et al. (2016)</ref>) by analyzing neuronal contributions.</p><p>Starting with an input image, we compute the contributions of all hidden neurons to the scalar target (Fig. <ref type="figure" target="#fig_1">2A</ref>). We varied contribution algorithms (ActGrad, Integrated Gradients, SmoothGrad) and targets (e.g., top logit, top-k logit sum, entropy), and found that contributions were consistently spatially sparse compared to activations (Fig. <ref type="figure" target="#fig_1">2B</ref>,D, Supplementary Fig. <ref type="figure" target="#fig_9">S1A</ref>). A key property of Integrated Gradients is completeness: contributions sum to the scalar output target. Thus, spatially summing contributions within a channel gives its net effect on the prediction, enabling assignment of a single contribution value per channel, or cell type (Fig. <ref type="figure" target="#fig_1">2C</ref>). Applying this procedure across the entire 50,000 ImageNet <ref type="bibr" target="#b1">(Deng et al. (2009)</ref>) validation images produced matrices of channel contributions for selected network blocks throughout ResNet-50, with each matrix having dimensionality d channels × 50,000 images (Fig. <ref type="figure" target="#fig_2">3A</ref>). For the remaining analyses, we used Integrated Gradients to the top logit with 10 integration steps as our standard contribution method.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3">LAYERWISE EVOLUTION OF NEURAL CONTRIBUTIONS IN CNNS</head><p>To examine how the actions of the network evolve throughout its layers, we computed for the contributions of each channel the Hoyer sparsity index, a normalized measure that computes the ratio of L1 to L2 norms, and ranges from 0 (all channels equally active) to 1 (only one channel active). At all layers, contributions consistently showed high sparsity across channels than activations, indicating that only a small subset of channels are functionally relevant for each classification decision (Fig. <ref type="figure" target="#fig_2">3B</ref>). Furthermore, contributions increased in sparsity throughout the network, aligning with the intuition that feature selectivity emerges with hierarchical depth.</p><p>Hidden unit activations are constrained by ReLU nonlinearities to be positive. However, contributions can be positive or negative, indicating whether a spatial position increases or decreases the likelihood of the target output. Thus, a highly active unit in the activation map can be used to inhibit the network's output, as revealed by its contribution. These opposing influences, similar to excitatory and inhibitory interactions in biological vision (e.g., on-off receptive fields), are essential to neural computation but hidden in activations. We therefore examined the relationship between positive and negative contributions across layers in ResNet-50. Importantly, contribution sign reflects the net impact on network output, not the polarity of synaptic weights. To compare positive and negative contributions, we computed the contribution at each location (Fig. <ref type="figure" target="#fig_1">2B-E</ref>), and then separated the contribution into positive and negative components prior to spatial summation. We found that in channels of earlier layers, the magnitude of positive and negative contributions were highly correlated within each channel. However, through the network, positive and negative contributions became progressively decorrelated (Fig. <ref type="figure" target="#fig_2">3C-D</ref>). One possible explanation for this shift is that lower-level features such as edges and textures encoded in earlier layers exhibit strong spatial correlations, necessitating that individual channels contribute both positively and negatively to remove these correlations, similar to retinl computations such as center-surround receptive fields <ref type="bibr" target="#b15">(Pitkow and Meister (2012)</ref>) and object motion sensitivity <ref type="bibr">( Ölveczky et al. (2003)</ref>).</p><p>A common technique for identifying class-correlated latent dimensions is to average activations over many examples of single class <ref type="bibr" target="#b8">(Kim et al. (2018)</ref>).We thus examined the dimensionality of spatially summed and class-averaged activations and contributions using principal component analysis. Both quantities increased in dimensionality through the network, but contributions showed higher dimensionality than activations as measured by eigenvalues needed to reach 95% variance (Fig. <ref type="figure" target="#fig_2">3E-F</ref>). Throughout the network, contributions increased in sparsity and dimensionality, and decorrelated their positive and negative effects.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4">DECOMPOSING CONTRIBUTIONS INTO COMPUTATIONAL MODES</head><p>To uncover structure within these contributions, we decomposed them into a set of modes using an autoencoder consisting of an encoder network f enc : R d → R k , and a non-negative dictionary D ∈ R d×k + , where k is the number of modes. Typically k = N •d for an overcomplete representation with expansion factor N . Each column m i ∈ R d of D defines one mode. Given contributions c ∈ R d , the encoder computes pre-activation loadings z pre = f enc (c). Sparsity is enforced by hard thresholding: z i = z pre,i if z pre,i ≥ τ , and zero otherwise. The reconstruction is ĉ = Dz, and the autoencoder is trained to minimize the loss L = ∥c − ĉ∥ 2 2 = ∥c − Dz∥ 2 2 , with optional L1 regularization applied to the loadings and modes. Non-negativity constraints are imposed on the dictionary D. Decomposition of contributions resulted in a set of k modes of dimension d, and a set of n loadings for each mode reflecting the weighting of those modes for each image that reconstructed the matrix of contributions with high accuracy, (average R 2 = 0.85 for contributions and 0.84 for activations across all layers, Supplementary Fig. <ref type="figure" target="#fig_10">S2A</ref>). Training takes ∼3-7 minutes per layer for 200 epochs on an NVIDIA RTX 6000 GPU (see Supplementary Sec. 10.4 for details). Our baseline model architecture used a threshold of 0.9 and a dictionary size 3 times the number of channels being learned. Models were trained for 300 epochs with a learning-rate of 5e-5 and batch-size of 128. L1 regularization was added to the dictionary with a scaling factor of 5e-5.</p><p>To measure how closely related these modes were related to specific network outputs, we correlated the loadings over the entire dataset (50,000 validation images) with a binary vector indicating whether a given image belonged to a given class (Fig. <ref type="figure" target="#fig_3">4B</ref>). This resulted in a k by 1000 correlation matrix, representing the correlation of each mode with each ImageNet category. We found that contribution modes were more correlated with Imagenet classes than modes recovered using activations, in particular at intermediate layers (Fig. <ref type="figure" target="#fig_4">5A-C</ref>, Fig. <ref type="figure">S9</ref>). In addition, we found that contribution modes, despite not having access to class labels during optimization, were more correlated with classes than were individual channels. This indicates the success of CODEC at revealing patterns of combined channel contributions that had relevance to specific network outputs (Fig. <ref type="figure" target="#fig_4">5D</ref>).</p><p>Results were robust to a range of variation to SAE hyperparameters. SAE reconstruction performance was affected little by L1 regularization, random seed, and whether modes were constrained to be positive. SAE R 2 was affected only when threshold was too high (0.9 vs 0.5), dictionary size was equal to or smaller than the number of channels, or MLP size was not considerably greater than the number of classes (Supplementary Figs. <ref type="figure" target="#fig_12">S3 and S4</ref>). These results indicate that SAE performance is robust provided these hyperparameters are kept sufficiently away from their boundary regimes.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5">CONTROLLING NETWORK BEHAVIOR USING CONTRIBUTION MODES</head><p>Contribution modes represent the coordinated causal effects on network output. To examine how these effects could be used to control ImageNet classification, we perturbed ResNet-50 by targeting channels identified through CODEC analysis. We identified the mode most correlated with each class, then measured classification accuracy under two conditions: ablation (removing the top-weighted channels) and preservation (retaining only those channels). We quantified these effects across all 1000 ImageNet classes by calculating the ratio in accuracy for each class between perturbed and unperturbed networks. For the "black widow" class, ablating 2% of salient channels identified from the top 2 most correlated modes greatly reduced target-class accuracy while leaving off-target classification performance largely unaffected.(Fig. <ref type="figure" target="#fig_5">6C</ref> (bottom)). Additionally, preservation analysis yielded networks that could accurately classify only the targeted class <ref type="bibr">(Fig 6C (top)</ref>). We randomly sampled the ImageNet validation dataset and compared perturbation performance for a given mode and target class, and a random off-target class, while varying the percentage of channels perturbed. Targeting channels by contribution modes more reliably identified necessary and sufficient channels for classification compared to activation-based analyses, requiring fewer channels to completely ablate target-class computation (Fig. <ref type="figure" target="#fig_5">6D</ref>). A sharp increase in ablation efficacy was observed between blocks 6 and 7, potentially suggesting a shift in how semantic information is represented at this depth (Fig. <ref type="figure" target="#fig_5">6E</ref>). Additionally, we demonstrated that our approach generalizes beyond the 1000 ImageNet classes, successfully ablating / preserving specific taxonomic categories, indicating that CODEC can identify non-labled computational pathways even within broader semantic groupings (Supplementary Fig. <ref type="figure" target="#fig_16">S10</ref>).</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="6">VISUALIZING INPUTS THAT CAUSE HIDDEN CONTRIBUTIONS</head><p>Attribution methods such as Integrated Gradients compute gradients from outputs to inputs to identify regions most influential to a decision. We extend this idea to hidden channels: what features of the input does a channel or mode use to drive the output for a given image? Using CODECselected salient channels, we isolated the gradient pathway from outputs to inputs that passes only through channels of interest, decomposing traditional input-output saliency maps into interpretable, channel-and mode-specific contributions. For each channel c of mode m and each spatial location p, the input sensitivity is A (c,p) i = J y,hc,p J hc,p,xi , where h c,p is the activation at position p in channel c, J y,hc,p = ∂y ∂hc,p and J hc,p,xi = ∂hc,p ∂xi . Aggregating over all selected channels in a mode and positions yields A</p><formula xml:id="formula_0">(m) i = c∈m p A (c,p) i . Whereas A (m) i</formula><p>captures a spatial map of output sensi-Published as a conference paper at ICLR 2026 tivity to pixel i, the contribution map viewed in input space reflects the cumulative effect of input pixels on the output, approximated as the sensitivity weighted by the input:</p><formula xml:id="formula_1">C (m) i = A (m) i ⊙ x i . The spatial sum i C (m) i</formula><p>recovers the contribution of the mode, C (m) . Contribution mapping highlights regions that most strongly drive contributions within the mode's most relevant channels. Fig. <ref type="figure" target="#fig_6">7</ref> shows example visualizations. Additional methods are described in Supp. Sec. 10.7, among which the method described here is InputGrad. The contribution map shows pixels used by hidden channels within modes to drive network output for different classes. Masking the original image with contribution maps shows that a given mode computes the same lower-level semantic features across images from different classes (Fig. <ref type="figure" target="#fig_6">7</ref>). We expect that further analysis of the structure of these modes in input space will reveal meaningful visual components of objects used to construct visual classes.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="7">INTERPRETING BIOLOGICAL NEURAL NETWORK MODELS WITH CODEC</head><p>We then used contribution decomposition to interpret the structure of computation in the early visual system. Previous results <ref type="bibr" target="#b12">(Maheswaranathan et al. (2023)</ref>) have shown that three layer CNN models capture the responses of retinal ganglion cells to natural scenes, and are interpretable in that hidden units are highly correlated with recordings from retinal interneurons not used to fit the model. We therefore applied CODEC to these CNN models to interpret how groups of model interneurons contributed to retinal output.</p><p>The CNN model consisted of 3 layers, with 8 channels (cell types) in the first two layers, yielding a response of 4-17 recorded ganglion cells (Fig. <ref type="figure" target="#fig_7">8A</ref>). In order to choose a single contribution target, rather than choosing the top-1 logit as we did in the case of the image classification network, we chose the surprisal, or self-information, I(x) = − log 2 P (x), an information theory measure that reflects how unexpected a response is. Estimated from the covariance of the output, I(x) varies with the Mahalanobis distance of the population response from the mean, (x − µ) ⊤ Σ −1 (x − µ), plus a constant term, where Σ is the covariance matrix and µ is the mean response. With this target, positive contributions are those that create a more unexpected response.</p><p>CODEC identified modes in the first two layers that combined to drive cells at different times, as measured by computing the correlation between cell firing rates and mode loadings (Fig. <ref type="figure" target="#fig_7">8B-C</ref>). We then clustered cell types by the average pattern of active modes that drove the cell. Clustering the mode pattern in layers 1 and 2 yielded very similar results, indicating the robustness of identifying pathways that drove different cell types (Fig. <ref type="figure" target="#fig_7">8C</ref>). We further analyzed at different times the instantaneous receptive field (IRF) of ganglion cells, which is the gradient of a cell's response with respect to the stimulus (Fig. <ref type="figure" target="#fig_7">8B,D</ref>), revealing the visual feature driving the cell for a particular stimulus. We found that single modes could contribute similar IRF patterns across different ganglion cells. Interestingly, when multiple modes simultaneously drove a cell, the resulting IRF dynamically varied according to the combination of active modes, with patterns ranging from familiar center-surround structures to oriented or textured responses (Fig. <ref type="figure" target="#fig_7">8D</ref>). Previous studies have indicated that groups of ganglion cells can be driven by visual features that are the intersection of their receptive fields <ref type="bibr" target="#b19">(Schnitzer and Meister (2003)</ref>), and that decomposition of ganglion cell activity can reveal modes with error-correcting properties that represent localized features distinct from those of single neurons <ref type="bibr" target="#b16">(Prentice et al. (2016)</ref>). As the units of this model are highly correlated with actual interneuron recordings <ref type="bibr" target="#b12">(Maheswaranathan et al. (2023)</ref>), contribution modes we identify here serve to automatically generate experimentally testable hypotheses that the presynaptic neurons with the visual features identified by the model drive ganglion cell activity patterns with error correcting properties.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="8">CODEC ON VISION TRANSFORMERS</head><p>We additionally applied CODEC to three layer types-token features, MLPs, and attention layersacross the depth of a standard Vision Transformer, ViT-B (Dosovitskiy et al. ( <ref type="formula">2020</ref>)) (see Supp. Sec. 10.5). Drawing an analogy to CNNs, we took a straightforward approach by treating tokens as the spatial dimension and hidden dimensions as channels. As in CNNs, we found that contributions are sparser than activations. Subsequent decomposition revealed distinct contribution modes for these three layer types across all layers. These modes could be leveraged for targeted perturbation experiments more effectively than those based on activations, revealing causal information not cap- tured by activations alone. Although overall ablation performance was inferior to that observed in CNNs, we note that ViTs utilize fundamentally different computational strategies due to their lack of an explicit spatial equivariant bias. Consequently, further exploration is needed to determine the optimal spatial reduction strategy for ViTs, beyond our initial approach of treating tokens as space.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="9">CONCLUSION</head><p>Contribution decomposition identifies how hidden units construct specific outputs, revealing both the input components that causally drive model behavior and how the effects of those features are summed across outputs. Our approach thus achieves both a deeper understanding of the computation than results from examining representations alone, along with more effective manipulation of those networks. Our analysis reveals insights into the structure of neural computation, in particular at intermediate layers of networks that have been difficult to analyze and interpret. In biological networks such as the retina, CODEC allows an analysis of how dynamic sensitivity to visual input arises from the coordinated actions of model interneurons. In artificial networks, the emergence of sparse, interpretable motifs suggests that network output can be understood in terms of a relatively small set of input-specific computations. Future work might leverage these computations as building blocks for more efficient architectures or transfer learning approaches. In the nervous system, the ability to relate computational building blocks to a downstream computation, combined with experimental measurements and manipulations at different levels could reveal how information is recombined across diverging and converging neural pathways. Such a unified approach to neural computation could bridge the gap between computers and biology, potentially enabling more powerful AI systems and deeper insights into biological intelligence.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>LIMITATIONS AND ETHICAL CONCERNS</head><p>Whereas we focused on image classification, our approach lays the groundwork for extensions to other architectures and applications. Some analyses on ResNet-50 were limited to specific blocks rather than the entire network, and although CODEC is architecturally agnostic and could be applied to interpret more complex models such as LLMs, we have at this point only analyzed scaling with LLMs (see supplemental material).</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>REPRODUCIBILITY STATEMENT</head><p>The key aspects of the CODEC framework are implemented as a publicly available repository, containing scripts to reproduce each figure of this manuscript, available at https://github.com/baccuslab/CODEC ICLR 2026. Here, we also provide the sparse autoencoder decomposition algorithms and visualization tools for mapping contributions back to input space, as additionally documented in the supplemental material, with mathematical derivations provided. The retinal neural network models analyzed are publicly available on GitHub as referenced in the citations. All experimental configurations, including autoencoder architectures, sparsity constraints, and statistical analysis procedures, are documented to enable direct replication of our findings across both artificial and biological network interpretations.</p><p>Tanaka, H., Nayebi, A., <ref type="bibr">Maheswaranathan, N., McIntosh, L., Baccus, S., and Ganguli, S. (2019)</ref>.</p><p>From deep learning to mechanistic understanding in neuroscience: Once the contributions have been computed using the chosen contribution method and target, we obtain a map of the intermediate layer of the same size as the layer's activations. For convolutional layers, we perform spatial summation over the height and width dimensions to derive a single contribution value per channel:</p><formula xml:id="formula_2">ChanC = H h=1 W w=1 IG :,h,w ,<label>(1)</label></formula><p>where "ChanC" means "channel contribution". We further reduce these contributions into excitatory (positive) and inhibitory (negative) components:</p><formula xml:id="formula_3">ChanC + = max(ChanC, 0); ChanC − = min(ChanC, 0).<label>(2)</label></formula><p>This E/I decomposition enhances interpretability by separating units that promote versus suppress specific outputs, revealing antagonistic computational mechanisms within the network. For analyses of modes presented here, we focus exclusively on the positive contributions, which can be interpreted as the hidden unit contributions that positively drive the attribution target. However, future work could extend this approach to also incorporate negative contributions, depending on the nature of the output target.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="10.2">CORRELATION ANALYSIS WITH SEMANTIC CONCEPTS</head><p>To interpret the discovered modes, we analyzed their correlation with known semantic concepts from the ImageNet hierarchy. We constructed binary masks M ∈ {0, 1} n×c representing c different semantic concepts , where M i,j = 1 if sample i belongs to a higher order concept/ ImageNet Class j and 0 otherwise.</p><p>We then computed the Pearson correlation coefficient between each mode loading and each concept mask:</p><formula xml:id="formula_4">Corr(L i , M j ) = Cov(L i , M j ) σ Li σ Mj (3)</formula><p>where L i is the i-th column of the loading matrix L (corresponding to mode i), M j is the j-th column of the mask matrix M (corresponding to concept j), Cov is the covariance, and σ is the standard deviation.</p><p>This analysis enabled us to assign interpretable meanings to the learned modes and understand how semantic information is distributed across the network.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="10.3">ROBUSTNESS TO SAE HYPERPARAMETERS</head><p>To examine the stability and sensitivity of sparse autoencoders (SAE) modes trained on contributions as a function of hyperparameters, we trained SAEs on ResNet-50 intermediate layer contributions on example layers 3, 7, 13 and 15 while varying six hyperparameters: L1 sparsity penalty strength, threshold, dictionary size (N * number of channels), random seed, MLP encoder size, and a nonnegativity constraint (Fig. <ref type="figure" target="#fig_11">S3</ref>). For each hyperparameter variation, we computed the correlation between the learned modes and a baseline SAE configuration (used in the main text) by aggregating modes for each ImageNet class-summing all modes with correlation &gt; 0.2 to that class, or using the single top-correlated mode if none exceeded this threshold. Varying the L1 sparsity penalty (0, 1e-04, 1e-02) showed minimal impact on learned representations. The threshold for mode selection (0.5, 0.7, 0.9) produced moderate variation, particularly in middle layers when the threshold was not restrictive enough. The dictionary size multiplier N (×1, ×3, ×5 the layer channel dimension) indicated that smaller dictionaries (N=1) produce less stable representations in later layers, indicating the initial dictionary size should be set greater than number of channels in the layee. Random seed variation demonstrated high reproducibility with near-identical correlations to baseline SAE across all layers. Varying the MLP hidden dimension <ref type="bibr">(128,</ref><ref type="bibr">512,</ref><ref type="bibr">2048,</ref><ref type="bibr">4096</ref>) indicated a minimum size was needed, as smaller hidden dimensions created a bottleneck for layers with higher input dimensionality, degrading reconstruction performance. Non-negative constraint on modes shows moderate effects on mode correlation to baseline, with the positive constraint producing slightly higher correlation in deeper layers. All SAEs indicate that later layers learn sparser, more distributed class representations.</p><p>We further examined performance metrics of SAEs as a function of hyperparameters. Reconstruction of raw contributions was consistently high (0.7-0.95) across all hyperparameters (Fig. <ref type="figure" target="#fig_12">S4</ref>. For modes with correlation to image class &gt; 0.2, the number of class-correlated modes increased with layer depth. Larger dictionary sizes (N=5) yielded a greater number of class-correlated modes, however the sum of those modes showed high class correlation insensitive to dictionary size, suggesting that additional modes capture redundant rather than distinct information. Very large MLP encoders yielded fewer class correlated modes, likely due to feature splitting <ref type="bibr" target="#b0">(Bricken et al. (2023)</ref>). Conversely, the number of classes having a correlation with modes of &gt; 0.2 also was insensitive to variation of L1 strength, random seed, MLP size, and constraint of MLP sign. As with other measures, the dictionary size multiplier (N) needed to be greater than 1, suggesting that sufficient initial overcompleteness is necessary for the SAE to discover class-specific modes.</p><p>With respect to specific classes, changing hyperparameters had minimal effect on SAE performance and learned representations. We summed all modes with correlation &gt; 0.2 for the black widow class in layer 15 (Fig. <ref type="figure" target="#fig_13">S5</ref>), finding that despite different configurations producing varying numbers of correlated modes, the summed representations remained strikingly similar.</p><p>Systematic hyperparameter sweeps with all other parameters held constant revealed robust specificity patterns: dictionary size multiplier (N=1-5), activation threshold (0.5-0.9), mode L1 regularization (0-1e-2), random seed, and MLP hidden layer size (128-4096) all produced comparable ablation specificity with consistent trends of increased specificity in deeper layers, demonstrating that our interpretability results generalize across architectural choices (Fig. <ref type="figure" target="#fig_14">S6</ref>).</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="10.4">RUNTIME MEASUREMENTS AND COMPLEXITY</head><p>We measured contribution computation time for ResNet-50 across all 16 layers on the ImageNet validation set (50,000 images) on an NVIDIA RTX 6000 GPU. Using integrated gradients with 10 interpolation steps takes approximately 4.1 hours total, averaging 4.7 seconds per batch of 16 images (293 ms per image). In contrast, activation × normalized gradient (act normgrad) completes in 1.3 hours, averaging 1.5 seconds per batch (93ms per image).</p><p>We report runtime measurements for training SAEs over 200 epochs on an NVIDIA RTX 6000 GPU. For Resnet-50, SAEs for earlier layers train relatively quickly due to having fewer channels, with Layer 3 completing in ∼ 3 min and Layer 15 in ∼ 7 minutes. For ViT, training takes ∼ 5 minutes per layer for attention and token features, and ∼ 30 minutes for MLP (it has size 3072 compared to 768 for the other two layer types).</p><p>Computing contributions with activation × gradient is O(P ) where P is the number of model parameters, requiring one forward pass to obtain activations and one backward pass to compute gradients with respect to the target objective. Activation × integrated gradients has complexity O(n steps • P ), scaling linearly with both the number of parameters and interpolation steps. In our experiments with n steps = 10, this translated to approximately 3× compute time compared to activation × gradient.</p><p>Once contributions are precomputed, training contribution-SAEs has the same computational cost as training activation-SAEs, operating on feature vectors of identical dimensionality. This makes the contribution computation method the primary bottleneck, with activation × gradient enabling practical large-scale analysis while Integrated Gradients provides more theoretically grounded contributions at n steps × higher cost. The choice of decomposition method (SAE, PCA, or analyzing raw contributions) depends on the scientific question and represents a separate complexity consideration.</p><p>To explore the scaling of CODEC to larger models, we additionally benchmarked contribution computation on Gemma-3n (5.44B parameters, 30 layers) across multiple NVIDIA Titan XP GPUs. Contributions were computed with respect to output entropy. At a sequence length of 128 tokens, activation × normalized gradient completes in approximately 720ms per input, while integrated gradients (10 steps) requires approximately 8 seconds. Runtime remains invariant to hook location (post-attention vs. post-feedforward) and layer depth (early, mid, late), and scales sub-linearly with sequence length (empirical scaling exponent α ≈ 0.10-0.11), projecting to approximately 1 second (ActGrad) and 11 seconds (IntGrad) even at 4096-token contexts. These results confirm that CODEC's contribution computation generalizes beyond vision models to large-scale language architectures. We note that SAE training is a separate computational step, independent of contribution computation, and scaling it to LLM-scale features is left to future work.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="10.5">CODEC ON VITS</head><p>CODEC is a general framework that can be applied to any feedforward neural network. To show its application across architectures, we apply CODEC to ViT-B, which is an encoder-only transformer with 12 transformer blocks (Fig. <ref type="figure" target="#fig_15">S7</ref>). Because ViTs do not have the same channel and layer structure as CNNs, we log activations and gradients to compute contributions at three types of layers for each transformer block-token features, MLP, and attention-and make the appropriate summation that parallels the spatial sum we perform for each channel in CNNs. Below are the details of implementation:</p><p>• Token features: We log the activations and gradients at the end of each transformer block after the merge into the residual stream, with shape (batch, num tokens, hidden dim). • MLP: We log the activations and gradients at the hidden layer of the MLP, after the nonlinearity, with shape (batch, num tokens, MLP hidden dim). • Attention: We log the activations and gradients after self attention but before the out projection (mixing), with shape (batch, num tokens, num heads * head dim).</p><p>We use Integrated Gradients with 10 integration steps as the contribution algorithm for the following results. We use the post-softmax logit corresponding to the top predicted target class as the contribution target. After we compute the contributions for each neuron, we perform the appropriate summation to obtain a tensor of shape (batch, pseudo-channels):</p><p>• Token features: Because each token is a patch, we sum over the tokens to obtain a tensor of shape (batch, hidden dim), where the hidden dimension corresponds to channels, intuitively interpreted as "global feature detectors". • MLP: We treat each MLP hidden neuron as its own channel, so we sum over tokens to obtain a tensor of shape (batch, MLP hidden dim). • Attention: We treat each hidden dimension in each attention head as a channel, so we sum over both tokens to obtain a tensor of shape (batch, num heads * head dim).</p><p>For each of the three layer types in ViT, we compute a contribution tensor analogous to that of CNNs-shape (batch, channels)-and we term the second dimension pseudo-channels. Like CNNs, we separate positive and negative contributions within each pseudo-channel and concatenate them to obtain (batch, 2*channels) before the summation, where half of the channels only contain the positive contributions with the negative contributions set to zero and vice versa. Then, we take the positive channels and use SAEs to find contribution modes, interpreted as groups of channels acting together to positively drive the output. For activations, we do not separate into positive and negative components before the SAE because the sign does not carry special meaning for activations as opposed to contributions (where a positive contribution predicts a decrease in the contribution target if ablated). We scanned minimally for SAE hyperparameters and settled on the default hyperparameters used for ResNet-50.</p><p>A note about completeness: Because MLP and attention contributions are computed within a transformer block rather than on the full residual stream, their contributions will not be complete. Intuitively, even if one ablates the entire MLP or all attention heads, the residual stream still carries over information from the previous block, which can still maintain good classification performance. Therefore, of the three layer types, we should only expect token features ablations to converge to zero performance when all pseudo-channels are ablated. In fact, empirically, we observe that the ablation of an entire MLP or attention layer within a single transformer block only results in a ∼ 10% decrease in performance.</p><p>We note that ViTs could be utilizing very different computational strategies than CNNs for image classification. In particular, there is no explicit spatially equivariant bias in the transformer architecture. We applied CODEC to ViTs in a straightforward manner analogous to CNNs by summing over "space" (tokens) to obtain spatially invariant feature detectors or information streams, which may not be how ViTs organize computation in its dimensions due to the lack of this bias. Therefore, we should not expect the same level of general perturbation performance as CNNs for the same SAE architecture and hyperparameters. However, we show below that contributions as a causal measure still reveal causal information not captured by activations.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="10.5.1">SPARSITY</head><p>Plotting the contributions and activations for a single image at the three layer types at layer 9, we see that contributions provide a sparser description of the model (Fig. <ref type="figure" target="#fig_15">S7A-C</ref>). Using the same measures of sparsity as in Resnet-50, we computed the average sparsity (over images) for the three layer types across the entire network (Fig. <ref type="figure" target="#fig_15">S7D-F</ref>). As in Resnet-50, contributions are more consistently sparse than activations. Additionally, we observe similarities and differences in sparsity trends for the three layer types across depth. For all three layer types, we observe the general "inverted U" trend, where sparsity goes down at the beginning and eventually increases towards the deep end of the model. However, for MLP we additionally observe near maximum sparsity approaching the final layers but a drop in sparsity at the final layer. These observations suggest distinct sparse organizations used by the different layer types, the full exploration of which we leave for future work.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="10.5.2">CORRELATION ANALYSIS</head><p>We compute the average (across images) maximal correlation to target classes for four unitsactivations of pseudo-channels, contributions of pseudo-channels, activation modes, and contribution modes. Shown in Fig. <ref type="figure" target="#fig_15">S7G</ref>-I are these correlations for the three types of layers that we analyze.</p><p>Across layer types, we observe an increase in correlations as depth increases, except the slight drop for MLP. Furthermore, we observe that modes are more correlated with target classes than individual pseudo-channels for token features and attention, with activation modes more correlated than contribution modes. This suggests that as depth increases, the model not only increasingly represents but also drives target classification with its hidden units. It also increasingly uses groups of hidden dimensions to collectively represent or drive the output classification.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="10.5.3">PERTURBATION ANALYSIS</head><p>We also performed ablation analyses on ViT-B using CODEC, probing the causal efficacy of contribution-SAE against activation-SAE, similar to Fig. <ref type="figure" target="#fig_5">6</ref>. For each layer and a specified percentage of pseudo-channels to ablate, we take six trials as follows. In each trial, we take 10 random target classes. For each target class, we first find the most correlated activation or contribution mode. Then, we randomly select a class that is not the target class ("off-target" class). We take 10 samples from each class. Then, we ablated a range of specified percentages (from 1% to 99%) of the most prominent channels in the mode and evaluated performance ratio of the perturbed model to the original model on the on-target and off-target classes using the 10 images that we just sampled for each class. The performance ratio was then averaged across the 10 target classes as one measurement of the performance of that layer across ablation percentages. The area under this performance ratio-ablation percentage curve (AUC) was computed for on-target and off-target ablations and the difference taken to quantify ablation specificity. The AUC ranges from 0 (performance drops to 0 as soon as the first channel is ablated and stays there) to 1 (performance stays at original until all channels are ablated) except for rare cases where perturbed performance exceeds original performance. We plot the 6 AUC differences for each layer and also show the mean and SEM for each layer in Fig. <ref type="figure" target="#fig_15">S7J-L</ref>. We summarize findings below:</p><p>Token features. Contributions yield significant ablation specificity, since the AUC for on-target ablations is significantly below that of off-target ablations. Contributions are also significantly more effective than activations, especially at late layers. Furthermore, as depth increases into the last layers, contribution performance mostly monotonically increases while activation performance stays mostly flat and similar to the baseline before deteriorating into the last layers, even though correlations of both contributons and activations increase monotonically. For activations, ablating their modes in the deeper half of the model actually hurts off-target classes more than on-target classes, suggesting a unique computational strategy used by ViTs to represent classes in hidden units that causally oppose those classes. This organization may indicate an inhibitory effect similar to inhibitory neurons that carry information about a specific visual feature but suppress that same feature for gain control or spatial decorrelation <ref type="bibr">( Ölveczky et al. (2003)</ref>). Even though class information is better represented by activations as depth increases, the causally contributing components that drive classification drift away from the most prominently activating token features (which become causally inhibitory), necessitating the use of a causal measure like CODEC to capture the causal effects in the late layers.</p><p>MLPs. The overall ablation effect for MLPs is weaker than for token features, which is expected because MLP neurons do not include the residual stream. However, contribution-SAE still yields significant ablation specificity for later layers compared to baseline and is significantly more effective than activation-SAE. Because ablating the entire MLP in one block usually only yields a ∼ 10% decrease in performance (which would translate to a -0.1 floor of the AUC difference), both contribution-SAE and activation-SAE ablations approach this floor at layer 10, but contribution-SAE ablations are more effective in the layers leading up to 10. Furthermore, we observe a sharp performance drop to baseline at the last layers for both, despite the fact that correlations for both contribution and activation modes stay high into the last layer. One possibility for this effect is that the most causally relevant components may be shifted into the residual stream as depth increases, and what is remaining in the MLP at these last layers more clearly represent the target classes but are less causal.</p><p>Attention. The overall ablation effect for MLPs is even weaker than for MLPs, but contribution-SAE still yields specificity at the deepest layers and is significantly more effective than activation-SAE, which stays flat near the baseline. Compared to the -0.1 maximum possible performance, contribution-SAE gets roughly halfway there in the last few layers.</p><p>Overall, a straightforward application of CODEC on ViTs by treating hidden dimensions as channels and tokens as spatial patches shows that contribution-SAE enables target class ablations better than activation-SAE. Even though ablation performance is weaker than in CNNs (the comparable case being token features, which are taken after the merge into the residual stream), we note that summing over tokens as space may not align with how ViTs organize computation because of their lack of explicit spatially equivariant bias. We leave an exploration of the optimal spatial reduction strategy for ViTs to future work.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="10.5.4">ATTENTION HEAD SPARSITY</head><p>Unlike ResNet-50, ViTs utilize multihead attention. We apply CODEC to investigate whether individual attention heads specialize in functions that causally drive output classification.</p><p>We analyzed head specialization through contribution sparsity, which can manifest at the macro scale (few highly active heads) or the micro scale (active dimensions scattered evenly across all heads). To quantify this, we compute the Hoyer sparsity index on a 12-dimensional vector-derived by summing contributions or activations within each head-and compare it against a baseline of randomly grouped hidden dimensions. A sparsity index higher than the baseline indicates head specialization.</p><p>As shown in Fig. <ref type="figure" target="#fig_7">S8</ref>, randomly grouped heads show nearly identical sparsity for contributions and activations. Learned attention heads show a small increase in sparsity for both contributions and activations, but the increase is well within the fluctuation over the dataset. Recall from Fig. <ref type="figure" target="#fig_15">S7F</ref> that contributions are about 0.1 to 0.2 higher in sparsity than activations for attention across depth, and sometimes exceed 0.5 sparsity. Comparatively, the head-level sparsity is much smaller than the sparsity observed at the individual channel level. Therefore, these results demonstrate that attention heads are minimally specialized in representations as well as causal functions, with active and contributing hidden dimensions spanning across attention heads.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="10.6">CONTRASTIVE TARGETS</head><p>In addition to the targets listed in the main text, we also computed contributions with respect to a contrastive target (Fig. <ref type="figure" target="#fig_17">S11</ref>). Both contrastive and top-1 targets produced similarly sparse representations across all network layers, demonstrating that the contrastive target yields sparsity patterns consistent with the top-1 approach used in the main paper. We successfully decomposed contrastive contributions with R 2 above 0.85 for the four analyzed layers, suggesting that contrastive targets can be used for similar causal analysis. The fundamental algorithmic innovation of our work is that we design an approach to address the question of how combinations of hidden neurons drive network output. This contrasts with an analysis of activations, which at any level and for any input are not guaranteed to drive network output.</p><p>Here, we provide additional details of our methods.</p><p>We revisit and describe the motivation behind our several contribution algorithms, which are inspired by gradient-based attribution methods, and we derive their complete decompositions in input space. For notation, let h i be the hidden units in a specific layer L. All attribution methods need a scalar output target, typically a select output neuron or a scalar function of the output neurons. Let T denote the target (for example the output logit of a target class) and y := f T be the neural network with a scalar output y corresponding to T . For clarity, we define the complete input space decomposition of hidden units: Definition 1 (Complete input space decomposition of hidden units). Let C j be the contribution of hidden unit j and C ij be an input space decomposition of C j , i.e., C ij is the part of C j assigned to input pixel i. Then, we call this input space decomposition complete if</p><formula xml:id="formula_5">i C ij = C j .<label>(4)</label></formula><p>We derive the complete input space decomposition of ActGrad, InputGrad, and Integrated Gradients under this definition, which will naturally generalize to mode contributions by linearity as a simple sum over the all the hidden units in that mode.</p><p>A note about ActGrad To be consistent with the rest of the derivation, we slightly generalize ActGrad to account for possible nonzero baselines:</p><formula xml:id="formula_6">ActGrad j = (h j − h ′ j ) • ∂y ∂h j ,<label>(5)</label></formula><p>where h j is the activation of hidden unit j (which could be the input as a special case) at input x and h ′ j is the hidden activation at baseline input x ′ . For image classification, we usually take a baseline hidden activation of zero, which is the definition in the main text.</p><p>Input × Gradient (InputGrad) Used in <ref type="bibr" target="#b21">Shrikumar et al. (2017)</ref> as a baseline, this is a special case of ActGrad where Act is the input values. However, seeing InputGrad this way means it can only attribute to the input layer. We naturally extend InputGrad to hidden layers to obtain contributions by first defining the input space decomposition:</p><formula xml:id="formula_7">InputGrad ij := ∂y ∂h j ∂h j ∂x i (x i − x ′ i ) (6) = ((J y ) j (J z ) ji ) • (x i − x ′ i ),<label>(7)</label></formula><p>where J y := ∂y ∂hj is the Jacobian from the output to the hidden layer and J h := ∂hj ∂xi is the Jacobian from the hidden layer to the input. If we sum over i, we then obtain a contribution algorithm to hidden neurons:</p><formula xml:id="formula_8">HInputGrad j := i InputGrad ij .<label>(8)</label></formula><p>Under this definition of InputGrad contribution, the input space decomposition is trivially complete. This is a well-motivated extension of InputGrad because we recover the original InputGrad by summing over j instead:</p><formula xml:id="formula_9">InputGrad i = j InputGrad ij .<label>(9)</label></formula><p>This natural extension rests on the chain rule of partial derivatives, where we essentially postpone summing gradients over the hidden layer until after multiplying by the input element-wise. In-putGrad as a contribution algorithm may seem a bit ad hoc, but it will turn out to have the most computationally efficient input space decomposition that we consider and we theoretically motivate it later by showing a connection to Integrated Gradients.</p><p>Integrated Gradients (IG) <ref type="bibr" target="#b25">(Sundararajan et al. (2017)</ref>) IG assigns attributions to input pixels by calculating the integral of gradients along a straight-line path from a baseline input x ′ to the actual input x:</p><formula xml:id="formula_10">IG i = (x i − x ′ i ) × 1 α=0 ∂y(x ′ + α(x − x ′ )) ∂x i dα.<label>(10)</label></formula><p>IG satisfies the (output) completeness property, often desired in attribution methods:</p><formula xml:id="formula_11">i IG i = y(x) − y(x ′ ).<label>(11)</label></formula><p>In words, completeness means that the attributions to each input pixel sum up to the (change in) output. In this original form, IG only works for the input layer. We present two ways to extend IG to hidden layers:</p><p>• Treat the hidden layer as the input and follow through. This is the extension by <ref type="bibr" target="#b11">Lucas et al. (2022)</ref>, where they combine this extension of IG with GradCAM. Mathematically, the "hidden integrated gradients" (HIG) is defined as</p><formula xml:id="formula_12">HIG j = (h j − h ′ j ) × 1 α=0 ∂y(h ′ + α(h − h ′ )) ∂h j dα,<label>(12)</label></formula><p>where h is the hidden layer activation vector at input x, and h ′ is the hidden layer activation vector at input x ′ .</p><p>• Take the same path in input space but decompose the gradients at the hidden layer and sum over the input layer. <ref type="bibr">Tanaka et al. (2019)</ref> first introduced this method and applied it to the first hidden layer of a model of the retina. Here, we use it on any hidden layer.</p><p>Mathematically, first, we decompose the gradients over the hidden layer:</p><formula xml:id="formula_13">HIG ij := (x i − x ′ i ) × 1 α=0 ∂y(x ′ + α(x − x ′ )) ∂h j ∂h j ∂x i dα,<label>(13)</label></formula><p>where i indexes the input pixels and j indexes the hidden neurons. Note that we can recover standard IG by summing over j due to the linearity of the integral and chain rule of partial derivatives:</p><formula xml:id="formula_14">IG i = j HIG ij ,<label>(14)</label></formula><p>which motivates this extension. Now, to obtain contributions in the hidden layer, we simply sum over i instead of j:</p><formula xml:id="formula_15">HIG j := i HIG ij .<label>(15)</label></formula><p>In practice, we approximate the integral using a Riemann sum with m steps. For standard IG, we have</p><formula xml:id="formula_16">IG i ≈ (x i − x ′ i ) × 1 m m k=1 ∂y(x ′ + k m (x − x ′ )) ∂x i . (<label>16</label></formula><formula xml:id="formula_17">)</formula><p>This approximation extends straightforwardly to the first method of HIG, simply by replacing x with h. For the second method, we could naively discretize in input space to get HIG ij first, but that would involve a backward pass for each hidden neuron at each step. Instead, we analytically derive an approximation that still only involves one backward pass at each step. We have</p><formula xml:id="formula_18">HIG j = i (x i − x ′ i ) × 1 α=0 ∂y(x ′ + α(x − x ′ )) ∂h j ∂h j ∂x i dα (17) = 1 α=0 i ∂y ∂h j ∂h j ∂x i ∂x i ∂α x ′ +α(x−x ′ ) dα (18) = 1 α=0 ∂y ∂h j i ∂h j ∂x i ∂x i ∂α x ′ +α(x−x ′ ) dα (19) = 1 α=0 ∂y ∂h j ∂h j ∂α h(x ′ +α(x−x ′ )) dα. (<label>20</label></formula><formula xml:id="formula_19">)</formula><p>Note that this is precisely IG treating h as the input layer (the first extension) with the important distinction that the path is not a straight line (it is warped by the nonlinear functional relationship between x and h). The crucial advantage of computing HIG this way over the first method is the complete input space decomposition (Equation <ref type="formula" target="#formula_13">13</ref>) we get for free. To approximate this line integral with a Riemann sum, we have</p><formula xml:id="formula_20">HIG j ≈ m k=1 ∂y ∂h j h(α= k m ) dh j ,<label>(21)</label></formula><p>where we can compute h(α = k m ) at each k in a forward pass and</p><formula xml:id="formula_21">dh j = h j (α = k m )−h j (α = k−1 m ) in a single backward pass.</formula><p>Complete input space decomposition of ActGrad It is a bit more nuanced to define a complete input space decomposition for ActGrad in hidden layers. The idea is to use IG to attribute Act to inputs, which we then multiply by Grad to get the decomposition. Mathematically, we exploit the output completeness of IG to express Act as an integral of gradients, which we can then naturally decompose linearly in input space. We define the input space decomposition as</p><formula xml:id="formula_22">ActGrad ij := (x i − x ′ i ) ∂y ∂h j x 1 α=0 ∂h j ∂x i dα,<label>(22)</label></formula><p>where we take a straight-line path in input space parameterized by α. We can prove that this decomposition is complete by recovering the standard ActGrad for hidden layers if we sum over i:</p><formula xml:id="formula_23">i ActGrad ij = i (x i − x ′ i ) ∂y ∂h j x 1 α=0 ∂h j ∂x i dα (23) = ∂y ∂h j x i (x i − x ′ i ) 1 α=0 ∂h j ∂x i dα (24) = ∂y ∂h j x (h j − h ′ j ) (due to the output completeness of IG) (25) = ActGrad j ,<label>(26)</label></formula><p>where the second-to-last step is true even though the path in h space is not necessarily straight by the fundamental theorem of calculus for line integrals. Note that if we summed over j instead, we would obtain a new attribution method for the input layer that is like a hybrid between IG and InputGrad (the difference being which part of the chained derivative is integrated over). We do not explore that method any further as we are primarily interested in contributions of hidden neurons.</p><p>InputGrad and ActGrad as approximations to IG The unifying connection behind all three contribution algorithms is that they are the same for a linear network. The three algorithms represent successively more comprehensive ways to capture the nonlinearity of the network in their contribution assignments. Recall the definition of HIG (Equation <ref type="formula" target="#formula_18">20</ref>):</p><formula xml:id="formula_24">HIG j = 1 α=0 ∂y ∂h j ∂h j ∂α h(x ′ +α(x−x ′ )) dα.<label>(27)</label></formula><p>If we assume that the downstream network is linear along the integration path, i.e., the downstream gradients ∂y ∂hj are constant, we recover ActGrad:</p><formula xml:id="formula_25">1 α=0 ∂y ∂h j ∂h j ∂α h(x ′ +α(x−x ′ )) dα = ∂y ∂h j x 1 α=0 ∂h j ∂α h(x ′ +α(x−x ′ )) dα (28) = ∂y ∂h j x (h j − h ′ j ) (29) = ActGrad j .<label>(30)</label></formula><p>If we further assume the whole network is linear along the integration path, i.e., all gradients are constant, we recover InputGrad:</p><formula xml:id="formula_26">1 α=0 ∂y ∂h j ∂h j ∂α h(x ′ +α(x−x ′ )) dα = 1 α=0 ∂y ∂h j i ∂h j ∂x i ∂x i ∂α x ′ +α(x−x ′ ) dα (31) = ∂y ∂h j i ∂h j ∂x i ∂x i ∂α x 1 α=0 dα (32) = i ∂y ∂h j ∂h j ∂x i (x i − x ′ i ) (33) = i InputGrad ij (34) = InputGrad j .<label>(35)</label></formula><p>By taking the full integral, IG has the output completeness property j HIG j = y −y ′ that ActGrad and InputGrad don't have. Furthermore, IG alleviates the saturation problem where a zero gradient counterintuitively leads to a zero attribution (and therefore contribution) <ref type="bibr" target="#b21">(Shrikumar et al. (2017)</ref>; <ref type="bibr" target="#b24">Srinivas and Fleuret (2019)</ref>).</p><p>Under our definition, a mode's contribution is the sum of the contributions of its top-k channels.</p><p>Due to the linearity of sums and integrals, the complete input space decompositions derived above for individual hidden units naturally generalize to those of modes.</p><p>The key insight that underlies input space completeness is the chain rule of partial derivatives and linearity of integrals and sums (and additionally the output completeness of IG for ActGrad decomposition). The high-level procedure is:</p><p>1. When computing the contribution of each hidden unit, do not sum the gradients over the input space just yet; save the full contribution tensor with the input index. 2. Sum over the input space and cluster to find modes. 3. Go back to the unsummed contributions and sum over each mode to get a complete decomposition of mode contributions in input space.</p><p>Practically, it is more computationally expensive to use the input space decomposition of IG and ActGrad than InputGrad due to the integration. Therefore, we use InputGrad as the backbone algorithm for all our input space visualizations. Anecdotally, for attributions to input space, <ref type="bibr" target="#b20">Selvaraju et al. (2020)</ref> notes that ActGrad at earlier layers produce less clear heatmaps, but since we use IG at the hidden layer first to identify modes, we do not expect the loss in quality to be as significant by switching to InputGrad just for visualization in input space. Empirically, our experimental visualizations show sufficient quality for our purposes. However, our theoretical framework allows for a principled, complete decomposition if necessary for the application at hand.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="10.8">VISUALIZING CONTRIBUTION MAPS</head><p>For each image, we computed contribution maps using the InputGrad method described in the main text. Specifically, for a target class and a set of mode-selected channels identified via CODEC analysis, we computed the Jacobians J y,hc,p = ∂y/∂h c,p (gradient of the softmax class output SUPPLEMENTAL FIGURES         </p></div><figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_0"><head>Figure 1 :</head><label>1</label><figDesc>Figure 1: Understanding the contribution of an intermediate component to downstream computation. (A) Biological and (B) artificial neural circuits construct computations by combining sets of upstream components in an input-dependent manner. The action of a network component Z is a composition of its receptive field, or sensitivity to input X, and its projective field, or effect on output Y . Measuring both is required to explain how the intermediate component contributes to the overall behavior of the system.</figDesc><graphic coords="2,207.00,81.86,198.00,130.92" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_1"><head>Figure 2 :</head><label>2</label><figDesc>Figure 2: Hidden-neuron contributions in a deep convolutional network. (A) Pipeline of computing contributions for an image processed through ResNet-50. Gradient-based attribution methods are extended to compute the contributions of each hidden unit to scalar targets of network output such as entropy of logits, sum of top-k logits, and individual class logits. (B) Spatial map of activations and contributions of a single channel in Layer 5. (C) Mean positive, negative and net contribution for each channel. (D-E) Same as (B-C) for Layer 8.</figDesc><graphic coords="3,147.60,81.86,316.80,170.11" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_2"><head>Figure 3 :</head><label>3</label><figDesc>Figure 3: Channel contributions through the network become more sparse, single-signed and high dimensional. (A) Example matrix of spatially-summed contributions and activations from one layer for all channels and images from four classes. (B) Hoyer sparsity index for contributions and activations across network layers. (C) Scatter plot of mean negative vs. mean positive contributions of each channel to network output. (D) Correlation coefficient between positive and negative contributions of individual channels across network depth. (E) Fraction of explained variance (FOEV) across all class-averaged channel weightings for layers 2 and 14. (F) Number of components required to reach 95 percent FOEV.</figDesc><graphic coords="4,127.80,81.86,356.40,287.79" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_3"><head>Figure 4 :</head><label>4</label><figDesc>Figure 4: Sparse autoencoder decomposition of network contributions. (A) Schematic of contribution decomposition. Channel contributions are spatially summed and an autoencoder is trained to reconstruct the matrix of contributions by images by creating modes with sparse loadings (the weighting for each mode for particular image). Loadings are passed through a sigmoid then a threshold, and regularized to encourage sparsity. (B) Loadings from the mode that maximally correlated with the class "panda" for contributions (top, black) and activations (bottom, blue). Inset shows the loadings for 50 images of panda and 100 images of other classes.</figDesc><graphic coords="5,127.80,81.86,356.39,127.29" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_4"><head>Figure 5 :</head><label>5</label><figDesc>Figure 5: Emergence of meaningful contribution modes in intermediate layers. (A) Histograms of each mode's maximum correlation with binary class indicators for contributions (grey) and activations (blue) at hidden layer 13. (B) Same as (A) for the correlation of individual channel contributions or activations with class indicators. (C) Number of modes with a correlation to a class of greater than 0.2. (D) Mean of the maximal class-correlation as a function of layer.</figDesc><graphic coords="6,127.80,81.86,356.39,83.43" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_5"><head>Figure 6 :</head><label>6</label><figDesc>Figure 6: Contribution-guided network control. (A) Example mode most correlated with the "black widow" class, showing channel weightings. (B) Sorted channel weightings from (A) with a few top channels highlighted for selection. (C) Results for "black widow" classification: Top shows preservation analysis (accuracy when keeping only selecte channels), bottom shows ablation analysis (accuracy when removing selecte channels). (D) Normalized accuracy change for the target class when ablating (left) or preserving (right) channels from the most correlated contribution mode (black), activation mode (blue), or random class (red, representing non-target/off-target performance). (E) Performance score quantifying perturbation effectiveness as the area between target and off-target curves from (D) across all blocks, normalized to the off-target area.</figDesc><graphic coords="7,127.80,81.86,356.42,193.44" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_6"><head>Figure 7 :</head><label>7</label><figDesc>Figure 7: Visualizing stimuli acting through contribution modes. (A) Contribution mapping reveals how parallel pathways extract different information to drive network output. The contribution map is an intermediate stage for computing contributions prior to input summation defined by observing that the inner product of the image x and sensitivity A can be expanded into a product of 1, the vector of ones, and an elementwise product that is the contribution map. Symbols are shown as their transpose to match the left to right schematic. (B) Visualization of 4 example stimuli from different classes through two modes highly correlated with violin at layer 7 of Resnet-50. The information conveyed by modes are interpretable features that can be identified across class and stimuli (shiny wood, hands, etc.). To preserve original colors, maps are shown averaged over color channels and as a weighted mask on the original image, though they contain color information not shown.</figDesc><graphic coords="8,167.40,81.86,277.21,289.27" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_7"><head>Figure 8 :</head><label>8</label><figDesc>Figure 8: Contribution modes generate dynamic receptive fields in the retina. (A) CNN trained to predict retinal ganglion cell responses to natural stimuli, from Ding et al. (2023). CODEC is performed for hidden units to single target outputs including surprisal (self-information) of the population or from single cell responses. (B) Model firing rate predictions for an example cell (top) aligned with the matrix of contributions, and with loadings for two example modes after SAE decomposition (bottom). Also shown are instantaneous receptive fields (IRFs) of the cell computed at two time points. (C) Clustering of cells using their contribution modes. Matrix shows the correlation of firing of each cell with the loading of each mode. Three clusters (number selected using silhouette value) computed using k-means remain consistent across layers. (D) IRFs during sparse mode combinations. Left column: IRFs when one specific mode was active alone for four different cells at different times. Right: IRFs for example cells at times when 5 or fewer modes were active and cells were firing more than 1 Hz. Each row is from a different cell.</figDesc><graphic coords="10,127.80,81.86,356.40,189.79" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_8"><head>10. 7</head><label>7</label><figDesc>CODEC IN DEPTH: ADDITIONAL DETAILS ON CONTRIBUTION ALGORITHMS AND THEIR COMPLETE DECOMPOSITIONS IN INPUT SPACE</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_9"><head>Figure S1 :</head><label>S1</label><figDesc>Figure S1: Comparison of attribution methods and targets reveals consistent channel contribution patterns. (A) Spatial maps of activations, gradients, and contributions computed using different contribution algorithms (ActGrad, IntGrad) and targets (sum of all logits, most-active logit, mostactive logit with softmax, entropy) for Channel 39. All methods show similar spatial sparsity. (B) Excitatory and inhibitory contribution maps for Channel 39 in Layer 5 for a single image demonstrating the separation of excitation and inhibition in an early layer. (C) Contribution values across channels for one image showing the distribution of net excitatory and inhibitory effects for Layer 5. (D) Same as (B) but for Channel 369 in Layer 11, illustrating consistent excitatory/inhibitory patterns across different channels. (E) Same as (C) but for Layer 11, showing how the excitatory/inhibitory decorrelation evolves across network depth.</figDesc><graphic coords="24,147.60,110.65,316.78,181.65" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_10"><head>Figure S2 :</head><label>S2</label><figDesc>Figure S2: Sparse autoencoder decomposition performance and sparsity analysis across network layers. (A) Reconstruction accuracy (R 2 ) of sparse autoencoder decompositions for contributions (black) and activations (blue) across network layers. Both show high reconstruction fidelity, with contributions maintaining slightly higher R 2 values in intermediate layers. (B) Number of modes discovered by the sparse autoencoder decomposition as a function of network depth for contributions (black) and activations (blue). The number of modes increases through the network, with contributions yielding more modes than activations in deeper layers. (C) Comparison of the most correlated panda mode with the average contribution pattern during presentation of panda images.The decomposition identified a mode (black) that shows similar contribution patterns to the classaverage contributions when panda images are presented (r=0.6). (D) Median Hoyer sparsity index of learned modes across network layers for contributions (black) and activations (blue). Contribution modes maintain higher sparsity than activation modes throughout the network.</figDesc><graphic coords="25,147.60,245.15,316.80,172.81" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_11"><head>Figure S3 :</head><label>S3</label><figDesc>FigureS3: SAE mode stability across hyperparameters and random seeds. SAEs were trained on Resnet-50 contributions for example layers 3, 7, 13, and 15, varying hyperparameters L1 sparsity penalty strength, threshold, dictionary size (N * number of channels), random seed, MLP encoder size, and a non-negativity constraint were varied across the indicated values. Each panel shows the correlation coefficient between baseline SAE modes (used in main text) and modes learned with varied hyperparameters as a function of network layer. Modes are aggregated for each class by summing all modes whose correlation with that ImageNet class exceeds 0.2; if no modes exceed this threshold, the single top-correlated mode is used. Shaded regions show mean ± standard error of correlation across 1000 ImageNet classes.</figDesc><graphic coords="26,108.00,219.65,396.01,245.73" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_12"><head>Figure S4 :</head><label>S4</label><figDesc>Figure S4: SAE performance metrics are robust across hyperparameter choices. Each panel shows a metric (rows) across network layers (x-axis) for different hyperparameter values (colored lines). For each hyperparameter column, values are averaged across all other hyperparameter configurations. Shaded regions indicate mean ± standard error across configurations. Top row: R 2 score, reconstruction quality across all hyperparameters. Middle row: The number of modes having a correlation with classes &gt; 0.2 for different hyperparameters. Bottom row: The number of classes having a correlation with modes &gt; 0.2 for different hyperparameters.</figDesc><graphic coords="27,108.00,215.87,396.00,286.16" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_13"><head>Figure S5 :</head><label>S5</label><figDesc>Figure S5: Class-specific mode representations are consistent across hyperparameter choices. For the Black Widow class we summed all modes with correlation &gt; 0.2 to that class. Shown is the sum for SAEs trained with different hyperparameters.</figDesc><graphic coords="28,108.00,248.43,395.99,264.88" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_14"><head>Figure S6 :</head><label>S6</label><figDesc>Figure S6: Hyperparameter robustness of SAE ablation specificity across architectures. Ablation specificity measured as normalized AUC difference across ResNet-50 blocks(3,7,13,15)  for SAEs trained with varying hyperparameters: dictionary size multiplier (N=1,3,5), activation threshold (0.5,0.7,0.9), mode L1 regularization (0, 1e-2, 1e-4), random seed(1001, 2002, 483), and MLP hidden layer size (128-4096). Threshold = 0.9 corresponds to our baseline set of hyperparameters used in the main text. Normalized AUC difference integrates performance ratios (perturbed/original accuracy) across ablation percentages (25%, 50%), with negative values indicating greater specificity (larger target class accuracy drop relative to off-target classes). Results demonstrate robustness across hyperparameter choices, with all configurations showing increased specificity in deeper layers. Error bars indicate SEM across ten trials with randomly sampled class pairs.</figDesc><graphic coords="29,147.60,238.49,316.80,208.06" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_15"><head>Figure S7 :</head><label>S7</label><figDesc>Figure S7: Application of CODEC on ViT-B. The columns correspond to the three layer typestoken features, MLP, and attention. (A-C) Examples of contributions and activations computed for a single image at layer 9. (D-F) Hoyer sparsity as a function of depth for activations (blue) and contributions (black). Box plots show the distribution of sparsity values over the entire Im-ageNet validation set, omitting outliers for clarity. (G-I) Analogous to Fig.5Din the main text, the mean over units (pseudo-channels or modes) of the maximal class-correlation for each unit as a function of depth for four cases: contributions of single pseudo-channels, activations of single pseudo-channels, contribution modes, and activation modes. (J-L) Analogous to Fig.6E, performance score quantifying perturbation effectiveness as the area between target and off-target curves from Fig.6Dnormalized to the off-target area, as a function of depth. Six trials are performed for each layer, shown as scatter points, and the SEM is shown as the shade.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_16"><head>Figure S10 :</head><label>S10</label><figDesc>Figure S10: Manipulation of higher semantic classes using contribution modes. (A) Ablation experiment: A binary mask was created for all images with dog superclass labels, then correlated with mode loadings to identify dog-correlated modes. All modes with correlation &gt; 0.2 were summed together. Removing channels from this aggregated dog mode in intermediate layers (12-15) eliminates the network's ability to classify dog images while leaving other classes largely unaffected. (B) Preservation experiment: Using the same summed dog mode identified through correlation analysis, retaining only these mode channels allows the network to correctly identify dog images while reducing accuracy to near-zero for all other classes.</figDesc><graphic coords="32,147.60,98.66,316.81,213.67" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_17"><head>Figure S11 :</head><label>S11</label><figDesc>Figure S11: Layer-wise sparsity comparison of contrastive top-1 contributions. Box plots showing the distribution of Hoyer sparsity of contributions across layers 0-15 of ResNet-50 on Ima-geNet. Black boxes represent contrastive contributions with respect to the difference between top-1 and top-2 predictions, while blue boxes show top-1 contributions with respect to top-1 predictions (left) or activations (right).</figDesc><graphic coords="32,147.60,458.65,316.79,182.52" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0"><head></head><label></label><figDesc></figDesc><graphic coords="31,147.60,389.44,316.80,221.85" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_0"><head></head><label></label><figDesc>The structure of retinal prediction. In Advances in Neural Information Processing Systems, volume 32. Curran Associates, Inc.Yamins, D. L. K., Hong, H., Cadieu, C. F.,Solomon, E. A., Seibert, D., and DiCarlo, J. J. (2014).Performance-optimized hierarchical models predict neural responses in higher visual cortex. Proceedings of the National Academy of Sciences, 111(23):8619-8624. Publisher: Proceedings of the National Academy of Sciences.</figDesc><table><row><cell>10.1 SPATIAL AGGREGATION AND E/I SEPARATION</cell></row><row><cell>Ölveczky, B. P., Baccus, S. A., and Meister, M. (2003). Segregation of object and background</cell></row><row><cell>motion in the retina. Nature, 423(6938):401-408.</cell></row></table></figure>
+		</body>
+		<back>
+
+			<div type="acknowledgement">
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>ACKNOWLEDGEMENTS</head><p>This work was supported by grants from the National Eye Institute (NEI): R01EY022933, R01EY025087 and P30EY026877 (SAB). S.G. thanks the Simons Foundation Collaboration on the Physics of Learning and Neural Computation and a Schmidt Sciences Polymath Award for support. Z.A. was supported by the Stanford Medicine Post-Baccalaureate Experience In Research program.</p></div>
+			</div>
+
+			<div type="annex">
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>with respect to each hidden unit activation) and J hc,p,xi = ∂h c,p /∂x i (gradient of each hidden unit activation with respect to each input pixel), retaining spatial resolution across all positions p in the feature map. The per-channel, per-position input sensitivity was then formed as A (c,p) i = J y,hc,p • J hc,p,xi , and the contribution map was computed as the elementwise product C (c,p) i = A (c,p) i ⊙ x i . Contributions were aggregated across all spatial positions and mode-selected channels by summation, and were separated into positive and negative components prior to aggregation; only positive contributions were retained for visualization. The resulting contribution map was averaged across color channels, median-filtered with a kernel of size 4 to reduce noise, normalized to [0, 1], and scaled by a contrast factor of 7 before being clipped to [0, 1] and used as a multiplicative mask on the mean-and variance-normalized input image for display.  </p></div>			</div>
+			<div type="references">
+
+				<listBibl>
+
+<biblStruct xml:id="b0">
+	<analytic>
+		<title level="a" type="main">Towards monosemanticity: Decomposing language models with dictionary learning</title>
+		<author>
+			<persName><forename type="first">T</forename><surname>Bricken</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Templeton</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Batson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Jermyn</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Conerly</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Turner</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Anil</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Denison</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Askell</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Transformer Circuits Thread</title>
+				<imprint>
+			<date type="published" when="2023">2023</date>
+			<biblScope unit="volume">2</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b1">
+	<analytic>
+		<title level="a" type="main">ImageNet: A largescale hierarchical image database</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Deng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><surname>Dong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Socher</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L.-J</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Fei-Fei</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">IEEE Conference on Computer Vision and Pattern Recognition</title>
+				<imprint>
+			<date type="published" when="2009">2009. 2009</date>
+			<biblScope unit="page" from="248" to="255" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b2">
+	<analytic>
+		<title level="a" type="main">Information geometry of the retinal representation manifold</title>
+		<author>
+			<persName><forename type="first">X</forename><surname>Ding</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Lee</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">B</forename><surname>Melander</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Sivulka</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Ganguli</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">A</forename><surname>Baccus</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Advances in Neural Information Processing Systems (NeurIPS)</title>
+				<imprint>
+			<date type="published" when="2023">2023</date>
+			<biblScope unit="volume">36</biblScope>
+			<biblScope unit="page" from="44310" to="44322" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b3">
+	<monogr>
+		<title level="m" type="main">Towards A Rigorous Science of Interpretable Machine Learning</title>
+		<author>
+			<persName><forename type="first">F</forename><surname>Doshi-Velez</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Kim</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1702.08608</idno>
+		<imprint>
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+	<note>stat</note>
+</biblStruct>
+
+<biblStruct xml:id="b4">
+	<analytic>
+		<title level="a" type="main">An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Dosovitskiy</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Beyer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Kolesnikov</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Weissenborn</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Zhai</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Unterthiner</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Dehghani</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Minderer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Heigold</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Gelly</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Uszkoreit</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Houlsby</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">International Conference on Learning Representations</title>
+				<imprint>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b5">
+	<monogr>
+		<title level="m" type="main">A Holistic Approach to Unifying Automatic Concept Extraction and Concept Importance Estimation</title>
+		<author>
+			<persName><forename type="first">T</forename><surname>Fel</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">V</forename><surname>Boutin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Moayeri</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Cadène</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Bethune</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Andéol</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Chalvidal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Serre</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2306.07304</idno>
+		<imprint>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+	<note>cs</note>
+</biblStruct>
+
+<biblStruct xml:id="b6">
+	<analytic>
+		<title level="a" type="main">Neocognitron: A self-organizing neural network model for a mechanism of pattern recognition unaffected by shift in position</title>
+		<author>
+			<persName><forename type="first">K</forename><surname>Fukushima</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Biological Cybernetics</title>
+		<imprint>
+			<biblScope unit="volume">36</biblScope>
+			<biblScope unit="issue">4</biblScope>
+			<biblScope unit="page" from="193" to="202" />
+			<date type="published" when="1980">1980</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b7">
+	<analytic>
+		<title level="a" type="main">Deep Residual Learning for Image Recognition</title>
+		<author>
+			<persName><forename type="first">K</forename><surname>He</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Ren</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Sun</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition</title>
+				<meeting>the IEEE Conference on Computer Vision and Pattern Recognition</meeting>
+		<imprint>
+			<date type="published" when="2016">2016</date>
+			<biblScope unit="page" from="770" to="778" />
+		</imprint>
+	</monogr>
+	<note>Published as a conference paper at ICLR 2026</note>
+</biblStruct>
+
+<biblStruct xml:id="b8">
+	<analytic>
+		<title level="a" type="main">Interpretability Beyond Feature Attribution: Quantitative Testing with Concept Activation Vectors</title>
+		<author>
+			<persName><forename type="first">B</forename><surname>Kim</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Wattenberg</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Gilmer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Cai</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Wexler</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Viegas</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Sayres</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1711.11279</idno>
+	</analytic>
+	<monogr>
+		<title level="j">TCAV</title>
+		<imprint>
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+	<note>stat</note>
+</biblStruct>
+
+<biblStruct xml:id="b9">
+	<analytic>
+		<title level="a" type="main">Network model of shape-from-shading: neural function arises from both receptive and projective fields</title>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">R</forename><surname>Lehky</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><forename type="middle">J</forename><surname>Sejnowski</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nature</title>
+		<imprint>
+			<biblScope unit="volume">333</biblScope>
+			<biblScope unit="page" from="452" to="454" />
+			<date type="published" when="1988">1988. 6172</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b10">
+	<monogr>
+		<title level="m" type="main">The Mythos of Model Interpretability</title>
+		<author>
+			<persName><forename type="first">Z</forename><forename type="middle">C</forename><surname>Lipton</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1606.03490</idno>
+		<imprint>
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+	<note>cs</note>
+</biblStruct>
+
+<biblStruct xml:id="b11">
+	<analytic>
+		<title level="a" type="main">RSI-Grad-CAM: Visual Explanations from Deep Networks via Riemann-Stieltjes Integrated Gradient-Based Localization</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Lucas</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Lerma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Furst</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Raicu</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Advances in Visual Computing</title>
+				<editor>
+			<persName><forename type="first">G</forename><surname>Bebis</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">B</forename><surname>Li</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">A</forename><surname>Yao</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">Y</forename><surname>Liu</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">Y</forename><surname>Duan</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">M</forename><surname>Lau</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">R</forename><surname>Khadka</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">A</forename><surname>Crisan</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">R</forename><surname>Chang</surname></persName>
+		</editor>
+		<imprint>
+			<publisher>Cham. Springer International Publishing</publisher>
+			<date type="published" when="2022">2022</date>
+			<biblScope unit="page" from="262" to="274" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b12">
+	<analytic>
+		<title level="a" type="main">Interpreting the retinal neural code for natural scenes: From computations to neurons</title>
+		<author>
+			<persName><forename type="first">N</forename><surname>Maheswaranathan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><forename type="middle">T</forename><surname>Mcintosh</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Tanaka</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Grant</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">B</forename><surname>Kastner</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">B</forename><surname>Melander</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Nayebi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><forename type="middle">E</forename><surname>Brezovec</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">H</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Ganguli</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">A</forename><surname>Baccus</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Neuron</title>
+		<imprint>
+			<biblScope unit="volume">111</biblScope>
+			<biblScope unit="issue">17</biblScope>
+			<biblScope unit="page">e4</biblScope>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b13">
+	<analytic>
+		<title level="a" type="main">Interpretable machine learning: definitions, methods, and applications</title>
+		<author>
+			<persName><forename type="first">W</forename><forename type="middle">J</forename><surname>Murdoch</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Singh</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Kumbier</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Abbasi-Asl</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Yu</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1901.04592</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Proceedings of the National Academy of Sciences</title>
+		<imprint>
+			<biblScope unit="volume">116</biblScope>
+			<biblScope unit="issue">44</biblScope>
+			<biblScope unit="page" from="22071" to="22080" />
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+	<note>stat</note>
+</biblStruct>
+
+<biblStruct xml:id="b14">
+	<analytic>
+		<title level="a" type="main">Sparse coding of sensory inputs</title>
+		<author>
+			<persName><forename type="first">B</forename><forename type="middle">A</forename><surname>Olshausen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">J</forename><surname>Field</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Current Opinion in Neurobiology</title>
+		<imprint>
+			<biblScope unit="volume">14</biblScope>
+			<biblScope unit="issue">4</biblScope>
+			<biblScope unit="page" from="481" to="487" />
+			<date type="published" when="2004">2004</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b15">
+	<analytic>
+		<title level="a" type="main">Decorrelation and efficient coding by retinal ganglion cells</title>
+		<author>
+			<persName><forename type="first">X</forename><surname>Pitkow</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Meister</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nature Neuroscience</title>
+		<imprint>
+			<biblScope unit="volume">15</biblScope>
+			<biblScope unit="issue">4</biblScope>
+			<biblScope unit="page" from="628" to="635" />
+			<date type="published" when="2012">2012</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b16">
+	<analytic>
+		<title level="a" type="main">Errorrobust modes of the retinal population code</title>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">S</forename><surname>Prentice</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">O</forename><surname>Marre</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">L</forename><surname>Ioffe</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">R</forename><surname>Loback</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Tkačik</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">J</forename><surname>Berry</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">PLoS computational biology</title>
+		<imprint>
+			<biblScope unit="volume">12</biblScope>
+			<biblScope unit="issue">11</biblScope>
+			<biblScope unit="page">e1005148</biblScope>
+			<date type="published" when="2016">2016</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b17">
+	<analytic>
+		<title level="a" type="main">Deep convolutional neural networks for image classification: A comprehensive review</title>
+		<author>
+			<persName><forename type="first">W</forename><surname>Rawat</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Wang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Neural computation</title>
+		<imprint>
+			<biblScope unit="volume">29</biblScope>
+			<biblScope unit="issue">9</biblScope>
+			<biblScope unit="page" from="2352" to="2449" />
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b18">
+	<analytic>
+		<title level="a" type="main">Stop explaining black box machine learning models for high stakes decisions and use interpretable models instead</title>
+		<author>
+			<persName><forename type="first">C</forename><surname>Rudin</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nature Machine Intelligence</title>
+		<imprint>
+			<biblScope unit="volume">1</biblScope>
+			<biblScope unit="issue">5</biblScope>
+			<biblScope unit="page" from="206" to="215" />
+			<date type="published" when="2019">2019</date>
+			<publisher>Nature Publishing Group</publisher>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b19">
+	<analytic>
+		<title level="a" type="main">Multineuronal firing patterns in the signal from eye to brain</title>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">J</forename><surname>Schnitzer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Meister</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Neuron</title>
+		<imprint>
+			<biblScope unit="volume">37</biblScope>
+			<biblScope unit="issue">3</biblScope>
+			<biblScope unit="page" from="499" to="511" />
+			<date type="published" when="2003">2003</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b20">
+	<analytic>
+		<title level="a" type="main">Grad-CAM: Visual Explanations from Deep Networks via Gradient-based Localization</title>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">R</forename><surname>Selvaraju</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Cogswell</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Das</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Vedantam</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Parikh</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Batra</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1610.02391</idno>
+	</analytic>
+	<monogr>
+		<title level="j">International Journal of Computer Vision</title>
+		<imprint>
+			<biblScope unit="volume">128</biblScope>
+			<biblScope unit="issue">2</biblScope>
+			<biblScope unit="page" from="336" to="359" />
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+	<note>cs</note>
+</biblStruct>
+
+<biblStruct xml:id="b21">
+	<analytic>
+		<title level="a" type="main">Learning important features through propagating activation differences</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Shrikumar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Greenside</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Kundaje</surname></persName>
+		</author>
+		<ptr target="org" />
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 34th International Conference on Machine Learning -Volume 70, ICML&apos;17</title>
+				<meeting>the 34th International Conference on Machine Learning -Volume 70, ICML&apos;17<address><addrLine>Sydney, NSW, Australia</addrLine></address></meeting>
+		<imprint>
+			<date type="published" when="2017">2017</date>
+			<biblScope unit="page" from="3145" to="3153" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b22">
+	<monogr>
+		<title level="m" type="main">SmoothGrad: removing noise by adding noise</title>
+		<author>
+			<persName><forename type="first">D</forename><surname>Smilkov</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Thorat</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Kim</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Viégas</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Wattenberg</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1706.03825</idno>
+		<imprint>
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+	<note>cs</note>
+</biblStruct>
+
+<biblStruct xml:id="b23">
+	<analytic>
+		<title level="a" type="main">Retinal ganglion cells and the magnocellular, parvocellular, and koniocellular subcortical visual pathways from the eye to the brain</title>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">G</forename><surname>Solomon</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Handbook of clinical neurology</title>
+		<imprint>
+			<biblScope unit="volume">178</biblScope>
+			<biblScope unit="page" from="31" to="50" />
+			<date type="published" when="2021">2021</date>
+			<publisher>Elsevier</publisher>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b24">
+	<monogr>
+		<title level="m" type="main">Full-Gradient Representation for Neural Network Visualization</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Srinivas</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Fleuret</surname></persName>
+		</author>
+		<imprint>
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b25">
+	<monogr>
+		<title level="m" type="main">Axiomatic Attribution for Deep Networks</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Sundararajan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Taly</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Q</forename><surname>Yan</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1703.01365</idno>
+		<imprint>
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+	<note>cs</note>
+</biblStruct>
+
+				</listBibl>
+			</div>
+		</back>
+	</text>
+</TEI>

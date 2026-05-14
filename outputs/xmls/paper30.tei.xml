@@ -1,0 +1,840 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xml:space="preserve" xmlns="http://www.tei-c.org/ns/1.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.tei-c.org/ns/1.0 https://raw.githubusercontent.com/kermitt2/grobid/master/grobid-home/schemas/xsd/Grobid.xsd"
+ xmlns:xlink="http://www.w3.org/1999/xlink">
+	<teiHeader xml:lang="en">
+		<fileDesc>
+			<titleStmt>
+				<title level="a" type="main">Self-Auditing Parameter-Efficient Fine-Tuning for Few-Shot 3D Medical Image Segmentation</title>
+			</titleStmt>
+			<publicationStmt>
+				<publisher/>
+				<availability status="unknown"><licence/></availability>
+				<date type="published" when="2026-03-06">6 Mar 2026</date>
+			</publicationStmt>
+			<sourceDesc>
+				<biblStruct>
+					<analytic>
+						<author>
+							<persName><forename type="first">Son</forename><forename type="middle">Thai</forename><surname>Ly</surname></persName>
+							<email>stly@cougarnet.uh.edu</email>
+							<affiliation key="aff0">
+								<orgName type="institution">University of Houston</orgName>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Hien</forename><forename type="middle">V</forename><surname>Nguyen</surname></persName>
+							<email>hvnguy35@central.uh.edu</email>
+							<affiliation key="aff0">
+								<orgName type="institution">University of Houston</orgName>
+							</affiliation>
+						</author>
+						<title level="a" type="main">Self-Auditing Parameter-Efficient Fine-Tuning for Few-Shot 3D Medical Image Segmentation</title>
+					</analytic>
+					<monogr>
+						<imprint>
+							<date type="published" when="2026-03-06">6 Mar 2026</date>
+						</imprint>
+					</monogr>
+					<idno type="MD5">72415193FE1E60C656006ABB0A28614E</idno>
+					<idno type="arXiv">arXiv:2603.05822v1[cs.LG]</idno>
+				</biblStruct>
+			</sourceDesc>
+		</fileDesc>
+		<encodingDesc>
+			<appInfo>
+				<application version="0.7.2" ident="GROBID" when="2026-05-14T17:27+0000">
+					<desc>GROBID - A machine learning software for extracting information from scholarly documents</desc>
+					<ref target="https://github.com/kermitt2/grobid"/>
+				</application>
+			</appInfo>
+		</encodingDesc>
+		<profileDesc>
+			<textClass>
+				<keywords>
+					<term>Parameter-efficient fine-tuning</term>
+					<term>Medical image 3D segmentation</term>
+					<term>Few-shot learning</term>
+					<term>Foundation models</term>
+					<term>Adapter selection</term>
+				</keywords>
+			</textClass>
+			<abstract>
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>Adapting foundation models to new clinical sites remains challenging in practice. Domain shift and scarce annotations must be handled by experts, yet many clinical groups do not have ready access to skilled AI engineers to tune adapter designs and training recipes. As a result, adaptation cycles can stretch from weeks to months, particularly in few-shot settings. Existing PEFT methods either require manual adapter configuration or automated searches that are computationally infeasible in few-shot 3D settings. We propose SEA-PEFT (self-auditing parameter-efficient fine-tuning) to automate this process. SEA-PEFT treats adapter configuration as an online allocation problem solved during fine-tuning rather than through manual, fixed-topology choices. SEA-PEFT uses a search-audit-allocate loop that trains active adapters, estimates each adapter's Dice utility by momentarily toggling it off, and then reselects the active set under a parameter budget using a greedy knapsack allocator. Exponential Moving Average and Interquartile Range smoothing, together with a Finite-State Ranking controller, stabilize the loop and improve reliability in high-noise few-shot regimes. On TotalSegmentator and FLARE'22, SEA-PEFT improves mean Dice by 2.4-2.8 points over the strongest fixed-topology PEFT baselines across 1/5/10-shot settings while training &lt;1% of parameters. For reproducibility purposes, we made our code publicly available at https://github.com/tsly123/SEA_PEFT</p></div>
+			</abstract>
+		</profileDesc>
+	</teiHeader>
+	<text xml:lang="en">
+		<body>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="1">Introduction</head><p>Recent foundation models (FMs) for 3D medical imaging, including Swin-UNETR <ref type="bibr" target="#b6">[7]</ref>, SuPreM <ref type="bibr" target="#b11">[12]</ref>, and FSEFT <ref type="bibr" target="#b17">[18]</ref>, have produced strong results in organ segmentation across CT and MRI. Adapting these models to a new clinical site is nevertheless non-trivial. Hospitals vary in scanner protocols, reconstruction kernels, and patient demographics, and this distribution shift requires site-specific fine-tuning. At the same time, volumetric mask annotation is labour-intensive, most sites lack dedicated AI staff, and 3D patch training imposes significant memory requirements. As a result, fine-tuning a medical FM in a new hospital typically requires an AI engineer, labelled data, and careful configuration choices that are unavailable in most clinical settings.</p><p>Parameter-Efficient Fine-Tuning (PEFT) <ref type="bibr" target="#b8">[9,</ref><ref type="bibr" target="#b3">4,</ref><ref type="bibr" target="#b2">3,</ref><ref type="bibr" target="#b7">8,</ref><ref type="bibr" target="#b9">10]</ref> reduces the number of updated parameters and is therefore a natural candidate for low-resource clinical adaptation. The problem is that PEFT still requires three configuration decisions: which adapter type to use, where in the transformer to insert it, and what rank or bottleneck dimension to assign. These choices interact and depend on the target organ, dataset size, and acquisition protocol, so there is no universally good default. Offline search methods such as NOAH <ref type="bibr" target="#b24">[25]</ref>, AutoPEFT <ref type="bibr" target="#b25">[26]</ref>, and Fairtune <ref type="bibr" target="#b4">[5]</ref> can find good configurations but require multiple end-toend fine-tuning runs, which is impractical for few-shots with high-resolution 3D volumes.</p><p>We propose to solve the PEFT configuration problem online, during finetuning, using direct task-level feedback rather than weight-space proxies. The core idea is simple: to assess whether an adapter is useful, temporarily remove it and measure the change in performance on a held-out validation set. This on/off perturbation gives an unbiased, model-agnostic estimate of each adapter's marginal performance contribution. Repeating this measurement across training, smoothing the estimates, and greedily selecting adapters under a parameter budget yields a configuration that improves as more audits accumulate, without requiring any offline sweep.</p><p>We proposed framework SEA-PEFT (SElf-Auditing PEFT). The searchaudit-allocate loop trains active adapters for K steps (Search), estimates peradapter utility via on/off toggling (Audit), and selects the active set under a global budget (Allocate). An Exponential Moving Average (EMA) + Interquartile Range (IQR) utility tracker stabilizes noisy audit estimates, and a Finite-State Machine (FSM) prevents premature adapter switching by requiring several consistent votes before committing a configuration change. After the loop converges, a guard-free knapsack re-solve selects the final configuration, which is then fine-tuned from scratch so that the reported model carries no exploratory weights from the search phase. Contributions: (i) We propose SEA-PEFT, an online PEFT configuration framework for few-shot 3D medical segmentation that selects adapter type, placement, and rank via task-level perturbation auditing during fine-tuning, with no offline search and no manual configuration; (ii) The novel couples with EMA+IQR utility tracker and FSM stabilizer as practical components for reliable adapter selection under few-shot noise; (iii) We provide both theoretical and empirical evidence on TotalSegmentator and FLARE datasets to demonstrate the effectiveness of SEA-PEFT.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2">Related Works</head><p>PEFT for medical imaging. Adapter-based methods <ref type="bibr" target="#b7">[8,</ref><ref type="bibr" target="#b3">4]</ref>, LoRA and variant <ref type="bibr" target="#b8">[9,</ref><ref type="bibr" target="#b10">11,</ref><ref type="bibr" target="#b5">6]</ref>, BitFit <ref type="bibr" target="#b2">[3]</ref>, and prompt tuning <ref type="bibr" target="#b12">[13,</ref><ref type="bibr" target="#b13">14,</ref><ref type="bibr" target="#b9">10]</ref> all adapt pretrained models by updating a small parameter subset while keeping the backbone frozen. For 3D medical FMs, FSEFT <ref type="bibr" target="#b17">[18,</ref><ref type="bibr" target="#b0">1]</ref>, and FreqFit <ref type="bibr" target="#b14">[15]</ref> apply fixed single-adapter designs to few-shot organ segmentation. In all of these works, adapter type, insertion site, and rank are chosen before training, either by hand or via grid search on a held-out set. SEA-PEFT eliminates this step by selecting and adjusting the configuration during training. Automated PEFT configuration. NOAH <ref type="bibr" target="#b24">[25]</ref> unifies adapters, prompts, and LoRA in a supernet and runs a one-shot NAS to find a good prompt configuration. AutoPEFT <ref type="bibr" target="#b25">[26]</ref> and Fairtune <ref type="bibr" target="#b4">[5]</ref> use multi-objective Bayesian optimization to search over adapter type, placement, and rank combinations. Both approaches require instantiating and fully fine-tuning each candidate configuration, which is not feasible for high-resolution 3D segmentation at 1-10 shots. AdaLoRA <ref type="bibr" target="#b23">[24]</ref> reallocates LoRA rank during training based on singular value magnitudes, avoiding full re-training, but it optimizes an internal weight-space criterion rather than directly measuring Dice utility per adapter. SEA-PEFT instead evaluates each adapter's contribution to segmentation accuracy through on/off perturbation, which is both model-agnostic and directly aligned with the evaluation metric.</p><p>3 Self-Aufit PEFT</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.1">Problem Setup and Audit Space</head><p>Let f θ denote a frozen FM backbone. The audit space A = {a i } N i=1 is a library of lightweight adapter candidates that can be activated, deactivated, or resized during training. Each unit a i has trainable weights w i , binary gate α i ∈ {0, 1}, and parameter cost c i . Audit space. Following standard practice for neural architecture search (NAS) studies <ref type="bibr" target="#b16">[17,</ref><ref type="bibr" target="#b21">22,</ref><ref type="bibr" target="#b22">23]</ref>, we adopt three adapter topologies: Serial (SA), Parallel (PA), and their composite SAPA. For layer output F (x) with projections W down ∈ R D×d and an up-projection W up ∈ R d×D (d ≪ D):</p><formula xml:id="formula_0">SA: y = ReLU(F (x) • W down ) • W up<label>(1)</label></formula><p>PA:</p><formula xml:id="formula_1">y = ReLU(x • W down ) • W up (2) SAPA: y = ReLU(F (x) • W down ) • W up + ReLU(x • W down ) • W up<label>(3)</label></formula><p>Objective. Given sets D train , D val , and budget P max :</p><formula xml:id="formula_2">max α,w E (x,y)∼D val [Dice(f θ,α,w (x), y)] s.t. i α i c i ≤ P max<label>(4)</label></formula><p>This mirrors a knapsack problem where each adapter a i has cost c i and value equal to its Dice improvement. The utilities are unknown and must be estimated from validation feedback, SEA-PEFT solves an online variant of Eq. (4).</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.2">Search-Audit-Allocate Cycle</head><p>Search. SEA-PEFT trains currently active adapters (α i = 1) on D train while keeping the backbone frozen. After K steps, the framework transits to audit. Audit. A mini-batch M (t) ⊂ A of M ≪ N adapters is sampled using a active/inactive: empirically 30% from currently active adapters (exploitation) and 70% from inactive ones (exploration), plus an ε-exploration term up-weighting rarely probed adapters. For each i ∈ M (t) :</p><formula xml:id="formula_3">u i = Dice(f θ,α , D val ) − Dice(f θ,α\i , D val ) /c i (5) r (t) i = median w (ũ t i ) − λ S • IQR w (ũ t i ) with ũt i = (1 − β)u t i + β ũ(t−1) i (<label>6</label></formula><formula xml:id="formula_4">)</formula><p>Utility smoothing. Raw utilities are noisy because only M adapters are probed per cycle. SEA-PEFT applies a two-stage filter as in Eq. ( <ref type="formula" target="#formula_3">6</ref>). Each adapter maintains a history deque of 3-5 audits. High r</p><formula xml:id="formula_5">(t)</formula><p>i signals stable Dice improvement; large IQR suppresses unstable adapters.</p><p>Proposition 1 (Convergence of the EMA+IQR utility estimator). Let u</p><formula xml:id="formula_6">(t) i = µ (t) i + ξ (t) i where E[ξ (t) i | F t−1 ] = 0, Var(ξ (t) i ) ≤ σ 2 ,</formula></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>and µ (t) i</head><p>drifts by at most δ between consecutive audits. After t audits with Exponential Moving Average (EMA) decay β ∈ (0, 1):</p><formula xml:id="formula_7">E[ũ (t) i ] − µ (t) i ≤ δβ 1 − β + β t E[ũ (0) i ] − µ (t) i , Var(ũ (t) i ) ≤ (1 − β)σ 2 1 + β (7)</formula><p>Furthermore, over a sliding history window of audits, the sample Interquartile Range (IQR) IQR H (ũ </p><formula xml:id="formula_8">(t) i = median H (ũ (t) i ) − λ S • IQR H (ũ (t)</formula><p>i ), with IQR shrinkage weight λ S &gt; 0, suppresses adapters whose utility is highly variable across audits.</p><p>Proof (Proof sketch). The bias bound follows by expanding the EMA recursion, applying |µ</p><formula xml:id="formula_9">(t−k) i − µ (t) i | ≤ kδ, and bounding (1 − β) ∞ k=1 kβ k = δβ/(1 − β). The variance bound uses independence of {ξ (t) i } and k≥0 β 2k = (1 − β 2 ) −1 .</formula><p>IQR concentration follows standard order-statistics theory under bounded variance.</p><p>Lemma 1 (Audit coverage). Under any sampling strategy with exploration rate ε &gt; 0, audit set M (t) (size M ) at cycle t, and |A| = N , every adapter</p><formula xml:id="formula_10">a i ∈ A E T t=1 1[a i ∈ M (t) ] ≥ ρ c T, ρ c = εM N &gt; 0 (8)</formula><p>satisfying the positive coverage condition required for sublinear regret in <ref type="bibr" target="#b18">[19]</ref>. That is, every adapter is audited Ω(T ) times regardless of its initial activity state.</p><p>Proof (Proof sketch). At each audit cycle the ε-exploration term assigns a minimum selection probability of εM/N to every adapter independently of its activity gate α i . Summing over T cycles and taking expectations gives the bound directly. Without ε-exploration, ρ c = 0 and inactive adapters at initialization are never audited, making the final knapsack re-solve arbitrarily suboptimal.</p><p>Allocate. Adapters are greedily activated in descending density order d i = r i /c i until i α i c i ≤ P max . Replacements are accepted iff improvement exceeds µ eff .</p><p>Finite-State Machine Stabilizer. Naïve greedy allocation allows adapters to flip on/off at nearly every cycle, causing configuration chatter that slows convergence and destabilizes EMA utility estimates. The FSM requires τ act consecutive consistent "votes" before committing an activity change (and τ rank for rank):</p><formula xml:id="formula_11">α (t+1) i ← α(t+1) i only if c act i ≥ τ act<label>(9)</label></formula><p>with τ act , τ rank ≈ 2-3. FSM reduces reconfigurations to T c ≈ 20-30 per run, suppressing noise-driven instability while preserving online adaptability Proposition 2 (FSM reduces structural error). Let T c denote the number of audit cycles in which the active set changes, and let α(t+1) i ∈ {0, 1} be the activity proposed by the greedy allocator at cycle t. The FSM maintains a peradapter vote counter c act i , incremented when α(t+1</p><formula xml:id="formula_12">) i = α (t) i</formula><p>and reset otherwise, and commits a change only when c act i ≥ τ act consecutive consistent proposals are observed. This gives:</p><formula xml:id="formula_13">T c ≤ T τ act (<label>10</label></formula><formula xml:id="formula_14">)</formula><p>In the regret decomposition adapting <ref type="bibr" target="#b18">[19]</ref>, combined with the structural error term O(εP max T c ) in the regret decomposition, the FSM reduces structural error by a factor of τ act , tightening the knapsack approximation guarantee of <ref type="bibr" target="#b19">[20]</ref>.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Proof (Proof sketch).</head><p>A configuration change at cycle t requires τ act consecutive cycles with a consistent new proposal from the allocator. Hence at least τ act cycles must elapse between any two changes, giving T c ≤ ⌊T /τ act ⌋ by direct counting. Hence, reducing the structural error term O(εP max T c ) by a factor of τ act and tightening the final approximation guarantee.</p><p>Final Re-solve and Re-fine-tuning. After T steps, SEA-PEFT performs one guard-free knapsack re-solve on stable scores {r (T ) i } using density-greedy plus a single-swap local improvement pass, yielding S ⋆ final . Adapter weights and optimizer states are then re-initialized, and a standard fine-tuning run with only the selected adapters active is performed. This two-phase design (online search + focused re-finetune) ensures the final model is not burdened by exploratory weights from the audit phase.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4">Experiments</head><p>Audit space. Following the empirical experience in prior studies [9,4,2,15,18,1], we fine-tune the following: For self-attention layer: we attached LoRA <ref type="bibr" target="#b8">[9]</ref> with rank ∈ {2, 4, 8, 16} with SA, PA, and SAPA. Feed-forward layer: we attached LoRA <ref type="bibr" target="#b8">[9]</ref> with rank ∈ {2, 4, 8, 16} and AdaptFormer <ref type="bibr" target="#b3">[4]</ref> with bottleneck ∈ {4, 8, 16, 32}, both with SA, PA, and SAPA. Normalization layer: we attached Affine-LN <ref type="bibr" target="#b1">[2]</ref>.</p><p>Datasets and backbones. We evaluate on nine abdominal organs (spleen, left kidney, gallbladder, esophagus, liver, pancreas, stomach, duodenum, aorta) under 1-, 5-, and 10-shot regimes. Binary segmentation is performed on TotalSegmentator <ref type="bibr" target="#b20">[21]</ref> and multi-class on FLARE <ref type="bibr" target="#b15">[16]</ref>, using pre-trained FSEFT <ref type="bibr" target="#b17">[18]</ref> and SuPreM <ref type="bibr" target="#b11">[12]</ref> on frozen Swin-UNETR <ref type="bibr" target="#b6">[7]</ref> backbones.</p><p>Note that, NOAH <ref type="bibr" target="#b24">[25]</ref> and AutoPEFT <ref type="bibr" target="#b25">[26]</ref> require full tuning per candidate configuration. Over the audit space at 1-10 shots, this would require hundreds of 3D training runs, SEA-PEFT estimates adapter utility via on/off perturbation within a single run, making direct comparison infeasible and arguably unfair.</p><p>Implementation. After the search-audit-allocate loop converges, following <ref type="bibr" target="#b17">[18,</ref><ref type="bibr" target="#b0">1,</ref><ref type="bibr" target="#b14">15]</ref>, the selected configuration is fine-tuned image size of 96 × 96 × 96 patches with batch size 1, AdamW, lr = 1 × e −3 , 200 epochs with early stopping. Augmentation includes intensity shifts and 90 degree rotations. All experiments run on a single V100 32 GB GPU. Results are averaged across 3 random seeds on hold-out test set. The metric presented is Dice.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.1">Results and Discussion</head><p>Main results. Tables 1 reports few-shot adaptation results on TotalSegmentator <ref type="bibr" target="#b20">[21]</ref> and FLARE'22 <ref type="bibr" target="#b15">[16]</ref> using the final configurations selected by our Search-Audit-Allocate loop. Across all shot regimes and both datasets, SEA-PEFT consistently achieves the highest mean Dice, outperforming fixed-topology PEFT baselines without any manual tuning of adapter type, placement, or rank. On TotalSegmentator, it attains 78.33/79.90/80.29 Dice in the 1-, 5-, and 10-shot settings, a clear improvement over the strongest baseline. On FLARE'22, SEA-PEFT achieves 75.77 (1-shot) and 76.33 (5-shot), continuing the same upward trend as supervision increases. These gains demonstrate that online self-auditing reliably generalizes across distinct clinical datasets.</p><p>Results on pre-trained SuPreM <ref type="bibr" target="#b11">[12]</ref> in Table <ref type="table" target="#tab_1">2</ref> reinforce the same pattern observed on TotalSegmentator and FLARE'22. SEA-PEFT achieves the highest average Dice in both the 5-shot (77.89) and 10-shot (79.93) settings, with consistent gains on gallbladder, esophagus, and pancreas over Spatial Adapter <ref type="bibr" target="#b17">[18]</ref>. Notably, the margin over the best fixed baseline widens from 0.88 points at 5-shot to 3.58 points at 10-shot, mirroring the scaling trend across all benchmarks: as more training examples are available, audit signals become less noisy, the allocator converges to better configurations. The advantage of dynamic over static capacity allocation grows.</p><p>Runtime and Practicality. Tab. 3 reports the end-to-end cost of SEA-PEFT, covering the full search-audit-allocate process and a final refinement run. Across 1/5/10-shot settings, adaptation completes within 2.5-6.5 hours while consistently using only 0.2% trainable parameters. This efficiency stems from SEA-PEFT's online design: each audit cycle evaluates only a small subset of Table <ref type="table">1</ref>. Few-shot efficient adaptation on TotalSegmentator <ref type="bibr" target="#b20">[21]</ref> and FLARE <ref type="bibr" target="#b15">[16]</ref> with pre-trained FSEFT <ref type="bibr" target="#b17">[18]</ref>. Bold and underscore indicates the best and second best result.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Setting</head><p>Method Spl lKid Gall Eso Liv Pan Sto Duo Aor Avg.</p><p>TotalSeg (binary) adapters, so compute scales smoothly with data rather than exploding with configuration space size. In practice, this yields high-quality configurations in hours, making SEA-PEFT realistically deployable in clinical environments where engineers are unavailable and model adaptation must fit within tight timelines. SEA-PEFT vs. Random Configurations. To examine whether SEA-PEFT's gains arise from principled selection rather than larger parameter counts, we run a controlled diagnostic on three representative organs, as shown in Fig. <ref type="figure" target="#fig_2">2</ref>. SEA-PEFT consistently selects configurations near the upper-left frontierachieving higher Dice with comparable or fewer parameters. The gap widens as the number of shots increases: with more stable gradients, the audit signal becomes cleaner and SEA-PEFT towards stronger, non-redundant adapter subsets, while random configurations remain broadly scattered. The experiment confirms that SEA-PEFT's improvements come from targeted, task-level utility estimation rather than sheer parameter volume.</p><p>Fig. <ref type="figure" target="#fig_3">3</ref> shows qualitative results across all eight organs. SEA-PEFT produces masks that more closely match the ground truth on small, low-contrast structures: duodenum and gallbladder are largely missed by fixed-topology PEFT but partially recovered by SEA-PEFT, while esophagus and left kidney (yellow arrows) show cleaner boundary delineation. On large, high-contrast organs   such as liver and spleen, both methods perform comparably, consistent with the quantitative results in Tab. 1.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5">Conclusion</head><p>We presented SEA-PEFT, a framework that automates PEFT training and configuration search for few-shot 3D medical segmentation by treating adapter selection as an online allocation problem. Each adapter's utility is estimated by on/off Dice perturbation on a validation set, smoothed via EMA and IQR filtering, and used to greedily allocate parameter budget across training. An FSM stabilizer prevents configuration chatter in noisy few-shot settings. On TotalSegmentator and FLARE'22, SEA-PEFT consistently outperforms fixed-topology PEFT baselines across 1/5/10-shot regimes using &lt;1% trainable parameters.</p></div><figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_0"><head>Fig. 1 .</head><label>1</label><figDesc>Fig. 1. SEA-PEFT iterates over a PEFT library with three steps: (1) Search selects a small adapter set under a parameter budget; (2) Audit runs lightweight on/off tests to estimate Dice-per-cost utility; (3) Allocate updates the active configuration via budget-aware rank adjustments. This enables rapid adaptation by clinical users without AI engineers.</figDesc><graphic coords="3,134.76,107.33,165.82,101.23" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_1"><head>i</head><label></label><figDesc>) concentrates around the population IQR of the noise distribution with fluctuations of order O(σ eff / √ H), where σ eff = σ (1 − β)/(1 + β) is the effective noise scale of the smoothed estimates. The robust score r</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_2"><head>SettingFig. 2 .</head><label>2</label><figDesc>Fig.2. SA-PEFT vs. random PEFT configurations under fixed parameter budgets. Across 1/5/10-shot settings, SEA-PEFT's gains (Orange) come from principled selection rather than simply using more parameters.</figDesc><graphic coords="8,265.80,219.98,97.90,58.65" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_3"><head>Fig. 3 .</head><label>3</label><figDesc>Fig. 3. Qualitative segmentation comparison between fixed-topology PEFT and SEA-PEFT across eight organs.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_1"><head>Table 2 .</head><label>2</label><figDesc>Few-shot efficient adaptation on Totalsegmentator with pre-trained SuPreM [12]. .33 77.72 73.89 80.59 69.35 Adaptformer [4] 77.78 54.10 76.05 77.58 93.25 75.75 Affine-LN [2] 80.84 55.80 76.98 75.66 92.50 76.35 Spatial Adapter [18] 81.61 56.24 77.69 79.54 84.66 75.95 SEA-PEFT 88.51 57.88 80.98 78.95 93.35 79.93</figDesc><table><row><cell cols="2">Setting</cell><cell>Method</cell><cell>Gall Eso Pan Duo Aor Avg.</cell></row><row><cell></cell><cell></cell><cell>LoRA [9]</cell><cell>52.50 46.43 66.86 54.15 73.33 58.65</cell></row><row><cell>TotalSeg (binary)</cell><cell>5-shot 10-shot</cell><cell cols="2">Adaptformer [4] Affine-LN [2] Spatial Adapter [18] 85.08 55.56 78.84 78.17 87.40 77.01 60.17 51.79 76.73 74.49 93.12 71.26 76.10 50.04 75.46 71.91 90.91 72.88 SEA-PEFT 86.67 57.32 78.87 75.86 90.74 77.89 LoRA [9] 59.25 55</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_2"><head>Table 3 .</head><label>3</label><figDesc>Average times of endto-end seach-audit-allocate and refine-tune with optimal configurations for all experiments.</figDesc><table /></figure>
+		</body>
+		<back>
+			<div type="references">
+
+				<listBibl>
+
+<biblStruct xml:id="b0">
+	<analytic>
+		<title level="a" type="main">Regularized low-rank adaptation for few-shot organ segmentation</title>
+		<author>
+			<persName><forename type="first">G</forename><surname>Baklouti</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Silva-Rodríguez</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Dolz</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Bahig</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">I</forename><surname>Ben Ayed</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">International Conference on Medical Image Computing and Computer-Assisted Intervention</title>
+				<imprint>
+			<publisher>Springer</publisher>
+			<date type="published" when="2025">2025</date>
+			<biblScope unit="volume">2</biblScope>
+			<biblScope unit="page">6</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b1">
+	<analytic>
+		<title level="a" type="main">Strong baselines for parameter-efficient fewshot fine-tuning</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Basu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Hu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Massiceti</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Feizi</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the AAAI Conference on Artificial Intelligence</title>
+				<meeting>the AAAI Conference on Artificial Intelligence</meeting>
+		<imprint>
+			<date type="published" when="2024">2024</date>
+			<biblScope unit="volume">38</biblScope>
+			<biblScope unit="page">8</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b2">
+	<analytic>
+		<title level="a" type="main">Tinytl: Reduce memory, not parameters for efficient on-device learning</title>
+		<author>
+			<persName><forename type="first">H</forename><surname>Cai</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Gan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Zhu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Han</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">NIPS</title>
+		<imprint>
+			<biblScope unit="volume">33</biblScope>
+			<biblScope unit="page">2</biblScope>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b3">
+	<monogr>
+		<title level="m" type="main">Adaptformer: Adapting vision transformers for scalable visual recognition</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Ge</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Tong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Song</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Luo</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2205.13535</idno>
+		<imprint>
+			<date type="published" when="2022">2022</date>
+			<biblScope unit="volume">2</biblScope>
+			<biblScope unit="page">8</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b4">
+	<monogr>
+		<title level="m" type="main">Fairtune: Optimizing parameter efficient fine tuning for fairness in medical image analysis</title>
+		<author>
+			<persName><forename type="first">R</forename><surname>Dutt</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">O</forename><surname>Bohdal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">A</forename><surname>Tsaftaris</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Hospedales</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2310.05055</idno>
+		<imprint>
+			<date type="published" when="2023">2023</date>
+			<biblScope unit="volume">2</biblScope>
+			<biblScope unit="page">3</biblScope>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b5">
+	<monogr>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Gao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Q</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Li</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2405.03003</idno>
+		<title level="m">Parameter-efficient fine-tuning with discrete fourier transform</title>
+				<imprint>
+			<date type="published" when="2024">2024</date>
+			<biblScope unit="page">2</biblScope>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b6">
+	<analytic>
+		<title level="a" type="main">Swin unetr: Swin transformers for semantic segmentation of brain tumors in mri images</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Hatamizadeh</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">V</forename><surname>Nath</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Tang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><forename type="middle">R</forename><surname>Roth</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Xu</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">International MICCAI brainlesion workshop</title>
+				<imprint>
+			<publisher>Springer</publisher>
+			<date type="published" when="2021">2021</date>
+			<biblScope unit="volume">1</biblScope>
+			<biblScope unit="page">6</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b7">
+	<analytic>
+		<title level="a" type="main">Parameter-efficient transfer learning for nlp</title>
+		<author>
+			<persName><forename type="first">N</forename><surname>Houlsby</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Giurgiu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Jastrzebski</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Morrone</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Q</forename><surname>De Laroussilhe</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Gesmundo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Attariyan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Gelly</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">ICML</title>
+				<imprint>
+			<publisher>PMLR</publisher>
+			<date type="published" when="2019">2019</date>
+			<biblScope unit="page">2</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b8">
+	<monogr>
+		<title level="m" type="main">Lora: Low-rank adaptation of large language models</title>
+		<author>
+			<persName><forename type="first">E</forename><forename type="middle">J</forename><surname>Hu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Shen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Wallis</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Allen-Zhu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><surname>Chen</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2106.09685</idno>
+		<imprint>
+			<date type="published" when="2021">2021</date>
+			<biblScope unit="volume">2</biblScope>
+			<biblScope unit="page">8</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b9">
+	<analytic>
+		<title level="a" type="main">Visual prompt tuning</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Jia</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Tang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><forename type="middle">C</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Cardie</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Belongie</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Hariharan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">N</forename><surname>Lim</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">ECCV</title>
+				<imprint>
+			<publisher>Springer</publisher>
+			<date type="published" when="2022">2022</date>
+			<biblScope unit="page">2</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b10">
+	<monogr>
+		<title level="m" type="main">Vera: Vector-based random matrix adaptation</title>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">J</forename><surname>Kopiczko</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Blankevoort</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><forename type="middle">M</forename><surname>Asano</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2310.11454</idno>
+		<imprint>
+			<date type="published" when="2023">2023</date>
+			<biblScope unit="page">2</biblScope>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b11">
+	<analytic>
+		<title level="a" type="main">How well do supervised models transfer to 3d image segmentation</title>
+		<author>
+			<persName><forename type="first">W</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Yuille</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Zhou</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">The Twelfth International Conference on Learning Representations</title>
+				<imprint>
+			<date type="published" when="2024">2024</date>
+			<biblScope unit="volume">1</biblScope>
+			<biblScope unit="page">8</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b12">
+	<monogr>
+		<title level="m" type="main">Prefix-tuning: Optimizing continuous prompts for generation</title>
+		<author>
+			<persName><forename type="first">X</forename><forename type="middle">L</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Liang</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2101.00190</idno>
+		<idno>2</idno>
+		<imprint>
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b13">
+	<analytic>
+		<title level="a" type="main">P-tuning: Prompt tuning can be comparable to fine-tuning across scales and tasks</title>
+		<author>
+			<persName><forename type="first">X</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Ji</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Fu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><surname>Tam</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Du</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Tang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics</title>
+		<title level="s">Short Papers</title>
+		<meeting>the 60th Annual Meeting of the Association for Computational Linguistics</meeting>
+		<imprint>
+			<date type="published" when="2022">2022</date>
+			<biblScope unit="volume">2</biblScope>
+			<biblScope unit="page">2</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b14">
+	<analytic>
+		<title level="a" type="main">Frequency strikes back: Boosting parameter-efficient foundation model adaptation for medical imaging</title>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">T</forename><surname>Ly</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><forename type="middle">V</forename><surname>Nguyen</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">International Conference on Medical Image Computing and Computer-Assisted Intervention</title>
+				<imprint>
+			<publisher>Springer</publisher>
+			<date type="published" when="2025">2025</date>
+			<biblScope unit="volume">2</biblScope>
+			<biblScope unit="page">6</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b15">
+	<analytic>
+		<title level="a" type="main">Unleashing the strengths of unlabelled data in deep learningassisted pan-cancer abdominal organ quantification: the flare22 challenge</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Ma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Gu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Ge</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Mae</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Young</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Zhu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Meng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Huang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">The Lancet Digital Health</title>
+		<imprint>
+			<biblScope unit="volume">6</biblScope>
+			<biblScope unit="issue">11</biblScope>
+			<biblScope unit="page">7</biblScope>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b16">
+	<analytic>
+		<title level="a" type="main">Neural architecture generator optimization</title>
+		<author>
+			<persName><forename type="first">R</forename><surname>Ru</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Esperanca</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><forename type="middle">M</forename><surname>Carlucci</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Advances in Neural Information Processing Systems</title>
+		<imprint>
+			<biblScope unit="volume">33</biblScope>
+			<biblScope unit="page">3</biblScope>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b17">
+	<analytic>
+		<title level="a" type="main">Towards foundation models and few-shot parameter-efficient fine-tuning for volumetric organ segmentation</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Silva-Rodríguez</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Dolz</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">I</forename><forename type="middle">B</forename><surname>Ayed</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">International Conference on Medical Image Computing and Computer-Assisted Intervention</title>
+				<imprint>
+			<publisher>Springer</publisher>
+			<date type="published" when="2023">2023</date>
+			<biblScope unit="volume">1</biblScope>
+			<biblScope unit="page">8</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b18">
+	<analytic>
+		<title level="a" type="main">An online algorithm for maximizing submodular functions</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Streeter</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Golovin</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Advances in Neural Information Processing Systems</title>
+		<imprint>
+			<biblScope unit="volume">21</biblScope>
+			<biblScope unit="page">5</biblScope>
+			<date type="published" when="2008">2008</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b19">
+	<analytic>
+		<title level="a" type="main">A note on maximizing a submodular set function subject to a knapsack constraint</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Sviridenko</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Operations Research Letters</title>
+		<imprint>
+			<biblScope unit="volume">32</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page">5</biblScope>
+			<date type="published" when="2004">2004</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b20">
+	<analytic>
+		<title level="a" type="main">Totalsegmentator: robust segmentation of 104 anatomic structures in ct images</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Wasserthal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><forename type="middle">C</forename><surname>Breit</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">T</forename><surname>Meyer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Pradella</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Hinck</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">W</forename><surname>Sauter</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Heye</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">T</forename><surname>Boll</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Cyriac</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Yang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Radiology: Artificial Intelligence</title>
+		<imprint>
+			<biblScope unit="volume">5</biblScope>
+			<biblScope unit="issue">5</biblScope>
+			<biblScope unit="page">7</biblScope>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b21">
+	<analytic>
+		<title level="a" type="main">Exploring randomly wired neural networks for image recognition</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Xie</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Kirillov</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Girshick</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>He</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the IEEE/CVF international conference on computer vision</title>
+				<meeting>the IEEE/CVF international conference on computer vision</meeting>
+		<imprint>
+			<date type="published" when="2019">2019</date>
+			<biblScope unit="page">3</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b22">
+	<monogr>
+		<title level="m" type="main">Nas evaluation is frustratingly hard</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><forename type="middle">M</forename><surname>Esperança</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><forename type="middle">M</forename><surname>Carlucci</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1912.12522</idno>
+		<imprint>
+			<date type="published" when="2019">2019</date>
+			<biblScope unit="page">3</biblScope>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b23">
+	<monogr>
+		<title level="m" type="main">Adalora: Adaptive budget allocation for parameter-efficient finetuning</title>
+		<author>
+			<persName><forename type="first">Q</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Bukharin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Karampatziakis</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>He</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Cheng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Zhao</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2303.10512</idno>
+		<imprint>
+			<date type="published" when="2023">2023</date>
+			<biblScope unit="page">3</biblScope>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b24">
+	<analytic>
+		<title level="a" type="main">Neural prompt search</title>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Zhou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Liu</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Transactions on Pattern Analysis and Machine Intelligence</title>
+		<imprint>
+			<biblScope unit="volume">2</biblScope>
+			<biblScope unit="issue">3</biblScope>
+			<biblScope unit="page">6</biblScope>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b25">
+	<analytic>
+		<title level="a" type="main">Autopeft: Automatic configuration search for parameter-efficient fine-tuning</title>
+		<author>
+			<persName><forename type="first">H</forename><surname>Zhou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Wan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">I</forename><surname>Vulić</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Korhonen</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Transactions of the Association for Computational Linguistics</title>
+		<imprint>
+			<biblScope unit="volume">12</biblScope>
+			<biblScope unit="issue">3</biblScope>
+			<biblScope unit="page">6</biblScope>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+				</listBibl>
+			</div>
+		</back>
+	</text>
+</TEI>

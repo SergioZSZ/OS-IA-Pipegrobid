@@ -1,0 +1,1400 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xml:space="preserve" xmlns="http://www.tei-c.org/ns/1.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.tei-c.org/ns/1.0 https://raw.githubusercontent.com/kermitt2/grobid/master/grobid-home/schemas/xsd/Grobid.xsd"
+ xmlns:xlink="http://www.w3.org/1999/xlink">
+	<teiHeader xml:lang="en">
+		<fileDesc>
+			<titleStmt>
+				<title level="a" type="main">CausalFlip: A Benchmark for LLM Causal Judgment Beyond Semantic Matching</title>
+			</titleStmt>
+			<publicationStmt>
+				<publisher/>
+				<availability status="unknown"><licence/></availability>
+				<date type="published" when="2026-02-23">23 Feb 2026</date>
+			</publicationStmt>
+			<sourceDesc>
+				<biblStruct>
+					<analytic>
+						<author>
+							<persName><forename type="first">Yuzhe</forename><surname>Wang</surname></persName>
+							<affiliation key="aff0">
+								<orgName type="institution">The University of Virginia</orgName>
+								<address>
+									<settlement>Charlottesville</settlement>
+									<country key="US">USA</country>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Yaochen</forename><surname>Zhu</surname></persName>
+							<affiliation key="aff1">
+								<orgName type="institution">The University of Virginia</orgName>
+								<address>
+									<settlement>Charlottesville</settlement>
+									<country key="US">USA</country>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Jundong</forename><surname>Li</surname></persName>
+							<affiliation key="aff2">
+								<orgName type="institution">The University of Virginia</orgName>
+								<address>
+									<settlement>Charlottesville</settlement>
+									<country key="US">USA</country>
+								</address>
+							</affiliation>
+						</author>
+						<title level="a" type="main">CausalFlip: A Benchmark for LLM Causal Judgment Beyond Semantic Matching</title>
+					</analytic>
+					<monogr>
+						<imprint>
+							<date type="published" when="2026-02-23">23 Feb 2026</date>
+						</imprint>
+					</monogr>
+					<idno type="MD5">B132B2AFAF4B072552A6ABC0DFF0C271</idno>
+					<idno type="arXiv">arXiv:2602.20094v1[cs.AI]</idno>
+				</biblStruct>
+			</sourceDesc>
+		</fileDesc>
+		<encodingDesc>
+			<appInfo>
+				<application version="0.7.2" ident="GROBID" when="2026-05-14T17:25+0000">
+					<desc>GROBID - A machine learning software for extracting information from scholarly documents</desc>
+					<ref target="https://github.com/kermitt2/grobid"/>
+				</application>
+			</appInfo>
+		</encodingDesc>
+		<profileDesc>
+			<textClass>
+				<keywords>
+					<term>Large Language Models</term>
+					<term>Causal Reasoning</term>
+					<term>Benchmarks</term>
+					<term>Datasets</term>
+				</keywords>
+			</textClass>
+			<abstract>
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>As large language models (LLMs) witness increasing deployment in complex, high-stakes decision-making scenarios, it becomes imperative to ground their reasoning in causality rather than spurious correlations. However, strong performance on traditional reasoning benchmarks does not guarantee true causal reasoning ability of LLMs, as high accuracy may still arise from memorizing semantic patterns instead of analyzing the underlying true causal structures. To bridge this critical gap, we propose a new causal reasoning benchmark, CausalFlip, designed to encourage the development of new LLM paradigm or training algorithms that ground LLM reasoning in causality rather than semantic correlation. CausalFlip consists of causal judgment questions built over event triples that could form different confounder, chain, and collider relations. Based on this, for each event triple, we construct pairs of semantically similar questions that reuse the same events but yield opposite causal answers, where models that rely heavily on semantic matching are systematically driven toward incorrect predictions. To further probe models' reliance on semantic patterns, we introduce a noisy-prefix evaluation that prepends causally irrelevant text before intermediate causal reasoning steps without altering the underlying causal relations or the logic of the reasoning process. We evaluate LLMs under multiple training paradigms, including answer-only training, explicit Chain-of-Thought (CoT) supervision, and a proposed internalized causal reasoning approach that aims to mitigate explicit reliance on correlation in the reasoning process. Our results show that explicit CoT can still be misled by spurious semantic correlations, where internalizing reasoning steps yields substantially improved causal grounding, suggesting that it is promising to better elicit the latent causal reasoning capabilities of base LLMs. The code and benchmark is available at https://github.com/Yuzhe-W/CausalFlip.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>CCS Concepts</head><p>• Computing methodologies → Natural language processing; Causal reasoning and diagnostics.</p></div>
+			</abstract>
+		</profileDesc>
+	</teiHeader>
+	<text xml:lang="en">
+		<body>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="1">Introduction</head><p>With the unprecedented knowledge and reasoning ability of large language models (LLM), recent years have witnessed an increased deployment in critical domains, such as medical diagnosis <ref type="bibr" target="#b22">[23,</ref><ref type="bibr" target="#b26">27]</ref>, financial analysis <ref type="bibr" target="#b34">[35,</ref><ref type="bibr" target="#b35">36]</ref>, and legal systems <ref type="bibr" target="#b15">[16]</ref>. However, these LLMs are often questioned in terms of their reliability in reasoning and decisions, where hallucinations could cause devastating outcomes <ref type="bibr" target="#b11">[12,</ref><ref type="bibr" target="#b18">19,</ref><ref type="bibr" target="#b20">21]</ref>. Traditional auto-regressive LLMs <ref type="bibr" target="#b1">[2,</ref><ref type="bibr" target="#b5">6,</ref><ref type="bibr" target="#b23">24]</ref>   optimize the model by predicting the next token conditioning on the context, which essentially leverage semantic patterns that correlate with the training data to reason and answer for new questions <ref type="bibr" target="#b16">[17,</ref><ref type="bibr" target="#b30">31]</ref> (see Fig. <ref type="figure" target="#fig_0">1</ref>). In addition, traditional reasoning benchmarks <ref type="bibr" target="#b17">[18,</ref><ref type="bibr" target="#b24">25,</ref><ref type="bibr" target="#b27">28,</ref><ref type="bibr" target="#b29">30]</ref> may not reliably reveal the causal reasoning limitations of LLMs, as models can often achieve high scores by exploiting semantic correlations rather than engaging in deeper causal reasoning. Therefore, a significant gap exists between traditional benchmarks and the causal reasoning ability of LLMs, which severely hinders the development of new LLM paradigms or training algorithms that fundamentally ground its reasoning in causality.</p><p>In the traditional paradigm of auto-regressive LLMs, chain-ofthought (CoT) prompting may appear as the closest form of strategy to improve LLM performance on causal reasoning tasks <ref type="bibr" target="#b13">[14,</ref><ref type="bibr" target="#b33">34]</ref>, where the latter reasoning steps and the final answer "causally" depend on the previous reasoning steps. On traditional reasoning benchmarks, explicitly encouraging the LLM to generate intermediate reasoning steps often improves accuracy and makes predictions easier to inspect. However, explicit CoT leads to higher latency and token usage <ref type="bibr" target="#b3">[4,</ref><ref type="bibr" target="#b25">26]</ref>. Furthermore, in essence, the CoT structures themselves can be viewed as modeling the conditional distribution of the next reasoning steps based on the context of the question and previous reasoning steps, which still rely on semantic patterns for the model to memorize and not causal. Recent work of implicit CoT proposes a different approach <ref type="bibr" target="#b4">[5]</ref>: for math tasks like multi-digit multiplication, the method gradually removes CoT steps during the model's training, nudging the model to encode the CoT in its internal weights, which allows the LLMs to solve these math tasks in high accuracy. However, it remains unclear whether such internalization better encourages the model to internalize causal reasoning model weights during the forward propagation.</p><p>In this paper, we pioneer to bridge the gap by establishing a novel benchmark, i.e., CausalFlip, aiming to encourage the development of new LLM paradigms or training algorithms that fundamentally ground their reasoning in causality. The overarching principle is that LLMs that are designed or trained to generate answers based on semantic similarity (e.g., with auto-regressive next token prediction) will suffer from spurious semantic correlation, i.e., the correlation between the semantics in the question and the wrong causal answer, whereas the models that can truly leverage causality to reason prevail. Shown in top of Figure <ref type="figure">2</ref>, our benchmark has three sub-datasets, i.e., confounder, chain, and collider. Each sub-dataset includes causal questions with two causal structures: base and opposite. Specifically, Base refers to the case where the event in the question contains a causal structure consistent with the sub-dataset name (e.g., in the confounder dataset, the base causal structure refers to questions where included events form the confounder structure), whereas Opposite denotes the question with events that form different causal structure. For each structure, we collected paired causal inquiries, where two semantically similar questions are created based on the same events with different labels (Although the event set could be different for the Base/Opposite structure). As the base pair example shown in Figure <ref type="figure">2</ref>'s blue part: Q1 and Q2 form two types of causal questions with the same event triple (Umbrella sales, Traffic jams, Monsoon season), and they have semantically similar fixed templates, specified in the caption of Figure <ref type="figure">2</ref>. From the base causal structure (confounder), the pairwise questions have different labels. Therefore, when we split Q1/Q2 to the training/test set, it induces spurious semantic correlation between the question semantic and label where LLMs that rely on semantic correlation will fail. For pairs in the opposite structure (Figure <ref type="figure">2</ref>'s orange part), Q1 and Q2 ask the same two types of causal questions over different event triples (Typing practice, Typing speed, City budget week), and use the same templates as in the base question pair. But under the opposite causal structure, the question that has the same template with the base structure has the opposite answer. This prevents possible positive spurious correlations (i.e., the semantic patterns in the question that correlate with the correct label) from only including the base structure in each sub-dataset, where Q1's labels are always "No" and Q2's labels are always "Yes", and the model could rely on the specific question template to predict the label.</p><p>To further reduce possible positive spurious correlation of answer on any phrasing pattern in the inquires, two templates, Default (default phrasing) and Alternative (an alternative phrasing grounded in the same causal structure) are provided, which leads to four categories: Base-Default (BD), Base-Alternative (BA), Opposite-Default (OD), and Opposite-Alternative (OA). Each category has the same number of causal question pairs. Finally, we use a pairwise train-test split: for each pair, one question is used for training, and its semantically similar counterpart with the opposite label is held out for evaluation, so approaches that rely heavily on semantic pattern matching are systematically penalized, and strong performance needs to be grounded in causal structure.</p><p>As an initial exploration of causality-grounded LLM, we propose implicit causal reasoning, a novel LLM training strategy that internalizes causal reasoning steps by progressively masking the supervised intermediate causal reasoning step tokens, as a strong baseline on the CausalFlip dataset. Under the progressive token mask, the model is encouraged to encode the causal reasoning in its parameters rather than depending on explicit generation steps. To further investigate whether implicit causal reasoning encourages the model to focus more on causal reasoning rather than semantics, we further extend the CausalFlip dataset by prepending a generic, causally irrelevant prefix before the CoT as semantic noise, while keeping the CoT content and the underlying causal structure unchanged. If explicit CoT relies on semantic patterns instead of causality for reasoning, it should suffer more from the injected noise. In contrast, implicit CoT's token-removal schedule may teach the model to "ignore" such prefixes, where the explicit spurious correlation on generated reasoning gaps can be alleviated.</p><p>The extensive experiments conducted on the CausalFlip benchmark highlight two main findings. First, the limited performance of the standard LLM training strategy (no-CoT) underscores that success on CausalFlip requires grounding predictions in causal structure, rather than relying on spurious semantic correlations. In addition, the supervision of intermediate causal reasoning steps (explicit-CoT and implicit causal reasoning) improves accuracy on causal tasks compared to the pretraining strategy baseline and no-CoT fine-tuning. This suggests the intermediate causal reasoning steps as a main driver of better causal-judgment performance on CausalFlip, indicating that answering these questions needs reasoning grounded in causal structure. Second, when a fixed noisy prefix is added without changing the underlying causal structure, explicit-CoT exhibits a larger performance degradation, while implicit causal reasoning demonstrates robustness and achieves higher accuracy than explicit-CoT. This suggests that internalizing the reasoning process can reduce reliance on spurious semantic correlations on explicitly generated intermediate causal reasoning steps and better preserve decisions to causal questions. The contribution of this work can be summarized three-fold as:</p><p>• We introduce CausalFlip, a causality-grounding benchmark consisting of paired, semantically similar questions that involve the same events but receive opposite labels. This design aims to stimulate the development and training of LLMs whose reasoning is explicitly anchored in causal structure rather than superficial semantic cues. </p><formula xml:id="formula_0">Z X Y Z X Y Z X Y Z X Y Z X Y Z X Y Base Opposite Base Opposite Base Opposite Confounder Confounder Chain Collider</formula><p>Figure <ref type="figure">2</ref>: Overview of the causal structures used in our benchmark and an example of base, opposite pairs. The top row shows the causal structures of three sub-datasets (confounder, chain, collider); The bottom expands the confounder case and highlights a base vs. opposite question pairs: In both base and opposite question pairs, Q1 asks whether the causal relation from X to Y exists under the context of Z, with fixed template: Will the increase of X cause Y during Z?, and Q2 asks whether the causal relations between Z and X / Y exists, with fixed template: Will Z cause the increase of X and Y.</p><p>over x via the chain-rule factorization as follows:</p><formula xml:id="formula_1">𝑝 𝜃 (x) = 𝑇 𝑡 =1 𝑝 𝜃 (𝑥 𝑡 | 𝑥 &lt;𝑡 ),<label>(1)</label></formula><p>where 𝑥 &lt;𝑡 = (𝑥 1 , . . . , 𝑥 𝑡 −1 ) is the prefix context. Autoregressive generation produces tokens sequentially from left to right by decoding 𝑥 𝑡 ∼ 𝑝 𝜃 (• | 𝑥 &lt;𝑡 ). In practice, 𝑝 𝜃 (𝑥 𝑡 | 𝑥 &lt;𝑡 ) is commonly instantiated by a Transformer architecture based on self-attention <ref type="bibr" target="#b31">[32]</ref>. Concretely, let ℎ 𝑡 denote the final-layer hidden representation at the last position of the prefix 𝑥 &lt;𝑡 . The next-token distribution is then obtained by applying a softmax over vocabulary logits,</p><formula xml:id="formula_2">𝑝 𝜃 (𝑥 𝑡 = 𝑣 | 𝑥 &lt;𝑡 ) = exp(𝑠 𝜃 (𝑣; ℎ 𝑡 )) 𝑣 ′ ∈ V exp(𝑠 𝜃 (𝑣 ′ ; ℎ 𝑡 )) ,<label>(2)</label></formula><p>where 𝑠 𝜃 (•; ℎ 𝑡 ) denotes the score (logit) assigned to each vocabulary token. In generation, the model conditions on a given context c = (𝑐 1 , . . . , 𝑐 𝐾 ) and generates a continuation y = (𝑦 1 , . . . , 𝑦 𝑀 ). The induced conditional distribution follows the same autoregression:</p><formula xml:id="formula_3">𝑝 𝜃 (y | c) = 𝑀 𝑚=1 𝑝 𝜃 (𝑦 𝑚 | c, 𝑦 &lt;𝑚 ),<label>(3)</label></formula><p>where 𝑦 &lt;𝑚 = (𝑦 1 , . . . , 𝑦 𝑚−1 ). The standard training objective of LLMs is the maximum likelihood estimation over a corpus D (equivalently, minimizing token-level cross-entropy):</p><formula xml:id="formula_4">max 𝜃 ∑︁ x∈ D 𝑇 ∑︁ 𝑡 =1 log 𝑝 𝜃 (𝑥 𝑡 | 𝑥 &lt;𝑡 ).<label>(4)</label></formula><p>This next-token prediction objective rewards any statistical regularities in the context that improve predictive likelihood, which can include spurious semantic correlations with downstream labels <ref type="bibr" target="#b1">[2]</ref>. At inference time, a completion is generated by decoding from Eq. (3), for example via greedy decoding, or stochastic sampling <ref type="bibr" target="#b7">[8,</ref><ref type="bibr" target="#b28">29]</ref>. In particular, sampling-based decoding, e.g., top-𝑘, is commonly used to trade off diversity and coherence in the generated text <ref type="bibr" target="#b6">[7]</ref>. From Eq. ( <ref type="formula" target="#formula_3">3</ref>) we can find that, the training of LLMs with autoregressive language modeling relies on conditional distribution instead of causal analysis on the questions, which is susceptible to provide the wrong answers based on spurious semantic correlations.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.2">Chain-of-Thought Reasoning</head><p>In this part, we formalize explicit Chain-of-Thought (CoT), which provides the foundation for the proposed implicit causal reasoning and the robustness evaluation. CoT reasoning refers to generating intermediate natural-language reasoning steps before producing a final answer, which has been shown to improve performance on multi-step reasoning tasks <ref type="bibr" target="#b13">[14,</ref><ref type="bibr" target="#b33">34]</ref>. Formally, let the input/prompt be x. Under CoT, the model's output is a single sequence z, which we split into (i) intermediate reasoning steps (CoT) tokens s and (ii) final answer tokens y as z = [s; y]. An autoregressive language model defines the conditional likelihood of the full output as</p><formula xml:id="formula_5">𝑝 𝜃 (z | x) = |z| 𝑡 =1 𝑝 𝜃 (𝑧 𝑡 | x, z &lt;𝑡 ),<label>(5)</label></formula><p>where z &lt;𝑡 is the prefix of previously generated output tokens. By viewing z as z = [s; y], it is equivalent to:</p><formula xml:id="formula_6">𝑝 𝜃 (s, y | x) = 𝑝 𝜃 (s | x) 𝑝 𝜃 (y | x, s).<label>(6)</label></formula><p>From this perspective, s serves as an intermediate reasoning steps which the final decision y is conditioned on <ref type="bibr" target="#b33">[34]</ref>. At inference time, CoT typically proceeds by generating a single reasoning steps' rollout ŝ via a decoding procedure Dec(.) (e.g., greedy decoding or sampling), then predicting the answer ŷ conditioned on it:</p><formula xml:id="formula_7">ŝ = Dec 𝜃 (x), ŷ = Dec 𝜃 ([x; ŝ]).<label>(7)</label></formula><p>However, CoT is essentially correlational instead of causal, as each intermediate step is still based on the conditional distribution given the question and previously generated reasoning steps, which therefore relies on spurious semantic correlation instead of grounding the reasoning in the true underlying causal structure.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.3">Problem Formulation</head><p>To address the limitation of traditional auto-regressive LLM and explicit CoT, we study causal-judgment question answering with LLMs. Let Q denote the space of natural-language causal questions, and let A denote the answer space, where A = {Yes, No} denotes the binary causal answers. We assume each question 𝑞 ∈ Q is associated with an underlying causal graph 𝐺 and a target causal label 𝑎 ∈ A that reflects the correct causal judgment under 𝐺.</p><p>We represent the benchmark as a dataset D = {(𝑞 𝑖 , 𝐺 𝑖 , 𝑎 𝑖 )} 𝑁 𝑖=1 . Here, we assume a general formulation of LLM with parameters 𝜃 , which defines the probability of the answer (in textual format) given the question 𝑝 𝜃 (𝑎 | 𝑞), 𝑎 ∈ A, and predicts an answer by â(𝑞) = arg max 𝑎∈ A 𝑝 𝜃 (𝑎 | 𝑞).</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3">Benchmark Design</head><p>The aim of this benchmark is to address the limitations of traditional benchmarks in comprehensively evaluating LLMs' ability to make reliable causal judgments. CausalFlip is built from event triples (𝑋, 𝑌 , 𝑍 ) and formulates binary causal judgment questions across three sub-datasets: confounder, chain, and collider. For each sub-dataset, we define Base and Opposite causal structures and construct semantically similar question pairs whose correct labels flip according to the underlying causal structure. Combined with pairwise train-test split, this design penalizes models from relying on spurious semantic correlations for predictions. Furthermore, we control question templates through Default and Alternative templates to reduce template-driven positive spurious correlation.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.1">Semantically Similar, Label-Flipped Pairs with Pairwise Train-Test Split</head><p>The overarching principle for developing the CausalFlip dataset is to introduce paired questions with spurious correlations in semantics, i.e., questions with similar semantic meanings but lead to different causal answers. The two questions differ primarily in the causal relation they query, and therefore have opposite labels, corresponding to the two question types (i), (ii) defined in subsection 3.2. For example, in the confounder dataset, a pair contrasts a direct-effect question, Will the increase of 𝑋 cause 𝑌 during 𝑍 ?, with a semantically similar confounder question, Will 𝑍 cause the increase of 𝑋 and 𝑌 ?. For evaluation, we adopt a pairwise train-test split. In each dataset, for each pair, we assign one question to the training set and the other to the test set while keeping the number of Q1/Q2 balanced across the training and test splits. This ensures that every test question has a counterpart in training that shares the same event triples and similar semantics but carries the opposite label. Consequently, if the model relies heavily on semantic patterns, it will predict the same label as the corresponding training instance, thereby failing on the paired testing question where the correct label is flipped. Thus, a high performance on this benchmark requires the understanding of causal structures, rather than relying on semantic matching.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.2">Causal Structures and Induced Questions</head><p>The </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.3">Question Templates</head><p>The design of pairwise split introduces a strong spurious (negative) correlation between question semantics and causal answers, which ideally should lead to the failure of LLM training strategies that purely rely on semantic correlation to generate answers. However, we find that the auto-regressive LLMs may still exploit shortcuts tied to phrase patterns in the question, i.e., certain remaining positive semantics correlation with the answer. To further reduce such shortcuts on wording style, we construct two question phrasing templates as randomization to reduce the positive spurious correlation: Default (D) and Alternative (A). </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4">Implicit Causal Reasoning</head><p>In the previous section, we have proposed CausalFlip benchmark that introduces spurious semantic correlation between causal question semantics and labels such that model trained based on semantic pattern matching fails to encourage the development of new LLM training strategies to reason on causal structures. In this section, we propose a new strategy, implicit causal reasoning, to reduce the explicit-CoT's reliance on spurious and explicit semantic correlations in causal questions.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.1">Motivation and Overview</head><p>CausalFlip is designed to penalize the performance of models that rely on semantics for prediction. This motivates training strategies that reduce a model's tendency to rely on semantic correlation when making causal judgments. As a preliminary exploration in fundamentally grounding the LLM reasoning in causality, we adopt a progressive causal reasoning steps mask strategy, where we progressively mask the causal reasoning steps, removing them from the training loss to specifically mitigate its reliance on spurious semantic correlations in explicitly generated causal reasoning steps and encourage generations grounded in causal structure.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.2">Progressive Causal Reasoning Steps Mask</head><p>In this part, we consider training samples consisting of an input question x, a binary answer 𝑦 ∈ {Yes, No}, and explicit causal reasoning steps 𝑠 = (𝑠 1 , . . . , 𝑠 𝐿 ). In our setting, 𝑠 is the intermediate causal reasoning steps derived from the corresponding causal graph, which states the key structural conditions and leads to the answer.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.2.1">Explicit Causal Reasoning</head><p>Steps Supervision. We start from explicit CoT, where all causal reasoning steps' tokens are included in training loss. The standard autoregressive next-token objective is applied on all intermediate causal reasoning steps' tokens 𝑠 = (𝑠 1 , . . . , 𝑠 𝐿 ) as well as the final answer 𝑦 as:</p><formula xml:id="formula_8">L explicit (𝜃 ) = − ∑︁ (x,s,𝑦) ∈ D log 𝑝 𝜃 (s, 𝑦 | x),<label>(8)</label></formula><p>Equivalently, the token-wise likelihood is given by Eq. ( <ref type="formula" target="#formula_9">9</ref>). Here 𝐿 denotes the number of tokens in the causal reasoning steps, and 𝑘 ∈ {1, . . . , 𝐿} indexes a token position within 𝑠: </p><formula xml:id="formula_9">L explicit (𝜃 ) = − ∑︁ (x,s,𝑦) ∈ D 𝐿 ∑︁ 𝑘=1 log 𝑝 𝜃 (𝑠 𝑘 | x, s &lt;𝑘 ) + log 𝑝 𝜃 (𝑦 | x, s) .<label>(9</label></formula><formula xml:id="formula_10">L mask (𝜃 ; 𝑡) = − ∑︁ (x,s,𝑦) ∈ D 𝐿 ∑︁ 𝑘=1 𝑚 𝑘 (𝑡) log 𝑝 𝜃 (𝑠 𝑘 | x, s &lt;𝑘 ) + log 𝑝 𝜃 (𝑦 | x, s) , 𝑚 𝑘 (𝑡) = 1[𝑘 &gt; 𝑟 (𝑡)]. (<label>10</label></formula><formula xml:id="formula_11">)</formula><p>where 𝑚 𝑘 (𝑡) = 0 indicates that the loss on 𝑠 𝑘 is masked out, and 𝑚 𝑘 (𝑡) = 1 indicates standard supervision (Eq. ( <ref type="formula" target="#formula_10">10</ref>)). Thus, the first 𝑟 (𝑡) causal reasoning steps' tokens {𝑠 1 , . . . , 𝑠 𝑟 (𝑡 ) } receive no direct supervision, while the remaining suffix s 𝑟 (𝑡 )+1:𝐿 is still included in the loss. We always compute training loss on the final answer 𝑦 to preserve task performance as explicit causal reasoning steps supervision diminishes.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5">Empirical Study</head><p>In this section, we evaluate four strategies (i.e., naive pretraining strategy, no-CoT, explicit-CoT, and implicit causal reasoning finetuning) on our CausalFlip benchmark. We first find that the naive pretraining and no-CoT strategies perform poorly, confirming that LLMs need to ground their predictions in causal structure instead of semantic patterns to succeed in CausalFlip benchmark. In addition, we find that training strategies with intermediate causal reasoning steps achieve much stronger causal-judgment performance. Finally, we further demonstrate that when injecting a noisy semantic prefix, implicit causal reasoning maintains higher robustness than explicit-CoT, indicating its less reliance on spurious semantic correlations and a reliable grounding in causal structure.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5.1">Research Questions</head><p>RQ1: How do no-CoT, explicit-CoT, and implicit causal reasoning training strategies perform on our causal benchmark compared to the naive pretraining strategy? This question compares strategies in terms of their ability to make causal judgments when spurious semantic correlations are not a reliable shortcut, due to the pair-wise split design in CausalFlip.</p><p>All strategies use the same train/test split and the same evaluation protocol and we report overall accuracy for each model.</p><p>RQ2: Could the implicit causal reasoning model perform more robust in causal reasoning tasks than explicit-CoT by reducing its reliance on semantic patterns?</p><p>As we analyze in subsection 2.1, autoregressive LLMs are optimized to fit conditional distributions, and thus can exploit positive spurious semantic correlations to make predictions, instead of grounding in the underlying causal structure <ref type="bibr" target="#b16">[17,</ref><ref type="bibr" target="#b30">31]</ref>. Motivated by this, we further test whether implicit causal reasoning reduces reliance on semantic patterns by comparing it with explicit-CoT under our noisy-prefix evaluation. Specifically, we inject the same causally irrelevant prefix before intermediate causal reasoning steps and measure how each model's accuracy changes, using performance degradation as an indicator of reliance on semantic patterns versus causal structure.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5.2">Baseline and Training Strategies</head><p>We compare four strategies to answer the two research questions raised in this paper. Across all experiments, we use Llama-3.2-3B-Instruct as the base model.</p><p>• Naive pretraining strategy (No Fine-tuning): This is the base model without any training on our dataset CausalFlip.</p><p>It measures the baseline pretraining's causal-judgment performance under pretraining alone and serves as a reference for evaluating fine-tuning strategies (no-CoT, explicit-CoT, and implicit causal reasoning). These four training strategies enable the evaluation of how different supervision strategies influence model performance on our proposed causal question dataset.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5.3">Training and Evaluation Setups</head><p>During training and evaluation, all strategies use the same fixed train/test split set with the same causal questions defined in Section 3 to ensure fair comparisons. In the following part, we introduce the training protocol and evaluation protocol in more detail.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>5.3.1</head><p>Training. Each fine-tuning instance is composed of (i) the causal question from CausalFlip as defined earlier in Section 3, and (ii) the answer of the question, which is the binary answer in {Yes,No}. For no-CoT, the instance is same as we stated before, that is the question followed by the answer. For explicit-CoT and implicit causal reasoning, we include the intermediate causal reasoning steps placed between the causal question and the answer (see subsection 4.2). For example, for base causal structure pairs in the confounder dataset, we employ the following causal reasoning step:</p><p>No directed causal path from X to Y AND adjusting for Z closes the backdoor between X and Y, therefore</p><p>The final answer follows immediately.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5.3.2">Evaluation.</head><p>At test time, models are presented with a questiononly prompt and evaluated based on their generated responses. Each prompt contains two parts: (i) a format instruction that constrains the final answer within the model's output as a binary decision {Yes, No}, which makes it amenable to parse and evaluate, even in the settings of explicit-CoT and implicit causal reasoning, where intermediate causal reasoning steps are generated before the final answer; and (ii) a causal question from CausalFlip, defined in section. 3. For each prompt, the model generates a single response that we extract the final answer and use it to compute task accuracy.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5.3.3">Metrics. We score the generation based only on the final</head><p>Yes/No answer without judging any intermediate causal reasoning steps. Specifically, for each test example, we take the model's final answer, which is the predicted label ŷ𝑖 , and compare it with the ground-truth label 𝑦 𝑖 . Accuracy is computed as:   To measure the performance across the models, we report accuracy on clean inputs and under the noisy-prefix setting described below.</p><formula xml:id="formula_12">Accuracy = 1 𝑁 𝑁 ∑︁ 𝑖=1 1 ( ŷ𝑖 = 𝑦 𝑖 ) .<label>(11)</label></formula></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5.3.4">Noisy-Prefix Evaluation.</head><p>To test whether the model focuses on causal reasoning or semantics, we inject the noisy prefix before the intermediate causal reasoning steps in the training samples. The prefix is a fixed chunk of natural-language sentences designed to serve as a semantic distraction while remaining causally irrelevant, which does not violate the intermediate reasoning process, nor change the underlying causal structure. We apply the same prefix to all questions to ensure consistency. This also avoids spurious correlations between different noisy prefixes' semantics and labels. We compare explicit-CoT and implicit causal reasoning because they represented two training strategies for leveraging intermediate causal reasoning. Explicit-CoT exposes the model to full intermediate causal reasoning steps during training, which may increase reliance on spurious semantic correlations and make its final decision more sensitive to the noisy prefix. In contrast, implicit causal reasoning progressively masks causal reasoning steps tokens over training. We evaluate both strategies under the noisy-prefix.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5.4">Performance on the CausalFlip (RQ1)</head><p>We first answer RQ1 by comparing four strategies' performances on CausalFlip: the naive pretraining strategy, standard answeronly fine-tuning (no-CoT), explicit-CoT fine-tuning, and implicit causal reasoning fine-tuning. We report accuracy on clean (without noisy prefix) inputs for Confounder, Chain, and Collider datasets (Table <ref type="table" target="#tab_6">1</ref>, 2, 3) On all three datasets, we observe low performance of the naive pretraining and no-CoT fine-tuning strategies, as these strategies fundamentally rely on semantics correlations rather than grounding in causal structure to train the LLMs. On Confounder, naive/no-CoT stay near chance (0.529/0.524) while explicit-CoT and implicit reach 0.892/0.900; on Chain, no-CoT (0.639) provides only a small gain over naive (0.612), compared to explicit-CoT/implicit (0.690/0.757); and on Collider, no-CoT is only modestly above naive (0.655 vs. 0.629) while explicit-CoT/implicit achieve 0.856/0.849. These results show that the intermediate causal reasoning steps is the main driver of improved performance on causal judgment questions. Meanwhile, the performance of implicit causal reasoning remains competitive and surpass explicit-CoT on confounder and chain dataset. While explicit-CoT and implicit causal reasoning occasionally produce invalid final-answer formats, our manual inspection shows all these invalid answers fail in matching any recognized formats of Yes or No (e.g., Yes., no!), or other identifiable decision keywords. In addition, the limited performance of no-CoT fine-tuning suggests that achieving success on CausalFlip requires the training strategy that effectively ground predictions in causal structure rather than exploiting spurious semantic correlations.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5.5">Performance under Noisy Prefix (RQ2)</head><p>We next answer RQ2 by evaluating explicit-CoT and implicit causal reasoning's performances on CausalFlip under the noisy-prefix injection (defined in section 5.3.4). This prefix is designed to be causally irrelevant that does not violate existing causal structure. Since the underlying causal structure is unchanged, the performance degradation indicates that the model's prediction is sensitive to semantics, rather than being grounded in the causal structure.</p><p>As is shown in Figure <ref type="figure">3</ref>, across all three datasets, adding the noisy prefix consistently causes a larger accuracy drop for explicit-CoT than for implicit causal reasoning, and the average drop is about 0.161 for explicit-CoT versus 0.092 for implicit causal reasoning. Moreover, under the noisy-prefix setting, implicit causal reasoning achieves higher accuracy than explicit-CoT on confounder, chain, and collider (0.769 &gt; 0.699, 0.692 &gt; 0.547, 0.768 &gt; 0.710). Overall, under the noisy semantic prefix setting, the larger degradation of explicit-CoT suggests that, it still predicts answers by relying heavily on semantics rather than the underlying causal structure. In contrast, implicit causal reasoning maintains higher accuracy under the same distraction, indicating stronger robustness in causalityrelated questions, and its reduced reliance on semantics.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="6">Related Work</head><p>Causal Inference in LLMs : Recent work has investigated whether LLMs can perform causal inference <ref type="bibr" target="#b10">[11,</ref><ref type="bibr" target="#b14">15,</ref><ref type="bibr" target="#b32">33]</ref>. In this line of research, the goal is to evaluate causal-effect judgments that depend on an underlying causal structure, for example, assessing whether a model can reason about causal links under different structural assumptions <ref type="bibr" target="#b9">[10]</ref>. A common formulation is to pose causal questions in natural language while assuming a causal model behind the question <ref type="bibr" target="#b9">[10,</ref><ref type="bibr" target="#b14">15]</ref>. Prior work also explores how to elicit causal inference behavior from LLMs, including causal graphs and procedural guidance that implements parts of a causal inference process Causal Benchmarks for LLMs : Prior work has proposed a range of benchmarks to evaluate causal understanding in LLMs: (i) Commonsense cause-effect benchmarks test whether models can select plausible cause or effect under everyday knowledge <ref type="bibr" target="#b24">[25]</ref>. (ii) Causality-text comprehension benchmark tests whether models can apply causal knowledge from a passage to a new situation <ref type="bibr" target="#b17">[18]</ref>. (iii) Graph-grounded causal inference benchmark evaluate model's causal judgment using causal graphs and formal causal questions <ref type="bibr" target="#b9">[10]</ref>. (iv) Comprehensive causal reasoning benchmark provides broader causal reasoning coverage across domains such as texts, math, etc., <ref type="bibr" target="#b32">[33]</ref>. Finally, (v) general LLM evaluation, such as BIG-bench include causality-adjacent reasoning tasks and are often used to report general reasoning capabilities <ref type="bibr" target="#b27">[28]</ref>. However, such benchmark accuracy can be an unreliable metric for true causal reasoning ability, due to the consistent finding that models can achieve high accuracy by exploiting spurious correlations with labels rather than reasoning from the underlying causal structure <ref type="bibr" target="#b16">[17,</ref><ref type="bibr" target="#b21">22,</ref><ref type="bibr" target="#b30">31]</ref>. CausalFlip is designed to address this issue by using semantically similar, label-flipped pairs under a pairwise train-test split. Models that rely on spurious semantic correlations could only achieve limited performance; therefore, correct predictions need to be grounded in causal structure.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="7">Conclusion</head><p>In this work, we address a key gap in evaluating LLM causal judgment, where standard autoregressive trained model can lean on label-correlated semantic patterns to answer causal questions, instead of grounding decisions in an underlying causal structure. </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="8">Ethics and Fairness</head><p>CausalFlip does not collect user data or involve human subjects, and it contains no private record or consent-required sources, such as identifiable information, medical or financial records, etc. During dataset construction, we manually inspected the data to mitigate risks of including sensitive information, offensive language, or potentially harmful stereotypes and biases in the text. We apply this review consistently throughout the full dataset to ensure that the released benchmark avoids such content to extent. Finally, this benchmark is intended for research evaluation purpose, and we encourage responsible use, including clear communication of limitations, and adherence to established ethical guidelines when developing downstream applications.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>A Appendix A.1 Reducing Data Skewness</head><p>Although the pairwise causal questions with opposite causal answers are specifically designed to be semantically close to each other, the dataset as a whole can still contain skewed correlations between semantic features and labels that LLMs could learn as spurious shortcuts <ref type="bibr" target="#b16">[17,</ref><ref type="bibr" target="#b30">31]</ref>. Here, "skewness" refers to distributional imbalances where particular event appear disproportionately in certain categories. For example, certain event can still show up more in one category than the others, such as sales of certain products or certain weather conditions appearing more as event in Base pairs than Opposite pairs. Such imbalances can create shortcut signals that allow models to predict labels without grounding the reasoning in causal structure. We detect such skewness from two perspectives. First, we analyze the count of event in each dataset, computing their frequencies across labels and categories and flagging those with highly imbalanced distributions under a threshold. In addition, we perform similarity-based analysis to identify examples that dominate the</p></div><figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_0"><head>Figure 1 :</head><label>1</label><figDesc>Figure 1: One representative example where training samples may create a spurious semantic correlation with a wrong answer that leads LLM to an incorrect causal judgment.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_2"><head></head><label></label><figDesc>established CausalFlip benchmark is composed of three subdatasets, i.e., confounder, chain, and collider, where each dataset type studies the canonical causal structure among (𝑋, 𝑌, 𝑍 ). Specifically, within each dataset type, we define two causal structures: Base (B) and Opposite (O). Base follows the canonical causal graph of the dataset type, while Opposite uses an alternative causal graph that is constructed to yield the opposite labels to the same paired question types compared to the Base. With this design, the model cannot rely on the positive spurious correlation between the question template and the label (e.g., with only Base pairs, question 1's label is always "No" and question 2's is always Yes). This forces correct predictions to depend on the underlying causal structures. To keep the benchmark balanced, we also construct the same number of pairs under the Base and Opposite causal structures in each dataset. Chain Dataset. Base (B) represents the chain base structure follows 𝑋 → 𝑌 → 𝑍 , with no direct causal path 𝑋 → 𝑍 , which means any effect of 𝑋 on 𝑍 is mediated through 𝑌 . Each question pair in this dataset includes two question types: (i) is a direct-effect question asking whether increasing 𝑋 directly causes 𝑍 in the context of 𝑌 (we include 𝑌 as context to keep this question semantically close to question (ii))), and (ii) is a mediated path question asking whether increasing 𝑋 increases 𝑌 , which in turn but due to the opposite causal structure, labels flip: Question (i) is assigned Yes and Question (ii) is assigned No.3.2.3Collider Dataset. Base (B) represents the collider base structure follows 𝑋 → 𝑍 and 𝑌 → 𝑍 , with no directed path between 𝑋 and 𝑌 ; 𝑍 is a collider with two independent parents. Each instance includes two question types: (i) is a direct-effect question asking whether increasing 𝑋 causes 𝑌 in the context of 𝑍 (we include 𝑍 as context to keep this question semantically close to Question (ii)), and (ii) is a collider question asking whether increasing 𝑋 causes 𝑍 and increasing 𝑌 causes 𝑍 . Under Base structure, Question (i) is labeled No and Question (ii) is labeled Yes. Opposite (O) represents the opposite structure under collider dataset, follows 𝑋 → 𝑌 , and there is no causal path from 𝑋 to 𝑍 and no causal path from 𝑌 to 𝑍 . The question types remain the same, but labels flip: Question (i) is assigned Yes and Question (ii) is assigned No.</figDesc><table /><note>3.2.1 Confounder Dataset. Base (B) represents the confounder base structure, where 𝑍 → 𝑋 and 𝑍 → 𝑌 , with no directed causal path from 𝑋 to 𝑌 . Each question pair in this dataset includes two types of questions: (i) is a direct-effect question asking whether increasing 𝑋 causes 𝑌 in the context of 𝑍 (we include 𝑍 as context to keep this question semantically close to question (ii)), and (ii) is a confounder question asking whether 𝑍 causes both 𝑋 and 𝑌 . Under the Base structure, Question (i) is labeled "No" and Question (ii) is labeled "Yes". Opposite (O) represents the opposite structure under confounder dataset, that follows 𝑋 → 𝑌 , and there is no causal path from 𝑍 to both 𝑋 and 𝑌 , which means 𝑍 is non-causal w.r.t. both 𝑋 and 𝑌 . The question types i, ii remain the same, but due to the opposite causal structure, the labels flip: Question (i) is assigned Yes and Question (ii) is assigned No. 3.2.2 increases 𝑍 . Under Base structure, Question (i) is labeled No and Question (ii) is labeled Yes. Opposite (O) represents opposite structure under chain dataset, follows 𝑋 → 𝑍 , and there is no causal path from 𝑋 to 𝑌 and 𝑌 to 𝑍 . The question types remain the same,</note></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_4"><head></head><label></label><figDesc>) 4.2.2 Progressive Causal Reasoning Steps Removal. For implicit causal reasoning, we progressively mask the earliest causal reasoning steps' tokens from supervision. At training step 𝑡, we remove the first 𝑟 (𝑡) tokens from supervision and only compute the loss on the remaining part. Formally, we apply a step-based mask function 𝑚 𝑘 (𝑡) ∈ {0, 1}, over causal reasoning steps token positions 𝑘 as follows:</figDesc><table /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_5"><head></head><label></label><figDesc>• No-CoT fine-tuning: This is the standard answer-only supervised fine-tuning baseline, where the model is trained to directly predict the final answer given a causal question from CausalFlip. In this setting, no intermediate causal reasoning steps are provided during training, so the supervision is applied only to the final Yes/No decision. • Explicit-CoT fine-tuning: Different from no-CoT model, this model is trained with the full intermediate causal reasoning steps followed by the final answer, and supervision is applied to both the intermediate causal reasoning tokens and the final answer. • Implicit causal reasoning fine-tuning: We progressively mask an increasing prefix of intermediate reasoning tokens from the training loss while always supervising the final decision. This shifts prediction's reliance from explicit semantics to the underlying causal structure.</figDesc><table /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_6"><head>Table 1 :</head><label>1</label><figDesc>Performance comparisons on Confounder Dataset</figDesc><table><row><cell>Model</cell><cell cols="3">Accuracy Correct / Total Valid Yes/No</cell></row><row><cell>Naive pretraining strategy</cell><cell>0.529</cell><cell>529 / 1000</cell><cell>1000 / 1000</cell></row><row><cell>No CoT</cell><cell>0.524</cell><cell>524 / 1000</cell><cell>1000 / 1000</cell></row><row><cell>Explicit CoT</cell><cell>0.892</cell><cell>892 / 1000</cell><cell>987 / 1000</cell></row><row><cell>Implicit Causal Reasoning</cell><cell>0.900</cell><cell>900 / 1000</cell><cell>997 / 1000</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_7"><head>Table 2 :</head><label>2</label><figDesc>Performance comparisons on Chain Dataset</figDesc><table><row><cell>Model</cell><cell cols="3">Accuracy Correct / Total Valid Yes/No</cell></row><row><cell>Naive pretraining strategy</cell><cell>0.612</cell><cell>612 / 1000</cell><cell>1000 / 1000</cell></row><row><cell>No CoT</cell><cell>0.639</cell><cell>639 / 1000</cell><cell>1000 / 1000</cell></row><row><cell>Explicit CoT</cell><cell>0.690</cell><cell>690 / 1000</cell><cell>989 / 1000</cell></row><row><cell>Implicit Causal Reasoning</cell><cell>0.757</cell><cell>757 / 1000</cell><cell>998 / 1000</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_8"><head>Table 3 :</head><label>3</label><figDesc>Performance comparisons on Collider Dataset 𝑁 is the number of test examples, 𝑦 𝑖 ∈ {Yes, No} is the ground-truth label, ŷ𝑖 ∈ {Yes, No} is the model's predicted label (final answer), and 1[•] is the indicator function.</figDesc><table><row><cell>Model</cell><cell cols="3">Accuracy Correct / Total Valid Yes/No</cell></row><row><cell>Naive pretraining strategy</cell><cell>0.629</cell><cell>629 / 1000</cell><cell>1000 / 1000</cell></row><row><cell>No CoT</cell><cell>0.655</cell><cell>655 / 1000</cell><cell>1000 / 1000</cell></row><row><cell>Explicit CoT</cell><cell>0.856</cell><cell>856 / 1000</cell><cell>1000 / 1000</cell></row><row><cell>Implicit Causal Reasoning</cell><cell>0.849</cell><cell>849 / 1000</cell><cell>999 / 1000</cell></row><row><cell>where</cell><cell></cell><cell></cell><cell></cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_9"><head></head><label></label><figDesc>Accuracy of explicit-CoT versus implicit causal reasoning on CausalFlip across the three sub-datasets under clean inputs and noisy-prefix. Implicit causal reasoning consistently degrades less and perform better than explicit-CoT after the injection of noisy prefix, indicating its reduced reliance on spurious semantic correlations.<ref type="bibr" target="#b9">[10,</ref><ref type="bibr" target="#b14">15]</ref>. In this research context, our work complements prior studies on causal inference with LLMs in two ways. First, we introduce a training strategy that aims to reduce LLMs' reliance on semantics in causality-related tasks. Second, we propose a benchmark for evaluating models' causal reasoning ability: It formulates causal judgment questions over event triples, constructs semantically similar question pairs with opposite labels, and uses a pairwise train-test split so that semantic matching is systematically penalized.</figDesc><table><row><cell>Accuracy</cell><cell>0.4 0.6 0.8 1.0</cell><cell>0.892</cell><cell>0.699 Confounder 0.900</cell><cell>0.769</cell><cell>0.690</cell><cell>0.547</cell><cell>Chain</cell><cell>0.757</cell><cell>0.692</cell><cell>0.856</cell><cell>0.849 Collider 0.710</cell><cell>0.768</cell></row><row><cell></cell><cell>0.2</cell><cell></cell><cell></cell><cell></cell><cell></cell><cell></cell><cell></cell><cell></cell><cell></cell><cell></cell><cell></cell><cell></cell></row><row><cell></cell><cell>0.0</cell><cell cols="3">Explicit-CoT Training Strategy Implicit Causal Reasoning</cell><cell cols="5">Explicit-CoT Training Strategy Implicit Causal Reasoning Clean Noisy Prefix</cell><cell cols="3">Explicit-CoT Training Strategy Implicit Causal Reasoning</cell></row><row><cell cols="2">Figure 3:</cell><cell></cell><cell></cell><cell></cell><cell></cell><cell></cell><cell></cell><cell></cell><cell></cell><cell></cell><cell></cell><cell></cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_10"><head></head><label></label><figDesc>To bridge this gap, we introduce CausalFlip, a causality-based benchmark covering confounder, chain, and collider causal structures. Empirically, we find that strategies that heavily depend on semantic patterns fail on our benchmark, and whereas supervision on intermediate causal reasoning steps improves accuracy. More importantly, the proposed implicit causal reasoning strategy shows clear strengths by progressively masking intermediate causal reasoning step tokens from supervision to reduce model's reliance on possible spurious semantic correlation in explicitly generated intermediate reasoning steps.</figDesc><table /></figure>
+		</body>
+		<back>
+			<div type="annex">
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>dataset's semantic space. Specifically, we embed each question using the stella-400M model <ref type="bibr" target="#b36">[37]</ref> and compute cosine similarity; for each example, we retrieve its top-5 nearest neighbors in the dataset. We then count how often an example appears in the top-5 neighbor lists of other examples. Examples that appear unusually frequently in these top-5 lists indicate near-duplicate clusters or highly generic patterns that may amplify label-correlated shortcuts.</p><p>To mitigate these skewness, we filter and replace the top 5 cases identified by the two analyses iteratively. For count-based skew, we replace overrepresented event (in 𝑋 , 𝑌 , or 𝑍 ) with substitute events so that event frequencies are more evenly distributed across categories. For similarity-based analysis, we replace examples that appear unusually often as a top-5 neighbor of many others, reducing skewness induced by similarity and preventing highly repetitive patterns from dominating the training shortcuts.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>A.2 Hyperparameters</head><p>For all fine-tuned strategies (no-CoT, explicit-CoT and implicit causal reasoning), we apply Low-Rank Adaptation (LoRA) <ref type="bibr" target="#b8">[9]</ref> with 𝑟 = 4, 𝛼 = 8, dropout = 0.05, targeting q_proj, v_proj. We fine-tune for 3 epochs with learning rate 1 × 10 −4 , batch size 4, maximum sequence length 256, using the paged AdamW <ref type="bibr" target="#b19">[20]</ref> 8-bit optimizer, bf16 training <ref type="bibr" target="#b12">[13]</ref>, and gradient checkpointing <ref type="bibr" target="#b2">[3]</ref>, with fixed random seed for fair comparisons.</p></div>			</div>
+			<div type="references">
+
+				<listBibl>
+
+<biblStruct xml:id="b0">
+	<analytic>
+		<title level="a" type="main">A neural probabilistic language model</title>
+		<author>
+			<persName><forename type="first">Yoshua</forename><surname>Bengio</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Réjean</forename><surname>Ducharme</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Pascal</forename><surname>Vincent</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Christian</forename><surname>Janvin</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">J. Mach. Learn. Res</title>
+		<imprint>
+			<biblScope unit="volume">3</biblScope>
+			<biblScope unit="page" from="1137" to="1155" />
+			<date type="published" when="2003-03">2003. March 2003</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b1">
+	<monogr>
+		<title level="m" type="main">Language Models are Few-Shot Learners</title>
+		<author>
+			<persName><forename type="first">Tom</forename><forename type="middle">B</forename><surname>Brown</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Benjamin</forename><surname>Mann</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Nick</forename><surname>Ryder</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Melanie</forename><surname>Subbiah</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jared</forename><surname>Kaplan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Prafulla</forename><surname>Dhariwal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Arvind</forename><surname>Neelakantan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Pranav</forename><surname>Shyam</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Girish</forename><surname>Sastry</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Amanda</forename><surname>Askell</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sandhini</forename><surname>Agarwal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ariel</forename><surname>Herbert-Voss</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Gretchen</forename><surname>Krueger</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tom</forename><surname>Henighan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Rewon</forename><surname>Child</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Aditya</forename><surname>Ramesh</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Daniel</forename><forename type="middle">M</forename><surname>Ziegler</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jeffrey</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Clemens</forename><surname>Winter</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Christopher</forename><surname>Hesse</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mark</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Eric</forename><surname>Sigler</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mateusz</forename><surname>Litwin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Scott</forename><surname>Gray</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Benjamin</forename><surname>Chess</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jack</forename><surname>Clark</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Christopher</forename><surname>Berner</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sam</forename><surname>Mccandlish</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Alec</forename><surname>Radford</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ilya</forename><surname>Sutskever</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dario</forename><surname>Amodei</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2005.14165</idno>
+		<ptr target="https://arxiv.org/abs/2005.14165" />
+		<imprint>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b2">
+	<monogr>
+		<title level="m" type="main">Training Deep Nets with Sublinear Memory Cost</title>
+		<author>
+			<persName><forename type="first">Tianqi</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bing</forename><surname>Xu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Chiyuan</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Carlos</forename><surname>Guestrin</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1604.06174[cs.LG</idno>
+		<ptr target="https://arxiv.org/abs/1604.06174" />
+		<imprint>
+			<date type="published" when="2016">2016</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b3">
+	<monogr>
+		<title level="m" type="main">Compressed Chain of Thought: Efficient Reasoning Through Dense Representations</title>
+		<author>
+			<persName><forename type="first">Jeffrey</forename><surname>Cheng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Benjamin</forename><surname>Van Durme</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2412.13171</idno>
+		<ptr target="https://arxiv.org/abs/2412.13171" />
+		<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b4">
+	<monogr>
+		<title level="m" type="main">From Explicit CoT to Implicit CoT: Learning to Internalize CoT Step by Step</title>
+		<author>
+			<persName><forename type="first">Yuntian</forename><surname>Deng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yejin</forename><surname>Choi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Stuart</forename><surname>Shieber</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2405.14838</idno>
+		<ptr target="https://arxiv.org/abs/2405.14838" />
+		<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b5">
+	<monogr>
+		<title level="m" type="main">Faith and Fate: Limits of Transformers on Compositionality</title>
+		<author>
+			<persName><forename type="first">Nouha</forename><surname>Dziri</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ximing</forename><surname>Lu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Melanie</forename><surname>Sclar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Lorraine</forename><surname>Xiang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Liwei</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bill</forename><forename type="middle">Yuchen</forename><surname>Jiang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Peter</forename><surname>Lin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Chandra</forename><surname>West</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Bhagavatula</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Le</forename><surname>Ronan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jena</forename><forename type="middle">D</forename><surname>Bras</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Soumya</forename><surname>Hwang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sean</forename><surname>Sanyal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xiang</forename><surname>Welleck</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Allyson</forename><surname>Ren</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zaid</forename><surname>Ettinger</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yejin</forename><surname>Harchaoui</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Choi</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2305.18654</idno>
+		<ptr target="https://arxiv.org/abs/2305.18654" />
+		<imprint>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b6">
+	<monogr>
+		<title level="m" type="main">Hierarchical Neural Story Generation</title>
+		<author>
+			<persName><forename type="first">Angela</forename><surname>Fan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mike</forename><surname>Lewis</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yann</forename><surname>Dauphin</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1805.04833</idno>
+		<ptr target="https://arxiv.org/abs/1805.04833" />
+		<imprint>
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b7">
+	<monogr>
+		<title level="m" type="main">The Curious Case of Neural Text Degeneration</title>
+		<author>
+			<persName><forename type="first">Ari</forename><surname>Holtzman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jan</forename><surname>Buys</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Li</forename><surname>Du</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Maxwell</forename><surname>Forbes</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yejin</forename><surname>Choi</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1904.09751</idno>
+		<ptr target="https://arxiv.org/abs/1904.09751" />
+		<imprint>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b8">
+	<monogr>
+		<title level="m" type="main">LoRA: Low-Rank Adaptation of Large Language Models</title>
+		<author>
+			<persName><forename type="first">Edward</forename><forename type="middle">J</forename><surname>Hu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yelong</forename><surname>Shen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Phillip</forename><surname>Wallis</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zeyuan</forename><surname>Allen-Zhu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yuanzhi</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shean</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Lu</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Weizhu</forename><surname>Chen</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2106.09685</idno>
+		<ptr target="https://arxiv.org/abs/2106.09685" />
+		<imprint>
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b9">
+	<monogr>
+		<title level="m" type="main">CLadder: Assessing Causal Reasoning in Language Models</title>
+		<author>
+			<persName><forename type="first">Zhijing</forename><surname>Jin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yuen</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Felix</forename><surname>Leeb</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Luigi</forename><surname>Gresele</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ojasv</forename><surname>Kamal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhiheng</forename><surname>Lyu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Kevin</forename><surname>Blin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Fernando</forename><surname>Gonzalez Adauto</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Max</forename><surname>Kleiman-Weiner</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mrinmaya</forename><surname>Sachan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bernhard</forename><surname>Schölkopf</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2312.04350</idno>
+		<ptr target="https://arxiv.org/abs/2312.04350" />
+		<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b10">
+	<monogr>
+		<title level="m" type="main">Can Large Language Models Infer Causation from Correlation</title>
+		<author>
+			<persName><forename type="first">Zhijing</forename><surname>Jin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jiarui</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhiheng</forename><surname>Lyu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Spencer</forename><surname>Poff</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mrinmaya</forename><surname>Sachan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Rada</forename><surname>Mihalcea</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mona</forename><surname>Diab</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bernhard</forename><surname>Schölkopf</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2306.05836</idno>
+		<ptr target="https://arxiv.org/abs/2306.05836" />
+		<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b11">
+	<monogr>
+		<title level="m" type="main">Why Language Models Hallucinate</title>
+		<author>
+			<persName><forename type="first">Ofir</forename><surname>Adam Tauman Kalai</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Nachum</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Santosh</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Edwin</forename><surname>Vempala</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Zhang</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2509.04664</idno>
+		<ptr target="https://arxiv.org/abs/2509.04664" />
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b12">
+	<monogr>
+		<title level="m" type="main">A Study of BFLOAT16 for Deep Learning Training</title>
+		<author>
+			<persName><forename type="first">Dhiraj</forename><surname>Kalamkar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dheevatsa</forename><surname>Mudigere</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Naveen</forename><surname>Mellempudi</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1905.12322[cs.LG</idno>
+		<ptr target="https://arxiv.org/abs/1905.12322" />
+		<imprint>
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b13">
+	<monogr>
+		<title level="m" type="main">Large Language Models are Zero-Shot Reasoners</title>
+		<author>
+			<persName><forename type="first">Takeshi</forename><surname>Kojima</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shane</forename><surname>Shixiang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Machel</forename><surname>Gu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yutaka</forename><surname>Reid</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yusuke</forename><surname>Matsuo</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Iwasawa</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2205.11916</idno>
+		<ptr target="https://arxiv.org/abs/2205.11916" />
+		<imprint>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b14">
+	<monogr>
+		<title level="m" type="main">Causal Reasoning and Large Language Models: Opening a New Frontier for Causality</title>
+		<author>
+			<persName><forename type="first">Emre</forename><surname>Kıcıman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Robert</forename><surname>Ness</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Amit</forename><surname>Sharma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Chenhao</forename><surname>Tan</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2305.00050[cs.AI</idno>
+		<ptr target="https://arxiv.org/abs/2305.00050" />
+		<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b15">
+	<analytic>
+		<title level="a" type="main">Large language models in law: A survey</title>
+		<author>
+			<persName><forename type="first">Jinqi</forename><surname>Lai</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Wensheng</forename><surname>Gan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jiayang</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhenlian</forename><surname>Qi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Philip</forename><forename type="middle">S</forename><surname>Yu</surname></persName>
+		</author>
+		<idno type="DOI">10.1016/j.aiopen.2024.09.002</idno>
+	</analytic>
+	<monogr>
+		<title level="j">AI Open</title>
+		<imprint>
+			<biblScope unit="volume">5</biblScope>
+			<biblScope unit="page" from="181" to="196" />
+			<date type="published" when="2024">2024. 2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b16">
+	<monogr>
+		<title level="m" type="main">Why Machine Reading Comprehension Models Learn Shortcuts</title>
+		<author>
+			<persName><forename type="first">Yuxuan</forename><surname>Lai</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Chen</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yansong</forename><surname>Feng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Quzhe</forename><surname>Huang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dongyan</forename><surname>Zhao</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2106.01024</idno>
+		<ptr target="https://arxiv.org/abs/2106.01024" />
+		<imprint>
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b17">
+	<monogr>
+		<title level="m" type="main">Reasoning Over Paragraph Effects in Situations</title>
+		<author>
+			<persName><forename type="first">Kevin</forename><surname>Lin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Oyvind</forename><surname>Tafjord</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Peter</forename><surname>Clark</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Matt</forename><surname>Gardner</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1908.05852</idno>
+		<ptr target="https://arxiv.org/abs/1908.05852" />
+		<imprint>
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b18">
+	<monogr>
+		<author>
+			<persName><forename type="first">Stephanie</forename><surname>Lin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jacob</forename><surname>Hilton</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Owain</forename><surname>Evans</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2109.07958</idno>
+		<ptr target="https://arxiv.org/abs/2109.07958" />
+		<title level="m">TruthfulQA: Measuring How Models Mimic Human Falsehoods</title>
+				<imprint>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b19">
+	<monogr>
+		<title level="m" type="main">Decoupled Weight Decay Regularization</title>
+		<author>
+			<persName><forename type="first">Ilya</forename><surname>Loshchilov</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Frank</forename><surname>Hutter</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1711.05101[cs.LG</idno>
+		<ptr target="https://arxiv.org/abs/1711.05101" />
+		<imprint>
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b20">
+	<monogr>
+		<title level="m" type="main">On Faithfulness and Factuality in Abstractive Summarization</title>
+		<author>
+			<persName><forename type="first">Joshua</forename><surname>Maynez</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shashi</forename><surname>Narayan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bernd</forename><surname>Bohnet</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ryan</forename><surname>Mcdonald</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2005.00661</idno>
+		<ptr target="https://arxiv.org/abs/2005.00661" />
+		<imprint>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b21">
+	<monogr>
+		<title level="m" type="main">Right for the Wrong Reasons: Diagnosing Syntactic Heuristics in Natural Language Inference</title>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">Thomas</forename><surname>Mccoy</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ellie</forename><surname>Pavlick</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tal</forename><surname>Linzen</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1902.01007</idno>
+		<ptr target="https://arxiv.org/abs/1902.01007" />
+		<imprint>
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b22">
+	<monogr>
+		<title level="m" type="main">Towards Accurate Differential Diagnosis with Large Language Models</title>
+		<author>
+			<persName><forename type="first">Daniel</forename><surname>Mcduff</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mike</forename><surname>Schaekermann</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tao</forename><surname>Tu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Anil</forename><surname>Palepu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Amy</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jake</forename><surname>Garrison</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Karan</forename><surname>Singhal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yash</forename><surname>Sharma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shekoofeh</forename><surname>Azizi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Kavita</forename><surname>Kulkarni</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Le</forename><surname>Hou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yong</forename><surname>Cheng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yun</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sara</forename><surname>Mahdavi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sushant</forename><surname>Prakash</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Anupam</forename><surname>Pathak</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Christopher</forename><surname>Semturs</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shwetak</forename><surname>Patel</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dale</forename><forename type="middle">R</forename><surname>Webster</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ewa</forename><surname>Dominowska</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Juraj</forename><surname>Gottweis</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Joelle</forename><surname>Barral</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Katherine</forename><surname>Chou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Greg</forename><forename type="middle">S</forename><surname>Corrado</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yossi</forename><surname>Matias</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jake</forename><surname>Sunshine</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Alan</forename><surname>Karthikesalingam</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Vivek</forename><surname>Natarajan</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2312.00164</idno>
+		<idno>cs.CY</idno>
+		<ptr target="https://arxiv.org/abs/2312.00164" />
+		<imprint>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b23">
+	<monogr>
+		<title level="m" type="main">Improving Language Understanding by Generative Pre-Training</title>
+		<author>
+			<persName><forename type="first">Alec</forename><surname>Radford</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Karthik</forename><surname>Narasimhan</surname></persName>
+		</author>
+		<ptr target="https://api.semanticscholar.org/CorpusID:49313245" />
+		<imprint>
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b24">
+	<analytic>
+		<title level="a" type="main">Choice of Plausible Alternatives: An Evaluation of Commonsense Causal Reasoning</title>
+		<author>
+			<persName><forename type="first">Melissa</forename><surname>Roemmele</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Cosmin</forename><surname>Adrian Bejan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Andrew</forename><forename type="middle">S</forename><surname>Gordon</surname></persName>
+		</author>
+		<ptr target="http://ict.usc.edu/pubs/Choice%20of%20Plausible%20Alternatives-%20An%20Evaluation%20of%20Commonsense%20Causal%20Reasoning.pdf" />
+	</analytic>
+	<monogr>
+		<title level="m">AAAI Spring Symposium on Logical Formalizations of Commonsense Reasoning</title>
+				<imprint>
+			<date type="published" when="2011">2011</date>
+		</imprint>
+		<respStmt>
+			<orgName>Stanford University</orgName>
+		</respStmt>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b25">
+	<analytic>
+		<title level="a" type="main">SpecCoT: Accelerating Chain-of-Thought Reasoning through Speculative Exploration</title>
+		<author>
+			<persName><forename type="first">Junhan</forename><surname>Shi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yijia</forename><surname>Zhu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhenning</forename><surname>Shi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dan</forename><surname>Zhao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Qing</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yong</forename><surname>Jiang</surname></persName>
+		</author>
+		<idno type="DOI">10.18653/v1/2025.findings-emnlp.1326</idno>
+	</analytic>
+	<monogr>
+		<title level="m">Findings of the Association for Computational Linguistics: EMNLP 2025</title>
+				<editor>
+			<persName><forename type="first">Christos</forename><surname>Christodoulopoulos</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">Tanmoy</forename><surname>Chakraborty</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">Carolyn</forename><surname>Rose</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">Violet</forename><surname>Peng</surname></persName>
+		</editor>
+		<meeting><address><addrLine>Suzhou, China</addrLine></address></meeting>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+			<biblScope unit="page" from="24405" to="24415" />
+		</imprint>
+	</monogr>
+	<note>Association for Computational Linguistics</note>
+</biblStruct>
+
+<biblStruct xml:id="b26">
+	<monogr>
+		<author>
+			<persName><forename type="first">Karan</forename><surname>Singhal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shekoofeh</forename><surname>Azizi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tao</forename><surname>Tu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">Sara</forename><surname>Mahdavi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jason</forename><surname>Wei</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Hyung</forename><forename type="middle">Won</forename><surname>Chung</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Nathan</forename><surname>Scales</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ajay</forename><surname>Tanwani</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Heather</forename><surname>Cole-Lewis</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Stephen</forename><surname>Pfohl</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Perry</forename><surname>Payne</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Martin</forename><surname>Seneviratne</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Paul</forename><surname>Gamble</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Chris</forename><surname>Kelly</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Nathaneal</forename><surname>Scharli</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Aakanksha</forename><surname>Chowdhery</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Philip</forename><surname>Mansfield</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Blaise</forename><surname>Aguera Y Arcas</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dale</forename><surname>Webster</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Greg</forename><forename type="middle">S</forename><surname>Corrado</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yossi</forename><surname>Matias</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Katherine</forename><surname>Chou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Juraj</forename><surname>Gottweis</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Nenad</forename><surname>Tomasev</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yun</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Alvin</forename><surname>Rajkomar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Joelle</forename><surname>Barral</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Christopher</forename><surname>Semturs</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Alan</forename><surname>Karthikesalingam</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Vivek</forename><surname>Natarajan</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2212.13138</idno>
+		<ptr target="https://arxiv.org/abs/2212.13138" />
+		<title level="m">Large Language Models Encode Clinical Knowledge</title>
+				<imprint>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b27">
+	<monogr>
+		<title level="m" type="main">Beyond the Imitation Game: Quantifying and extrapolating the capabilities of language models</title>
+		<author>
+			<persName><forename type="first">Aarohi</forename><surname>Srivastava</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Abhinav</forename><surname>Rastogi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Abhishek</forename><surname>Rao</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2206.04615</idno>
+		<ptr target="https://arxiv.org/abs/2206.04615" />
+		<imprint>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b28">
+	<monogr>
+		<title level="m" type="main">Sequence to Sequence Learning with Neural Networks</title>
+		<author>
+			<persName><forename type="first">Ilya</forename><surname>Sutskever</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Oriol</forename><surname>Vinyals</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">V</forename><surname>Quoc</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Le</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1409.3215</idno>
+		<ptr target="https://arxiv.org/abs/1409.3215" />
+		<imprint>
+			<date type="published" when="2014">2014</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b29">
+	<monogr>
+		<author>
+			<persName><forename type="first">Mirac</forename><surname>Suzgun</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Nathan</forename><surname>Scales</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Nathanael</forename><surname>Schärli</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sebastian</forename><surname>Gehrmann</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yi</forename><surname>Tay</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Hyung</forename><forename type="middle">Won</forename><surname>Chung</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Aakanksha</forename><surname>Chowdhery</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Quoc</forename><forename type="middle">V</forename><surname>Le</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ed</forename><forename type="middle">H</forename><surname>Chi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Denny</forename><surname>Zhou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jason</forename><surname>Wei</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2210.09261</idno>
+		<ptr target="https://arxiv.org/abs/2210.09261" />
+		<title level="m">Challenging BIG-Bench Tasks and Whether Chain-of-Thought Can Solve Them</title>
+				<imprint>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b30">
+	<analytic>
+		<title level="a" type="main">Large Language Models Can be Lazy Learners: Analyze Shortcuts in In-Context Learning</title>
+		<author>
+			<persName><forename type="first">Ruixiang</forename><surname>Tang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dehan</forename><surname>Kong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Longtao</forename><surname>Huang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Hui</forename><surname>Xue</surname></persName>
+		</author>
+		<idno type="DOI">10.18653/v1/2023.findings-acl.284</idno>
+	</analytic>
+	<monogr>
+		<title level="m">Findings of the Association for Computational Linguistics: ACL 2023</title>
+				<imprint>
+			<date type="published" when="2023">2023</date>
+			<biblScope unit="page" from="4645" to="4657" />
+		</imprint>
+	</monogr>
+	<note>Association for Computational Linguistics</note>
+</biblStruct>
+
+<biblStruct xml:id="b31">
+	<monogr>
+		<author>
+			<persName><forename type="first">Ashish</forename><surname>Vaswani</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Noam</forename><surname>Shazeer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Niki</forename><surname>Parmar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jakob</forename><surname>Uszkoreit</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Llion</forename><surname>Jones</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Aidan</forename><forename type="middle">N</forename><surname>Gomez</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Lukasz</forename><surname>Kaiser</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Illia</forename><surname>Polosukhin</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1706.03762</idno>
+		<ptr target="https://arxiv.org/abs/1706.03762" />
+		<title level="m">Attention Is All You Need</title>
+				<imprint>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b32">
+	<analytic>
+		<title level="a" type="main">CausalBench: A Comprehensive Benchmark for Evaluating Causal Reasoning Capabilities of Large Language Models</title>
+		<author>
+			<persName><forename type="first">Zeyu</forename><surname>Wang</surname></persName>
+		</author>
+		<ptr target="https://aclanthology.org/2024.sighan-1.17/" />
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 10th SIGHAN Workshop on Chinese Language Processing</title>
+				<editor>
+			<persName><forename type="first">Kam-Fai</forename><surname>Wong</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">Min</forename><surname>Zhang</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">Ruifeng</forename><surname>Xu</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">Jing</forename><surname>Li</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">Zhongyu</forename><surname>Wei</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">Lin</forename><surname>Gui</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">Bin</forename><surname>Liang</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">Runcong</forename><surname>Zhao</surname></persName>
+		</editor>
+		<meeting>the 10th SIGHAN Workshop on Chinese Language Processing<address><addrLine>Bangkok, Thailand</addrLine></address></meeting>
+		<imprint>
+			<date type="published" when="2024">2024</date>
+			<biblScope unit="page" from="143" to="151" />
+		</imprint>
+	</monogr>
+	<note>Association for Computational Linguistics</note>
+</biblStruct>
+
+<biblStruct xml:id="b33">
+	<monogr>
+		<title level="m" type="main">Chain-of-Thought Prompting Elicits Reasoning in Large Language Models</title>
+		<author>
+			<persName><forename type="first">Jason</forename><surname>Wei</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xuezhi</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dale</forename><surname>Schuurmans</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Maarten</forename><surname>Bosma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Brian</forename><surname>Ichter</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Fei</forename><surname>Xia</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ed</forename><surname>Chi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Quoc</forename><surname>Le</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Denny</forename><surname>Zhou</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2201.11903</idno>
+		<ptr target="https://arxiv.org/abs/2201.11903" />
+		<imprint>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b34">
+	<monogr>
+		<title level="m" type="main">BloombergGPT: A Large Language Model for Finance</title>
+		<author>
+			<persName><forename type="first">Shijie</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ozan</forename><surname>Irsoy</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Steven</forename><surname>Lu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Vadim</forename><surname>Dabravolski</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mark</forename><surname>Dredze</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sebastian</forename><surname>Gehrmann</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Prabhanjan</forename><surname>Kambadur</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">David</forename><surname>Rosenberg</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Gideon</forename><surname>Mann</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2303.17564[cs.LG</idno>
+		<ptr target="https://arxiv.org/abs/2303.17564" />
+		<imprint>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b35">
+	<monogr>
+		<author>
+			<persName><forename type="first">Hongyang</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xiao-Yang</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Christina</forename><forename type="middle">Dan</forename><surname>Wang</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2306.06031</idno>
+		<ptr target="https://arxiv.org/abs/2306.06031" />
+		<title level="m">FinGPT: Open-Source Financial Large Language Models</title>
+				<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note>q-fin.ST</note>
+</biblStruct>
+
+<biblStruct xml:id="b36">
+	<monogr>
+		<title level="m" type="main">Jasper and Stella: distillation of SOTA embedding models</title>
+		<author>
+			<persName><forename type="first">Dun</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jiacheng</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ziyang</forename><surname>Zeng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Fulong</forename><surname>Wang</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2412.19048[cs.IR</idno>
+		<ptr target="https://arxiv.org/abs/2412.19048" />
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+				</listBibl>
+			</div>
+		</back>
+	</text>
+</TEI>

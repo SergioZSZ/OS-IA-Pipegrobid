@@ -1,0 +1,897 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xml:space="preserve" xmlns="http://www.tei-c.org/ns/1.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.tei-c.org/ns/1.0 https://raw.githubusercontent.com/kermitt2/grobid/master/grobid-home/schemas/xsd/Grobid.xsd"
+ xmlns:xlink="http://www.w3.org/1999/xlink">
+	<teiHeader xml:lang="en">
+		<fileDesc>
+			<titleStmt>
+				<title level="a" type="main">TEST-TIME ADAPTATION VIA MANY-SHOT PROMPT-ING: BENEFITS, LIMITS, AND PITFALLS</title>
+			</titleStmt>
+			<publicationStmt>
+				<publisher/>
+				<availability status="unknown"><licence/></availability>
+				<date type="published" when="2026-03-06">6 Mar 2026</date>
+			</publicationStmt>
+			<sourceDesc>
+				<biblStruct>
+					<analytic>
+						<author role="corresp">
+							<persName><forename type="first">Shubhangi</forename><surname>Upasani</surname></persName>
+							<email>shubhangi.upasani@gmail.com</email>
+							<affiliation key="aff0">
+								<orgName type="institution" key="instit1">SambaNova Systems</orgName>
+								<orgName type="institution" key="instit2">Inc</orgName>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Chen</forename><surname>Wu</surname></persName>
+							<affiliation key="aff0">
+								<orgName type="institution" key="instit1">SambaNova Systems</orgName>
+								<orgName type="institution" key="instit2">Inc</orgName>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Jay</forename><surname>Rainton</surname></persName>
+							<affiliation key="aff0">
+								<orgName type="institution" key="instit1">SambaNova Systems</orgName>
+								<orgName type="institution" key="instit2">Inc</orgName>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Bo</forename><surname>Li</surname></persName>
+							<affiliation key="aff0">
+								<orgName type="institution" key="instit1">SambaNova Systems</orgName>
+								<orgName type="institution" key="instit2">Inc</orgName>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Changran</forename><surname>Hu</surname></persName>
+							<affiliation key="aff1">
+								<orgName type="institution">xAI</orgName>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Qizheng</forename><surname>Zhang</surname></persName>
+							<affiliation key="aff2">
+								<orgName type="institution">Stanford University</orgName>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Urmish</forename><surname>Thakker</surname></persName>
+							<affiliation key="aff3">
+								<orgName type="department">Microsoft AI</orgName>
+							</affiliation>
+						</author>
+						<title level="a" type="main">TEST-TIME ADAPTATION VIA MANY-SHOT PROMPT-ING: BENEFITS, LIMITS, AND PITFALLS</title>
+					</analytic>
+					<monogr>
+						<imprint>
+							<date type="published" when="2026-03-06">6 Mar 2026</date>
+						</imprint>
+					</monogr>
+					<idno type="MD5">418835161B7B0D3ADE5CE9F7EB0F7895</idno>
+					<idno type="arXiv">arXiv:2603.05829v1[cs.LG]</idno>
+				</biblStruct>
+			</sourceDesc>
+		</fileDesc>
+		<encodingDesc>
+			<appInfo>
+				<application version="0.7.2" ident="GROBID" when="2026-05-14T17:27+0000">
+					<desc>GROBID - A machine learning software for extracting information from scholarly documents</desc>
+					<ref target="https://github.com/kermitt2/grobid"/>
+				</application>
+			</appInfo>
+		</encodingDesc>
+		<profileDesc>
+			<abstract>
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>Test-time adaptation enables large language models (LLMs) to modify their behavior at inference without updating model parameters. A common approach is many-shot prompting, where large numbers of in-context learning (ICL) examples are injected as an input-space test-time update. Although performance can improve as more demonstrations are added, the reliability and limits of this update mechanism remain poorly understood, particularly for open-source models. We present an empirical study of many-shot prompting across tasks and model backbones, analyzing how performance varies with update magnitude, example ordering, and selection policy. We further study Dynamic and Reinforced ICL as alternative test-time update strategies that control which information is injected and how it constrains model behavior. We find that many-shot prompting is effective for structured tasks where demonstrations provide high information gain, but is highly sensitive to selection strategy and often shows limited benefits for openended generation tasks. Overall, we characterize the practical limits of promptbased test-time adaptation and outline when input-space updates are beneficial versus harmful.</p></div>
+			</abstract>
+		</profileDesc>
+	</teiHeader>
+	<text xml:lang="en">
+		<body>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="1">INTRODUCTION</head><p>Test-time adaptation enables large language models (LLMs) to modify their behavior during inference without a change in model weights <ref type="bibr" target="#b4">(Brown et al., 2020;</ref><ref type="bibr" target="#b10">Garg et al., 2022;</ref><ref type="bibr" target="#b22">Zhang et al., 2025)</ref>. A widely used but underexplored form of such adaptation is prompt-based input-space updates, where task-relevant information is injected directly into the model's context. With recent advances in long-context architectures <ref type="bibr" target="#b7">(Dao et al., 2022;</ref><ref type="bibr" target="#b20">Su et al., 2024)</ref>, this update mechanism has evolved from few-shot prompting to many-shot prompting, where hundreds or thousands of demonstrations can be provided at test time.</p><p>Many-shot prompting can be viewed as an increasingly aggressive test-time update: as more demonstrations are added, the model is exposed to a stronger, task-specific behavioral constraint. Prior work <ref type="bibr" target="#b0">(Agarwal et al., 2024)</ref> shows that accuracy often improves as the number of in-context examples grows, particularly for structured tasks. In this paper, we study many-shot prompting as a controlled study on LLaMA model family, focusing on when and why input-space updates succeed or fail. Our key observations from our chosen testbed include the following:</p><p>• Many-shot prompting can act as an effective test-time update for structured tasks with accuracy improving consistently up to a moderate update magnitude before saturating. • Reliability of prompt-based test-time updates is highly sensitive to ordering of in-context demonstrations, prompt structure and example selection strategies. • Test-time updates exhibit clear task-dependent success and failure modes. Although additional examples provide useful adaptation signals for classification and information extraction tasks, they give small improvements for open-ended generation tasks such as machine translation.</p><p>• Structured updates such as Reinforced ICL exhibit similar saturation behavior as update magnitude increases.</p><p>Together, these findings highlight both the promise and the limits of prompt-based test-time adaptation.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2">BACKGROUND</head><p>Many-Shot Prompting (Update Magnitude): With the availability of long-context models, incontext learning (ICL) <ref type="bibr" target="#b8">(Dong et al., 2024)</ref> has extended from a few demonstrations to many-shot prompting, where hundreds or thousands of examples can be included at test time. The effectiveness of such updates strongly depends on how the context is constructed; demonstration ordering, diversity, template format and phrasing of instructions play an important role.</p><p>Dynamic ICL as Update Policy: Dynamic ICL <ref type="bibr" target="#b19">(Rubin et al., 2022;</ref><ref type="bibr" target="#b14">Liu et al., 2022)</ref> constructs prompts on-the-fly by selecting examples for each query based on similarity, heuristics, or task metadata. It is an adaptive update policy that determines the information that is injected into the context.</p><p>Reinforced ICL as Update Structure: Reinforced ICL replaces the input-output (IO) demonstrations with reasoning traces, such as chain-of-thought (CoT) examples <ref type="bibr" target="#b21">(Wei et al., 2022;</ref><ref type="bibr" target="#b0">Agarwal et al., 2024)</ref>, to guide the behavior of the model at the test time. We treat Reinforced ICL as a structured test-time update.</p><p>Figure <ref type="figure" target="#fig_1">1</ref> summarizes our view of prompt-based adaptation as a test-time update governed by update magnitude, update policy, and update structure, whose interplay determines whether additional context provides useful signal or introduces noise. Throughout this work, we use "test-time update" to refer to input-space adaptation via prompting, without implying any parameter-level modification.</p><p>We give additional background on the above strategies in Appendix A.1.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3">EXPERIMENTAL SETUP</head><p>Tasks and benchmarks: We evaluate prompt-based test-time updates across a diverse set of tasks using benchmarks designed to stress long-context inference. For structured classification, we use the Banking77 dataset from LongICLBench <ref type="bibr" target="#b13">(Li et al., 2024)</ref> which has 77 classes for intent classification task. This dataset enables controlled evaluation of many-shot prompting under extreme label spaces. To assess success and failure modes, we additionally include tasks from Evaluation Harness <ref type="bibr" target="#b2">(Biderman et al., 2024</ref>) that span reasoning, information extraction, question answering, and machine translation.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Models:</head><p>We evaluate two instruction-tuned backbones of differing capacity: LLaMA-3.  Unless otherwise stated, we refer to n as the per-class shot count and N as the total number of demonstrations. As shown in Fig. <ref type="figure">2</ref>(a), as the update magnitude increases for LLaMA-3.1-8B-Instruct, accuracy improves steadily, after which it reaches a plateau at approximately 50-70 shots per class. Beyond this point, additional demonstrations provide diminishing returns. This behavior indicates a clear saturation regime: moderate input-space updates introduce useful task-specific signal, while aggressive updates yield diminishing further gains <ref type="bibr" target="#b0">Agarwal et al. (2024)</ref>. To assess update reliability, we repeat each n-shot setting using 10 random demonstration orderings. Fig. <ref type="figure">2</ref>(a) shows that accuracy varies by 2-3 % across shuffles, demonstrating that many-shot prompting remains sensitive to demonstration ordering due to positional and contextual bias. Averaging over multiple random orders yields more stable results. We explain more experimental details in Appendix A.2.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.2">UPDATE POLICY MATTERS-RELEVANCE HELPS EARLY, DIVERSITY HELPS AT SCALE</head><p>Next, we study how update policy affects test-time adaptation under a fixed context budget in Fig. <ref type="figure">2</ref>(b) for LLaMA-3.1-8B-Instruct. Across all comparisons, we fix the total number of demonstrations N and vary only the update policy used to select these. We ensure prompt template consistency and prevent including query or same-text duplicates in selected examples.</p><p>Label-wise vs. Cross-label: We construct prompts using a per-class formulation with n demonstrations per class, resulting in N = n × C total demonstrations for Banking77. In label-wise selection, we enforce balanced coverage by selecting exactly n demonstrations per class. In cross-label selection, we select N demonstrations from the entire dataset, so label frequencies can be uneven.</p><p>Random vs. similarity: Within either grouping, random selection samples demonstrations uniformly across the entire dataset, while similarity selection retrieves nearest neighbors to the query in embedding space. More details given in Appendix A.3 and A.5.</p><p>Comparing these policies, cross-label selection consistently outperforms label-wise selection, suggesting that enforcing per-label balance can reduce useful diversity by over representing redundant examples. Cross-label benefits from exposure to greater contextual diversity thereby improving generalization, label-balance forces many low information examples which is not very helpful. Crosslabel similarity-based selection is strong at small update magnitudes (high relevance), but degrades as N grows, whereas cross-label random selection scales more robustly with larger N (higher diversity). This reflects a bias-variance tradeoff in test-time updates: relevance-focused (similaritybased) policies help early but can over concentrate the context as the update becomes aggressive; diversity-focused (random) policies scale better. Our best setting is (n = 1 ⇒ N = 77) for cross label similarity. This maximizes relevance per demonstration per class label, yielding strong task adaptation before redundancy degrades performance at larger scale. Additional results included in Appendix A.3.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.3">LARGER MODELS BENEFIT EARLIER, SMALLER MODELS CATCH UP</head><p>We further compare test-time update behavior across model sizes using LLaMA-3.1-8B-Instruct and LLaMA-3.3-70B-Instruct in Fig. <ref type="figure">2</ref>(c) under identical settings for cross label random selection on Banking 77. At small to moderate update magnitudes, LLaMA-70B consistently outperforms the smaller model, indicating that higher capacity models can more effectively exploit diverse incontext supervision. As the update magnitude increases further, the performance gap narrows and Notably, the 70B model exhibits a performance drop at the largest update magnitude, consistent with over-conditioning. In contrast, the smaller model remains in a signalaccumulation regime and is less sensitive to this effect.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.4">REINFORCED ICL EXHIBITS EARLY GAINS AND RAPID SATURATION</head><p>We next study Reinforced ICL as a form of structured test-time update, where chain-of-thought (CoT) based reasoning traces <ref type="bibr" target="#b0">Agarwal et al. (2024)</ref>; <ref type="bibr" target="#b21">Wei et al. (2022)</ref> are provided as demonstrations instead of direct input-output pairs. We delineate the data generation pipeline to obtain these samples in the Appendix A.6. Using GPQA Diamond Rein et al. ( <ref type="formula">2024</ref>) subset with LLaMA-3.3-70B-Instruct, we show in Fig. <ref type="figure">2(d)</ref>, Reinforced ICL improves performance as the magnitude of the update increases to 4 demonstrations. Beyond this point, accuracy plateaus and degrades. A plausible explanation is that early demonstrations provide a strong inductive bias, leading to rapid gains with only a few examples. As the number of reasoning traces increases, attention is increasingly divided across long chains-of-thought. This competition for attention reduces the effective influence of any single trace, causing performance to plateau or degrade despite additional context <ref type="bibr">Liu et al. (2024)</ref>.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.5">TASK STRUCTURE DETERMINES THE EFFECTIVENESS OF TEST-TIME UPDATES</head><p>Finally, we analyze when prompt-based test-time updates are effective across tasks (Table <ref type="table" target="#tab_6">5</ref> in Appendix A.7) using LLaMA-3.3-70B-Instruct. We find that many-shot prompting consistently improves performance on structure-heavy tasks with constrained outputs, including structured reasoning (e.g., <ref type="bibr">DROP Dua et al. (2019)</ref>) and information extraction benchmarks (e.g., FDA, <ref type="bibr">SWDE Hao et al. (2011)</ref>). In these settings, additional demonstrations provide high information gain by capturing relevant patterns. For tasks with constrained outputs (e.g., ARC-Challenge <ref type="bibr" target="#b5">Clark et al. (2018)</ref> and <ref type="bibr">GSM8K Cobbe et al. (2021)</ref>), performance improves sharply with a small number of demonstrations but quickly saturates, indicating that only limited contextual supervision is required to specify task behavior. In contrast, GPQA (multiple choice) exhibits only modest gains at small update magnitudes. Finally, open-ended generation tasks such as machine translation (WMT16 Bojar et al. ( <ref type="formula">2016</ref>)) show consistent but small improvements with additional context, indicating test-time updates offer limited benefits when task structures are already well captured during pretraining.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5">CONCLUSION</head><p>Our study highlights both the promise and the practical limits of many-shot prompting as a form of test-time adaptation. We show that increasing the number of in-context demonstrations can serve as an effective input-space update for structured tasks. Across tasks and models, performance is highly sensitive to update configuration, including demonstration ordering and selection policy. Dynamic ICL with cross-label selection produces more robust adaptation than static or label-wise prompting, underscoring the importance of update policy design at test time. At the same time, scaling benefits saturate beyond moderate update magnitudes. Finally, we find that many-shot prompting offers limited benefit for open-ended generation tasks, but works well for structured tasks. Taken together, our results suggest that prompt-based test-time updates are most effective when demonstrations inject novel, task-specific information, and that careful control over update magnitude, structure, and policy is essential for reliable deployment. </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>A.2 ADDITIONAL EXPERIMENTAL DETAILS FOR UPDATE MAGNITUDE EXPERIMENTS</head><p>For the results shown in Fig. <ref type="figure">2</ref>(a) on Banking77, we vary the per-class shot count n. The total number of demonstrations is given by N = n × C, where C = 77 is the number of classes. Table <ref type="table" target="#tab_1">1</ref> illustrates how N scales with n. We stop at N = 5390 demonstrations, corresponding to the maximum supported context length of 128k tokens for LLaMA models.</p><p>To assess update stability, we repeat each setting across multiple random seeds, varying both demonstration ordering and selection, and report mean accuracy along with standard deviation.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>A.3 DYNAMIC ICL SELECTION STRATEGIES</head><p>In Dynamic ICL, demonstrations are selected adaptively for each input query rather than using a fixed prompt. We instantiate Dynamic ICL by combining two axes: (i) grouping constraint and  </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Grouping constraint:</head><p>• Label-wise: enforce exactly n demonstrations from each class (N = nC).</p><p>• Cross-label: select N demonstrations globally; class counts are unconstrained.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Retrieval rule:</head><p>• Random: uniform sampling from the entire dataset. The results of random selection are averaged across multiple seeds to ensure consistency. • Similarity: top-N retrieval by embedding similarity to the query.</p><p>Combining the above two regimes, we get four strategies used in our experiments:</p><formula xml:id="formula_0">• Cross-label Random Selection • Label-wise Random Selection • Cross-label Similarity Selection • Label-wise Similarity Selection</formula><p>This taxonomy allows us to isolate the effects of relevance, diversity, and label balance on test-time adaptation behavior. We make sure that the retrieved examples do not have the query and same-text duplicates, to prevent leakage while evaluating the above selection strategies. We also ensure to keep the instruction and prompt templates constant across all runs. We add label-wise similarity as an additional comparison to Fig. <ref type="figure">2(d</ref>) and show the full set of results in Fig. <ref type="figure" target="#fig_4">3</ref> for LLaMA-3.1-8B-Instruct.</p><p>We observe that label-wise similarity selection consistently outperforms label-wise random selection across all update magnitudes. This indicates that when label balance is enforced, selecting demonstrations that are semantically relevant to the query provides a stronger adaptation signal than random sampling within each class.</p><p>However, performance under label-wise similarity selection still degrades as the number of demonstrations increases (e.g., from 83.4% at n = 1 per-class shot to 67.4% at n = 70 per-class shot).</p><p>Table 2: Many-shot prompting for Llama-3.1-8B on Banking 77 (accuracy in %). Prompts contain N total demonstrations, constructed using n shots per class (N = n × C, C=77).</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Per-class shots n</head><p>LLaMA-3.1-8B LLaMA-3.1-8B-Instruct 50 33.9 80.8 70 35.9 82.3</p><p>This suggests that enforcing per-label balance limits the effective diversity of the prompt: as the update becomes more aggressive, additional demonstrations become increasingly redundant, even when selected by similarity. Label-wise similarity outperforms cross-label similarity at higher nshots because restricting retrieval to a fixed label avoids conflicting supervision: although examples become increasingly redundant, they remain label-consistent as update magnitude increases. Label-wise similarity, however, underperforms cross-label random selection at larger update magnitudes because the label-wise constraint still limits global diversity and leads to redundancy as more demonstrations are added.</p><p>Overall, these results show that while similarity-based selection mitigates some weaknesses of labelwise prompting, the label-wise constraint itself restricts scalability, motivating cross-label selection strategies that allow diversity to grow with update magnitude.</p><p>A.4 MANYSHOT PROMPTING WITH LLAMA-3.1-8B</p><p>We compare the LLaMA-3.1-8B base model with its instruction-tuned counterpart under identical many-shot prompting conditions on Banking77, using cross-label random selection. As shown in Table <ref type="table">2</ref>, the instruction-tuned model substantially outperforms the base model at both update magnitudes, highlighting the importance of alignment for interpreting task instructions and in-context demonstrations.</p><p>At low update magnitudes (n = 1-5; not shown), the base model performs near chance, indicating a limited ability to infer task structure from few demonstrations. However, as the number of incontext examples increases, the base model exhibits some gains from n = 50 to n = 70 perclass shot, suggesting that many-shot prompting can induce meaningful test-time adaptation even in the absence of instruction tuning. This result indicates that while alignment strongly improves sample efficiency, the benefits of large-scale in-context updates are not exclusive to instruction-tuned models.</p><p>A.5 SIMILARITY-BASED RETRIEVAL FOR DYNAMIC ICL For similarity based retrieval, we encode all candidate demonstrations and queries using the sentence-transformers/all-MiniLM-L6-v2 model (384-dimensional embeddings). After generating embeddings, we find n-shot nearest neighbors per class to the query embedding for label-wise similairty selection. We make sure that the retrieved examples don't have the query or same-text duplicates. This ensures there is no leakage. Across all retrieval strategies, we use a fixed prompt template; only the selected demonstrations vary between conditions.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>A.6 DATA GENERATION RECIPE FOR REINFORCED ICL</head><p>To generate synthetic reasoning traces for Reinforced ICL on GPQA Diamond shown in Fig. <ref type="figure">2</ref>  </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Generator Prompt</head><p>Generator agent for creating step-by-step reasoning. Rules: -Use at most 10 steps.</p><p>-No explanations.</p><p>-No restating the question.</p><p>-End immediately after the answer.</p><p>-Do not reference the order of the answers in the question (e.g., option a, b, c).</p><p>-For the answer in the &lt;a&gt; tags, ensure it exactly matches one of the listed options.</p><p>Format  </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Verifier Prompt</head><p>Verified agent for step by step reasoning.</p><p>For the text within the &lt;a&gt; tags, make sure it matches exactly to the correct answer, word for word.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>A.7 MANY-SHOT PROMPTING ON EVALUATION HARNESS</head><p>We report full results across Evaluation Harness tasks with LLaMA-3.3-70B-Instruct in Table <ref type="table" target="#tab_6">5</ref> to characterize where many-shot test-time updates succeed and where they fail. These experiments span structured reasoning, and open-ended generation settings, allowing us to examine how the effectiveness of prompt-based updates depends on task structure and information content. The complete results provide finer-grained evidence for the task-dependent patterns discussed in the main paper, and highlight regimes where additional in-context demonstrations introduce useful adaptation signals versus redundant or noisy context. We use BLEU score to evaluate machine translation (WMT16) tasks, F1 score to evaluate reading comprehension (DROP) task and accuracy (in %) based on exact match for the rest of the tasks.  </p></div><figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_0"><head>4</head><label></label><figDesc>RESULTS: BENEFITS AND LIMITS OF TEST-TIME UPDATES 4.1 MORE CONTEXT HELPS-UNTIL IT DOESN'T We evaluate how the effectiveness of prompt-based test-time updates varies with update magnitude, defined by the total number of in-context demonstrations. For Banking77 with C = 77 classes, we use a per-class shot formulation: each prompt contains n demonstrations per class, resulting in N = n × C total demonstrations (e.g., n = 1 ⇒ N = 77, n = 5 ⇒ N = 385).</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_1"><head>Figure 1 :</head><label>1</label><figDesc>Figure 1: A unified view of prompt-based test-time adaptation. Update design determines whether added context provides signal or noise.</figDesc><graphic coords="3,127.80,81.86,356.40,135.85" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_2"><head></head><label></label><figDesc>Figure 2: Scaling behavior of prompt-based test-time updates. (a) Many-shot accuracy vs. update magnitude (b) Dynamic ICL update policies (c) Model capacity effects (d) Reinforced ICL scaling</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_4"><head>Figure 3 :</head><label>3</label><figDesc>Figure 3: Dynamic ICL Selection Strategies on Banking 77</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_5"><head>Figure 4 :</head><label>4</label><figDesc>Figure 4: Context length scaling with update magnitude</figDesc><graphic coords="11,127.80,81.86,356.40,178.20" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_1"><head>Table 1 :</head><label>1</label><figDesc>Comparison of per-class shots with total demonstrations in input prompt for Banking 77 Reinforced ICL constrains test-time adaptation through structured reasoning traces rather than direct input-output mappings. By exposing intermediate reasoning steps, the update signal emphasizes how to solve a task instead of what answer to produce. As a result, performance depends not only on the number of demonstrations but also on the consistency and quality of the reasoning patterns being demonstrated.</figDesc><table><row><cell>n</cell><cell>N</cell></row><row><cell>per-class shots</cell><cell>Total demonstrations</cell></row><row><cell>1</cell><cell>77</cell></row><row><cell>2</cell><cell>154</cell></row><row><cell>3</cell><cell>231</cell></row><row><cell>4</cell><cell>308</cell></row><row><cell>5</cell><cell>385</cell></row><row><cell>50</cell><cell>3850</cell></row><row><cell>70</cell><cell>5390</cell></row><row><cell>A APPENDIX</cell><cell></cell></row></table><note>A.1 ADDITIONAL BACKGROUND ON PROMPT-BASED TEST-TIME ADAPTATIONWe provide additional context on how prompt-based adaptation mechanisms differ in the strength, structure, and selectivity of the update signal they introduce at test time.In-context learning as test-time updates: In-context learning (ICL) refers to the ability of large language models to adapt their behavior at inference by conditioning on task-specific examples provided in the input, without modifying model parameters. From a test-time perspective, ICL constitutes an input-space update in which task information is injected directly into the context, enabling adaptation without training.Update magnitude in many-shot prompting: Many-shot prompting increases the strength of testtime update by injecting a larger volume of task-specific signal into the context. While additional demonstrations can improve performance by reinforcing task patterns, they also increase redundancy and noise, making update effectiveness sensitive to prompt composition. In practice, ordering, diversity, and formatting choices determine whether additional examples provide new information or overwhelm the model with repeated context.Selectivity in Dynamic ICL: Dynamic ICL controls which information is injected into the prompt under a fixed context budget. By selecting demonstrations per query, dynamic policies trade off relevance and diversity. Similarity-based selection prioritizes relevance to the input, while broader sampling increases coverage of the task distribution. This selectivity distinguishes dynamic ICL from static prompting, where the same update is applied uniformly across inputs.Structure in Reinforced ICL:</note></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_2"><head></head><label></label><figDesc>(d), we follow the Chain-of-Thought data generation pipeline described in the Camel AI framework AI (2025). We instantiate a generator-verifier setup, where both agents are powered by the gpt-oss-120b OpenAI (2024) model. The generator produces step-by-step reasoning traces under predefined formatting constraints, and the verifier checks the final answer against the ground-truth label. We retain only examples whose generated final answer exactly matches the correct label, filtering out inconsistent traces. Applying this procedure to the 198 question in GPQA Diamond yields 133 validated reasoning demonstrations, which are used for Reinforced ICL experiments. We used greedy sampling with max tokens set to 12000 to generate CoT traces. We have shown the generator and verifier prompt in Table3 and Table 4 respectively.</figDesc><table /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_3"><head>Table 3 :</head><label>3</label><figDesc>Prompt template used for the Generator agent during data generation for Reinforced ICL.</figDesc><table /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_5"><head>Table 4 :</head><label>4</label><figDesc>Prompt template used for the Verifier agent during data generation for Reinforced ICL.</figDesc><table /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_6"><head>Table 5 :</head><label>5</label><figDesc>Task-dependent performance of many-shot test-time updates (LLaMA-3.3-70B-Instruct)</figDesc><table><row><cell>Task</cell></row></table></figure>
+		</body>
+		<back>
+			<div type="references">
+
+				<listBibl>
+
+<biblStruct xml:id="b0">
+	<analytic>
+		<title level="a" type="main">Many-shot in-context learning</title>
+		<author>
+			<persName><forename type="first">Rishabh</forename><surname>Agarwal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Avi</forename><surname>Singh</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Lei</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bernd</forename><surname>Bohnet</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Luis</forename><surname>Rosias</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Stephanie</forename><surname>Chan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Biao</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ankesh</forename><surname>Anand</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zaheer</forename><surname>Abbas</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Azade</forename><surname>Nova</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Advances in Neural Information Processing Systems</title>
+		<imprint>
+			<biblScope unit="volume">37</biblScope>
+			<biblScope unit="page" from="76930" to="76966" />
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b1">
+	<monogr>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">I</forename><surname>Camel</surname></persName>
+		</author>
+		<ptr target="https://docs.camel-ai.org/key_modules/datagen" />
+		<title level="m">Data generation module -camel ai documentation</title>
+				<imprint>
+			<date type="published" when="2025">2025. 2026-01-XX</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b2">
+	<monogr>
+		<title level="m" type="main">Lessons from the trenches on reproducible evaluation of language models</title>
+		<author>
+			<persName><forename type="first">Stella</forename><surname>Biderman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Hailey</forename><surname>Schoelkopf</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Lintang</forename><surname>Sutawika</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Leo</forename><surname>Gao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jonathan</forename><surname>Tow</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Alham</forename><surname>Baber Abbasi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Pawan</forename><surname>Fikri Aji</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sidney</forename><surname>Sasanka Ammanamanchi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jordan</forename><surname>Black</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Clive</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2405.14782</idno>
+		<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b3">
+	<analytic>
+		<title level="a" type="main">Findings of the 2016 conference on machine translation (WMT16)</title>
+		<author>
+			<persName><forename type="first">Ondřej</forename><surname>Bojar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Rajen</forename><surname>Chatterjee</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Christian</forename><surname>Federmann</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yvette</forename><surname>Graham</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Barry</forename><surname>Haddow</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Matthias</forename><surname>Huck</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Antonio</forename><forename type="middle">Jimeno</forename><surname>Yepes</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Philipp</forename><surname>Koehn</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Varvara</forename><surname>Logacheva</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Christof</forename><surname>Monz</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Matteo</forename><surname>Negri</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Aurelie</forename><surname>Neveol</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mariana</forename><surname>Neves</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Martin</forename><surname>Popel</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Lucia</forename><surname>Specia</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Marco</forename><surname>Turchi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Duško</forename><surname>Vitas</surname></persName>
+		</author>
+		<ptr target="https://aclanthology.org" />
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the First Conference on Machine Translation (WMT16)</title>
+				<meeting>the First Conference on Machine Translation (WMT16)<address><addrLine>Berlin, Germany</addrLine></address></meeting>
+		<imprint>
+			<date type="published" when="2016-08">August 2016</date>
+			<biblScope unit="page" from="131" to="198" />
+		</imprint>
+	</monogr>
+	<note>Association for Computational Linguistics</note>
+</biblStruct>
+
+<biblStruct xml:id="b4">
+	<analytic>
+		<title level="a" type="main">Language models are few-shot learners</title>
+		<author>
+			<persName><forename type="first">Tom</forename><surname>Brown</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Benjamin</forename><surname>Mann</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Nick</forename><surname>Ryder</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Melanie</forename><surname>Subbiah</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jared</forename><forename type="middle">D</forename><surname>Kaplan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Prafulla</forename><surname>Dhariwal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Arvind</forename><surname>Neelakantan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Pranav</forename><surname>Shyam</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Girish</forename><surname>Sastry</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Amanda</forename><surname>Askell</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Advances in neural information processing systems</title>
+		<imprint>
+			<biblScope unit="volume">33</biblScope>
+			<biblScope unit="page" from="1877" to="1901" />
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b5">
+	<monogr>
+		<title level="m" type="main">Think you have solved question answering? try arc, the ai2 reasoning challenge</title>
+		<author>
+			<persName><forename type="first">Peter</forename><surname>Clark</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Isaac</forename><surname>Cowhey</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Oren</forename><surname>Etzioni</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tushar</forename><surname>Khot</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ashish</forename><surname>Sabharwal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Carissa</forename><surname>Schoenick</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Oyvind</forename><surname>Tafjord</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1803.05457</idno>
+		<imprint>
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b6">
+	<monogr>
+		<title level="m" type="main">Training verifiers to solve math word problems</title>
+		<author>
+			<persName><forename type="first">Karl</forename><surname>Cobbe</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Vineet</forename><surname>Kosaraju</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mohammad</forename><surname>Bavarian</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mark</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Heewoo</forename><surname>Jun</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Lukasz</forename><surname>Kaiser</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Matthias</forename><surname>Plappert</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jerry</forename><surname>Tworek</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jacob</forename><surname>Hilton</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Reiichiro</forename><surname>Nakano</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2110.14168</idno>
+		<imprint>
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b7">
+	<analytic>
+		<title level="a" type="main">Flashattention: Fast and memoryefficient exact attention with io-awareness</title>
+		<author>
+			<persName><forename type="first">Tri</forename><surname>Dao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dan</forename><surname>Fu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Stefano</forename><surname>Ermon</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Atri</forename><surname>Rudra</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Christopher</forename><surname>Ré</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Advances in neural information processing systems</title>
+		<imprint>
+			<biblScope unit="volume">35</biblScope>
+			<biblScope unit="page" from="16344" to="16359" />
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b8">
+	<analytic>
+		<title level="a" type="main">A survey on in-context learning</title>
+		<author>
+			<persName><forename type="first">Qingxiu</forename><surname>Dong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Lei</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Damai</forename><surname>Dai</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ce</forename><surname>Zheng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jingyuan</forename><surname>Ma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Rui</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Heming</forename><surname>Xia</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jingjing</forename><surname>Xu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhiyong</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Baobao</forename><surname>Chang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 2024 conference on empirical methods in natural language processing</title>
+				<meeting>the 2024 conference on empirical methods in natural language processing</meeting>
+		<imprint>
+			<date type="published" when="2024">2024</date>
+			<biblScope unit="page" from="1107" to="1128" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b9">
+	<monogr>
+		<title level="m" type="main">Drop: A reading comprehension benchmark requiring discrete reasoning over paragraphs</title>
+		<author>
+			<persName><forename type="first">Dheeru</forename><surname>Dua</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yizhong</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Pradeep</forename><surname>Dasigi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Gabriel</forename><surname>Stanovsky</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sameer</forename><surname>Singh</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Matt</forename><surname>Gardner</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1903.00161</idno>
+		<imprint>
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b10">
+	<analytic>
+		<title level="a" type="main">What can transformers learn in-context? a case study of simple function classes</title>
+		<author>
+			<persName><forename type="first">Shivam</forename><surname>Garg</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dimitris</forename><surname>Tsipras</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Percy</forename><forename type="middle">S</forename><surname>Liang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Gregory</forename><surname>Valiant</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Advances in neural information processing systems</title>
+		<imprint>
+			<biblScope unit="volume">35</biblScope>
+			<biblScope unit="page" from="30583" to="30598" />
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b11">
+	<monogr>
+		<author>
+			<persName><forename type="first">Aaron</forename><surname>Grattafiori</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Abhimanyu</forename><surname>Dubey</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Abhinav</forename><surname>Jauhri</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Abhinav</forename><surname>Pandey</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Abhishek</forename><surname>Kadian</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ahmad</forename><surname>Al-Dahle</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Aiesha</forename><surname>Letman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Akhil</forename><surname>Mathur</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Alan</forename><surname>Schelten</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Alex</forename><surname>Vaughan</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2407.21783</idno>
+		<title level="m">The llama 3 herd of models</title>
+				<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b12">
+	<analytic>
+		<title level="a" type="main">Automatic web data extraction from large websites</title>
+		<author>
+			<persName><forename type="first">Ming</forename><surname>Hao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jyotish</forename><surname>Madhavan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Pedro</forename><surname>Szekely</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Alon</forename><forename type="middle">Y</forename><surname>Halevy</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the VLDB Endowment</title>
+				<meeting>the VLDB Endowment</meeting>
+		<imprint>
+			<publisher>VLDB</publisher>
+			<date type="published" when="2011">2011</date>
+			<biblScope unit="volume">4</biblScope>
+			<biblScope unit="page" from="1326" to="1337" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b13">
+	<monogr>
+		<title level="m" type="main">Long-context llms struggle with long in-context learning</title>
+		<author>
+			<persName><forename type="first">Tianle</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ge</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Quy</forename><surname>Duc Do</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xiang</forename><surname>Yue</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Wenhu</forename><surname>Chen</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2404.02060</idno>
+		<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b14">
+	<analytic>
+		<title level="a" type="main">What makes good in-context examples for gpt-3?</title>
+		<author>
+			<persName><forename type="first">Jiachang</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dinghan</forename><surname>Shen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yizhe</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">William</forename><forename type="middle">B</forename><surname>Dolan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Lawrence</forename><surname>Carin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Weizhu</forename><surname>Chen</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of Deep Learning Inside Out (DeeLIO 2022): The 3rd workshop on knowledge extraction and integration for deep learning architectures</title>
+				<meeting>Deep Learning Inside Out (DeeLIO 2022): The 3rd workshop on knowledge extraction and integration for deep learning architectures</meeting>
+		<imprint>
+			<date type="published" when="2022">2022</date>
+			<biblScope unit="page" from="100" to="114" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b15">
+	<analytic>
+		<title level="a" type="main">Lost in the middle: How language models use long contexts</title>
+		<author>
+			<persName><forename type="first">Kevin</forename><surname>Nelson F Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">John</forename><surname>Lin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ashwin</forename><surname>Hewitt</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Michele</forename><surname>Paranjape</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Fabio</forename><surname>Bevilacqua</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Percy</forename><surname>Petroni</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Liang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Transactions of the association for computational linguistics</title>
+		<imprint>
+			<biblScope unit="volume">12</biblScope>
+			<biblScope unit="page" from="157" to="173" />
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b16">
+	<monogr>
+		<ptr target="https://github.com/meta-llama/llama-models/blob/main/models/llama3_3/MODEL_CARD.md" />
+		<title level="m">LLaMA-3.3-70B-Instruct model card</title>
+				<imprint>
+			<date type="published" when="2024">2024. 2026-01-XX</date>
+		</imprint>
+	</monogr>
+	<note>Meta AI</note>
+</biblStruct>
+
+<biblStruct xml:id="b17">
+	<monogr>
+		<title level="m" type="main">Gpt-oss-120b model documentation</title>
+		<author>
+			<persName><surname>Openai</surname></persName>
+		</author>
+		<ptr target="https://platform.openai.com/docs/models/gpt-oss-120b" />
+		<imprint>
+			<date type="published" when="2024">2024. 2026-01-XX</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b18">
+	<analytic>
+		<title level="a" type="main">Gpqa: A graduate-level google-proof q&amp;a benchmark</title>
+		<author>
+			<persName><forename type="first">David</forename><surname>Rein</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Betty</forename><forename type="middle">Li</forename><surname>Hou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Asa</forename><forename type="middle">Cooper</forename><surname>Stickland</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jackson</forename><surname>Petty</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Richard</forename><forename type="middle">Yuanzhe</forename><surname>Pang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Julien</forename><surname>Dirani</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Julian</forename><surname>Michael</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Samuel R Bowman</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">First Conference on Language Modeling</title>
+				<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b19">
+	<analytic>
+		<title level="a" type="main">Learning to retrieve prompts for in-context learning</title>
+		<author>
+			<persName><forename type="first">Ohad</forename><surname>Rubin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jonathan</forename><surname>Herzig</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jonathan</forename><surname>Berant</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 2022 conference of the North American chapter of the association for computational linguistics: human language technologies</title>
+				<meeting>the 2022 conference of the North American chapter of the association for computational linguistics: human language technologies</meeting>
+		<imprint>
+			<date type="published" when="2022">2022</date>
+			<biblScope unit="page" from="2655" to="2671" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b20">
+	<analytic>
+		<title level="a" type="main">Roformer: Enhanced transformer with rotary position embedding</title>
+		<author>
+			<persName><forename type="first">Jianlin</forename><surname>Su</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Murtadha</forename><surname>Ahmed</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yu</forename><surname>Lu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shengfeng</forename><surname>Pan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Wen</forename><surname>Bo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yunfeng</forename><surname>Liu</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Neurocomputing</title>
+		<imprint>
+			<biblScope unit="volume">568</biblScope>
+			<biblScope unit="page">127063</biblScope>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b21">
+	<analytic>
+		<title level="a" type="main">Chain-of-thought prompting elicits reasoning in large language models</title>
+		<author>
+			<persName><forename type="first">Jason</forename><surname>Wei</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xuezhi</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dale</forename><surname>Schuurmans</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Maarten</forename><surname>Bosma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Fei</forename><surname>Xia</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ed</forename><surname>Chi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Denny</forename><surname>Quoc V Le</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Zhou</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Advances in neural information processing systems</title>
+		<imprint>
+			<biblScope unit="volume">35</biblScope>
+			<biblScope unit="page" from="24824" to="24837" />
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b22">
+	<monogr>
+		<title level="m" type="main">Agentic context engineering: Evolving contexts for self-improving language models</title>
+		<author>
+			<persName><forename type="first">Qizheng</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Changran</forename><surname>Hu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shubhangi</forename><surname>Upasani</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Boyuan</forename><surname>Ma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Fenglu</forename><surname>Hong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Vamsidhar</forename><surname>Kamanuru</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jay</forename><surname>Rainton</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Chen</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mengmeng</forename><surname>Ji</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Hanchen</forename><surname>Li</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2510.04618</idno>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+				</listBibl>
+			</div>
+		</back>
+	</text>
+</TEI>

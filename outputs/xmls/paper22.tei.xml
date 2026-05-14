@@ -1,0 +1,826 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xml:space="preserve" xmlns="http://www.tei-c.org/ns/1.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.tei-c.org/ns/1.0 https://raw.githubusercontent.com/kermitt2/grobid/master/grobid-home/schemas/xsd/Grobid.xsd"
+ xmlns:xlink="http://www.w3.org/1999/xlink">
+	<teiHeader xml:lang="en">
+		<fileDesc>
+			<titleStmt>
+				<title level="a" type="main">Stock Market Prediction Using Node Transformer Architecture Integrated with BERT Sentiment Analysis</title>
+			</titleStmt>
+			<publicationStmt>
+				<publisher/>
+				<availability status="unknown"><licence/></availability>
+				<date type="published" when="2026-03-06">6 Mar 2026</date>
+			</publicationStmt>
+			<sourceDesc>
+				<biblStruct>
+					<analytic>
+						<author>
+							<persName><roleName>Mahtab</roleName><forename type="first">Mohammad</forename><forename type="middle">Al</forename><surname>Ridhawi</surname></persName>
+							<affiliation key="aff0">
+								<orgName type="department">School of Electrical Engineering and Computer Science</orgName>
+								<orgName type="institution">University of Ottawa</orgName>
+								<address>
+									<settlement>Ottawa</settlement>
+									<country key="CA">Canada</country>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Haj</forename><surname>Ali</surname></persName>
+							<affiliation key="aff0">
+								<orgName type="department">School of Electrical Engineering and Computer Science</orgName>
+								<orgName type="institution">University of Ottawa</orgName>
+								<address>
+									<settlement>Ottawa</settlement>
+									<country key="CA">Canada</country>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Hussein</forename><surname>Al Osman</surname></persName>
+							<affiliation key="aff0">
+								<orgName type="department">School of Electrical Engineering and Computer Science</orgName>
+								<orgName type="institution">University of Ottawa</orgName>
+								<address>
+									<settlement>Ottawa</settlement>
+									<country key="CA">Canada</country>
+								</address>
+							</affiliation>
+						</author>
+						<title level="a" type="main">Stock Market Prediction Using Node Transformer Architecture Integrated with BERT Sentiment Analysis</title>
+					</analytic>
+					<monogr>
+						<imprint>
+							<date type="published" when="2026-03-06">6 Mar 2026</date>
+						</imprint>
+					</monogr>
+					<idno type="MD5">BAE6C30E6B432E1FBBEB9923E6B301E6</idno>
+					<idno type="arXiv">arXiv:2603.05917v1[cs.LG]</idno>
+				</biblStruct>
+			</sourceDesc>
+		</fileDesc>
+		<encodingDesc>
+			<appInfo>
+				<application version="0.7.2" ident="GROBID" when="2026-05-14T17:27+0000">
+					<desc>GROBID - A machine learning software for extracting information from scholarly documents</desc>
+					<ref target="https://github.com/kermitt2/grobid"/>
+				</application>
+			</appInfo>
+		</encodingDesc>
+		<profileDesc>
+			<textClass>
+				<keywords>
+					<term>Stock price forecasting</term>
+					<term>node transformer</term>
+					<term>BERT</term>
+					<term>sentiment analysis</term>
+					<term>graph neural networks</term>
+					<term>financial time series</term>
+					<term>deep learning</term>
+					<term>multimodal fusion</term>
+				</keywords>
+			</textClass>
+			<abstract>
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>Stock market prediction presents considerable challenges for investors, financial institutions, and policymakers operating in complex market environments characterized by noise, non-stationarity, and behavioral dynamics. Traditional forecasting methods, including fundamental analysis and technical indicators, often fail to capture the intricate patterns and cross-sectional dependencies inherent in financial markets. This paper presents an integrated framework combining a node transformer architecture with Bidirectional Encoder Representations from Transformers (BERT) based sentiment analysis for stock price forecasting. The proposed model represents the stock market as a graph structure where individual stocks form nodes and edges capture relationships including sectoral affiliations, correlated price movements, and supply chain connections. A fine-tuned BERT model extracts sentiment information from social media posts and combines it with quantitative market features through attention-based fusion mechanisms. The node transformer processes historical market data while capturing both temporal evolution and cross-sectional dependencies among stocks. Experiments conducted on 20 S&amp;P 500 stocks spanning January 1982 to March 2025 demonstrate that the integrated model achieves a mean absolute percentage error (MAPE) of 0.80% for one-day-ahead predictions, compared to 1.20% for ARIMA and 1.00% for LSTM. The inclusion of sentiment analysis reduces prediction error by 10% overall and 25% during earnings announcements, while the graph-based architecture contributes an additional 15% improvement by capturing inter-stock dependencies. Directional accuracy reaches 65% for one-day forecasts. Statistical validation through paired t-tests confirms the significance of these improvements (p &lt; 0.05 for all comparisons). The model demonstrates robustness during highvolatility periods, maintaining MAPE below 1.5% where baseline models exceed 2%.</p></div>
+			</abstract>
+		</profileDesc>
+	</teiHeader>
+	<text xml:lang="en">
+		<body>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>I. INTRODUCTION</head><p>S TOCK price forecasting represents a fundamental chal- lenge in quantitative finance with substantial implications for portfolio management, risk assessment, and capital allocation <ref type="bibr" target="#b0">[1]</ref>. The task of predicting stock market movements is complicated by several interconnected factors: non-stationary price dynamics, high-dimensional feature spaces, complex inter-stock dependencies, and the influence of investor psychology on market behavior.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>A. Challenges in Stock Price Forecasting</head><p>A primary challenge in financial forecasting is the presence of noise and irregularities in market data. Microstructure noise, arising from bid-ask bounces and discrete price movements, significantly impacts short-term price observations <ref type="bibr" target="#b1">[2]</ref>. Random fluctuations that do not reflect fundamental changes in asset value can obscure meaningful signals, complicating model training and evaluation. The efficient market hypothesis posits that stock prices incorporate all available information, suggesting that consistently outperforming market benchmarks through prediction is theoretically difficult <ref type="bibr" target="#b0">[1]</ref>. Empirical evidence indicates partial efficiency, with information incorporated into prices at varying speeds depending on asset liquidity, market conditions, and information type <ref type="bibr" target="#b2">[3]</ref>, <ref type="bibr" target="#b3">[4]</ref>.</p><p>Behavioral factors introduce additional complexity. Investor sentiment and cognitive biases lead to market movements not easily explained by quantitative fundamentals alone <ref type="bibr" target="#b4">[5]</ref>. Fear, greed, and herd behavior drive price fluctuations in patterns that resist traditional modeling approaches. These behavioral dynamics manifest particularly during market stress, when correlations among assets increase and volatility clusters temporally.</p><p>The regulatory environment compounds these difficulties. Shifts in financial regulations, monetary policy, and fiscal interventions can trigger sudden market movements that invalidate learned patterns. The 2008 financial crisis and 2020 pandemic response demonstrated how policy actions create discontinuities in price dynamics that historical models may not anticipate.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>B. Existing Approaches</head><p>Current approaches to stock price forecasting span multiple methodological traditions. Fundamental analysis evaluates company financial health and market position to estimate intrinsic value <ref type="bibr" target="#b5">[6]</ref>. Technical analysis examines historical price and volume patterns to identify trading signals. Machine learning methods, including support vector machines and ensemble methods, apply algorithms to discover patterns in featureengineered datasets <ref type="bibr" target="#b1">[2]</ref>.</p><p>Deep learning architectures have demonstrated particular promise in capturing temporal dependencies. Recurrent neural networks, especially Long Short-Term Memory (LSTM) networks, model sequential data through gating mechanisms that address vanishing gradient problems <ref type="bibr" target="#b6">[7]</ref>. While effective for short-to-medium range dependencies, LSTMs process sequences step by step, which limits their ability to capture interactions between distant time steps efficiently. The transformer architecture <ref type="bibr" target="#b7">[8]</ref> overcomes this limitation through self-attention mechanisms that relate all positions in a sequence directly, enabling explicit modeling of longrange dependencies without recurrent connections. In parallel, graph neural networks have emerged to address a different shortcoming: the inability of standard sequence models to represent relationships between entities <ref type="bibr" target="#b8">[9]</ref>. The node transformer architecture bridges these two lines of work by combining attention mechanisms with graph structure, learning contextualized node representations through attention applied over graph neighborhoods <ref type="bibr" target="#b9">[10]</ref>.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>C. Research Motivation and Contributions</head><p>These advances notwithstanding, the literature reveals persistent shortcomings. Few approaches combine graph-based modeling of inter-stock relationships with transformer architectures for temporal modeling. The integration of unstructured textual data, particularly social media sentiment, with structured numerical data remains limited. Performance often deteriorates during volatile market conditions, with accuracy varying substantially between stable and turbulent periods.</p><p>This paper presents an integrated framework addressing these gaps through multiple coordinated components:</p><p>1) A node transformer architecture adapted for stock price forecasting that represents the market as a dynamic graph with learnable edge weights. The model captures interdependencies among stocks including sectoral relationships, correlated price movements, and supply chain connections while processing multivariate stocklevel inputs. 2) Integration of Bidirectional Encoder Representations from Transformers (BERT)-based sentiment analysis through multimodal fusion, enabling incorporation of qualitative market sentiment alongside quantitative price and volume data. Sentiment information extracted from social media posts is incorporated as additional features for each stock node. 3) An attention-based fusion mechanism that dynamically weights price-based features and sentiment signals based on current market conditions and volatility indicators. 4) A comprehensive dataset comprising historical prices for 20 S&amp;P 500 companies from January 1982 to March 2025, augmented with sentiment scores derived from social media posts from 2007 onward. 5) Extensive experimental validation across different market conditions, prediction horizons, and volatility regimes, with statistical tests confirming significance of performance improvements. The remainder of this paper is organized as follows. Section II reviews related work. Section III describes datasets and preprocessing. Section IV presents the methodology. Section V reports experimental results. Section VI discusses findings and limitations. Section VII concludes and outlines future directions.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>II. LITERATURE REVIEW</head><p>Stock price forecasting has evolved through statistical modeling, machine learning, and deep learning paradigms, each offering distinct trade-offs between interpretability, capacity, and data requirements. The following subsections trace this progression and identify the gaps that motivate the present work.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>A. Statistical Methods</head><p>Autoregressive Integrated Moving Average (ARIMA) models remain widely used due to their capacity to capture linear temporal dependencies and interpretable coefficient structures. ARIMA combines autoregressive (AR) and moving average (MA) components after differencing to achieve stationarity. The ARIMA(p, d, q) model is specified as:</p><formula xml:id="formula_0">ϕ(B)(1 − B) d X t = θ(B)ϵ t (<label>1</label></formula><formula xml:id="formula_1">)</formula><p>where B is the backshift operator such that BX</p><formula xml:id="formula_2">t = X t−1 , ϕ(B) = 1 − ϕ 1 B − • • • − ϕ p B p is the AR polynomial of order p, θ(B) = 1 + θ 1 B + • • • + θ q B q</formula><p>is the MA polynomial of order q, d is the differencing order, and ϵ t ∼ N (0, σ 2 ) is white noise.</p><p>Low and Sakk <ref type="bibr" target="#b10">[11]</ref> compared ARIMA and LSTM networks for stock prediction across ten exchange-traded funds, finding that ARIMA demonstrates comparable accuracy to LSTM for longer-term predictions. Wahyudi <ref type="bibr" target="#b11">[12]</ref> applied ARIMA to Indonesian stock prices, demonstrating effectiveness for shortterm volatility prediction with model selection via the Akaike Information Criterion (AIC).</p><p>Vector Autoregression (VAR) extends univariate ARIMA to multivariate settings, modeling each variable as a linear function of its own lags and lags of other variables. However, ARIMA and VAR are limited in handling nonlinear dynamics, regime shifts, and high-dimensional interactions.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>B. Classical Machine Learning</head><p>Support Vector Machines (SVM), k-Nearest Neighbors (KNN), and ensemble methods leverage engineered features for prediction. Nayak et al. <ref type="bibr" target="#b12">[13]</ref> developed a hybrid SVM-KNN model for Indian stock market indices, outperforming individual models in mean squared error. Siddique and Panda <ref type="bibr" target="#b13">[14]</ref> combined kernel Principal Component Analysis (PCA) with Support Vector Regression (SVR) and teaching-learningbased optimization, achieving improved accuracy through dimension reduction.</p><p>Basak et al. <ref type="bibr" target="#b14">[15]</ref> applied XGBoost for long-term stock price forecasting using technical indicators, achieving F-scores ranging from 0.82 to 0.97 for 60-day and 90-day prediction horizons on Apple and Yahoo stocks. While effective for specific tasks, these methods rely heavily on feature engineering and often struggle to generalize across different market regimes.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>C. Deep Learning Methods</head><p>1) Convolutional Neural Networks: Convolutional Neural Networks (CNNs) extract hierarchical patterns from structured data through local receptive fields and parameter sharing. Chandar <ref type="bibr" target="#b15">[16]</ref> proposed TI-CNN, converting technical indicators into images using Gramian Angular Fields before CNN processing. Wen et al. <ref type="bibr" target="#b16">[17]</ref> applied CNNs to S&amp;P 500 data, exploiting spatial structure in time series representations. CNNs capture local dependencies effectively but are less suited for modeling long-range temporal dynamics.</p><p>2) Recurrent Neural Networks: Recurrent Neural Networks (RNNs), particularly LSTM networks and Gated Recurrent Units (GRU), model sequential data through hidden states that propagate information across time steps. LSTM networks incorporate input, forget, and output gates to control information flow, addressing the vanishing gradient problem inherent in standard RNNs.</p><p>Di Persio and Honchar <ref type="bibr" target="#b17">[18]</ref> compared RNN variants for Google stock prediction, with LSTM achieving 72% directional accuracy, outperforming standard RNN and GRU architectures. Hossain et al. <ref type="bibr" target="#b18">[19]</ref> applied cascaded LSTM-GRU to S&amp;P 500 data spanning 1950-2016, achieving mean squared error of 0.00098. Bidirectional LSTM extends this by processing sequences in both directions. Xu et al. <ref type="bibr" target="#b19">[20]</ref> integrated wavelet transform, stacked autoencoder, and BiLSTM for stock forecasting. Liu et al. <ref type="bibr" target="#b20">[21]</ref> employed autoencoder-based feature extraction with BiLSTM for price series prediction.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>D. Graph Neural Networks</head><p>Graph Neural Networks (GNNs) capture interdependencies by modeling markets as graphs where nodes represent companies and edges represent relationships such as sectoral ties, price correlations, or supply chain connections.</p><p>Chen et al. <ref type="bibr" target="#b21">[22]</ref> proposed a graph convolutional featurebased CNN model combining graph convolutional networks with dual CNNs to capture market-level and stock-level features simultaneously. Testing on Chinese stocks demonstrated superior performance compared to non-graph approaches. Wang et al. <ref type="bibr" target="#b22">[23]</ref> introduced a multi-graph convolutional neural network defining both static and dynamic correlation graphs. Testing on 42 Chinese market indices showed average prediction error reduction of 5.11% compared to LSTM and attention-based baselines.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>E. Transformer Models</head><p>The transformer architecture <ref type="bibr" target="#b7">[8]</ref> introduced a fundamentally different approach to sequence-to-sequence modeling. Selfattention mechanisms compute pairwise interactions between all positions:</p><formula xml:id="formula_3">Attention(Q, K, V) = softmax QK T √ d k V (2)</formula><p>where Q, K, V are query, key, and value matrices, and d k is the key dimension. The scaling factor √ d k prevents dot products from growing large in magnitude.</p><p>Multi-head attention extends this by projecting queries, keys, and values multiple times with different learned projections:</p><formula xml:id="formula_4">MultiHead(Q, K, V) = Concat(head 1 , . . . , head h )W O (3)</formula><p>where</p><formula xml:id="formula_5">head i = Attention(QW Q i , KW K i , VW V i ).</formula><p>Li and Qian <ref type="bibr" target="#b23">[24]</ref> developed a financial transformer processing multiple timeframes simultaneously, improving sensitivity to regime changes. The node transformer <ref type="bibr" target="#b9">[10]</ref> extends attention to graph-structured data, learning contextualized node representations through attention over graph neighborhoods.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>F. Hybrid Models and Research Gaps</head><p>Hybrid models seek to integrate complementary architectural strengths by pairing spatial feature extractors with sequential learners. Lu et al. <ref type="bibr" target="#b24">[25]</ref> proposed a CNN-BiLSTMattention model that uses convolutional layers to extract local patterns, feeds them into a bidirectional LSTM for temporal modeling, and applies attention to weight the most informative time steps, outperforming standalone approaches on multiple benchmarks. These composite designs show particular promise during volatile periods, where the diversity of learned representations confers robustness that single-paradigm models lack.</p><p>Despite progress along each of these fronts, critical gaps persist at their intersections. Few approaches combine graphbased inter-stock modeling with transformer temporal processing. Integration of unstructured text with structured numerical data remains limited. Performance often deteriorates during volatile conditions, with accuracy varying by 40% between stable and turbulent periods <ref type="bibr" target="#b10">[11]</ref>. Computational demands present barriers to real-time deployment.</p><p>These gaps motivate the present work: an integrated node transformer with BERT-based sentiment analysis, capturing both stock interconnections and long-range dependencies while incorporating sentiment as a predictive signal.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>III. DATASETS AND PREPROCESSING A. Financial Market Dataset</head><p>The Financial Market Dataset (FMD) integrates historical stock market data with engineered technical indicators. The dataset spans January 1, 1982 to March 31, 2025, covering twenty companies from the S&amp;P 500 index selected for sectoral diversity, market capitalization variation, and data availability.</p><p>The selected companies span multiple sectors: technology (Apple, Microsoft, Salesforce, Netflix), financial services (JP-Morgan Chase, Visa), healthcare (Johnson &amp; Johnson, Unit-edHealth Group, Pfizer), retail (Walmart, Home Depot, Mc-Donald's), energy (ExxonMobil, Chevron), consumer goods (Procter &amp; Gamble, Coca-Cola, Nike), telecommunications (Verizon), and industrials (Boeing, Caterpillar). For companies with initial public offerings after 1982, data collection begins at the first available trading date. For example, Salesforce data begins in June 2004 following its IPO. The effective analysis period for each stock corresponds to its available trading history within the 1982-2025 window. This crosssectional design ensures the dataset reflects behavior across multiple industries and economic cycles, though the selection of current index constituents introduces survivorship bias that is acknowledged in Section VI.</p><p>For each company, six daily Open, High, Low, Close, and Volume (OHLCV) trading variables were collected: opening price (O t ), highest price (H t ), lowest price (L t ), closing price (C t ), adjusted closing price (C adj t ), and trading volume (V t ). Technical indicators were computed following established methodologies <ref type="bibr" target="#b15">[16]</ref>, <ref type="bibr" target="#b19">[20]</ref>:</p><p>Simple Moving Average (SMA): The SMA smooths shortterm price fluctuations to reveal underlying trends. Computing it at multiple window lengths (n ∈ {5, 10, 20} days) allows the model to distinguish short-term momentum from longer-term directional shifts:</p><formula xml:id="formula_6">SMA n (t) = 1 n n−1 i=0 C t−i<label>(4)</label></formula><p>Exponential Moving Average (EMA): Unlike the SMA, the EMA assigns greater weight to recent observations through an exponential decay controlled by smoothing factor α = 2/(n + 1). This makes it more responsive to recent price changes, which is valuable for detecting early trend reversals:</p><formula xml:id="formula_7">EMA n (t) = α • C t + (1 − α) • EMA n (t − 1)<label>(5)</label></formula><p>Relative Strength Index (RSI): The RSI is a bounded momentum oscillator that measures the speed and magnitude of recent price changes on a scale from 0 to 100. Values above 70 typically indicate overbought conditions, while values below 30 suggest oversold conditions. It is computed using a 14-day window:</p><formula xml:id="formula_8">RSI(t) = 100 − 100 1 + G14(t) L14(t)<label>(6)</label></formula><p>where G 14 (t) and L 14 (t) are the average gains and average losses over the preceding 14 trading days.</p><p>Moving Average Convergence Divergence (MACD): The MACD captures changes in trend strength and direction by measuring the difference between a short-term (12-day) and a long-term (26-day) EMA. A positive MACD indicates upward momentum, while a negative value signals downward pressure. Crossovers between the MACD and its 9-day signal line are commonly used as trade triggers:</p><formula xml:id="formula_9">MACD(t) = EMA 12 (t) − EMA 26 (t)<label>(7)</label></formula><p>with 9-day signal line Signal(t) = EMA 9 (MACD(t)).</p><p>Daily Returns and Log Returns: Daily returns quantify the relative price change between consecutive trading days and serve as the primary measure of stock performance. Log returns are included alongside arithmetic returns because they are additive over time and more closely approximate a normal distribution, properties that benefit gradient-based optimization:</p><formula xml:id="formula_10">r t = C t − C t−1 C t−1 , r log t = ln C t C t−1<label>(8)</label></formula><p>Rolling Volatility: Rolling volatility measures the dispersion of returns over a trailing 20-day window, providing a realtime estimate of price uncertainty. Higher volatility indicates greater risk and wider expected price ranges, which is critical for the model's gating mechanism to adjust feature emphasis across market regimes:</p><formula xml:id="formula_11">σ t = 1 19 19 i=0 (r t−i − rt ) 2<label>(9)</label></formula><p>Missing values were addressed through a temporally-aware imputation strategy designed to prevent information leakage.</p><p>During training data preparation, short gaps (1-2 trading days) used linear interpolation:</p><formula xml:id="formula_12">C t = C t−k + C t+m − C t−k k + m • k<label>(10)</label></formula><p>where k and m are distances to nearest observed values. For validation and test data, only forward-filling from the most recent observed value was applied to ensure no future information leaked into predictions: C t = C t−k where k is the distance to the most recent observation. Longer gaps in training data also employed forward filling. Each observation contains 6 raw variables and 11 derived indicators.</p><p>Feature normalization used an expanding window z-score approach to prevent look-ahead bias. For each feature x i,t , the normalized value was computed as:</p><formula xml:id="formula_13">xi,t = x i,t − µ 1:t σ 1:t<label>(11)</label></formula><p>where µ 1:t and σ 1:t are the mean and standard deviation computed over all available data from the start of the training period up to time t. For test data, normalization statistics were fixed using the full training set, ensuring no information from the test period influenced the standardization.</p><p>Fig. <ref type="figure">1</ref> illustrates the feature engineering pipeline.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>B. Sentiment Datasets</head><p>The sentiment component relies on two complementary datasets that together capture both benchmark-labeled sentiment and large-scale real-world social media activity. The first provides expert-annotated ground truth for training the BERT classifier, while the second supplies the raw social media text processed at inference time.</p><p>The Market Sentiment Evaluation (MSE) dataset is a publicly available corpus containing finance-related messages from social media platforms <ref type="bibr" target="#b25">[26]</ref>. Each message has been annotated by financial experts with sentiment scores s ∈ [−1, +1], where −1 indicates strongly negative, 0 neutral, and +1 strongly positive sentiment. The dataset includes source platform identifiers, message IDs, relevant cashtags, and annotated sentiment spans. Because it contains humanlabeled ground truth, the MSE dataset serves as the primary training and validation resource for fine-tuning the BERT sentiment module.</p><p>The Comprehensive Stock Sentiment (CSS) dataset was constructed using the X (formerly Twitter) API through systematic searches for the cashtag corresponding to each of the twenty stocks listed in Table <ref type="table" target="#tab_1">I</ref>  </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Cashtag Company</head><p>Cashtag Company</p><formula xml:id="formula_14">$AAPL Apple $KO Coca-Cola $MSFT Microsoft $CVX Chevron $JPM JPMorgan Chase $HD Home Depot $JNJ Johnson &amp; Johnson $VZ Verizon $WMT Walmart $BA Boeing $XOM ExxonMobil $MCD McDonald's $PG Procter &amp; Gamble $NFLX Netflix $V Visa $CAT Caterpillar $UNH UnitedHealth Group $PFE Pfizer $NKE Nike $CRM Salesforce</formula><p>Once the BERT model is fine-tuned on the MSE labels, it is applied to the CSS corpus to generate daily sentiment scores for each stock. These scores are then aggregated at multiple time scales and fed into the node transformer as additional input features.</p><p>Both datasets underwent identical preprocessing before entering the sentiment pipeline. This included removal of HTML encodings and special characters, anonymization of user identifiers, removal of retweet markers, URL standardization with placeholder tags, de-elongation of exaggerated words (e.g., "victoryyyyy" → "victory"), spacing correction for ticker symbols (e.g., "$ AAPL" → "$AAPL"), and ordinal expression normalization.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>C. Dataset Partitioning</head><p>Temporal splits were applied to prevent look-ahead bias.</p><p>The training set comprises January 1, 1982 to December 31, 2010 (70% of temporal range). The validation set spans January 1, 2011 to December 31, 2016 (15%). The test set covers January 1, 2017 to March 31, 2025 (15%).</p><p>For sentiment data, partitioning aligns with financial splits for the overlapping period. Since X (formerly Twitter) data begins in 2007, the sentiment training period covers January 2007 to December 2010. For pre-2007 financial data, sentiment features are set to neutral (zero). The sentiment integration component is primarily evaluated on the test set (2017-2025) where sentiment data is abundant.</p><p>The MSE dataset used for BERT fine-tuning is partitioned separately into 70% training, 15% validation, and 15% test, stratified by sentiment class to preserve label distribution. The BERT model is fine-tuned and evaluated on this split independently before its outputs are integrated into the full forecasting pipeline (see Section V-D). Table <ref type="table" target="#tab_2">II</ref> summarizes the key characteristics of the financial and sentiment datasets. </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>IV. METHODOLOGY</head><p>The proposed framework integrates a node transformer architecture with BERT-based sentiment analysis, combining quantitative financial indicators with qualitative textual signals. The design follows a modular structure in which the graph-based transformer and the sentiment pipeline operate as independent components, coupled through an attention-based fusion layer that dynamically adjusts the relative weighting of each stream based on current market conditions.</p><p>A. System Architecture Overview Fig. <ref type="figure">2</ref> presents the overall system architecture. The framework processes historical market data and sentiment information through two parallel pathways. The quantitative branch normalizes all market features (price, volume, and technical indicators), constructs the graph structure, applies temporal encoding, and feeds the processed representations into the node transformer. The qualitative branch passes social media text through the BERT encoder and aggregates sentiment scores at multiple time scales. The two streams converge at an attention-based fusion layer that produces the final price prediction.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>B. Graph Representation of the Stock Market</head><p>The stock market is represented as a graph G = (V, E, E) where V = {1, . . . , N } is the set of N = 20 stock nodes, </p><formula xml:id="formula_15">e (0) ij = α • δ sector (i, j) + (1 − α) • max(0, ρ ij )<label>(12)</label></formula><p>where δ sector (i, j) = 1 if stocks i and j share the same Global Industry Classification Standard (GICS) sector classification and 0 otherwise, ρ ij is the Pearson correlation coefficient between daily returns computed over the training period, max(0, •) ensures non-negative weights, and α = 0.5 balances sector and correlation information.</p><p>During training, edge weights are refined iteratively:</p><formula xml:id="formula_16">e (ℓ+1) ij = σ w T e [h (ℓ) i ∥h (ℓ) j ] + b e (<label>13</label></formula><formula xml:id="formula_17">)</formula><p>where σ is the sigmoid function, w e ∈ R 2d is a learnable weight vector, h </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>C. Node Transformer Architecture</head><p>The node transformer extends the standard transformer by incorporating graph-structured relational inductive biases <ref type="bibr" target="#b9">[10]</ref>. Rather than treating each stock's time series independently, the architecture processes all nodes jointly at each time step, allowing information to propagate across the graph through attention weighted by the learned edge structure described above.</p><p>1) Input Representation: Each stock is represented by a composite feature vector that concatenates raw market data, engineered indicators, positional information, and a learned identity embedding. For stock i at time t, this vector is:</p><formula xml:id="formula_18">x i,t = [p i,t ∥v i,t ∥I i,t ∥TE(t)∥s i ] ∈ R din<label>(14)</label></formula><p>where p i,t ∈ R 5 contains normalized prices (open, high, low, close, adjusted close), v i,t ∈ R is normalized volume, I i,t ∈ R 11 contains technical indicators, TE(t) ∈ R d is the temporal encoding, and s i ∈ R ds is a learned stock-specific embedding capturing persistent characteristics.</p><p>2) Temporal Encoding: Following Vaswani et al. <ref type="bibr" target="#b7">[8]</ref>, temporal encoding injects positional information:</p><formula xml:id="formula_19">TE(t, 2k) = sin t 10000 2k/d TE(t, 2k+1) = cos t 10000 2k/d (<label>15</label></formula><formula xml:id="formula_20">)</formula><p>where t is the trading day index, k ∈ {0, . . . , d/2 − 1} is the dimension index, and d = 512 is the model dimension. Lower dimensions capture high-frequency patterns; higher dimensions capture low-frequency patterns.</p><p>3) Graph-Aware Multi-Head Self-Attention with Causal Masking: The attention mechanism incorporates the learned edge weight matrix E from Section IV-B as a structural bias, so that stock pairs with stronger graph connections receive higher baseline attention. Causal masking ensures predictions at time t use only information from times ≤ t:</p><formula xml:id="formula_21">A(Q, K, V) = softmax QK T √ d k + M + E V<label>(16)</label></formula><p>where 4) Time-Based Feature Gating: A gating mechanism adaptively weights features based on temporal context:</p><formula xml:id="formula_22">Q = XW Q , K = XW K , V = XW V</formula><formula xml:id="formula_23">g i,t = σ(W g x i,t + b g ) ∈ (0, 1) din (17) x ′ i,t = g i,t ⊙ x i,t<label>(18)</label></formula><p>where W g ∈ R din×din , b g ∈ R din are learnable parameters, and ⊙ denotes element-wise multiplication. This mechanism enables adaptive emphasis on different features during volatile versus stable periods. 5) Feed-Forward Network: Each layer includes a positionwise Feed-Forward Network (FFN):</p><formula xml:id="formula_24">FFN(x) = ReLU(xW 1 + b 1 )W 2 + b 2<label>(19)</label></formula><p>where</p><formula xml:id="formula_25">W 1 ∈ R 512×2048 , W 2 ∈ R 2048×512 , and b 1 , b 2 are biases.</formula><p>The complete architecture consists of L = 6 stacked layers with residual connections and layer normalization after each sub-layer. Dropout with p = 0.1 is applied for regularization.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>D. BERT-Based Sentiment Analysis</head><p>The sentiment component employs BERT (bert-baseuncased) with 12 transformer layers, 768 hidden dimensions, and 12 attention heads <ref type="bibr" target="#b26">[27]</ref>. BERT's bidirectional attention is well suited to financial text, where sentiment often depends on contextual modifiers (e.g., "not bullish" vs. "bullish") that unidirectional models may miss.</p><p>1) Domain Adaptations: A financial domain embedding layer augments the standard BERT token embeddings with additional representations for financial terminology, enabling the model to distinguish domain-specific usage of terms such as "short," "call," and "bear" from their everyday meanings. Maximum sequence length is set to 512 tokens, which accommodates the vast majority of social media posts without truncation.</p><p>2) Fine-Tuning Process: Fine-tuning on the MSE dataset follows a three-stage progressive unfreezing schedule designed to preserve BERT's pretrained language representations while adapting the upper layers to financial sentiment classification. In the first stage, the embedding layer and the first 8 transformer blocks are frozen so that only the upper layers and the classification head receive gradient updates; these are trained for 3 epochs with a learning rate of 2 × 10 −5 and batch size 32. The second stage progressively unfreezes layers from top to bottom over 5 additional epochs, allowing each block to adapt incrementally to the financial domain without catastrophic forgetting of general language knowledge. In the final stage, all layers are unfrozen and trained jointly with a reduced learning rate of 5 × 10 −6 and gradient accumulation over 4 steps to stabilize updates across the full parameter space.</p><p>Because sentiment labels in financial text are typically imbalanced, with neutral posts far outnumbering strongly positive or negative ones, focal loss is used instead of standard crossentropy:</p><formula xml:id="formula_26">L FL (p t ) = −α t (1 − p t ) γ log(p t )<label>(20)</label></formula><p>where α t is class weight (inverse frequency), p t is predicted probability for correct class, and γ = 2 focuses training on hard examples by down-weighting easily classified instances.  </p><formula xml:id="formula_27">S i,t = [S (1d) i,t , S (5d) i,t , S (20d) i,t ] ∈ R 3<label>(21)</label></formula><p>where</p><formula xml:id="formula_28">S (kd) i,t</formula><p>is the k-day exponential moving average of sentiment scores for stock i. This captures both immediate reactions and sustained sentiment trends.</p><p>2) Sentiment-Guided Attention: Rather than simply concatenating sentiment as an additional input feature, the model allows sentiment to modulate the attention mechanism itself. Specifically, sentiment scales the key representations so that time steps with strong sentiment signals receive amplified or dampened attention:</p><formula xml:id="formula_29">K ′ t = K t • (1 + β • S t )<label>(22)</label></formula><p>where S t ∈ [−1, 1] is the sentiment score at time t and β ∈ R is a learnable parameter. The attention computation becomes:</p><formula xml:id="formula_30">A sent = softmax QK ′T √ d k + M V (23)</formula><p>3) Adaptive Integration: Because the relative predictive value of price-based features and sentiment varies with market conditions, the final prediction is produced by a learned convex combination rather than a fixed weighting. A sigmoid gate dynamically adjusts the balance between the node transformer output and the sentiment-based prediction:</p><formula xml:id="formula_31">α t = σ(w T α [v t ∥ St ] + b α ) ∈ (0, 1)<label>(24)</label></formula><p>ŷi,t+h = α t • y node i,t+h + (1</p><formula xml:id="formula_32">− α t ) • y sent i,t+h<label>(25)</label></formula><p>where v t ∈ R 3 contains rolling volatility computed over 5, 10, and 20-day windows, St is mean absolute sentiment across stocks, y node i,t+h is the node transformer prediction, and y sent i,t+h is the sentiment-based prediction. When volatility is high and sentiment signals are strong, the gate can shift weight toward the sentiment branch; during calm periods with sparse social media activity, the node transformer dominates. Fig. <ref type="figure">5</ref> illustrates this adaptive fusion mechanism.</p><formula xml:id="formula_33">y node i,t+h y sent i,t+h Volatility v t Sentiment St α t = σ(•) ŷ = α t y node + (1−α t )y sent</formula><p>Final Prediction ŷi,t+h Fig. <ref type="figure">5</ref>. Adaptive fusion mechanism. The weighting coefficient αt is computed from volatility and sentiment magnitude, then used to blend node transformer and sentiment-based predictions.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>F. Training Objective</head><p>Training a model that is useful for both price forecasting and trading decisions requires optimizing more than point accuracy alone. The composite loss function therefore combines four terms that target complementary aspects of prediction quality:</p><formula xml:id="formula_34">L total = λ 1 L MSE + λ 2 L DIR + λ 3 L CORR + λ 4 L REG (<label>26</label></formula><formula xml:id="formula_35">)</formula><p>The primary term is the mean squared error, which penalizes deviations between predicted and realized prices and serves as the dominant gradient signal during training:</p><formula xml:id="formula_36">L MSE = 1 N i,t,h (y i,t+h − ŷi,t+h ) 2<label>(27)</label></formula><p>Because minimizing magnitude error does not guarantee correct directional predictions, a binary cross-entropy term explicitly rewards the model for predicting whether prices rise or fall. Here d i,t,h = I(y i,t+h &gt; y i,t ) is the true direction indicator and p i,t,h is the predicted probability of an increase:</p><formula xml:id="formula_37">L DIR = − 1 N i,t,h [d i,t,h log p i,t,h + (1 − d i,t,h ) log(1 − p i,t,h )]</formula><p>(28) A correlation loss encourages the model to preserve crosssectional ranking among stocks at each time step, which is critical for portfolio construction strategies that depend on relative rather than absolute performance. It is defined as one minus the Pearson correlation ρ between predicted and actual return vectors:</p><formula xml:id="formula_38">L CORR = 1 − ρ(r t , r t )<label>(29)</label></formula><p>Finally, L2 regularization on all trainable parameters θ prevents overfitting by penalizing large weight magnitudes:</p><formula xml:id="formula_39">L REG = ∥θ∥ 2 2 (30)</formula><p>The weights λ 1 = 1.0, λ 2 = 0.5, λ 3 = 0.2, and λ 4 = 10 −4 were tuned on validation data. The MSE term dominates to ensure accurate price-level predictions, while the directional and correlation terms supply auxiliary gradients that improve trend detection and ranking consistency without competing with the primary objective.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>G. Training Process</head><p>The BERT encoder is fine-tuned separately on the MSE dataset (Section IV-D) and remains frozen throughout the forecasting pipeline, serving purely as a fixed feature extractor that produces sentiment scores. Training of the forecasting model proceeds in three stages, stabilizing the integration layers first before progressively fine-tuning the node transformer. During the first 10 epochs, the node transformer is frozen while the sentiment aggregation, fusion, and output layers are trained with a learning rate of 10 −4 . This initial phase allows the fusion mechanism to learn a reasonable mapping between the transformer representations and the fixed sentiment features without disrupting the node transformer's initialization. In the second stage, spanning 20 epochs, the top three layers of the node transformer are unfrozen and the learning rate is reduced to 5 × 10 −5 , enabling the upper representations to adapt to the downstream task while preserving the lower-level features. The final 30 epochs unfreeze all node transformer parameters at a learning rate of 10 −5 , allowing end-to-end fine-tuning of the forecasting architecture.</p><p>Throughout all three stages, optimization uses Adam with β 1 = 0.9, β 2 = 0.999, and ϵ = 10 −8 . The learning rate schedule begins with a linear warmup over 4000 steps followed by cosine decay to zero. A batch size of 32 with gradient accumulation over 4 steps yields an effective batch size of 128, balancing memory constraints with gradient stability. Table <ref type="table" target="#tab_4">III</ref> summarizes the key hyperparameters for both the node transformer and BERT components.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>V. EXPERIMENTS AND RESULTS</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>A. Experimental Setup</head><p>Experiments used the dataset described in Section III, spanning January 1982 to March 2025, a timeframe that captures All models were trained on NVIDIA A100 GPUs (40GB), with the full proposed model requiring approximately 18 hours to converge. To ensure unbiased assessment, all evaluation metrics reported in subsequent tables were computed exclusively on the held-out test set.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>B. Evaluation Metrics</head><p>The prediction target y i,t+h is the closing price C t+h at horizon h ∈ {1, 5, 20} trading days. Price-level prediction provides intuitive interpretation of forecast accuracy and aligns with practical trading applications. Directional accuracy is derived from the implied price movement relative to the current price. Five complementary metrics are used to assess model performance from different angles, covering magnitude accuracy, scale sensitivity, directional correctness, relative forecasting skill, and cross-sectional ranking ability.</p><p>Mean Absolute Percentage Error (MAPE) measures the average magnitude of prediction errors as a percentage of actual values, making it scale-invariant and directly interpretable across stocks with different price levels:</p><formula xml:id="formula_40">MAPE = 100 N N i=1 y i − ŷi y i (31)</formula><p>Root Mean Squared Error (RMSE) captures prediction accuracy in the original price units and penalizes large errors more heavily than MAPE due to the squaring operation. This makes it particularly sensitive to outlier predictions during volatile periods:</p><formula xml:id="formula_41">RMSE = 1 N N i=1 (y i − ŷi ) 2 (32)</formula><p>Directional Accuracy (DA) measures the proportion of correctly predicted price movement directions, independent of magnitude. For trading applications, correctly forecasting whether a stock will rise or fall is often more valuable than minimizing absolute price error, since many strategies depend on directional signals rather than precise price targets.</p><p>Theil's U statistic benchmarks the model against a naive random walk forecast that simply predicts tomorrow's price as today's price. It is defined as:</p><formula xml:id="formula_42">U = t (y t+1 − ŷt+1 ) 2 t (y t+1 − y t ) 2<label>(33)</label></formula><p>A value of U &lt; 1 indicates that the model outperforms this naive baseline, while U = 1 implies no improvement over persistence forecasting. This metric is especially informative for financial time series, where beating the random walk is itself a non-trivial achievement given the near-efficient nature of liquid equity markets.</p><p>The Information Coefficient (IC) is the Spearman rank correlation between predicted and realized returns across the stock universe at each time step. Unlike the other metrics, which evaluate absolute accuracy for individual stocks, the IC assesses cross-sectional ranking ability, measuring whether the model correctly orders stocks from best to worst performer on a given day. This property makes it directly relevant to long-short portfolio construction, where relative performance matters more than absolute price forecasts.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>C. Baseline Models</head><p>Eight baseline models spanning statistical, classical machine learning, and deep learning paradigms were trained on identical data splits to ensure fair comparison. All hyperparameters were tuned via grid search on the validation set (2011-2016), with final performance reported on the held-out test set (2017-2025).</p><p>The statistical baselines include ARIMA and Vector Autoregression (VAR). ARIMA orders (p, d, q) were selected via AIC with p, q ∈ [0, 5] and d ∈ [0, 2], fitting a separate model per stock. VAR extends this to the multivariate setting, modeling cross-stock dependencies with lag order selected via the Bayesian Information Criterion (BIC) up to 10 lags.</p><p>Three classical machine learning models were evaluated. Random Forest used 100 trees with maximum depth 10 and the same 17-dimensional feature vector as the proposed model. Support Vector Regression (SVR) employed a Radial Basis Function (RBF) kernel with regularization parameter C and kernel width γ selected via grid search. XGBoost used 1000 estimators with early stopping on validation loss to prevent overfitting, and its gradient boosting framework provides a strong tree-based benchmark.</p><p>The deep learning baselines include LSTM, a Simple Transformer, and a BERT + LSTM hybrid. The LSTM used 2 layers with 128 hidden units and a 60-day lookback window, representing the most widely adopted recurrent architecture for financial time series. The Simple Transformer used 4 layers, 8 attention heads, and 256-dimensional embeddings, providing a direct comparison that isolates the contribution of graph structure and sentiment integration in the proposed model. The BERT + LSTM hybrid combined BERT-extracted sentiment features with an LSTM price model through simple concatenation, serving as an ablation baseline that tests whether the attention-based fusion mechanism in the proposed architecture provides meaningful improvement over naive feature combination.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>D. Sentiment Model Evaluation</head><p>Before evaluating the full forecasting pipeline, the finetuned BERT sentiment classifier was assessed independently on the MSE dataset. The dataset was partitioned into training (70%), validation (15%), and test (15%) splits, stratified to preserve the class distribution across all three subsets. The model was fine-tuned on the training split using the progressive unfreezing schedule described in Section IV-D, with early stopping based on validation loss. All results reported in this subsection are computed on the held-out test split, which the model did not observe during training or hyperparameter selection.</p><p>Table <ref type="table" target="#tab_6">IV</ref> presents per-class and aggregate classification metrics. Because the MSE dataset exhibits class imbalance, with neutral posts outnumbering positive and negative ones, macro-averaged scores are reported alongside accuracy to avoid inflating performance through the majority class. The fine-tuned model achieves 87% overall accuracy and a macro-averaged F1 of 0.85, with per-class F1 scores ranging from 0.81 (negative) to 0.90 (neutral). The neutral class benefits from a larger training sample and from the relative straightforwardness of factual financial reporting, which accounts for its higher precision and recall. The negative class exhibits the lowest recall at 0.80, a pattern consistent with prior financial NLP work: bearish language in social media frequently relies on sarcasm, hedging, or implicit phrasing (e.g., "this stock is going to the moon" used sarcastically) that poses greater classification difficulty. Cohen's κ = 0.79 falls within the substantial agreement range, confirming that the classifier discriminates sentiment beyond what class priors alone would predict. Given that the ablation study (Section V-E) attributes a 10% MAPE reduction to sentiment integration, the 13% classification error rate suggests that the node transformer's gating mechanism is robust enough to extract predictive value even from an imperfect sentiment signal.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>E. Results</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>1) Overall Performance: Table V presents MAPE across</head><p>prediction horizons for all models. Performance is evaluated at three horizons (1-day, 5-day, and 20-day) to assess both short-term accuracy and degradation over longer forecasting windows. A persistent concern in short-horizon financial forecasting is the naive persistence artifact, where a model achieves seemingly low error by tracking the previous day's closing price (ŷ t+1 = y t ). Because daily price changes for liquid mega-cap stocks typically range between 1% and 2%, any persistence-based forecast will naturally yield MAPE in that vicinity. The naive random walk baseline in Table V produces a 1-day MAPE of 1.35% on our test set, and the proposed model's Theil's U of 0.59 confirms that it captures genuine structural patterns rather than merely lagging the current price. All learned models achieve U &lt; 1, but only the proposed model reduces the random walk error by more than 40%, with the gap widening at longer horizons where persistence forecasting degrades rapidly.</p><p>The proposed model achieves 0.80% MAPE for 1-day predictions, representing 33% relative improvement over ARIMA (∆ = 0.40 percentage points) and 20% improvement over LSTM (∆ = 0.20 pp). Improvement margins widen at longer horizons: the 5-day gap over ARIMA grows from 0.40 to 1.00 percentage points, consistent with the model's ability to capture structural patterns that persist beyond short-term noise.</p><p>2) Directional Accuracy: Beyond magnitude accuracy, directional accuracy measures the proportion of correctly predicted price movement directions.  Graph structure contributes the second-largest improvement at 15%, confirming that explicit inter-stock relationship modeling provides predictive value beyond treating stocks independently. Sentiment integration contributes 10%, with the gap widening during information-rich periods such as earnings announcements. Temporal encoding contributes 18.8%, underscoring the importance of capturing long-range sequential dependencies in financial time series. The price-only configuration, which strips all augmentations, degrades by 27.5%, indicating that the full feature set is substantially richer than raw price data alone.</p><p>4) Performance Across Volatility Regimes:  The proposed model maintains MAPE below 1.5% during high-volatility periods while baseline models exceed 1.6-2.1%. This robustness gap is most pronounced during VIX spikes accompanying earnings surprises and macroeconomic shocks, precisely the conditions where accurate forecasts carry the greatest practical value for risk management. The gating mechanism likely contributes to this resilience by increasing the weight of momentum features during volatile periods while favoring longer-term indicators during calm markets.</p><p>5) Statistical Significance: To assess whether the observed improvements are statistically significant rather than artifacts of sampling variability, paired t-tests were conducted comparing daily absolute prediction errors between the proposed model and each baseline across the 1,580 test days. Table <ref type="table" target="#tab_11">IX</ref> presents the results along with Cohen's d effect sizes. All comparisons achieve p &lt; 0.05, with the strongest significance observed against ARIMA (p &lt; 0.0001) and the weakest against the Simple Transformer (p = 0.0295). Effect sizes (Cohen's d) range from 0.17 to 0.34, indicating small to medium practical effects. The larger effect sizes against ARIMA and BERT + LSTM reflect more fundamental architectural differences, while the smaller effect size against the Simple Transformer suggests that much of the improvement stems from the graph and sentiment components rather than the transformer backbone itself.</p><p>Paired t-tests assume that forecast errors are independently distributed, an assumption frequently violated in financial time series due to volatility clustering and serial dependence in prediction residuals. To account for this, we supplement the analysis with the Diebold-Mariano (DM) test <ref type="bibr" target="#b27">[28]</ref>, which evaluates equal predictive accuracy between two forecasting models using Newey-West heteroskedasticity and autocorrelation consistent standard errors. Table X reports DM statistics computed on mean absolute error loss differentials over the 1,580-day test period, with the naive random walk included as a reference benchmark. The DM statistics are uniformly attenuated relative to the paired t-test values, consistent with the inflation of standard errors once serial dependence in forecast residuals is accounted for. All comparisons remain significant at p &lt; 0.05, though the margin against the Simple Transformer narrows (p = 0.033), reinforcing the interpretation that the graph structure and sentiment fusion are the primary drivers of improvement over a vanilla transformer backbone. The strongest DM statistic appears against the naive random walk (−5.82, p &lt; 0.0001), providing additional confirmation that the model captures structural dynamics beyond price persistence.</p><p>6) Economic Significance: A long-short strategy going long on the top 5 predicted performers and short on the bottom 5 achieved gross cumulative returns of 25.3% over the 15-month evaluation period (January 2024 to March 2025), compared to 15.1% for S&amp;P 500 buy-and-hold.</p><p>To assess whether these gains survive realistic market frictions, a proportional transaction cost of 10 basis points per trade was applied, consistent with institutional execution costs for liquid large-cap equities. The strategy exhibited an average daily portfolio turnover of 32%, reflecting the sentiment-driven rebalancing that shifts positions as new social media signals arrive. After deducting transaction costs, the net cumulative return was 18.4%, still exceeding the buy-and-hold benchmark by 3.3 percentage points. The net annualized Sharpe ratio of 1.15 (down from 1.42 gross) confirms that the model's directional accuracy translates into viable risk-adjusted gains even under trading friction, though the sensitivity to turnover suggests that lower-frequency rebalancing schedules merit investigation for cost-sensitive applications.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>VI. DISCUSSION</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>A. Interpretation of Results</head><p>The integrated model demonstrates consistent improvements across metrics, horizons, and market conditions, with the magnitude of gains varying by component and context in ways that illuminate the mechanisms underlying the model's predictive advantage.</p><p>The graph-based representation captures inter-stock dependencies that independent models miss. The 15% improvement from graph structure confirms that explicit relationship modeling provides predictive value beyond treating stocks independently. Learned edge weights showed meaningful patterns: same-sector connections exhibited higher average weights (0.72 vs. 0.41 for cross-sector), while cross-sector weights increased during market-wide movements, consistent with empirical observations that correlations increase during market stress <ref type="bibr" target="#b4">[5]</ref>.</p><p>Sentiment integration proves valuable around information events. The 25% improvement during earnings seasons indicates that social media sentiment contains early signals not fully reflected in contemporaneous prices. Sector-level heterogeneity aligns with expectations: consumer-facing companies show stronger sentiment-price relationships (14% MAPE reduction) compared to utilities (6%), likely reflecting differential retail investor engagement.</p><p>The gating mechanism enables adaptive feature weighting that responds to market conditions. Analysis of learned gate activations showed that momentum features (RSI, MACD, short-term returns) received higher weights during volatile periods, while longer-term indicators (20-day SMA, rolling volatility) received higher weights during stable periods. This adaptive behavior aligns with the intuition that different indicators carry different predictive value depending on market regime, and it emerges naturally through training rather than being imposed through manual feature selection.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>B. Implications</head><p>For practitioners, the model's directional accuracy enables more informed trading decisions, particularly for short-term strategies where predicting price direction is often more important than predicting magnitude. The enhanced ability to predict during volatile conditions helps risk management, as these are precisely the periods when forecast reliability matters most for position sizing and drawdown control. The graph structure provides interpretable inter-stock relationships useful for portfolio diversification, as the learned edge weights can reveal dependencies that traditional correlation matrices might obscure.</p><p>From a theoretical perspective, performance gains from sentiment integration suggest that markets do not fully incorporate qualitative information immediately, supporting bounded efficiency <ref type="bibr" target="#b0">[1]</ref>. The 25% improvement during earnings seasons indicates that social media contains early signals about investor reactions that are not yet reflected in price. The success of graph-based modeling provides further evidence that markets function as complex, interconnected systems rather than collections of independent securities, consistent with findings in the network finance literature.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>C. Limitations</head><p>The findings should be interpreted in light of limitations spanning data selection, modeling assumptions, and economic validity.</p><p>The most consequential concern is survivorship bias in stock selection. The 20 stocks were chosen based on current S&amp;P 500 membership and data availability, meaning that companies which failed, were acquired, or were delisted between 1982 and 2025 are absent from the dataset. Because the selected universe consists of companies that ultimately succeeded, reported performance may be inflated relative to what a real-time investor would experience. Results could differ on a point-intime universe constructed from historical index constituents. Relatedly, the 20-node graph structure, while demonstrating meaningful contribution in ablation studies (15% improvement), represents a limited cross-section of the market. Larger universes might better capture complex market topology; the current design prioritizes temporal depth over cross-sectional breadth.</p><p>Beyond stock selection, data-related assumptions also affect generalizability. Edge weight initialization relies on correlations computed over the training period (1982-2010), but market correlations are inherently non-stationary. Relationships that held during this window may weaken or reverse by the test period. The learnable edge refinement mechanism partially compensates by adapting weights during training, though fundamental correlation regime shifts could still limit generalization. Similarly, X (formerly Twitter) data availability from 2007 onward means sentiment features are set to zero for the 1982-2006 training period. The sentiment component therefore receives limited training signal during most of the training window, with the model's ability to leverage sentiment primarily developed and evaluated on post-2007 data. Sentiment analysis also relies on English-language content from a single social media platform, and changes to API access policies may affect reproducibility.</p><p>From a practical standpoint, the economic significance analysis applies a fixed 10 basis point transaction cost but does not model variable market impact or execution slippage, both of which increase with order size and decrease with liquidity. The 32% daily turnover observed in the backtest would amplify these unmodeled frictions, and the net returns reported in Section V-E should be viewed as an upper bound on realizable performance. Model complexity also presents challenges for real-time high-frequency applications, as the 252-day input sequence length and multi-head attention mechanisms demand substantial computational resources. The evaluation is performed on the same 20 stocks used for model development, which limits assessment of external validity on unseen securities.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>D. Future Directions</head><p>Multiple directions merit investigation. Expanding the stock universe to the full S&amp;P 500 or international markets would test whether the graph-based architecture scales effectively and whether inter-stock dependencies remain informative as the number of nodes grows. Incorporating multilingual sentiment sources and alternative platforms (Reddit, financial news, earnings call transcripts) would broaden the information base and reduce single-source dependency. On the architectural side, developing more efficient attention mechanisms, such as sparse or linear attention variants, could enable real-time deployment for higher-frequency trading applications. Regime-shift detection mechanisms that adjust model behavior during structural market transitions (e.g., policy changes or liquidity crises) represent a natural extension of the gating mechanism already present in the model. Finally, integrating the forecasting framework with portfolio optimization and formal risk management objectives could bridge the gap between prediction accuracy and realized economic value.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>VII. CONCLUSION</head><p>This paper introduced an integrated framework that combines a node transformer architecture with BERT-based sentiment analysis for stock price forecasting. The model represents the stock market as a graph in which individual stocks serve as nodes connected by learnable edges that encode sectoral affiliations and price correlations. A fine-tuned BERT model processes social media text to extract sentiment signals, which are then merged with quantitative price features through an adaptive attention-based fusion mechanism conditioned on volatility and sentiment magnitude.</p><p>Experiments on 20 S&amp;P 500 stocks spanning 1982 to 2025 yielded a MAPE of 0.80% for one-day-ahead predictions, compared to 1.20% for ARIMA and 1.00% for LSTM. Ablation studies isolated the contribution of each component: removing sentiment raised error by 10% (and by 25% during earnings seasons), while removing the graph structure increased error by 15%. Directional accuracy reached 65%, exceeding baselines by 7 to 10 percentage points, and both paired t-tests and Diebold-Mariano tests confirmed statistical significance across all comparisons (p &lt; 0.05), with the latter accounting for autocorrelation in forecast residuals.</p><p>Taken together, these findings support the premise that jointly modeling inter-stock dependencies and investor sentiment yields more accurate and robust forecasts than architectures that address either dimension in isolation. Future work should extend this framework to broader equity universes, incorporate multilingual and multi-platform sentiment sources, investigate efficient attention variants for real-time deployment, and integrate the forecasting pipeline with portfolio optimization and formal risk management objectives.</p></div><figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_0"><head>17 Fig. 1 .</head><label>171</label><figDesc>Fig.1. Feature engineering pipeline. Raw OHLCV data is processed through multiple technical indicator computations, normalized using z-score standardization, and concatenated into the final feature vector.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_1"><head></head><label></label><figDesc>j ∈ R d are node representations at layer ℓ, ∥ denotes concatenation, and b e is a learnable bias. Edges are undirected: e ij = e ji .</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_2"><head></head><label></label><figDesc>are linear projections, d k = 64 is the key dimension, M is the causal mask with M ab = 0 if a ≥ b and M ab = −∞ otherwise, and E ∈ R N ×N is the edge weight matrix. The additive graph bias allows content-based attention (via QK T ) and structural priors (via E) to jointly determine how information flows between stocks at each layer.With H = 8 attention heads, each operating ind k = d v = 64 dimensions, the total model dimension is d model = H × d k = 512.Fig. 3 illustrates the internal structure of a single transformer layer, showing the residual connections, layer normalization, and dropout placement.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_3"><head>Fig. 3 .</head><label>3</label><figDesc>Fig.3. Single transformer layer architecture. Input passes through multi-head self-attention with residual connection and layer normalization, followed by a position-wise feed-forward network with another residual connection and normalization.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_4"><head>Fig. 4</head><label>4</label><figDesc>illustrates the complete sentiment extraction pipeline from raw input to final score. Raw Tweet: "$AAPL crushing it!" Preprocessing &amp; Tokenization BERT Encoder (12 layers) [CLS] Token Pooling Sentiment Score s ∈ [−1, +1]</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_5"><head>Fig. 4 .</head><label>4</label><figDesc>Fig. 4. BERT sentiment extraction pipeline. Raw social media posts are preprocessed, tokenized, encoded through BERT, pooled via [CLS] token, and classified to sentiment scores.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_0"><head></head><label></label><figDesc>. Since the platform was founded in 2006, the CSS dataset covers January 2007 to March 2025, yielding approximately 4.2 million posts across all stocks.</figDesc><table /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_1"><head>TABLE I SEARCH</head><label>I</label><figDesc>TAGS USED FOR CSS DATASET COLLECTION.</figDesc><table /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_2"><head>TABLE II DATASET</head><label>II</label><figDesc>SUMMARY STATISTICS.</figDesc><table><row><cell>Characteristic</cell><cell>FMD</cell><cell>CSS</cell></row><row><cell>Time period</cell><cell>1982-2025</cell><cell>2007-2025</cell></row><row><cell>Number of stocks</cell><cell>20</cell><cell>20</cell></row><row><cell>Trading days</cell><cell>≈10,300</cell><cell>≈4,100</cell></row><row><cell>Features per stock-day</cell><cell>17</cell><cell>3</cell></row><row><cell>Total observations</cell><cell>≈206,000</cell><cell>≈4.2M posts</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_3"><head></head><label></label><figDesc>Market Data: Price pi,t, Volume vi,t, Technical Indicators Ii,t</figDesc><table><row><cell></cell><cell></cell><cell></cell><cell>Social Media</cell></row><row><cell></cell><cell></cell><cell></cell><cell>Posts</cell></row><row><cell>Z-Score</cell><cell>Graph</cell><cell>Temporal</cell><cell>BERT</cell></row><row><cell>Normalization</cell><cell>Construction</cell><cell>Encoding</cell><cell>Encoder</cell></row><row><cell></cell><cell>Node Transformer</cell><cell></cell><cell>Sentiment</cell></row><row><cell></cell><cell>(6 Layers, 8 Heads)</cell><cell></cell><cell>Aggregation</cell></row><row><cell></cell><cell cols="2">Attention-Based</cell><cell></cell></row><row><cell></cell><cell cols="2">Multimodal Fusion</cell><cell></cell></row><row><cell></cell><cell cols="2">Price Prediction</cell><cell></cell></row><row><cell></cell><cell></cell><cell>ŷi,t+h</cell><cell></cell></row><row><cell cols="4">Fig. 2. System architecture. Price data, volume, and technical indicators are</cell></row><row><cell cols="4">jointly processed through normalization, graph construction, and temporal</cell></row><row><cell cols="4">encoding before the node transformer. Social media posts are processed</cell></row><row><cell cols="4">through BERT and sentiment aggregation. Both streams combine through</cell></row><row><cell cols="2">attention-based multimodal fusion.</cell><cell></cell><cell></cell></row></table><note>E ⊆ V ×V is the edge set (fully connected), and E ∈ R N ×N is the edge weight matrix. The choice of N = 20 nodes balances computational tractability with sufficient cross-sectional coverage to capture major sector interactions. While larger graphs might better represent full market topology, the current design enables deep temporal analysis (252-day input sequences) across diverse sectors. The fully-connected structure with learnable edge weights ensures all pairwise relationships can be discovered during training. Ablation results (Section V-E) confirm that the graph structure contributes meaningful predictive improvement over models without explicit inter-stock connections.Edge weights are initialized based on sector relationships and historical price correlations:</note></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_4"><head>TABLE III MODEL</head><label>III</label><figDesc>HYPERPARAMETERS.</figDesc><table><row><cell>Parameter</cell><cell>Value</cell></row><row><cell>Node transformer layers</cell><cell>6</cell></row><row><cell>Attention heads</cell><cell>8</cell></row><row><cell>Model dimension</cell><cell>512</cell></row><row><cell>FFN dimension</cell><cell>2048</cell></row><row><cell>Dropout rate</cell><cell>0.1</cell></row><row><cell>Input sequence length</cell><cell>252 days</cell></row><row><cell>BERT layers</cell><cell>12</cell></row><row><cell>BERT hidden dimension</cell><cell>768</cell></row><row><cell>Batch size</cell><cell>32</cell></row><row><cell>Total training epochs</cell><cell>60</cell></row><row><cell cols="2">multiple market cycles including the 1987 Black Monday</cell></row><row><cell cols="2">crash, the 2000 dot-com bubble, the 2008 financial crisis,</cell></row><row><cell cols="2">and the 2020 COVID-19 volatility spike. The temporal split</cell></row><row><cell cols="2">allocates 1982-2010 for training, 2011-2016 for validation, and</cell></row><row><cell cols="2">2017-2025 for testing. Although a single temporal split is used</cell></row><row><cell cols="2">rather than rolling retraining, the eight-year test window itself</cell></row><row><cell cols="2">encompasses several distinct market regimes: the post-2016</cell></row><row><cell cols="2">bull market, the 2018 volatility correction, the 2020 pandemic</cell></row><row><cell cols="2">crash and recovery, the 2022 inflation-driven drawdown, and</cell></row><row><cell cols="2">the subsequent 2023-2024 rebound. This regime diversity</cell></row><row><cell cols="2">provides a rigorous evaluation of generalization without the</cell></row><row><cell>confound of periodic refitting.</cell><cell></cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_6"><head>TABLE V MAPE</head><label>V</label><figDesc>(%) AND THEIL'S U ACROSS PREDICTION HORIZONS. BEST RESULTS IN BOLD. STANDARD ERRORS IN PARENTHESES.</figDesc><table><row><cell>Model</cell><cell>1-Day</cell><cell>5-Day</cell><cell>20-Day</cell><cell>Theil's U</cell></row><row><cell>Naïve Random Walk</cell><cell>1.35 (0.09)</cell><cell>3.40 (0.18)</cell><cell>5.80 (0.28)</cell><cell>1.00</cell></row><row><cell>ARIMA</cell><cell>1.20 (0.08)</cell><cell>2.80 (0.15)</cell><cell>4.50 (0.22)</cell><cell>0.89</cell></row><row><cell>VAR</cell><cell>1.15 (0.07)</cell><cell>2.60 (0.14)</cell><cell>4.20 (0.20)</cell><cell>0.85</cell></row><row><cell>LSTM</cell><cell>1.00 (0.06)</cell><cell>2.30 (0.12)</cell><cell>3.80 (0.18)</cell><cell>0.74</cell></row><row><cell>Random Forest</cell><cell>1.10 (0.07)</cell><cell>2.50 (0.13)</cell><cell>4.00 (0.19)</cell><cell>0.81</cell></row><row><cell>SVR</cell><cell>1.05 (0.06)</cell><cell>2.40 (0.12)</cell><cell>3.90 (0.18)</cell><cell>0.78</cell></row><row><cell>XGBoost</cell><cell>0.95 (0.05)</cell><cell>2.20 (0.11)</cell><cell>3.50 (0.16)</cell><cell>0.70</cell></row><row><cell>Simple Transformer</cell><cell>0.90 (0.05)</cell><cell>2.10 (0.10)</cell><cell>3.30 (0.15)</cell><cell>0.67</cell></row><row><cell>BERT + LSTM</cell><cell>0.88 (0.05)</cell><cell>2.00 (0.10)</cell><cell>3.10 (0.14)</cell><cell>0.65</cell></row><row><cell>Proposed Model</cell><cell>0.80 (0.04)</cell><cell>1.80 (0.09)</cell><cell>2.80 (0.13)</cell><cell>0.59</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_7"><head>Table VI</head><label>VI</label><figDesc>To isolate the contribution of each architectural component, TableVIIpresents results from systematic ablation experiments. Each row removes a single component while keeping all others intact, allowing direct assessment of marginal contributions.</figDesc><table><row><cell>presents direc-</cell></row><row><cell>tional accuracy with 95% confidence intervals computed via</cell></row><row><cell>bootstrap resampling.</cell></row><row><cell>The proposed model achieves 65% directional accuracy, ex-</cell></row><row><cell>ceeding the 50% random baseline by 15 percentage points and</cell></row><row><cell>outperforming LSTM by 7 percentage points. The confidence</cell></row><row><cell>interval [63.2, 66.8] does not overlap with the best baseline</cell></row><row><cell>(BERT + LSTM at [61.2, 64.8]), providing evidence that the</cell></row><row><cell>improvement is not attributable to sampling variability alone.</cell></row><row><cell>3) Ablation Studies:</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_9"><head></head><label></label><figDesc>Table VIII presents MAPE across volatility regimes classified by the CBOE Volatility Index (VIX) (Low: VIX &lt; 15; Medium: 15 ≤ VIX &lt; 25; High: VIX ≥ 25).</figDesc><table /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_11"><head>TABLE IX PAIRED</head><label>IX</label><figDesc>T-TEST RESULTS (n = 1, 580 TEST DAYS). NEGATIVE t INDICATES PROPOSED MODEL SUPERIORITY.</figDesc><table><row><cell>Baseline</cell><cell>t-statistic</cell><cell>p-value</cell><cell>Cohen's d</cell></row><row><cell>ARIMA</cell><cell>−4.25</cell><cell>&lt; 0.0001</cell><cell>0.34</cell></row><row><cell>LSTM</cell><cell>−3.12</cell><cell>0.0018</cell><cell>0.25</cell></row><row><cell>XGBoost</cell><cell>−2.45</cell><cell>0.0145</cell><cell>0.19</cell></row><row><cell>Simple Transformer</cell><cell>−2.18</cell><cell>0.0295</cell><cell>0.17</cell></row><row><cell>BERT + LSTM</cell><cell>−3.90</cell><cell>0.0001</cell><cell>0.31</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_12"><head>TABLE X DIEBOLD</head><label>X</label><figDesc>-MARIANO TEST RESULTS (n = 1,580 TEST DAYS, MAE LOSS). NEGATIVE DM-STATISTIC INDICATES PROPOSED MODEL SUPERIORITY.</figDesc><table><row><cell>Baseline</cell><cell>DM-statistic</cell><cell>p-value</cell></row><row><cell>Naïve Random Walk</cell><cell>−5.82</cell><cell>&lt; 0.0001</cell></row><row><cell>ARIMA</cell><cell>−3.58</cell><cell>0.0002</cell></row><row><cell>LSTM</cell><cell>−2.67</cell><cell>0.0038</cell></row><row><cell>XGBoost</cell><cell>−2.08</cell><cell>0.0189</cell></row><row><cell>Simple Transformer</cell><cell>−1.84</cell><cell>0.0330</cell></row><row><cell>BERT + LSTM</cell><cell>−3.31</cell><cell>0.0005</cell></row></table></figure>
+		</body>
+		<back>
+
+			<div type="acknowledgement">
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>ACKNOWLEDGMENT</head><p>The author is grateful to Dr. Hussein Al Osman, whose mentorship and thoughtful feedback shaped the direction of this work from its earliest stages. His expertise in both the technical and conceptual aspects of this research proved invaluable.</p></div>
+			</div>
+
+			<div type="annex">
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>Mahtab Haj Ali received the M.Sc. degree in digital transformation and innovation from the University of Ottawa, Ottawa, Canada, in 2021. She is currently pursuing the Ph.D. degree in electrical and computer engineering at the University of Ottawa, with a research focus on time series forecasting and deep learning models. She works as an AI Research Engineer at the National Research Council of Canada, where she builds and evaluates large language models (LLMs) and develops AI-driven solutions for real-world industrial applications. Her work includes large-scale time series analysis, advanced feature engineering, and the application of LLMs in production environments. Her research interests include deep learning for time series analysis, deep neural networks, and applied artificial intelligence.</p><p>Hussein Al Osman received the B.A.Sc., M.A.Sc., and Ph.D. degrees from the University of Ottawa, Ottawa, Canada. He is an Associate Professor and Associate Director in the School of Electrical Engineering and Computer Science at the University of Ottawa, where he leads the Multimedia Processing and Interaction Group. His research focuses on affective computing, multimodal affect estimation, human-computer interaction, serious gaming, and multimedia systems. He has produced over 50 peerreviewed research articles, two patents, and several technology transfers to industry.</p></div>			</div>
+			<div type="references">
+
+				<listBibl>
+
+<biblStruct xml:id="b0">
+	<analytic>
+		<title level="a" type="main">Efficient capital markets: A review of theory and empirical work</title>
+		<author>
+			<persName><forename type="first">E</forename><forename type="middle">F</forename><surname>Fama</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">The Journal of Finance</title>
+		<imprint>
+			<biblScope unit="volume">25</biblScope>
+			<biblScope unit="issue">2</biblScope>
+			<biblScope unit="page" from="383" to="417" />
+			<date type="published" when="1970">1970</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b1">
+	<monogr>
+		<title level="m" type="main">Stock market prediction via deep learning techniques: A survey</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Teng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><surname>Chen</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2212.12717</idno>
+		<imprint>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b2">
+	<analytic>
+		<title level="a" type="main">Market efficiency in the age of big data</title>
+		<author>
+			<persName><forename type="first">I</forename><forename type="middle">W R</forename><surname>Martin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Nagel</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of Financial Economics</title>
+		<imprint>
+			<biblScope unit="volume">145</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page" from="154" to="177" />
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b3">
+	<analytic>
+		<title level="a" type="main">Information in financial markets and its real effects</title>
+		<author>
+			<persName><forename type="first">I</forename><surname>Goldstein</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Review of Finance</title>
+		<imprint>
+			<biblScope unit="volume">27</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page" from="1" to="32" />
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b4">
+	<analytic>
+		<title level="a" type="main">Prospect theory: An analysis of decision under risk</title>
+		<author>
+			<persName><forename type="first">D</forename><surname>Kahneman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Tversky</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Econometrica</title>
+		<imprint>
+			<biblScope unit="volume">47</biblScope>
+			<biblScope unit="issue">2</biblScope>
+			<biblScope unit="page" from="263" to="291" />
+			<date type="published" when="1979">1979</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b5">
+	<monogr>
+		<title level="m" type="main">Technical analysis of the financial markets: A comprehensive guide to trading methods and applications</title>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">J</forename><surname>Murphy</surname></persName>
+		</author>
+		<imprint>
+			<date type="published" when="1999">1999</date>
+			<publisher>New York Institute of Finance</publisher>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b6">
+	<analytic>
+		<title level="a" type="main">Deep learning with long short-term memory networks for financial market predictions</title>
+		<author>
+			<persName><forename type="first">T</forename><surname>Fischer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Krauss</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">European Journal of Operational Research</title>
+		<imprint>
+			<biblScope unit="volume">270</biblScope>
+			<biblScope unit="issue">2</biblScope>
+			<biblScope unit="page" from="654" to="669" />
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b7">
+	<analytic>
+		<title level="a" type="main">Attention is all you need</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Vaswani</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Shazeer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Parmar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Uszkoreit</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Jones</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">N</forename><surname>Gomez</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ł</forename><surname>Kaiser</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">I</forename><surname>Polosukhin</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Advances in Neural Information Processing Systems</title>
+		<imprint>
+			<biblScope unit="volume">30</biblScope>
+			<biblScope unit="page" from="5998" to="6008" />
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b8">
+	<analytic>
+		<title level="a" type="main">A comprehensive survey on graph neural networks</title>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Pan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Long</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">Y</forename><surname>Philip</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Transactions on Neural Networks and Learning Systems</title>
+		<imprint>
+			<biblScope unit="volume">32</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page" from="4" to="24" />
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b9">
+	<analytic>
+		<title level="a" type="main">Nodeformer: A scalable graph structure learning transformer for node classification</title>
+		<author>
+			<persName><forename type="first">Q</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><surname>Zhao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">P</forename><surname>Wipf</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Yan</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Advances in Neural Information Processing Systems</title>
+		<imprint>
+			<biblScope unit="volume">35</biblScope>
+			<biblScope unit="page" from="27" to="387" />
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b10">
+	<analytic>
+		<title level="a" type="main">Comparison between autoregressive integrated moving average and long short-term memory models for stock price prediction</title>
+		<author>
+			<persName><forename type="first">P</forename><forename type="middle">R</forename><surname>Low</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Sakk</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IAES International Journal of Artificial Intelligence</title>
+		<imprint>
+			<biblScope unit="volume">12</biblScope>
+			<biblScope unit="issue">4</biblScope>
+			<biblScope unit="page" from="1828" to="1835" />
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b11">
+	<analytic>
+		<title level="a" type="main">The ARIMA model for the indonesia stock price</title>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">T</forename><surname>Wahyudi</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">International Journal of Economics and Management</title>
+		<imprint>
+			<biblScope unit="volume">11</biblScope>
+			<biblScope unit="page" from="223" to="236" />
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b12">
+	<analytic>
+		<title level="a" type="main">A naïve SVM-KNN based stock market trend reversal analysis for Indian benchmark indices</title>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">K</forename><surname>Nayak</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Mishra</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">K</forename><surname>Rath</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Applied Soft Computing</title>
+		<imprint>
+			<biblScope unit="volume">35</biblScope>
+			<biblScope unit="page" from="670" to="680" />
+			<date type="published" when="2015">2015</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b13">
+	<analytic>
+		<title level="a" type="main">Prediction of stock index of Tata Steel using hybrid machine learning based optimization techniques</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Siddique</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Panda</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">International Journal of Recent Technology and Engineering</title>
+		<imprint>
+			<biblScope unit="volume">8</biblScope>
+			<biblScope unit="page" from="3186" to="3193" />
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b14">
+	<analytic>
+		<title level="a" type="main">Predicting the direction of stock market prices using tree-based classifiers</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Basak</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Kar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Saha</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Khaidem</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">R</forename><surname>Dey</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">The North American Journal of Economics and Finance</title>
+		<imprint>
+			<biblScope unit="volume">47</biblScope>
+			<biblScope unit="page" from="552" to="567" />
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b15">
+	<analytic>
+		<title level="a" type="main">Convolutional neural network for stock trading using technical indicators</title>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">K</forename><surname>Chandar</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Automated Software Engineering</title>
+		<imprint>
+			<biblScope unit="volume">29</biblScope>
+			<biblScope unit="page" from="1" to="14" />
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b16">
+	<analytic>
+		<title level="a" type="main">Stock market trend prediction using high-order information of time series</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Wen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Chen</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Access</title>
+		<imprint>
+			<biblScope unit="volume">7</biblScope>
+			<biblScope unit="page" from="28" to="299" />
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b17">
+	<analytic>
+		<title level="a" type="main">Recurrent neural networks approach to the financial forecast of Google assets</title>
+		<author>
+			<persName><forename type="first">L</forename></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Di</forename><surname>Persio</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">O</forename><surname>Honchar</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">International Journal of Mathematics and Computers in Simulation</title>
+		<imprint>
+			<biblScope unit="volume">11</biblScope>
+			<biblScope unit="page" from="7" to="13" />
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b18">
+	<analytic>
+		<title level="a" type="main">Hybrid deep learning model for stock price prediction</title>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">A</forename><surname>Hossain</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Karim</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Thulasiram</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Bruce</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Wang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Symposium Series on Computational Intelligence</title>
+		<imprint>
+			<biblScope unit="page" from="1837" to="1844" />
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b19">
+	<analytic>
+		<title level="a" type="main">Stacked deep learning structure with bidirectional long-short term memory for stock market prediction</title>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Xu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Chhim</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Zheng</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Communications in Computer and Information Science</title>
+		<imprint>
+			<biblScope unit="volume">1265</biblScope>
+			<biblScope unit="page" from="447" to="460" />
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b20">
+	<analytic>
+		<title level="a" type="main">A new deep network model for stock price prediction</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Sheng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Zhang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">International Conference on Machine Learning for Cyber Security</title>
+				<imprint>
+			<date type="published" when="2022">2022</date>
+			<biblScope unit="page" from="413" to="426" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b21">
+	<analytic>
+		<title level="a" type="main">A novel graph convolutional feature based convolutional neural network for stock trend prediction</title>
+		<author>
+			<persName><forename type="first">W</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Jiang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W.-G</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Chen</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Information Sciences</title>
+		<imprint>
+			<biblScope unit="volume">556</biblScope>
+			<biblScope unit="page" from="67" to="94" />
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b22">
+	<analytic>
+		<title level="a" type="main">MG-Conv: A spatiotemporal multi-graph convolutional neural network for stock market index trend prediction</title>
+		<author>
+			<persName><forename type="first">C</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Liang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Cui</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Xu</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Computers and Electrical Engineering</title>
+		<imprint>
+			<biblScope unit="volume">103</biblScope>
+			<biblScope unit="page">108285</biblScope>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b23">
+	<analytic>
+		<title level="a" type="main">A financial forecasting model based on transformer architecture</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Qian</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">IEEE International Conference on Big Data</title>
+				<imprint>
+			<date type="published" when="2019">2019</date>
+			<biblScope unit="page" from="5384" to="5386" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b24">
+	<analytic>
+		<title level="a" type="main">A CNN-BiLSTM-AM method for stock price prediction</title>
+		<author>
+			<persName><forename type="first">W</forename><surname>Lu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Wang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Neural Computing and Applications</title>
+		<imprint>
+			<biblScope unit="volume">33</biblScope>
+			<biblScope unit="page" from="4741" to="4753" />
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b25">
+	<analytic>
+		<title level="a" type="main">SemEval-2017 task 5: Fine-grained sentiment analysis on financial microblogs and news</title>
+		<author>
+			<persName><forename type="first">K</forename><surname>Cortis</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Freitas</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Daudert</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Huerlimann</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Zarrouk</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Handschuh</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Davis</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 11th International Workshop on Semantic Evaluation</title>
+				<meeting>the 11th International Workshop on Semantic Evaluation<address><addrLine>SemEval-</addrLine></address></meeting>
+		<imprint>
+			<date type="published" when="2017">2017. 2017</date>
+			<biblScope unit="page" from="519" to="535" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b26">
+	<analytic>
+		<title level="a" type="main">BERT: Pretraining of deep bidirectional transformers for language understanding</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Devlin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M.-W</forename><surname>Chang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Lee</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Toutanova</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the Conference of the North American Chapter of the Association for Computational Linguistics</title>
+				<meeting>the Conference of the North American Chapter of the Association for Computational Linguistics</meeting>
+		<imprint>
+			<date type="published" when="2019">2019</date>
+			<biblScope unit="page" from="4171" to="4186" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b27">
+	<analytic>
+		<title level="a" type="main">Comparing predictive accuracy</title>
+		<author>
+			<persName><forename type="first">F</forename><forename type="middle">X</forename><surname>Diebold</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">S</forename><surname>Mariano</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">digital transformation and innovation (machine learning) from the</title>
+				<editor>
+			<persName><forename type="first">B</forename><forename type="middle">A</forename><surname>Sc</surname></persName>
+		</editor>
+		<meeting><address><addrLine>Ottawa, Canada</addrLine></address></meeting>
+		<imprint>
+			<publisher>Mohammad Al Ridhawi received</publisher>
+			<date type="published" when="1995">1995. 2019. 2021</date>
+			<biblScope unit="volume">13</biblScope>
+			<biblScope unit="page" from="253" to="263" />
+		</imprint>
+		<respStmt>
+			<orgName>University of Ottawa ; computer engineering at the University of Ottawa,</orgName>
+		</respStmt>
+	</monogr>
+	<note>degree in computer engineering and the M.Sc. degree in. respectively. He is currently pursuing the Ph.D. degree in electrical and. where he also serves as a Part-Time Engineering Professor. He has industry experience as a Senior Data Scientist and Senior Machine Learning Engineer, building production ML systems in financial and environmental domains. His research interests include deep learning, graph neural networks, natural language processing, financial time series analysis, and reinforcement learning</note>
+</biblStruct>
+
+				</listBibl>
+			</div>
+		</back>
+	</text>
+</TEI>

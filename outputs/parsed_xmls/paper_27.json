@@ -1,0 +1,210 @@
+{
+  "paper": {
+    "local_id": "paper27",
+    "title": "Agents of Chaos",
+    "abstract": "We report an exploratory red-teaming study of autonomous languagemodel-powered agents deployed in a live laboratory environment with persistent memory, email accounts, Discord access, file systems, and shell execution. Over a two-week period, twenty AI researchers interacted with the agents under benign and adversarial conditions. Focusing on failures emerging from the integration of language models with autonomy, tool use, and multi-party communication, we document eleven representative case studies. Observed behaviors include unauthorized compliance with non-owners, disclosure of sensitive information, execution of destructive system-level actions, denial-of-service conditions, uncontrolled resource consumption, identity spoofing vulnerabilities, cross-agent propagation of unsafe practices, and partial system takeover. In several cases, agents reported task completion while the underlying system state contradicted those reports. We also report on some of the failed attempts. Our findings establish the existence of security-, privacy-, and governance-relevant vulnerabilities in realistic deployment settings. These behaviors raise unresolved questions regarding accountability, delegated authority, and responsibility for downstream harms, and warrant urgent attention from legal scholars, policymakers, and researchers across disciplines. This report serves as an initial empirical contribution to that broader conversation. 1",
+    "published_date": "2026-02-23",
+    "doi": null
+  },
+  "people": [
+    {
+      "name": "Natalie Shapira",
+      "author_order": 1,
+      "orcid": null
+    },
+    {
+      "name": "Chris Wendler",
+      "author_order": 2,
+      "orcid": null
+    },
+    {
+      "name": "Avery Yen",
+      "author_order": 3,
+      "orcid": null
+    },
+    {
+      "name": "Gabriele Sarti",
+      "author_order": 4,
+      "orcid": null
+    },
+    {
+      "name": "Koyena Pal",
+      "author_order": 5,
+      "orcid": null
+    },
+    {
+      "name": "Olivia Floody",
+      "author_order": 6,
+      "orcid": null
+    },
+    {
+      "name": "Adam Belfki",
+      "author_order": 7,
+      "orcid": null
+    },
+    {
+      "name": "Alex Loftus",
+      "author_order": 8,
+      "orcid": null
+    },
+    {
+      "name": "Aditya Ratan Jannali",
+      "author_order": 9,
+      "orcid": null
+    },
+    {
+      "name": "Nikhil Prakash",
+      "author_order": 10,
+      "orcid": null
+    },
+    {
+      "name": "Jasmine Cui",
+      "author_order": 11,
+      "orcid": null
+    },
+    {
+      "name": "Giordano Rogers",
+      "author_order": 12,
+      "orcid": null
+    },
+    {
+      "name": "Jannik Brinkmann",
+      "author_order": 13,
+      "orcid": null
+    },
+    {
+      "name": "Can Rager",
+      "author_order": 14,
+      "orcid": null
+    },
+    {
+      "name": "Amir Zur",
+      "author_order": 15,
+      "orcid": null
+    },
+    {
+      "name": "Michael Ripa",
+      "author_order": 16,
+      "orcid": null
+    },
+    {
+      "name": "Aruna Sankaranarayanan",
+      "author_order": 17,
+      "orcid": null
+    },
+    {
+      "name": "David Atkinson",
+      "author_order": 18,
+      "orcid": null
+    },
+    {
+      "name": "Rohit Gandikota",
+      "author_order": 19,
+      "orcid": null
+    },
+    {
+      "name": "Jaden Fiotto-Kaufman",
+      "author_order": 20,
+      "orcid": null
+    },
+    {
+      "name": "Eunjeong Hwang",
+      "author_order": 21,
+      "orcid": null
+    },
+    {
+      "name": "Hadas Orgad",
+      "author_order": 22,
+      "orcid": null
+    },
+    {
+      "name": "P Sam Sahil",
+      "author_order": 23,
+      "orcid": null
+    },
+    {
+      "name": "Negev Taglicht",
+      "author_order": 24,
+      "orcid": null
+    },
+    {
+      "name": "Tomer Shabtay",
+      "author_order": 25,
+      "orcid": null
+    },
+    {
+      "name": "Atai Ambus",
+      "author_order": 26,
+      "orcid": null
+    },
+    {
+      "name": "Nitay Alon",
+      "author_order": 27,
+      "orcid": null
+    },
+    {
+      "name": "Shiri Oron",
+      "author_order": 28,
+      "orcid": null
+    },
+    {
+      "name": "Ayelet Gordon-Tapiero",
+      "author_order": 29,
+      "orcid": null
+    },
+    {
+      "name": "Yotam Kaplan",
+      "author_order": 30,
+      "orcid": null
+    },
+    {
+      "name": "Vered Shwartz",
+      "author_order": 31,
+      "orcid": null
+    },
+    {
+      "name": "Tamar Rott",
+      "author_order": 32,
+      "orcid": null
+    },
+    {
+      "name": "Christoph Riedl",
+      "author_order": 33,
+      "orcid": null
+    },
+    {
+      "name": "Reuth Mirsky",
+      "author_order": 34,
+      "orcid": null
+    },
+    {
+      "name": "Maarten Sap",
+      "author_order": 35,
+      "orcid": null
+    },
+    {
+      "name": "David Manheim",
+      "author_order": 36,
+      "orcid": null
+    },
+    {
+      "name": "Tomer Ullman",
+      "author_order": 37,
+      "orcid": null
+    },
+    {
+      "name": "David Bau",
+      "author_order": 38,
+      "orcid": null
+    }
+  ],
+  "organizations": [],
+  "countries": [],
+  "topics": [],
+  "acknowledgements": [
+    {
+      "text": "Acknowledgments We want to thank Andi Ardity, for actively engaging in discussions about agents and their consequences. His participation, including his critical perspective, meaningfully shaped the evolution of this project, led him to install the agents, and later encouraged additional researchers to follow suit. We are grateful as well for the support throughout and for the careful revisions to the manuscript, especially (but not only!) the setup section. We also want to thank Yonatan Belinkov, Ram Rachum, Grace Proebsting, Eric Todd, Arnab Sen Sharma, Angela Grosse, Ziv Katzir, Jeremy Wertheimer, James W. Pennebaker, Clément Dumas, Alice Rigg and Ori Shapira for their time to listen to research, conversations or helpful advice.",
+      "needs_llm_extraction": true
+    }
+  ]
+}

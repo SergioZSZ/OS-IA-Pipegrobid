@@ -1,0 +1,1600 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xml:space="preserve" xmlns="http://www.tei-c.org/ns/1.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.tei-c.org/ns/1.0 https://raw.githubusercontent.com/kermitt2/grobid/master/grobid-home/schemas/xsd/Grobid.xsd"
+ xmlns:xlink="http://www.w3.org/1999/xlink">
+	<teiHeader xml:lang="en">
+		<fileDesc>
+			<titleStmt>
+				<title level="a" type="main">Out-of-equilibrium selection pressure enhances inference from protein sequence data</title>
+			</titleStmt>
+			<publicationStmt>
+				<publisher/>
+				<availability status="unknown"><licence/></availability>
+				<date type="published" when="2026-02-13">February 13, 2026</date>
+			</publicationStmt>
+			<sourceDesc>
+				<biblStruct>
+					<analytic>
+						<author>
+							<persName><forename type="first">Nicola</forename><surname>Dietler</surname></persName>
+						</author>
+						<author>
+							<persName><forename type="first">Cyril</forename><surname>Malbranke</surname></persName>
+						</author>
+						<author>
+							<persName><forename type="first">Anne-Florence</forename><surname>Bitbol</surname></persName>
+						</author>
+						<author>
+							<affiliation key="aff0">
+								<orgName type="department" key="dep1">Institute of Bioengineering</orgName>
+								<orgName type="department" key="dep2">School of Life Sciences</orgName>
+								<orgName type="institution">École Polytechnique Fédérale de Lausanne (EPFL)</orgName>
+								<address>
+									<postCode>CH-1015</postCode>
+									<settlement>Lausanne</settlement>
+									<country key="CH">Switzerland</country>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<affiliation key="aff1">
+								<orgName type="institution">SIB Swiss Institute of Bioinformatics</orgName>
+								<address>
+									<postCode>CH-1015</postCode>
+									<settlement>Lausanne</settlement>
+									<country key="CH">Switzerland</country>
+								</address>
+							</affiliation>
+						</author>
+						<title level="a" type="main">Out-of-equilibrium selection pressure enhances inference from protein sequence data</title>
+					</analytic>
+					<monogr>
+						<imprint>
+							<date type="published" when="2026-02-13">February 13, 2026</date>
+						</imprint>
+					</monogr>
+					<idno type="MD5">BEE857E2BEEA1E08BDE6D38E5F562027</idno>
+					<idno type="arXiv">arXiv:2602.11427v1[q-bio.BM]</idno>
+				</biblStruct>
+			</sourceDesc>
+		</fileDesc>
+		<encodingDesc>
+			<appInfo>
+				<application version="0.7.2" ident="GROBID" when="2026-05-14T17:26+0000">
+					<desc>GROBID - A machine learning software for extracting information from scholarly documents</desc>
+					<ref target="https://github.com/kermitt2/grobid"/>
+				</application>
+			</appInfo>
+		</encodingDesc>
+		<profileDesc>
+			<abstract>
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>Homologous proteins have similar three-dimensional structures and biological functions that shape their sequences. The resulting coevolution-driven correlations underlie methods from Potts models to AlphaFold, which infer protein structure and function from sequences. Using a minimal model, we show that fluctuating selection strength and the onset of new selection pressures improve coevolutionbased inference of structural contacts. Our conclusions extend to realistic synthetic data and to the inference of interaction partners. Out-of-equilibrium noise arising from ubiquitous variations in natural selection thus enhances, rather than hinders, the success of inference from protein sequences.</p></div>
+			</abstract>
+		</profileDesc>
+	</teiHeader>
+	<text xml:lang="en">
+		<body>
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>Introduction. During evolution, proteins evolve through random mutations of their sequences and natural selection for function. This coupling between sequence and function leads to coevolution between amino acid sites in multiple sequence alignments (MSAs) of homologous proteins, which share ancestry, three-dimensional structure, and function. Amino-acid identities at contacting positions in a protein's threedimensional structure are correlated, due to the need to preserve physico-chemical complementarity. This has allowed to predict structural contacts from sequences, using mutual information <ref type="bibr" target="#b0">[1]</ref> and Potts models <ref type="bibr" target="#b1">[2]</ref><ref type="bibr" target="#b2">[3]</ref><ref type="bibr" target="#b3">[4]</ref><ref type="bibr" target="#b4">[5]</ref>, which are pairwise maximum entropy models inferred on MSAs. Attention coefficients in protein language models trained on MSAs capture coevolution <ref type="bibr" target="#b5">[6,</ref><ref type="bibr" target="#b6">7]</ref>, a key factor underlying AlphaFold's success in protein structure prediction <ref type="bibr" target="#b6">[7]</ref>. Beyond structure, coevolution allows to infer interaction partners <ref type="bibr" target="#b7">[8]</ref><ref type="bibr" target="#b8">[9]</ref><ref type="bibr" target="#b9">[10]</ref><ref type="bibr" target="#b10">[11]</ref> and functional sectors of collectively correlated amino acids <ref type="bibr" target="#b11">[12]</ref><ref type="bibr" target="#b12">[13]</ref><ref type="bibr" target="#b13">[14]</ref><ref type="bibr" target="#b14">[15]</ref>, as well as to investigate protein evolution <ref type="bibr" target="#b15">[16]</ref><ref type="bibr" target="#b16">[17]</ref><ref type="bibr" target="#b17">[18]</ref><ref type="bibr" target="#b18">[19]</ref><ref type="bibr" target="#b19">[20]</ref><ref type="bibr" target="#b20">[21]</ref>.</p><p>Natural environments often change over time <ref type="bibr" target="#b21">[22]</ref><ref type="bibr" target="#b22">[23]</ref><ref type="bibr" target="#b23">[24]</ref><ref type="bibr" target="#b24">[25]</ref><ref type="bibr" target="#b25">[26]</ref><ref type="bibr" target="#b26">[27]</ref>, causing variable selection pressures on proteins <ref type="bibr" target="#b21">[22]</ref>. How do such fluctuations impact inference from sequences? To address this, we consider a minimal model of protein sequences evolving under fluctuating selection to preserve structure. We show that the resulting out-of-equilibrium noise can enhance the inference of structural contacts via Potts models. This conclusion extends to realistic synthetic data. It also holds in a simple model of the onset of a new selection pressure, where a random ancestral sequence evolves under structural selection with phylogeny. Finally, we show that out-of-equilibrium selection also enhances the inference of interaction partners. Our results suggest that time-dependent external drives can facilitate inference by pairwise maximum entropy models.</p><p>Model and methods. We consider a minimal model, where protein sequences are represented as length-L sequences of Ising spins (σ 1 , . . . , σ L ), defined on the nodes * anne-florence.bitbol@epfl.ch of a fixed Erdős-Rényi random graph. Structural contacts are modeled by pairwise ferromagnetic couplings on the graph edges, all set to 1 for simplicity, leading to the Hamiltonian</p><formula xml:id="formula_0">H = − (i,j)∈E σ i σ j ,<label>(1)</label></formula><p>where E denotes the set of graph edges, see also <ref type="bibr" target="#b27">[28]</ref>.</p><p>We sample independent equilibrium sequences using a Metropolis-Hastings algorithm by proposing spin flips at random sites and accepting them with probability</p><formula xml:id="formula_1">p = min [1, exp(−∆H/T )] ,<label>(2)</label></formula><p>where ∆H represents the energy variation associated to the flip, and T the Monte Carlo sampling temperature, see Fig. <ref type="figure">S1</ref>(a) for a schematic and Fig. <ref type="figure" target="#fig_0">S2</ref> for information about equilibration. Selection strength is controlled by T , with higher T corresponding to weaker selection <ref type="bibr" target="#b27">[28]</ref>.</p><p>We model variable selection strength using a telegraph process that switches between T 1 and T 2 &gt; T 1 with equal transition rates 1/τ . We start from independent equilibrium sequences at temperature T 1 , see Fig. <ref type="figure">S1(b</ref>).</p><p>To go beyond this minimal model, we generate realistic synthetic data using a Potts model inferred from natural sequences via bmDCA <ref type="bibr" target="#b28">[30,</ref><ref type="bibr" target="#b29">31]</ref>, an approach whose generative power was experimentally validated <ref type="bibr" target="#b29">[31]</ref>.</p><p>Finally, to model the onset of a new selection pressure, we start from a random ancestral sequence and apply selection for structure using the minimal model described above. We evolve different sequences from the same ancestor via independent Markov chains, producing a simple star phylogeny, see Fig. <ref type="figure">S1(c</ref>).</p><p>Fluctuating selection enhances contact inference. In our model, selection strength is controlled by the sampling temperature T . At very low T , only spin flips that decrease the energy (Eq. 1) are accepted, leading to low sequence variability and poor inference. Conversely, at very high T , almost all spin flips are accepted, producing noisy sequences that also hinder inference. As a result, inference is optimal at intermediate temperatures.</p><p>In the present minimal model featuring a ferromagneticparamagnetic phase transition (Fig. <ref type="figure">S3</ref> and <ref type="bibr" target="#b27">[28,</ref><ref type="bibr" target="#b30">32]</ref>), inference is most successful around and moderately above this transition <ref type="bibr" target="#b27">[28,</ref><ref type="bibr" target="#b31">33]</ref>. With our parameter values, it occurs at T C = 4 (Fig. <ref type="figure">S4</ref>). Inference performance also depends on the number of available sequences (Fig. <ref type="figure">S5</ref> and <ref type="bibr" target="#b30">[32,</ref><ref type="bibr" target="#b31">33]</ref>). In natural data, this number is limited by experimental sampling and by biological evolution, leading to finite-size effects that hinder inference <ref type="bibr" target="#b2">[3,</ref><ref type="bibr" target="#b3">4,</ref><ref type="bibr" target="#b32">34]</ref>. Thus motivated, we work with finite MSAs throughout.</p><p>How does the time variability in selection pressure impact inference from sequence data? To answer this within our minimal model, we start from independent sequences equilibrated at T 1 = 1 and evolve them under a time-varying sampling temperature that switches between T 1 = 1 and T 2 = 15.</p><p>Fig. <ref type="figure">1</ref> shows the True Positive (TP) fraction -defined as the fraction of true contacts among the top N inferred Ising couplings, where N is the actual number of contacts -versus the number of accepted spin flips, representing mutations. Panel (a) shows that the average TP fraction increases with time before plateauing, indicating that fluctuating selection strength enhances inference performance. Faster temperature switches further improve inference by increasing sequence diversity. The effective number of sequences, M eff <ref type="bibr" target="#b1">[2]</ref>, defined by grouping sequences with Hamming distance smaller than 0.2, reaches 1980. This is close to the value for an MSA generated at T = 15 (2048), and to the total number of sequences per MSA (2048), and far above the nearly frozen M eff = 2 at T = 1. Inference under variable temperature outperforms both fixed-temperature cases at T 1 and T 2 , and matches the best fixed-temperature case, see Fig. <ref type="figure">S4</ref>, demonstrating that variable selection strength can substantially improve inference.</p><p>Fig. <ref type="figure">1</ref>(b) shows that, in single realizations of the process, switching to strong selection (T 1 ) after a weak selection phase (T 2 ) yields a transient improvement in inference performance (see also Fig. <ref type="figure">S6</ref>). Increasing selection strength suppresses noise that partly obscures structural correlations, before significantly reducing sequence diversity. Thus, switching between weak and strong selection temporarily enhances structural correlations in sequences. If the system is held at a fixed temperature for times comparable to the equilibration times (see Fig. <ref type="figure" target="#fig_0">S2</ref>), inference performance relaxes to its equilibrium value at that temperature. The observed improvement is therefore a transient, out-of-equilibrium effect. Faster temperature alternations, on timescales significantly below equilibration, amplify these effects and further enhance inference performance, as seen in Fig. <ref type="figure">1(a)</ref>.</p><p>What is the impact of the temperatures T 1 and T 2 between which the system switches? In our minimal model, inference is optimal around and slightly above the ferromagnetic-paramagnetic transition temperature T C (see above). Accordingly, alternating between T 1 &lt; T C FIG. <ref type="figure">1</ref>. Impact of fluctuating selection strength on contact prediction. TP fraction versus number of accepted mutations per sequence, while switching selection strength (i.e. the sampling temperature) via a telegraph process with timescale τ . (a) For each value of τ , the TP fraction is averaged over 1000 replicates. In each replicate, the same telegraph process is used for all sequences in the MSA. Different replicates use different realizations of the data generation and of the telegraph process. (b) The TP fraction is shown for single realizations of the telegraph process and data generation. Gray background: T2; white background: T1. (c) Same as in (a), except that a different telegraph process is used for each sequence in an MSA. In all panels, TP fractions for equilibrium sequences generated at T1 and T2 are shown for reference. Sequences are generated using our minimal model, see Fig. <ref type="figure">S1(a-b</ref>), with T1 = 1 and T2 = 15. For each realization, we generate an MSA of 2048 sequences of length 200 using an Erdős-Rényi random graph with probability 0.02 to represent contacts, and infer contacts via mean-field DCA (mfDCA) <ref type="bibr" target="#b2">[3,</ref><ref type="bibr" target="#b3">4]</ref>, which is computationally efficient, and performs well on minimal data <ref type="bibr" target="#b27">[28]</ref>, with pseudocount 0.01. and T 2 &gt; T C improves inference, whereas switching between two temperatures below or above T C does not (Fig. <ref type="figure">S7</ref>). Furthermore, for fast switches, the data resembles equilibrium data generated at an intermediate temperature between T 1 and T 2 , and leads to similar in-ference performance (Fig. <ref type="figure">S8</ref>).</p><p>So far, all sequences in an MSA were subjected to the same fluctuating selection strength. However, in natural data, different sequences (e.g. from different species) may experience different selection histories. Fig. <ref type="figure">1(c</ref>) shows inference performance when each sequence in an MSA is subjected to an independent realization of the temperature fluctuations. Inference is enhanced even more strongly than in Fig. <ref type="figure">1</ref>(a), indicating that heterogeneous fluctuating selection further amplifies the effect.</p><p>Extension to realistic synthetic data. How do the observations made with our minimal model generalize to more realistic data? To address this question, we infer a Potts model from a natural MSA of the protein family PF0004 (AAA ATPase) from Interpro/Pfam <ref type="bibr" target="#b33">[35]</ref> via bmDCA <ref type="bibr" target="#b28">[30,</ref><ref type="bibr" target="#b29">31]</ref>. We then generate sequences from this Potts model, either at equilibrium or under fluctuating selection strength (see Model and Methods).</p><p>Fig. <ref type="figure" target="#fig_0">2</ref> shows the TP fraction versus the number of accepted mutations for this realistic synthetic data. As in the minimal model, alternating between strong and weak selection improves inference performance, with faster alternations between low and high temperature yielding larger gains. Inference performance then becomes comparable to the best equilibrium performance, obtained at temperature T = 1 (Fig. <ref type="figure">S9</ref>), even though both alternating temperatures yield poorer inference at equilibrium. Thus, our conclusions from the minimal model extend to realistic synthetic data.</p><p>Impact of selection onset with phylogeny. Beyond fluctuating environments, out-of-equilibrium effects also arise when a new selection pressure emerges. We model this by generating sequences starting from a random ancestral sequence, under selection for structural contacts at fixed T in the minimal model, using a simple star phylogeny (see Model and Methods). This setup captures the onset of a specific selection pressure acting on a protein (sub)family, starting from an ancestor that was not subject to this particular constraint.</p><p>Fig. <ref type="figure">3</ref> shows the TP fraction versus the number µ of accepted mutations per branch in the star phylogeny. For T &lt; 4, i.e. below the ferromagnetic-paramagnetic transition of the minimal model, the TP fraction exhibits a maximum at intermediate µ. Inference then performs significantly better than the equilibrium TP fraction approached at large µ. This enhancement coincides with a transient increase of sequence diversity (Fig. <ref type="figure">S10</ref>), and persists for a balanced binary branching tree (Fig. <ref type="figure">S11</ref>). Hence, under strong selection, out-ofequilibrium noise originating from the random ancestor enhances contact inference. The beneficial effect of outof-equilibrium noise evidenced for fluctuating selection thus also applies to the onset of a new selection pressure, and remains effective even with phylogeny, which impairs contact inference performance under constant se-  <ref type="bibr" target="#b28">[30,</ref><ref type="bibr" target="#b34">36]</ref>, in particular using regularization strengths 0.01. Gray background: T2; white background: T1 (alternations not shown in the first panel for readability). Inference performances for equilibrium sequences generated at T1, T2, and T = 1, are shown for reference. Contact inference is performed using plmDCA <ref type="bibr" target="#b35">[37,</ref><ref type="bibr" target="#b36">38]</ref>, with regularization strengths set to 0.01 and no phylogenetic reweighting. lection <ref type="bibr" target="#b27">[28]</ref>.</p><p>Extension to interaction partner inference. So far, we considered structural contact inference. Coevolutionbased methods are also used to infer protein interaction partners <ref type="bibr" target="#b7">[8]</ref><ref type="bibr" target="#b8">[9]</ref><ref type="bibr" target="#b9">[10]</ref><ref type="bibr" target="#b37">39]</ref>. To test whether our results extend to this problem, we perform partner inference within our minimal model using the method of <ref type="bibr" target="#b37">[39]</ref>. As for contact inference, partner inference performance peaks at an intermediate temperature (Fig. <ref type="figure">S4</ref>). Fig. <ref type="figure">4</ref> shows that fluctuating selection strength enhances partner inference, indicating that the beneficial effect of out-of-equilibrium selection extends beyond contact inference.</p><p>Discussion. Using a minimal model, we showed that alternating between weak and strong selection enhances structural contact inference from sequences. This effect extends to realistic synthetic sequences. It also extends to the onset of a new selection pressure, even in the pres-FIG. <ref type="figure">3</ref>. Impact of selection onset on contact inference with phylogeny. The TP fraction is shown versus the number µ of accepted mutations per branch of the star phylogenetic tree, starting from a random ancestral sequence. Sequences with length 200 are generated as explained in Fig. <ref type="figure">S1(c</ref>), using the same Erdős-Rényi graph as in Fig. <ref type="figure">1</ref>, along a star phylogenetic tree with 2048 branches. Along each branch, Monte Carlo sampling is performed until µ mutations are accepted, giving 2048 final sequences, which constitute our MSA. We infer contacts via mfDCA <ref type="bibr" target="#b2">[3,</ref><ref type="bibr" target="#b3">4,</ref><ref type="bibr" target="#b27">28]</ref> with pseudocount 0.01. Results are averaged over 100 replicates, each starting from a different random ancestor. FIG. <ref type="figure">4</ref>. Impact of fluctuating selection strength on interaction partner prediction. TP fraction versus number of accepted mutations, while switching selection strength (i.e. the sampling temperature) via a telegraph process with timescale τ . For each value of τ , the TP fraction is averaged over 1000 replicates. TP fractions for equilibrium sequences generated at T1 and T2 are shown for reference. MSAs comprising 1024 sequences are generated as in Fig. <ref type="figure">1</ref>(a), and then randomly split into a training set of 400 sequences and a testing set of 624 sequences. The latter is randomly divided in sets of 4 sequences each, representing species, and each sequence is split in two halves of equal length representing two interaction partners. Pairings between partners are blinded in each species, and predicted using mfDCA scores with pseudocount 0.01 <ref type="bibr" target="#b37">[39]</ref>.</p><p>ence of phylogeny. Moreover, out-of-equilibrium selection also enhances interaction partner inference.</p><p>Under strong selection, limited sequence variability hinders coevolution-based inference. Alternating with weak selection, or starting from an unselected ancestor transiently increases diversity, enhancing inference. Overall, our results reveal that, far from hindering it, out-of-equilibrium selection can facilitate the extraction of structural and functional information from protein sequences. While we relied on synthetic data, which allowed us to vary selection pressures and control ancestral sequences, the extension to realistic data suggests that these principles are generic and relevant for natural proteins, where variable selection pressures are ubiquitous <ref type="bibr" target="#b21">[22,</ref><ref type="bibr" target="#b22">23]</ref>. Hence, our findings suggest that the success of coevolution-based inference in proteins may be partly caused by fluctuating selection intensity.</p><p>We considered simple forms of selection variability, either switching between two strengths or adding a new selection pressure. Other forms of fluctuations of selection strengths, including general random walks, are expected to yield similar results, provided that weak and strong selection are included and the fluctuations are faster than equilibration times. Besides, while we focused on structural selection pressures, which are a major constraint on protein evolution <ref type="bibr" target="#b38">[40]</ref>, our work could be extended to other evolutionary constraints, such as those shaping collectively correlated amino acid groups <ref type="bibr" target="#b11">[12]</ref><ref type="bibr" target="#b12">[13]</ref><ref type="bibr" target="#b13">[14]</ref><ref type="bibr" target="#b14">[15]</ref>, and to RNA structure inference <ref type="bibr" target="#b39">[41]</ref>. Additional perspectives include selection pressure variations that cannot be captured by an overall scaling of selection strength, e.g. affecting specific fields or couplings. Finally, although we focused on inference based on Potts models, coevolution also underlies recent deep learning approaches, including AlphaFold <ref type="bibr" target="#b6">[7]</ref>, indicating that out-of-equilibrium fluctuations may similarly benefit these approaches.</p><p>Beyond natural evolution, our results have implications for directed evolution experiments <ref type="bibr" target="#b40">[42]</ref>. In recent studies <ref type="bibr" target="#b41">[43,</ref><ref type="bibr" target="#b42">44]</ref>, structural prediction was performed using sequences evolved in vitro under constant selection strength. It was later shown <ref type="bibr" target="#b43">[45]</ref> that tuning this strength can improve contact inference. Our results suggest that dynamically varying selection strength during experiments, e.g. by varying antibiotic concentration, could also enhance inference.</p><p>More broadly, pairwise maximum entropy models are widely used for inference beyond protein sequence data. A prominent example is neuronal population activity <ref type="bibr" target="#b44">[46]</ref><ref type="bibr" target="#b45">[47]</ref><ref type="bibr" target="#b46">[48]</ref>. Neurons are often driven by common input stimuli that vary in time, and could play a role analogous to fluctuating selection strength in proteins. Such inputs have been found to impact inference <ref type="bibr" target="#b47">[49]</ref>, increase inferred couplings in some cases <ref type="bibr" target="#b48">[50]</ref>, and generate signatures reminiscent of criticality <ref type="bibr" target="#b49">[51,</ref><ref type="bibr" target="#b50">52]</ref>, which are frequently observed in biological systems <ref type="bibr" target="#b51">[53]</ref>. Our results thus sug-gest a potentially general principle: time-dependent external drives can enhance inference in systems described by pairwise maximum entropy models.  <ref type="figure">S3</ref>. Magnetization histograms evidencing a ferromagnetic-paramagnetic transition. We report histograms of the magnetization at different sampling temperatures. Sequences are generated at equilibrium using the cluster algorithm, starting from random sequences and using 300 accepted cluster flips for each sequence. Each histogram is computed over 2048 sequences. The same Erdős-Rényi graph as in Fig. <ref type="figure">1</ref> and elsewhere is used to represent contacts. </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Partners of interaction T C</head><p>FIG. <ref type="figure">S4</ref>. Impact of sampling temperature on contact and partner predictions at equilibrium. We show the TP fraction as a function of sampling temperature for contact prediction (left panel) and interaction partner prediction (right panel). Sequences are generated at equilibrium for different temperatures using the minimal model, see Fig. <ref type="figure">S1(a-b</ref>), and the cluster algorithm (starting from random sequences and using 300 accepted cluster flips), see Fig. <ref type="figure" target="#fig_0">S2</ref>. For structural contact inference, each TP fraction is computed over 2048 sequences, using the same method as in Fig. <ref type="figure">S1</ref>. For partner inference, each TP fraction is computed over 624 sequences, using the exact same method (and data split approach) as in Fig. <ref type="figure">4</ref>. The approximate temperature TC of the ferromagnetic-paramagnetic transition, see Fig. <ref type="figure">S3</ref>, is indicated by a vertical dotted line. All results are averaged over 100 replicates.  <ref type="figure">S5</ref>. Impact of MSA size on structural contact prediction. We report the TP fraction for structural contact prediction versus the MSA size used to infer contacts. MSAs are generated at equilibrium for each sampling temperature considered (using the cluster algorithm, starting from random sequences and using 300 accepted cluster flips for each sequence). As elsewhere, we infer contacts via mfDCA <ref type="bibr" target="#b2">[3,</ref><ref type="bibr" target="#b3">4,</ref><ref type="bibr" target="#b27">28]</ref> with pseudocount 0.01. The initial MSA is generated with the cluster algorithm (starting from random sequences and using 300 accepted cluster flips) and then single flips are applied, 1000 being accepted at the initial temperature, before the switch occurs. In each case, the TP fraction is calculated using MSAs of 2048 sequences, and an averaging over 100 replicates is performed. FIG. <ref type="figure">S7</ref>. Impact of fluctuating selection strength on contact prediction, using different sampling temperatures. As in Fig <ref type="figure">1(a)</ref>, we report the TP fraction versus the number of accepted mutations, while switching selection strength (i.e. the sampling temperature) via a telegraph process with timescale τ , but different pairs of temperatures (T1; T2) are employed (one pair in each panel). For each value of τ , the TP fraction is averaged over 1000 replicates. In each replicate, the same telegraph process is used for all sequences in the MSA. Different replicates use different realizations of the data generation and of the telegraph process. In all panels, TP fractions for equilibrium sequences generated at T1 and T2 are shown for reference. Sequences are generated using our minimal model, see Fig. <ref type="figure">S1(a-b</ref>). For each realization, we generate an MSA of 2048 sequences of length 200 using the same Erdős-Rényi random graph with probability 0.02 to represent contacts as in Fig. <ref type="figure">S1</ref>, and we infer contacts via mean-field DCA (mfDCA) <ref type="bibr" target="#b2">[3,</ref><ref type="bibr" target="#b3">4,</ref><ref type="bibr" target="#b27">28]</ref>, with pseudocount 0.01. FIG. <ref type="figure">S8</ref>. Characterization of sequences subjected to fluctuating selection strength. Histograms of the magnetization (left panels) and statistical energy (right panels) of each sequence are shown for sequences generated at equilibrium and for sequences subjected to fluctuating selection strength (i.e. sampling temperature), modeled by a telegraph process with timescale τ . All sequences are generated using the minimal model explained in Fig. <ref type="figure">S1</ref>. In each case, 2048 sequences are generated. Those subjected to fluctuating selection strength are each generated starting from a different ancestor, but always using the same realization of the telegraph noise, with τ = 5, for a total duration such that 5000 mutations are accepted, using the same sequence length of 200 and the same Erdős-Rényi random graph with probability 0.02 representing contacts as in Fig. <ref type="figure">1</ref>. Two different pairs of temperatures (T1, T2) are considered for the telegraph process (top and bottom panels). With the parameter values used in the top panels, the average TP fractions are respectively equal to 0.9945 (standard deviation [std]: 0.0019) and 0.9997 (std: 0.0008) with the telegraph process (averaged over telegraph realisations) and at equilibrium with T = 4.2. With those used in the bottom panels, the average TP fractions are respectively equal to 0.9843 (std: 0.0028) and 0.9860 (std: 0.0051) with the telegraph process and at equilibrium with T = 7. The TP fraction for contact prediction is shown versus the number of accepted mutations, at different sampling temperatures, starting from random sequences. In both panels, in each case, we consider MSAs of 70,000 sequences generated from a Potts model inferred on a natural MSA of 39,277 sequences from the PF0004 family (with length 132), following Refs. <ref type="bibr" target="#b28">[30,</ref><ref type="bibr" target="#b34">36]</ref>. In the left panel, data obtained after 10000 accepted mutations is used at each temperature to infer contacts. This realistic data is thus similar to that considered in Fig. <ref type="figure" target="#fig_0">2</ref>, except that here, we focus on data equilibrated at constant temperature, while in Fig. <ref type="figure" target="#fig_0">2</ref>, we considered data generated under switching selection strength. As in Fig. <ref type="figure" target="#fig_0">2</ref>, contact inference is performed using plmDCA <ref type="bibr" target="#b35">[37,</ref><ref type="bibr" target="#b36">38]</ref>, with regularization strengths set to 0.01 and no phylogenetic reweighting.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>FIG. S10.</head><p>Effective size of MSAs in the star phylogeny where selection is switched on. We report the effective size of the MSA versus the number µ of mutations per branch for the datasets corresponding to Fig. <ref type="figure">3</ref>, where we considered a star phylogeny starting from a random ancestral sequence. We compute the effective depth <ref type="bibr" target="#b1">[2]</ref> of each MSA as M eff = M i=1 wi, where for each sequence i, wi is the inverse of the number of sequences such that their Hamming distance to sequence i is smaller than or equal to a cutoff value, which we set to 0.2 or to 0.35 in each panel. Recall that the actual number of sequences in each MSA is 2048, implying that M eff ≤ 2048. FIG. <ref type="figure">S11</ref>. Impact of switching selection on on contact inference using a binary branching tree. As in Fig. <ref type="figure">3</ref>, the TP fraction is shown versus the number µ of accepted mutations per branch of a phylogenetic tree, starting from a random ancestral sequence. However, here, we use a binary branching tree (see schematic on the right) instead of a star phylogenetic tree. Sequences are generated as explained in Fig. <ref type="figure">S1(a</ref>) and in the schematic on the right, using the same Erdős-Rényi graph as in Fig. <ref type="figure">1</ref>. The phylogenetic tree comprises 11 generations of binary branching events, resulting in 2048 sequences at the leaves, which constitute our MSA, and µ mutations are accepted on each branch. We infer contacts via mfDCA <ref type="bibr" target="#b2">[3,</ref><ref type="bibr" target="#b3">4,</ref><ref type="bibr" target="#b27">28]</ref> with pseudocount 0.01. Results are averaged over 100 replicates, each starting from a different random ancestor. Schematic (right): To minimally model the impact of selection being switched on, we take a random sequence as the ancestor, and we evolve it along a perfectly balanced binary branching tree (green) where mutations (red) are accepted with the probability in Eq. ( <ref type="formula" target="#formula_1">2</ref>), yielding selection for structural contacts. On each branch of the tree, Monte Carlo sampling is performed until µ mutations are accepted, with µ = 2 in our schematic. Hence, all branches in this simple tree have the same length.</p></div><figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_0"><head>FIG. 2 .</head><label>2</label><figDesc>FIG. 2.Impact of fluctuating selection strength on contact prediction: PF0004 family. As in Fig.1(b), the TP fraction is shown versus the number of accepted mutations under switching selection strength via a telegraph process, but for realistic data composed of MSAs of 70,000 sequences generated from a Potts model inferred on a natural MSA of 39,277 sequences from the PF0004 family (with length 132), following Refs.<ref type="bibr" target="#b28">[30,</ref><ref type="bibr" target="#b34">36]</ref>, in particular using regularization strengths 0.01. Gray background: T2; white background: T1 (alternations not shown in the first panel for readability). Inference performances for equilibrium sequences generated at T1, T2, and T = 1, are shown for reference. Contact inference is performed using plmDCA<ref type="bibr" target="#b35">[37,</ref><ref type="bibr" target="#b36">38]</ref>, with regularization strengths set to 0.01 and no phylogenetic reweighting.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_1"><head>FIG</head><label></label><figDesc>FIG. S2.Equilibration of sequences. We report results regarding the generation of equilibrium sequences at fixed sampling temperature by two Metropolis Monte Carlo algorithms, namely the Wolff cluster algorithm<ref type="bibr" target="#b52">[55]</ref> (left panels) and the single flip algorithm (right panels). Note that, elsewhere in this work, the single flip algorithm is used if not stated otherwise, given its biological relevance (single flips representing mutations). We start from sequences where each spin is chosen uniformly at random. Absolute magnetization (top) and correlation of the absolute magnetization with that of the initial state (bottom) are shown versus the number of accepted cluster flips (left) or single spin flips (right). As equilibrium is reached, magnetisation plateaus and correlation tends to zero. This process is faster with the cluster algorithm. For comparison, the final value or magnetization reached with this algorithm is shown on the top right panel. At each sampling temperature, 2048 sequences are generated, each starting from a different random sequence. Results are averaged over 100 replicates.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_3"><head></head><label></label><figDesc>FIG. S5. Impact of MSA size on structural contact prediction. We report the TP fraction for structural contact prediction versus the MSA size used to infer contacts. MSAs are generated at equilibrium for each sampling temperature considered (using the cluster algorithm, starting from random sequences and using 300 accepted cluster flips for each sequence). As elsewhere, we infer contacts via mfDCA<ref type="bibr" target="#b2">[3,</ref><ref type="bibr" target="#b3">4,</ref><ref type="bibr" target="#b27">28]</ref> with pseudocount 0.01.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_4"><head></head><label></label><figDesc>FIG.S6. Impact of switching the sampling temperature on the performance of contact inference. We report the TP fraction for contact inference when starting from an equilibrated MSA at temperature T = 1 (left panel) or T = 15 (right panel) and switching to a different temperature. White background: initial temperature; grey background: new temperature. The initial MSA is generated with the cluster algorithm (starting from random sequences and using 300 accepted cluster flips) and then single flips are applied, 1000 being accepted at the initial temperature, before the switch occurs. In each case, the TP fraction is calculated using MSAs of 2048 sequences, and an averaging over 100 replicates is performed.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_5"><head>2 FIG. S9 .</head><label>2S9</label><figDesc>FIG.S9. Impact of sampling temperature on structural contact prediction: PF0004 family. Left panel: As in Fig.S4(a), the TP fraction for contact prediction is shown versus the sampling temperature, but for realistic data generated from a Potts model inferred on the PF0004 family. Right panel: The TP fraction for contact prediction is shown versus the number of accepted mutations, at different sampling temperatures, starting from random sequences. In both panels, in each case, we consider MSAs of 70,000 sequences generated from a Potts model inferred on a natural MSA of 39,277 sequences from the PF0004 family (with length 132), following Refs.<ref type="bibr" target="#b28">[30,</ref><ref type="bibr" target="#b34">36]</ref>. In the left panel, data obtained after 10000 accepted mutations is used at each temperature to infer contacts. This realistic data is thus similar to that considered in Fig.2, except that here, we focus on data equilibrated at constant temperature, while in Fig.2, we considered data generated under switching selection strength. As in Fig.2, contact inference is performed using plmDCA<ref type="bibr" target="#b35">[37,</ref><ref type="bibr" target="#b36">38]</ref>, with regularization strengths set to 0.01 and no phylogenetic reweighting.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0"><head></head><label></label><figDesc></figDesc><graphic coords="7,92.11,236.25,431.77,195.42" type="bitmap" /></figure>
+		</body>
+		<back>
+
+			<div type="acknowledgement">
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>This research was partly funded by the European Research Council (ERC) under the European Union's Horizon 2020 research and innovation programme (grant agreement No. 851173, to A.-F. B.).</p></div>
+			</div>
+
+
+			<div type="availability">
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>Code accessibility. Our code is available at https:// github.com/Bitbol-Lab/OutOfEquilibrium-ProtSeq.</p></div>
+			</div>
+
+			<div type="annex">
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Supplementary material</head> <ref type="formula">1</ref><p>), with spin flip acceptance probability in Eq. ( <ref type="formula">2</ref>), starting from random initial sequences. The MSA formed from the resulting sequences features correlations arising from couplings, shown between columns 0 and 2 (blue). (b) To generate sequences with fluctuating selection strength, we start from sequences generated at equilibrium with temperature T1. We then evolve each of these sequences using the same Metropolis-Hastings algorithm as before, but with a sampling temperature T that switches between T1 and T2. (c) To minimally model the impact of emerging selection during evolution along a phylogeny, we take a random sequence as ancestor, and we evolve it along a star phylogenetic tree (green) where mutations (red) are accepted with the probability in Eq. ( <ref type="formula">2</ref>). This represents selection for structural contacts being switched on. On each branch of the tree, µ mutations are accepted, with µ = 2 in our schematic.</p></div>			</div>
+			<div type="references">
+
+				<listBibl>
+
+<biblStruct xml:id="b0">
+	<analytic>
+		<title level="a" type="main">Mutual information without the influence of phylogeny or entropy dramatically improves residue contact prediction</title>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">D</forename><surname>Dunn</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><forename type="middle">M</forename><surname>Wahl</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><forename type="middle">B</forename><surname>Gloor</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Bioinformatics</title>
+		<imprint>
+			<biblScope unit="volume">24</biblScope>
+			<biblScope unit="page">333</biblScope>
+			<date type="published" when="2008">2008</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b1">
+	<analytic>
+		<title level="a" type="main">Identification of direct residue contacts in protein-protein interaction by message passing</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Weigt</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">A</forename><surname>White</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Szurmant</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">A</forename><surname>Hoch</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Hwa</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Proc. Natl. Acad. Sci. U.S.A</title>
+		<imprint>
+			<biblScope unit="volume">106</biblScope>
+			<biblScope unit="page">67</biblScope>
+			<date type="published" when="2009">2009</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b2">
+	<analytic>
+		<title level="a" type="main">Direct-coupling analysis of residue coevolution captures native contacts across many protein families</title>
+		<author>
+			<persName><forename type="first">F</forename><surname>Morcos</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Pagnani</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Lunt</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Bertolino</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">S</forename><surname>Marks</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Sander</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Zecchina</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">N</forename><surname>Onuchic</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Hwa</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Weigt</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Proc. Natl. Acad. Sci. U.S.A</title>
+		<imprint>
+			<biblScope unit="volume">108</biblScope>
+			<biblScope unit="page">E1293</biblScope>
+			<date type="published" when="2011">2011</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b3">
+	<analytic>
+		<title level="a" type="main">Protein 3D structure computed from evolutionary sequence variation</title>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">S</forename><surname>Marks</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><forename type="middle">J</forename><surname>Colwell</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Sheridan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><forename type="middle">A</forename><surname>Hopf</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Pagnani</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Zecchina</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Sander</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">PLoS ONE</title>
+		<imprint>
+			<biblScope unit="volume">6</biblScope>
+			<biblScope unit="page">e28766</biblScope>
+			<date type="published" when="2011">2011</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b4">
+	<analytic>
+		<title level="a" type="main">ACE: adaptive cluster expansion for maximum entropy graphical model inference</title>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">P</forename><surname>Barton</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>De Leonardis</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Coucke</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Cocco</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Bioinformatics</title>
+		<imprint>
+			<biblScope unit="volume">32</biblScope>
+			<biblScope unit="page">3089</biblScope>
+			<date type="published" when="2016">2016</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b5">
+	<analytic>
+		<title level="a" type="main">MSA Transformer</title>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">M</forename><surname>Rao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Verkuil</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Meier</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Canny</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Abbeel</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Sercu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Rives</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 38th International Conference on Machine Learning, Proceedings of Machine Learning Research</title>
+				<meeting>the 38th International Conference on Machine Learning, Machine Learning Research</meeting>
+		<imprint>
+			<date type="published" when="2021">2021</date>
+			<biblScope unit="volume">139</biblScope>
+			<biblScope unit="page">8844</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b6">
+	<analytic>
+		<title level="a" type="main">Highly accurate protein structure prediction with AlphaFold</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Jumper</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Evans</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Pritzel</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Green</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Figurnov</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">O</forename><surname>Ronneberger</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Tunyasuvunakool</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Bates</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Žídek</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Potapenko</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Bridgland</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Meyer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">A A</forename><surname>Kohl</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">J</forename><surname>Ballard</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Cowie</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Romera-Paredes</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Nikolov</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Jain</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Adler</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Back</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Petersen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Reiman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Clancy</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Zielinski</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Steinegger</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Pacholska</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Berghammer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Bodenstein</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Silver</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">O</forename><surname>Vinyals</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">W</forename><surname>Senior</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Kavukcuoglu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Kohli</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Hassabis</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nature</title>
+		<imprint>
+			<biblScope unit="volume">596</biblScope>
+			<biblScope unit="page">583</biblScope>
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b7">
+	<analytic>
+		<title level="a" type="main">Accurate prediction of protein-protein interactions from sequence alignments using a Bayesian method</title>
+		<author>
+			<persName><forename type="first">L</forename><surname>Burger</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Van Nimwegen</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Mol. Syst. Biol</title>
+		<imprint>
+			<biblScope unit="volume">4</biblScope>
+			<biblScope unit="page">165</biblScope>
+			<date type="published" when="2008">2008</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b8">
+	<analytic>
+		<title level="a" type="main">Inferring interaction partners from protein sequences</title>
+		<author>
+			<persName><forename type="first">A.-F</forename><surname>Bitbol</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">S</forename><surname>Dwyer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><forename type="middle">J</forename><surname>Colwell</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><forename type="middle">S</forename><surname>Wingreen</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Proc. Natl. Acad. Sci. U.S.A</title>
+		<imprint>
+			<biblScope unit="volume">113</biblScope>
+			<biblScope unit="page">12180</biblScope>
+			<date type="published" when="2016">2016</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b9">
+	<analytic>
+		<title level="a" type="main">Inferring interaction partners from protein sequences using mutual information</title>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">F</forename><surname>Bitbol</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">PLoS Comput. Biol</title>
+		<imprint>
+			<biblScope unit="volume">14</biblScope>
+			<biblScope unit="page">e1006401</biblScope>
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b10">
+	<analytic>
+		<title level="a" type="main">Pairing interacting protein sequences using masked language modeling</title>
+		<author>
+			<persName><forename type="first">U</forename><surname>Lupo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Sgarbossa</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A.-F</forename><surname>Bitbol</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Proc. Natl. Acad. Sci</title>
+		<imprint>
+			<biblScope unit="volume">121</biblScope>
+			<biblScope unit="page">e2311887121</biblScope>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b11">
+	<analytic>
+		<title level="a" type="main">Protein sectors: evolutionary units of three-dimensional structure</title>
+		<author>
+			<persName><forename type="first">N</forename><surname>Halabi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">O</forename><surname>Rivoire</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Leibler</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Ranganathan</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Cell</title>
+		<imprint>
+			<biblScope unit="volume">138</biblScope>
+			<biblScope unit="page">774</biblScope>
+			<date type="published" when="2009">2009</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b12">
+	<analytic>
+		<title level="a" type="main">Evolution-based functional decomposition of proteins</title>
+		<author>
+			<persName><forename type="first">O</forename><surname>Rivoire</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><forename type="middle">A</forename><surname>Reynolds</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Ranganathan</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">PLoS Comput. Biol</title>
+		<imprint>
+			<biblScope unit="volume">12</biblScope>
+			<biblScope unit="page">e1004817</biblScope>
+			<date type="published" when="2016">2016</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b13">
+	<analytic>
+		<title level="a" type="main">Revealing evolutionary constraints on proteins through sequence analysis</title>
+		<author>
+			<persName><forename type="first">S.-W</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A.-F</forename><surname>Bitbol</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Wingreen</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">PLOS Comput. Biol</title>
+		<imprint>
+			<biblScope unit="volume">15</biblScope>
+			<biblScope unit="page">e1007010</biblScope>
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b14">
+	<analytic>
+		<title level="a" type="main">Impact of phylogeny on the inference of functional sectors from protein sequence data</title>
+		<author>
+			<persName><forename type="first">N</forename><surname>Dietler</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Abbara</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Choudhury</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A.-F</forename><surname>Bitbol</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">PLOS Comput. Biol</title>
+		<imprint>
+			<biblScope unit="volume">20</biblScope>
+			<biblScope unit="page">1</biblScope>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b15">
+	<analytic>
+		<title level="a" type="main">Epistatic contributions promote the unification of incompatible models of neutral molecular evolution</title>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">A</forename><surname>De La Paz</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><forename type="middle">M</forename><surname>Nartey</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Yuvaraj</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Morcos</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Proc. Natl. Acad. Sci</title>
+		<imprint>
+			<biblScope unit="volume">117</biblScope>
+			<biblScope unit="page">5873</biblScope>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b16">
+	<analytic>
+		<title level="a" type="main">Emergent time scales of epistasis in protein evolution</title>
+		<author>
+			<persName><forename type="first">L</forename><forename type="middle">Di</forename><surname>Bari</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Bisardi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Cotogno</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Weigt</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Zamponi</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Proc. Natl. Acad. Sci</title>
+		<imprint>
+			<biblScope unit="volume">121</biblScope>
+			<biblScope unit="page">e2406807121</biblScope>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b17">
+	<analytic>
+		<title level="a" type="main">Reconstruction of ancestral protein sequences using autoregressive generative models</title>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">De</forename><surname>Leonardis</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Pagnani</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Barrat-Charlaix</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Mol. Biol. Evol</title>
+		<imprint>
+			<biblScope unit="volume">42</biblScope>
+			<biblScope unit="page">70</biblScope>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b18">
+	<analytic>
+		<title level="a" type="main">Kinetic coevolutionary models predict the temporal emergence of HIV-1 resistance mutations under drug selection pressure</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Biswas</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">I</forename><surname>Choudhuri</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Arnold</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Lyumkis</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Haldane</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">M</forename><surname>Levy</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Proc. Natl. Acad. Sci. U.S.A</title>
+		<imprint>
+			<biblScope unit="volume">121</biblScope>
+			<biblScope unit="page">e2316662121</biblScope>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b19">
+	<analytic>
+		<title level="a" type="main">Evolutionary sequence and structural basis for the distinct conformational landscapes of Tyr and Ser/Thr kinases</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Gizzio</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Thakur</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Haldane</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><forename type="middle">B</forename><surname>Post</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">M</forename><surname>Levy</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nat. Commun</title>
+		<imprint>
+			<biblScope unit="volume">15</biblScope>
+			<biblScope unit="page">6545</biblScope>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b20">
+	<analytic>
+		<title level="a" type="main">In vivo functional phenotypes from a computational epistatic model of evolution</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Alvarez</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><forename type="middle">M</forename><surname>Nartey</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Mercado</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">A</forename><surname>De La Paz</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Huseinbegovic</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Morcos</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Proc. Natl. Acad. Sci. U.S.A</title>
+		<imprint>
+			<biblScope unit="volume">121</biblScope>
+			<biblScope unit="page">e2308895121</biblScope>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b21">
+	<analytic>
+		<title level="a" type="main">Molecular evolution under fitness fluctuations</title>
+		<author>
+			<persName><forename type="first">V</forename><surname>Mustonen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Lässig</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Phys. Rev. Lett</title>
+		<imprint>
+			<biblScope unit="volume">100</biblScope>
+			<biblScope unit="page">108101</biblScope>
+			<date type="published" when="2008">2008</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b22">
+	<analytic>
+		<title level="a" type="main">Fluctuating selection: the perpetual renewal of adaptation in variable environments</title>
+		<author>
+			<persName><forename type="first">G</forename><surname>Bell</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Phil. Trans. R. Soc. B</title>
+		<imprint>
+			<biblScope unit="volume">365</biblScope>
+			<biblScope unit="page">87</biblScope>
+			<date type="published" when="2010">2010</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b23">
+	<analytic>
+		<title level="a" type="main">The impact of environmental fluctuations on evolutionary fitness functions</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Melbinger</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Vergassola</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Sci. Rep</title>
+		<imprint>
+			<biblScope unit="volume">5</biblScope>
+			<biblScope unit="page">15211</biblScope>
+			<date type="published" when="2015">2015</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b24">
+	<analytic>
+		<title level="a" type="main">Evolution of a fluctuating population in a randomly switching environment</title>
+		<author>
+			<persName><forename type="first">K</forename><surname>Wienand</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Frey</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Mobilia</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Phys. Rev. Lett</title>
+		<imprint>
+			<biblScope unit="volume">119</biblScope>
+			<biblScope unit="page">158301</biblScope>
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b25">
+	<analytic>
+		<title level="a" type="main">Population dynamics in a changing environment: Random versus periodic switching</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Taitelbaum</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>West</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Assaf</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Mobilia</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Phys. Rev. Lett</title>
+		<imprint>
+			<biblScope unit="volume">125</biblScope>
+			<biblScope unit="page">48105</biblScope>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b26">
+	<analytic>
+		<title level="a" type="main">Evolutionary dynamics in fluctuating environment</title>
+		<author>
+			<persName><forename type="first">I</forename><surname>Meyer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><forename type="middle">M</forename><surname>Shnerb</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Phys. Rev. Res</title>
+		<imprint>
+			<biblScope unit="volume">2</biblScope>
+			<biblScope unit="page">23308</biblScope>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b27">
+	<analytic>
+		<title level="a" type="main">Impact of phylogeny on structural contact inference from protein sequence data</title>
+		<author>
+			<persName><forename type="first">N</forename><surname>Dietler</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">U</forename><surname>Lupo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A.-F</forename><surname>Bitbol</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">J. R. Soc. Interface</title>
+		<imprint>
+			<biblScope unit="volume">20</biblScope>
+			<biblScope unit="page">20220707</biblScope>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b28">
+	<analytic>
+		<title level="a" type="main">How Pairwise Coevolutionary Models Capture the Collective Residue Variability in Proteins?</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Figliuzzi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Barrat-Charlaix</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Weigt</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Mol. Biol. Evol</title>
+		<imprint>
+			<biblScope unit="volume">35</biblScope>
+			<biblScope unit="page">1018</biblScope>
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b29">
+	<analytic>
+		<title level="a" type="main">An evolution-based model for designing chorismate mutase enzymes</title>
+		<author>
+			<persName><forename type="first">W</forename><forename type="middle">P</forename><surname>Russ</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Figliuzzi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Stocker</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Barrat-Charlaix</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Socolich</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Kast</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Hilvert</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Monasson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Cocco</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Weigt</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Ranganathan</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Science</title>
+		<imprint>
+			<biblScope unit="volume">369</biblScope>
+			<biblScope unit="page">440</biblScope>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b30">
+	<analytic>
+		<title level="a" type="main">Statistical physics of interacting proteins: Impact of dataset size and quality assessed in synthetic sequences</title>
+		<author>
+			<persName><forename type="first">C</forename><forename type="middle">A</forename><surname>Gandarilla-Pérez</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Mergny</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Weigt</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A.-F</forename><surname>Bitbol</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Phys. Rev. E</title>
+		<imprint>
+			<biblScope unit="volume">101</biblScope>
+			<biblScope unit="page">32413</biblScope>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b31">
+	<analytic>
+		<title level="a" type="main">Inferring couplings in networks across order-disorder phase transitions</title>
+		<author>
+			<persName><forename type="first">V</forename><surname>Ngampruetikorn</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">V</forename><surname>Sachdeva</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Torrence</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Humplik</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">J</forename><surname>Schwab</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">E</forename><surname>Palmer</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Phys. Rev. Research</title>
+		<imprint>
+			<biblScope unit="volume">4</biblScope>
+			<biblScope unit="page">23240</biblScope>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b32">
+	<analytic>
+		<title level="a" type="main">Robust and accurate prediction of residue-residue interactions across protein interfaces using evolutionary information</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Ovchinnikov</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Kamisetty</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Baker</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Elife</title>
+		<imprint>
+			<biblScope unit="volume">3</biblScope>
+			<biblScope unit="page">e02030</biblScope>
+			<date type="published" when="2014">2014</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b33">
+	<analytic>
+		<title level="a" type="main">Pfam: The protein families database in 2021</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Mistry</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Chuguransky</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Williams</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Qureshi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Salazar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><forename type="middle">L L</forename><surname>Sonnhammer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">C E</forename><surname>Tosatto</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Paladin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Raj</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><forename type="middle">J</forename><surname>Richardson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">D</forename><surname>Finn</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Bateman</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nucleic Acids Res</title>
+		<imprint>
+			<biblScope unit="volume">49</biblScope>
+			<biblScope unit="page">D412</biblScope>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b34">
+	<analytic>
+		<title level="a" type="main">Protein language models trained on multiple sequence alignments learn phylogenetic relationships</title>
+		<author>
+			<persName><forename type="first">U</forename><surname>Lupo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Sgarbossa</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A.-F</forename><surname>Bitbol</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nat. Commun</title>
+		<imprint>
+			<biblScope unit="volume">13</biblScope>
+			<biblScope unit="page">6298</biblScope>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b35">
+	<analytic>
+		<title level="a" type="main">Improved contact prediction in proteins: using pseudolikelihoods to infer Potts models</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Ekeberg</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Lovkvist</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Lan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Weigt</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Aurell</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Phys. Rev. E</title>
+		<imprint>
+			<biblScope unit="volume">87</biblScope>
+			<biblScope unit="page">12707</biblScope>
+			<date type="published" when="2013">2013</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b36">
+	<analytic>
+		<title level="a" type="main">Fast pseudolikelihood maximization for direct-coupling analysis of protein structure from many homologous amino-acid sequences</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Ekeberg</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Hartonen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Aurell</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">J. Comput. Phys</title>
+		<imprint>
+			<biblScope unit="volume">276</biblScope>
+			<biblScope unit="page">341</biblScope>
+			<date type="published" when="2014">2014</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b37">
+	<analytic>
+		<title level="a" type="main">Correlations from structure and phylogeny combine constructively in the inference of protein partners from sequences</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Gerardos</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Dietler</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">F</forename><surname>Bitbol</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">PLOS Comput. Biol</title>
+		<imprint>
+			<biblScope unit="volume">18</biblScope>
+			<biblScope unit="page">e1010147</biblScope>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b38">
+	<analytic>
+		<title level="a" type="main">Coevolutionary information, protein folding landscapes, and the thermodynamics of natural selection</title>
+		<author>
+			<persName><forename type="first">F</forename><surname>Morcos</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><forename type="middle">P</forename><surname>Schafer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">R</forename><surname>Cheng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">N</forename><surname>Onuchic</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><forename type="middle">G</forename><surname>Wolynes</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Proc. Natl. Acad. Sci. U.S.A</title>
+		<imprint>
+			<biblScope unit="volume">111</biblScope>
+			<biblScope unit="page">12408</biblScope>
+			<date type="published" when="2014">2014</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b39">
+	<analytic>
+		<title level="a" type="main">pydca v1.0: a comprehensive software for direct coupling analysis of RNA and protein sequences</title>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">B</forename><surname>Zerihun</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Pucci</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><forename type="middle">K</forename><surname>Peter</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Schug</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Bioinformatics</title>
+		<imprint>
+			<biblScope unit="volume">36</biblScope>
+			<biblScope unit="page">2264</biblScope>
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b40">
+	<analytic>
+		<title level="a" type="main">Directed evolution: Bringing new chemistry to life</title>
+		<author>
+			<persName><forename type="first">F</forename><forename type="middle">H</forename><surname>Arnold</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Angew. Chem. Int. Ed</title>
+		<imprint>
+			<biblScope unit="volume">57</biblScope>
+			<biblScope unit="page">4106</biblScope>
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b41">
+	<analytic>
+		<title level="a" type="main">Protein Structural Information and Evolutionary Landscape by In Vitro Evolution</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Fantini</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Lisi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>De Los Rios</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Cattaneo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Pastore</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Mol. Biol. Evol</title>
+		<imprint>
+			<biblScope unit="volume">37</biblScope>
+			<biblScope unit="page">1179</biblScope>
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b42">
+	<analytic>
+		<title level="a" type="main">Protein structure from experimental evolution</title>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">A</forename><surname>Stiffler</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><forename type="middle">J</forename><surname>Poelwijk</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><forename type="middle">P</forename><surname>Brock</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">R</forename><surname>Stein</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Riesselman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Teyra</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">S</forename><surname>Sidhu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">S</forename><surname>Marks</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><forename type="middle">P</forename><surname>Gauthier</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Sander</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Cell Syst</title>
+		<imprint>
+			<biblScope unit="volume">10</biblScope>
+			<biblScope unit="page">15</biblScope>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b43">
+	<analytic>
+		<title level="a" type="main">Modeling Sequence-Space Exploration and Emergence of Epistatic Signals in Protein Evolution</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Bisardi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Rodriguez-Rivas</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Zamponi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Weigt</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Mol. Biol. Evol</title>
+		<imprint>
+			<biblScope unit="volume">39</biblScope>
+			<biblScope unit="page">321</biblScope>
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b44">
+	<analytic>
+		<title level="a" type="main">Weak pairwise correlations imply strongly correlated network states in a neural population</title>
+		<author>
+			<persName><forename type="first">E</forename><surname>Schneidman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">J</forename><surname>Berry</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Segev</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><surname>Bialek</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nature</title>
+		<imprint>
+			<biblScope unit="volume">440</biblScope>
+			<biblScope unit="page">1007</biblScope>
+			<date type="published" when="2006">2006</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b45">
+	<analytic>
+		<title level="a" type="main">Collective Behavior of Place and Nonplace Neurons in the Hippocampal Network</title>
+		<author>
+			<persName><forename type="first">L</forename><surname>Meshulam</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">L</forename><surname>Gauthier</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><forename type="middle">D</forename><surname>Brody</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">W</forename><surname>Tank</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><surname>Bialek</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Neuron</title>
+		<imprint>
+			<biblScope unit="volume">96</biblScope>
+			<biblScope unit="page">1178</biblScope>
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b46">
+	<analytic>
+		<title level="a" type="main">Statistical mechanics for networks of real neurons</title>
+		<author>
+			<persName><forename type="first">L</forename><surname>Meshulam</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><surname>Bialek</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Rev. Mod. Phys</title>
+		<imprint>
+			<biblScope unit="volume">97</biblScope>
+			<biblScope unit="page">45002</biblScope>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b47">
+	<analytic>
+		<title level="a" type="main">The effect of nonstationarity on models inferred from neural data</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Tyrcha</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Roudi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Marsili</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Hertz</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">J. Stat. Mech</title>
+		<imprint>
+			<biblScope unit="volume">2013</biblScope>
+			<biblScope unit="page">P03005</biblScope>
+			<date type="published" when="2013">2013</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b48">
+	<analytic>
+		<title level="a" type="main">Ising model for neural data: Model quality and approximate methods for extracting functional connectivity</title>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Roudi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Tyrcha</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Hertz</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Phys. Rev. E</title>
+		<imprint>
+			<biblScope unit="volume">79</biblScope>
+			<biblScope unit="page">51915</biblScope>
+			<date type="published" when="2009">2009</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b49">
+	<analytic>
+		<title level="a" type="main">Zipf&apos;s Law and Criticality in Multivariate Data without Fine-Tuning</title>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">J</forename><surname>Schwab</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">I</forename><surname>Nemenman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Mehta</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Phys. Rev. Lett</title>
+		<imprint>
+			<biblScope unit="volume">113</biblScope>
+			<biblScope unit="page">68102</biblScope>
+			<date type="published" when="2014">2014</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b50">
+	<analytic>
+		<title level="a" type="main">Extrinsic vs intrinsic criticality in systems with many components</title>
+		<author>
+			<persName><forename type="first">V</forename><surname>Ngampruetikorn</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">I</forename><surname>Nemenman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">J</forename><surname>Schwab</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Phys. Rev. Res</title>
+		<imprint>
+			<biblScope unit="volume">7</biblScope>
+			<biblScope unit="page">13188</biblScope>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b51">
+	<analytic>
+		<title level="a" type="main">Are biological systems poised at criticality?</title>
+		<author>
+			<persName><forename type="first">T</forename><surname>Mora</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><surname>Bialek</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">J. Stat. Phys</title>
+		<imprint>
+			<biblScope unit="volume">144</biblScope>
+			<biblScope unit="page">268</biblScope>
+			<date type="published" when="2011">2011</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b52">
+	<analytic>
+		<author>
+			<persName><forename type="first">W</forename><surname>Krauth</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Statistical Mechanics: Algorithms and Computations</title>
+		<title level="s">Oxford Master Series in Physics</title>
+		<imprint>
+			<publisher>Oxford University Press</publisher>
+			<date type="published" when="2006">2006</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+				</listBibl>
+			</div>
+		</back>
+	</text>
+</TEI>

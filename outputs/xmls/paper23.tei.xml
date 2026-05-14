@@ -1,0 +1,2337 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xml:space="preserve" xmlns="http://www.tei-c.org/ns/1.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.tei-c.org/ns/1.0 https://raw.githubusercontent.com/kermitt2/grobid/master/grobid-home/schemas/xsd/Grobid.xsd"
+ xmlns:xlink="http://www.w3.org/1999/xlink">
+	<teiHeader xml:lang="en">
+		<fileDesc>
+			<titleStmt>
+				<title level="a" type="main">DC-Merge: Improving Model Merging with Directional Consistency</title>
+			</titleStmt>
+			<publicationStmt>
+				<publisher/>
+				<availability status="unknown"><licence/></availability>
+				<date type="published" when="2026-03-06">6 Mar 2026</date>
+			</publicationStmt>
+			<sourceDesc>
+				<biblStruct>
+					<analytic>
+						<author>
+							<persName><forename type="first">Han-Chen</forename><surname>Zhang</surname></persName>
+							<email>hanchenzh@seu.edu.cn</email>
+						</author>
+						<author>
+							<persName><forename type="first">Zi-Hao</forename><surname>Zhou</surname></persName>
+						</author>
+						<author>
+							<persName><forename type="first">Mao-Lin</forename><surname>Luo</surname></persName>
+						</author>
+						<author>
+							<persName><forename type="first">Shimin</forename><surname>Di</surname></persName>
+						</author>
+						<author>
+							<persName><forename type="first">Min-Ling</forename><surname>Zhang</surname></persName>
+						</author>
+						<author>
+							<persName><forename type="first">Tong</forename><surname>Wei</surname></persName>
+							<email>weit@seu.edu.cn</email>
+						</author>
+						<author>
+							<affiliation key="aff0">
+								<orgName type="department">School of Computer Science and Engineering</orgName>
+								<orgName type="institution">Southeast University</orgName>
+								<address>
+									<postCode>210096</postCode>
+									<settlement>Nanjing</settlement>
+									<country key="CN">China</country>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<affiliation key="aff1">
+								<orgName type="laboratory">Key Laboratory of Computer Network and Information Integration</orgName>
+								<orgName type="institution">Southeast University</orgName>
+							</affiliation>
+						</author>
+						<title level="a" type="main">DC-Merge: Improving Model Merging with Directional Consistency</title>
+					</analytic>
+					<monogr>
+						<imprint>
+							<date type="published" when="2026-03-06">6 Mar 2026</date>
+						</imprint>
+					</monogr>
+					<idno type="MD5">6E8C631F2CA12D39BEEDD3B6CCEBFC35</idno>
+					<idno type="arXiv">arXiv:2603.06242v1[cs.LG]</idno>
+				</biblStruct>
+			</sourceDesc>
+		</fileDesc>
+		<encodingDesc>
+			<appInfo>
+				<application version="0.7.2" ident="GROBID" when="2026-05-14T17:27+0000">
+					<desc>GROBID - A machine learning software for extracting information from scholarly documents</desc>
+					<ref target="https://github.com/kermitt2/grobid"/>
+				</application>
+			</appInfo>
+		</encodingDesc>
+		<profileDesc>
+			<abstract>
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>Model merging aims to integrate multiple task-adapted models into a unified model that preserves the knowledge of each task. In this paper, we identify that the key to this knowledge retention lies in maintaining the directional consistency of singular spaces between merged multi-task vector and individual task vectors. However, this consistency is frequently compromised by two issues: i) an imbalanced energy distribution within task vectors, where a small fraction of singular values dominate the total energy, leading to the neglect of semantically important but weaker components upon merging, and ii) the geometric inconsistency of task vectors in parameter space, which causes direct merging to distort their underlying directional geometry. To address these challenges, we propose DC-Merge, a method for directional-consistent model merging. It first balances the energy distribution of each task vector by smoothing its singular values, ensuring all knowledge components are adequately represented. These energy-balanced vectors are then projected onto a shared orthogonal subspace to align their directional geometries with minimal reconstruction error. Finally, the aligned vectors are aggregated in the shared orthogonal subspace and projected back to the original parameter space. Extensive experiments on vision and vision-language benchmarks show that DC-Merge consistently achieves state-of-the-art performance in both full fine-tuning and LoRA settings. The implementation code is available at https://github.com/Tobeginwith/DC-Merge.</p></div>
+			</abstract>
+		</profileDesc>
+	</teiHeader>
+	<text xml:lang="en">
+		<body>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="1.">Introduction</head><p>Pre-trained models are the foundation of modern machine learning systems <ref type="bibr" target="#b2">[3,</ref><ref type="bibr" target="#b3">4,</ref><ref type="bibr" target="#b51">52,</ref><ref type="bibr" target="#b70">71]</ref>. In practice, they are typically fine-tuned for specialization in specific tasks <ref type="bibr" target="#b16">[17,</ref><ref type="bibr" target="#b17">18,</ref><ref type="bibr" target="#b27">28,</ref><ref type="bibr" target="#b64">65]</ref>. A growing body of research has focused * Equal contribution, † Corresponding author on model merging <ref type="bibr" target="#b36">[37]</ref>, which integrates multiple taskadapted models into a unified model while preserving each task's capability. Many methods have been proposed to improve the effectiveness of model merging by reducing sign conflicts <ref type="bibr" target="#b67">[68]</ref>, by aligning gradients <ref type="bibr" target="#b10">[11]</ref>, or through magnitude-based selection <ref type="bibr" target="#b11">[12,</ref><ref type="bibr" target="#b29">30,</ref><ref type="bibr" target="#b44">45]</ref>. Despite its potential to enable efficient multi-task adaptation without retraining, existing approaches often suffer performance degradation after merging <ref type="bibr" target="#b36">[37]</ref>, especially when tasks originate from heterogeneous domains <ref type="bibr" target="#b10">[11]</ref>. Recent studies aim to reduce the interference among different tasks <ref type="bibr" target="#b5">[6,</ref><ref type="bibr" target="#b19">20,</ref><ref type="bibr" target="#b42">43]</ref>, while the underlying mechanism of how task-specific capabilities are preserved after merging remains underexplored. A central question thus arises: what property must be preserved to retain each task's ability after merging? Following Task Arithmetic (TA) <ref type="bibr" target="#b28">[29]</ref>, we define a task vector as the parameter difference between a fine-tuned model and its pre-trained counterpart. Each task vector can be decomposed via singular value decomposition (SVD) into a set of orthogonal knowledge vectors, each representing a distinct adaptation direction weighted by its singular value. We term each of these directions as a knowledge component and the corresponding singular values reflect the energy distributed across these components. We observe that task performance after model merging primarily depends on the directional consistency between the merged and original task vectors. Specifically, as long as the directions of the knowledge components are preserved, the merged model retains most task capabilities, even if their energy distribution changes. In contrast, slight directional deviations significantly degrade performance, indicating that maintaining directional consistency of knowledge components is crucial to maintaining task performance.</p><p>To quantify this consistency, we propose directional similarity (DirSim), which measures the consistency of directional geometry between two task vectors while discounting the influence of energy distribution. Unlike cosine similarity, which emphasizes consistency of high-energy compo-nents, DirSim also accounts for the directional consistency of weaker yet semantically informative components. Empirically, DirSim shows a strongly positive correlation with post-merge task-wise performance, validating it as a reliable indicator of knowledge preservation.</p><p>Despite its importance, directional consistency is often violated by two fundamental issues. First, the energy distribution of task vectors is imbalanced, where a few singular values capture most of the energy (as shown in Figure <ref type="figure">1</ref>), causing the model to overemphasize on high-energy directions and thereby hindering generalization and directional geometry preservation. Second, directly merging task vectors in the original parameter space leads to basis misalignment: different tasks span heterogeneous low-rank subspaces whose orientations are not geometrically aligned. Consequently, the merged task vector fails to preserve the directional geometry of each task vector that characterizes the task's knowledge. To address these challenges, we propose a new method called DC-Merge, which explicitly enforces directional consistency between the merged multitask vector and each original task vector. DC-Merge consists of two complementary modules: i) energy smoothing redistributes the singular values of each task vector to balance the energy distribution of its knowledge components, thereby preventing the merging process from overlooking weaker but semantically rich directions within each task vector. ii) cover space merging then projects all smoothed task vectors into a shared orthogonal subspace before aggregation, ensuring that merging occurs under a consistent cover basis without cross-task directional interference. Together, these modules preserve the task directional geometry during merging, enabling stable multi-task compatibility and strong generalization. Extensive experiments on both full fine-tuning (FFT) and LoRA <ref type="bibr" target="#b25">[26]</ref> setups show that DC-Merge achieves state-of-the-art results on both vision and vision-language benchmarks while maintaining high directional consistency with original task vectors.</p><p>In summary, our key contributions are as follows:</p><p>• We correlate the model merging performance with a novel concept directional consistency between the merged multi-task vector and individual task vectors. • We introduce DirSim, a new metric that isolates directional consistency from energy distribution effects. DirSim shows a strong positive correlation with the performance of merged model. • We propose DC-Merge, a method that enhances directional consistency by first balancing energy distribution of task vectors and then merging them within a shared orthogonal subspace.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>• Extensive experiments on vision and vision-language</head><p>benchmarks demonstrate that DC-Merge achieves stateof-the-art performance in both FFT and LoRA settings.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.">Directional Consistency Matters</head><p>This section reveals the intrinsic imbalance of energy distribution across knowledge components and presents empirical evidence confirming the importance of directional consistency in model merging. We also introduce a new metric to quantify this consistency. Unless otherwise specified, the experiments in this section are based on a ViT-B-32 visual encoder <ref type="bibr" target="#b14">[15]</ref> under LoRA configuration.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.1.">Preliminary</head><p>Model Merging. Given a pre-trained parameter set W 0 and a collection of fine-tuned models {W i } T i=1 obtained from distinct tasks, model merging seeks a merged parameter set W that approximates the behavior of each W i on its corresponding task. Task Vectors. For a FFT model of the i-th task, the task vector is defined as ∆W i = W i − W 0 , which captures the direction and magnitude of adaptation in the weight space <ref type="bibr" target="#b28">[29]</ref>. In the LoRA paradigm, the task-specific update is parameterized explicitly as ∆W LoRA i = B i A i , where A i ∈ R r×d and B i ∈ R d×r . Thus, LoRA directly produces a compact and structured low-rank task vector. Unified View and Low-Rank Merging. Although FFT and LoRA differ in parameterization, they are inherently connected under a unified low-rank formulation. Empirically, FFT updates ∆W i tend to reside in a low-dimensional subspace <ref type="bibr" target="#b25">[26]</ref> and can be well approximated by a truncated SVD as</p><formula xml:id="formula_0">∆W i ≈ U i Σ i V ⊤ i .</formula><p>From this perspective, LoRA explicitly constrains the parameter updates to a low-rank subspace, whereas FFT implicitly exhibits a similar lowrank structure that can be revealed through singular value analysis and compression. This insight bridges the two approaches under a unified low-rank adaptation paradigm.</p><p>Building on this unified view, model merging can be viewed as an operation on these low-rank matrices. The merging process thus involves: i) extracting low-rank representations for each task vector, ii) merging these lowrank matrices to effectively integrate multi-task knowledge, and iii) constructing the final model by combining the pretrained weights and merged multi-task vector through W = W 0 + ∆ W .</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.2.">Balanced Energy Enhances Generalization</head><p>A New Perspective on Task Vectors. We first provide a new interpretation of task vectors from the viewpoint of their intrinsic low-rank structure. Given a task vector ∆W with rank r ≪ d, we can decompose it using SVD:</p><formula xml:id="formula_1">∆W = r i=1 σ i u i v i⊤ ,<label>(1)</label></formula><p>where {u i } r i=1 and {v i } r i=1 are the left and right singular vectors, respectively, and {σ i } r i=1 are the correspond- ing singular values. From this decomposition, each term σ i u i v i⊤ can be regarded as a specific knowledge vector for task adaptation, and the adaptation direction u i v i⊤ is defined as a knowledge component. The singular value σ i quantifies the degree to which the corresponding knowledge component is utilized, thus the distribution of σ = (σ 1 , . . . , σ r ) can be interpreted as the energy distribution across knowledge components.</p><p>Observation: Singular Values Follow a Long-Tailed Distribution. An important empirical observation arises when analyzing the low-rank task vectors obtained from practical training. As shown in Figure <ref type="figure">1</ref>, the decomposed knowledge vectors {σ i u i v ⊤ i } r i=1 usually follow a long-tailed energy distribution, where a small fraction of knowledge components dominate the total energy, indicating that the knowledge captured by the task vector is inherently imbalanced. This intrinsic imbalance leads to a potential drawback in model behavior: as a small number of knowledge components dominate the task adaptation, the model tends to overfit to specific patterns while neglecting weaker but semantically important components.</p><p>To further illustrate this phenomenon, Figure <ref type="figure" target="#fig_0">2a</ref> presents the transfer performance in eight tasks, contrasting the results before and after balancing the internal knowledge of each task vector. The diagonal elements of each heatmap represent the degree to which the original task's capability is preserved, while the off-diagonal elements measure the zero-shot transferability to other tasks, reflecting how well the knowledge generalizes beyond its training domain. As shown in Figure <ref type="figure" target="#fig_0">2a</ref> (left), directly using the original lowrank task vector obtained from fine-tuning causes severe performance degradation on unrelated tasks, with many off-diagonal entries significantly suppressed, implying that over-concentrated energy distribution harms cross-task generalization. In contrast, Figure <ref type="figure" target="#fig_0">2a</ref> (right) displays the results of energy-balanced task vectors constructed by a simple averaging strategy:</p><formula xml:id="formula_2">∆W = r i=1 σ i r r i=1 u i v i⊤ .<label>(2)</label></formula><p>The diagonal elements are quite close to 1.0, indicating that the vast majority of task capability is preserved, and the offdiagonal elements increase notably, suggesting improved zero-shot transfer and multi-task compatibility.</p><p>Revisiting Task Vector Similarity from a Knowledge Decomposition Perspective. To further analyze the underlying reason behind better generalization capabilities after balancing the energy distribution, we revisit the cosine similarity between task vectors <ref type="bibr" target="#b28">[29]</ref> from the perspective of knowledge decomposition. We argue that this metric can be interpreted as the expressive capacity of one task vector to represent another, i.e., how well the knowledge of task t can be linearly reconstructed by task s. Proposition 1 Given the knowledge vector decompositions of two task vectors ∆W s and ∆W t , their cosine similarity can be equivalently expressed as</p><formula xml:id="formula_3">CosSim(∆W s , ∆W t ) = ⟨∆W s , ∆W t ⟩ ∥∆W s ∥ F ∥∆W t ∥ F = σ s R(s, t) σ t ⊤ ∥σ s ∥ 2 ∥σ t ∥ 2 ,<label>(3)</label></formula><p>where R(s, t) ∈ R n×m is defined entry-wise as:</p><formula xml:id="formula_4">R i,j (s, t) = u i s ⊤ u j t v j t ⊤ v i s .<label>(4)</label></formula><p>Remark. The matrix R(s, t) measures the directional consistency between the two knowledge bases. Each entry R i,j (s, t) = (u i s ) ⊤ u j t (v j t ) ⊤ v i s quantifies how the j-th knowledge component of task t can be projected onto the i-th knowledge component of task s. Therefore, R(s, t) can be interpreted as a projection operator that expresses the knowledge geometry of task t in the basis of task s. From this perspective, the overall cosine similarity CosSim(∆W s , ∆W t ) = σsR(s,t)(σt) ⊤ ∥σs∥2∥σt∥2 can be viewed as the weighted aggregation of these projections, reflecting how effectively task s can represent or reconstruct the knowledge of task t. When the rank m of ∆W t is higher than the rank n of ∆W s , this interpretation is particularly intuitive: ∆W s spans a lower-dimensional subspace that attempts to encode the richer knowledge geometry of task t. Thus, a higher CosSim indicates stronger expressiveness of task s with respect to task t. We leave further analysis of this perspective in Appendix C. Energy-Balanced Knowledge Components Enhance Multi-Task Performance. Building upon the cosine similarity analysis above, we can now explain why energybalanced task vectors achieve stronger multi-task capability. When singular values σ are highly skewed, the corresponding task vectors collapse onto a few dominant knowledge components, limiting the span of the subspace and thereby reducing its expressive coverage over other tasks. In contrast, balancing the energy distribution across knowledge components prevents representational collapse and enlarges the subspace, thereby enhancing its ability to encode multiple tasks.</p><p>To verify this, we compute the cosine similarity between the single-task vectors and multi-task vector, and compare it with that of the energy-balanced task vectors obtained by Eq. ( <ref type="formula" target="#formula_2">2</ref>). As shown in Figure <ref type="figure" target="#fig_0">2b</ref>, the balanced vectors consistently exhibit higher cosine similarity with the multi-task model vector. Empirically, this aligns with higher average normalized transfer accuracy. These results suggest that energy smoothing improves the task vector's ability to represent multi-task knowledge.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.3.">Measuring Directional Consistency</head><p>Directional Knowledge Similarity. We now delve into the underlying mechanism of task knowledge preservation. The cosine similarity can be factorized into two components: i) matrix R(s, t) quantifies the directional consistency between the two knowledge components, and ii) singular values σ s , σ t encode the importance of these knowledge components. While both terms contribute to the overall similarity, we argue that the preservation of task ability primarily depends on the directional consistency rather than on the energy distribution. Empirically, this observation is supported by the fact that energy-balanced task vectors can largely maintain the performance of the original task vector, which implies that as long as the relative directions of knowledge vectors are preserved, the model can retain most of its learned behavior.</p><p>To isolate this directional factor and quantify it explicitly, we propose a new similarity metric that removes the influence of energy distribution by uniformizing it with σs = 1n √ n , σt = 1m √ m . Substituting back to the cosine simi-larity leads to a purely directional consistency measure:</p><formula xml:id="formula_5">DirSim(∆W s , ∆W t ) ≜ σs R(s, t) σt ⊤ = 1 √ nm 1 ⊤ n R(s, t) 1 m .<label>(5)</label></formula><p>DirSim equally considers the similarity between every pair of directions, whereas CosSim is subject to the similarity among the dominant directions (Figure <ref type="figure">3a</ref>). A higher value DirSim implies that the two task vectors share more directionally consistent knowledge components and that one can better represent the other within its knowledge basis. To verify the above claim, we conduct controlled perturbation experiments and analyze how the retained task performance correlates with both DirSim and CosSim. As illustrated in Figure <ref type="figure">3b</ref>, performance decreases as DirSim declines, indicating that directional inconsistency leads to substantial performance loss. In contrast, when only energy is redistributed while the directions remain aligned, performance remains largely stable despite notable changes in CosSim. These results provide strong empirical evidence that preserving knowledge directions is the key to maintaining task ability, while variation of energy distribution has a relatively minor effect. We leave implementation details in Appendix E.3. Directional Similarity for Post-merge Task-wise Performance. Building upon the previous analysis, we argue that preserving the directions of knowledge components is the key factor for retaining each task's performance during model merging. To quantify this, one might consider computing the directional similarity (DirSim) between each task vector ∆W i and the merged task vector ∆ W . However, ∆ W aggregates multiple task vectors, introducing directional redundancy that artificially deflates DirSim. </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>CosSim(A, B) DirSim(A, B)</head><p>Major Direction</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Minor Direction</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>More influential in similarity</head><p>Less influential in similarity  <ref type="figure" target="#fig_5">7</ref>. We utilize Normalized Accuracy Improvement (NAI) <ref type="bibr" target="#b45">[46]</ref> to measure task-wise performance in (b) and (c).</p><formula xml:id="formula_6">1  2  1  2  2  1  2  1  (a) &amp;RV6LP'LU6LPEHWZHHQSHUWXUEDWHGWDVNYHFWRUDQGRULJLQDOWDVNYHFWRU<label>1</label></formula><p>To address this, we consider the task-specific activation of the merged vector by projecting it onto the low-rank feature subspace. Empirical evidence shows that features from a given task i collapse into a low-rank subspace U i <ref type="bibr" target="#b12">[13,</ref><ref type="bibr" target="#b18">19]</ref>. We thus project the merged multi-task vector onto the lowrank feature subspace to acquire the task-activated part:</p><formula xml:id="formula_7">∆ W i = U i U ⊤ i ∆ W .<label>(6)</label></formula><p>We then compute DirSim(∆W i , ∆ W i ) as our metric for task-wise capability retention.</p><p>In practice, the exact low-rank feature subspace U i is inaccessible and we approximate it using the subspace spanned by the left singular vectors of ∆W i . As shown in Figure <ref type="figure">3c</ref>, the projected DirSim computed in this manner exhibits a clear monotonic relationship with the normalized accuracy improvement of merged models across different datasets and methods. Points with higher projected DirSim correspond to better task knowledge retention. This confirms that the proposed projected DirSim can measure how well task-specific knowledge is preserved during model merging.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.">The Proposed DC-Merge Approach</head><p>The goal of our method is to preserve the complete directional geometry of task vectors during model merging. To this end, we propose two modules, i.e., energy smoothing and cover space merging. Energy Smoothing for Balanced Knowledge Representations. As discussed in Section 2.2, the imbalanced energy distribution of knowledge components biases the merging process, potentially ignoring the direction of weaker but semantically rich knowledge components. To mitigate these issues, we balance the energy distribution of each task vector via energy smoothing before merging. For each</p><formula xml:id="formula_8">Algorithm 1 DC-Merge 1: Input: Task vectors {∆ i } T i=1 with ∆ i ∈ R m×n 2: Output: Merged multi-task vector ∆ 3: ▷ Step 1: Construct cover space for all task vectors 4: for i = 1 → T do 5: Compute r-rank SVD: ∆ i ≈ U (r) i Σ (r) i V (r)⊤ i 6: Smoothing Σ (r) i by Σ (r) i = diag([σ 1 i ; σ 2 i ; . . . ; σ r i ]) 7:</formula><p>Reconstruct</p><formula xml:id="formula_9">∆ i = U (r) i Σ (r) i V (r)⊤ i 8:</formula><p>end for 9: Obtain concatenated basis U , V by Eq. ( <ref type="formula" target="#formula_15">9</ref>) 10: Whitening U and V respectively to obtain U and V 11: ▷ Step 2: Project ∆ i onto cover space and merge 12: Project each ∆ i and obtain M i by Eq. ( <ref type="formula" target="#formula_16">10</ref>) 13: M ← Merging({M i } T i=1 ) via TA or TIES 14: ▷ Step 3: Project M back to parameter space 15: Construct mask M ← block-diag(1 r×r , • • • , 1 r×r ) 16: Obtain merged task vector ∆ by Eq. ( <ref type="formula" target="#formula_18">11</ref>) task vector ∆ i , we consider its knowledge decomposition</p><formula xml:id="formula_10">∆ i = r j=1 σ j i u j i v j⊤ i</formula><p>, where σ i = (σ 1 i , . . . , σ r i ) contains the singular values sorted in descending order. Instead of directly using the original energy distribution σ i , we replace it with a smoothed version σ i to redistribute the energy more evenly across the top-r components, alleviating dominance on a few knowledge components.</p><p>For example, we consider the simple yet effective form of smoothing by replacing all top-r singular values with their mean: σ i = 1 r r j=1 σ j i 1 r , which equalizes the contribution of all retained knowledge components. For completeness, additional smoothing strategies are discussed in Appendix E.4. We then perform merging on these energy-balanced task vectors rather than the original ones.</p><p>Projection and Merging in the Cover Space. Directly merging task vectors in the original parameter space may distort directional geometry due to misaligned subspaces {(U i , V i )}. To preserve directional consistency across all tasks, we seek a pair of shared orthonormal basis ( U , V ) that define a cover space capturing the directional geometry of all task vectors, and perform merging within the cover space. The objective can be formulated as:</p><formula xml:id="formula_11">min U , V T i=1 r j=1 min σ j i ∈R k u j i v j⊤ i − U diag(σ j i ) V ⊤ 2 F , s.t. U ⊤ U = V ⊤ V = I.<label>(7)</label></formula><p>where k = rT . The inner minimization over σ j i determines the optimal coefficients along the cover basis. Using Proposition 2(a), we obtain the surrogate objective:</p><formula xml:id="formula_12">max U , V T i=1 r j=1 σ( U , V , u j i v j⊤ i ) 2 2 , s.t. U ⊤ U = V ⊤ V = I,<label>(8)</label></formula><p>where</p><formula xml:id="formula_13">σ(U , V , ∆) = diag U ⊤ ∆V ∈ R k denotes pro- jection onto the shared dyadic directions.</formula><p>As directly optimizing Eq. ( <ref type="formula" target="#formula_12">8</ref>) incurs non-trivial computational overhead, we adopt whitening <ref type="bibr" target="#b53">[54]</ref> here as it serves as a near-optimal solution to Eq. ( <ref type="formula" target="#formula_12">8</ref>) while being computationally efficient. In Appendix D, we provide an iterative approach for constructing cover basis and theoretically show its relation to the whitening transformation. Specifically, we construct the cover basis ( U , V ) by whitening the column-wise concatenated per-task knowledge basis:</p><formula xml:id="formula_14">U = [U (r) 1 , . . . , U (r) T ], V = [V (r) 1 , . . . , V<label>(r)</label></formula><formula xml:id="formula_15">T ].<label>(9)</label></formula><p>Thus, U ⊤ U = V ⊤ V = I defines an orthogonal basis that contains the union of all tasks' directional geometry. Each smoothed task vector is then projected onto cover space by:</p><formula xml:id="formula_16">M i = U ⊤ ∆ i V . (<label>10</label></formula><formula xml:id="formula_17">)</formula><p>This projection ensures that all task vectors are expressed under shared cover basis, which facilitates directionally consistent task vectors aggregation via existing elementwise merging methods, such as TA <ref type="bibr" target="#b28">[29]</ref> and TIES-Merging <ref type="bibr" target="#b67">[68]</ref>, to obtain M . Finally, the merged multi-task vector is reconstructed by projecting M back to the original parameter space:</p><formula xml:id="formula_18">∆ = U ( M ⊙ M) V ⊤ ,<label>(11)</label></formula><p>where M serves as a structural mask. We leave further discussion of the structural mask in Appendix D and summarize the key steps of our approach in Algorithm 1.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.">Experiments</head><p>In this section, we evaluate the performance of DC-Merge against existing baselines through extensive experiments using vision models and vision-language models (VLMs) in both FFT and LoRA settings, demonstrating the versatility of DC-Merge. We further perform comprehensive ablation studies to analyze the effectiveness of each key component in DC-Merge.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.1.">Results for Vision Tasks</head><p>In this subsection, we investigate the merging of vision models. For fully fine-tuned vision models, following prior works <ref type="bibr" target="#b19">[20,</ref><ref type="bibr" target="#b45">46]</ref>, we use 8-task, 14-task, and 20task benchmarks for evaluation, respectively, and employ three CLIP <ref type="bibr" target="#b51">[52]</ref> variants: ViT-B-32, ViT-B-16, and ViT-L-14 as visual encoders <ref type="bibr" target="#b14">[15]</ref>. For LoRA fine-tuned vision models, we extend previous evaluations by assessing both our method and existing baselines on a larger number of tasks, specifically 8, 12 and 16. Consistent with prior work <ref type="bibr" target="#b5">[6,</ref><ref type="bibr" target="#b19">20,</ref><ref type="bibr" target="#b45">46,</ref><ref type="bibr" target="#b57">58]</ref>, we report the average absolute and normalized accuracy of merged models.</p><p>In the full parameter fine-tuning setting, we compare our method against Weight Averaging <ref type="bibr" target="#b63">[64]</ref>, Task Arithmetic <ref type="bibr" target="#b28">[29]</ref>, TIES-Merging <ref type="bibr" target="#b67">[68]</ref>, Consensus TA <ref type="bibr" target="#b61">[62]</ref>, TSV-M <ref type="bibr" target="#b19">[20]</ref> and Iso-CTS <ref type="bibr" target="#b45">[46]</ref>. For LoRA fine-tuned models, Task Arithmetic, KnOTS-TIES <ref type="bibr" target="#b57">[58]</ref>, WUDI-Merging <ref type="bibr" target="#b5">[6]</ref>, TSV-M, and Iso-CTS serve as baselines. We provide details on benchmarks and experimental setups in the Appendix E.</p><p>Table <ref type="table" target="#tab_2">1</ref> shows the results of merging vision models finetuned by LoRA. Across three different backbones, the performance of our method consistently surpasses the current state-of-the-art methods. Moreover, the performance gains remain substantial with the growth of tasks. We also conduct experiments on the checkpoints provided by KnOTS <ref type="bibr" target="#b57">[58]</ref>, where our method still achieves superior performance compared to existing state-of-the-art methods. The corresponding results are reported in Appendix F.1. Table <ref type="table" target="#tab_3">2</ref> presents the results under the full fine-tuning setting. The results demonstrate that our approach not only exhibits strong capability when merging LoRA fine-tuned models but also achieves state-of-the-art performance under the FFT scenario. Notably, the superiority of our method becomes more significant as the number of tasks increases.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.2.">Results for Vision-Language Tasks</head><p>In the multi-modal model merging setting, we compare our method with Task Arithmetic, TIES-Merging, DARE <ref type="bibr" target="#b68">[69]</ref>, PCB-Merging <ref type="bibr" target="#b15">[16]</ref>, and RobustMerge <ref type="bibr" target="#b69">[70]</ref> on eight multimodal datasets using LLaVA-v1.5-7B <ref type="bibr" target="#b37">[38]</ref> as backbone. Following the experimental setup of RobustMerge, we further evaluate the merged model on four additional datasets to assess its generalization ability to unseen tasks. We adopt  the checkpoints released by RobustMerge and provide detailed experimental configurations in Appendix E. As shown in Table <ref type="table" target="#tab_4">3</ref>, our method notably outperforms existing state-of-the-art methods on both seen and unseen tasks, demonstrating that its applicability is not limited to vision models but can also scale to large multi-modal models. We also evaluate the generalization capability to unseen tasks of our method on vision models and the detailed results are presented in Appendix F.3. </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Method</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.3.">Ablations and Analysis</head><p>Unless otherwise specified, all experiments in this subsection are conducted in LoRA setting.</p><p>The Effectiveness of Energy Smoothing. We investigate the impact of our energy smoothing strategy on the perfor-mance of our method, with the results summarized in Table <ref type="table" target="#tab_5">4</ref>. The results align well with our observations: applying energy smoothing to each task vector effectively ensures that all the knowledge components can be adequately expressed, leading to a significant improvement in overall performance. Notably, preserving a moderate degree of skewness in the energy distribution (i.e., linear smoothing) can yield better results than averaging. We provide additional comparisons of smoothing strategy on ViT-B- Impact of Performing a Post-hoc Pruning. In Algorithm 1, we perform a post-hoc pruning by applying a mask M to mitigate directional inconsistency of different tasks before projecting the merged parameter matrix M back to the original parameter space. Table <ref type="table" target="#tab_6">5</ref> presents the effect of such structural pruning on overall performance in both LoRA and FFT settings. The performance degradation becomes more pronounced with the increase of tasks. Moreover, since the number of fine-tuned parameters in the FFT setting is substantially larger than that in LoRA, incorporating masks leads to significant performance gains of up to 10.55% in average normalized accuracy, highlighting the crucial role that structural pruning plays in preventing cross-task directional inconsistency. We investigate the impact of mask size on the performance in Appendix D. Impact of Merging in the Shared Cover space. To maintain the directional geometry of each task vector, we project the smoothed task vectors onto a shared subspace prior to model merging. As shown in Table <ref type="table">6</ref>, compared to merging in the original parameter space, CSM significantly boosts the performance of both TA <ref type="bibr" target="#b28">[29]</ref> and TIES <ref type="bibr" target="#b67">[68]</ref>. Moreover, after applying energy smoothing to the task vectors, the performance is further enhanced, indicating that the two main components of our proposed method are complementary. An illustrative example provided in Appendix D further demonstrates the importance of shared cover basis in preserving the directional structure of task vectors.  <ref type="table">6</ref>. Performance of individually applying energy smoothing (ES) and cover space merging (CSM) as well as combining them to TA or TIES compared with vanilla settings. We report the average normalized accuracy using ViT-B-32.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5.">Related Work</head><p>Model merging has emerged as a promising approach to integrate expert models fine-tuned on different downstream tasks into a single multi-task model. Task Arithmetic (TA) <ref type="bibr" target="#b28">[29]</ref> first introduces the concept of a task vector, defined as the difference between an expert and its pre-trained model, and combines them through scaled averaging to construct a merged model. Subsequent studies propose meticulously crafted parameter-wise strategies to mitigate interference during merging. TIES <ref type="bibr" target="#b67">[68]</ref> reduces sign conflicts by adopting the majority sign across all models. Consensus Merging <ref type="bibr" target="#b61">[62]</ref> applies binary masks to exclude parameters important to fewer than two tasks. Recent studies WUDI-Merging <ref type="bibr" target="#b5">[6]</ref> and FDA <ref type="bibr" target="#b54">[55]</ref> optimizes the merged task vector to keep the output of merged model align with each finetuned model given the same input of corresponding task.</p><p>These merging methods are data-free, producing merged task vectors that can be directly integrated into the pretrained model. A number of recent approaches, however, focus on creating model with multi-task capabilities by modifying the inference stage. Twin-Merging <ref type="bibr" target="#b41">[42]</ref> composes task-specific components at test time, requiring two forward passes. EMR-Merging <ref type="bibr" target="#b26">[27]</ref> employs additional per-task masks and rescalers for inference. In this paper, we restrict our study to merging methods which are datafree and leave the inference stage unaffected. SVD-based Model Merging. Recent data-free model merging methods have incorporated SVD to improve performance <ref type="bibr" target="#b57">[58,</ref><ref type="bibr" target="#b62">63]</ref>. State-of-the-art approaches include TSV-M <ref type="bibr" target="#b19">[20]</ref>, which enforces orthogonality between taskspecific subspaces to reduce task interference, and Iso-CTS <ref type="bibr" target="#b45">[46]</ref>, which standardizes singular values after combining a common subspace constructed by TA <ref type="bibr" target="#b28">[29]</ref> and taskspecific subspaces. More recently, ESM <ref type="bibr" target="#b35">[36]</ref> projects parameter updates into an activation-aware essential subspace and applies polarized scaling to amplify critical weights. In contrast to these methods, our approach prioritizes the directional consistency of each original task vector with the merged vector. We achieve this by balancing the energy distribution of knowledge components and performing the merge process within a shared orthogonal subspace induced by a pair of cover basis.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="6.">Conclusion and Limitation</head><p>Conclusion. In this work, we are the first to identify that preserving the directional consistency of task vectors after merging is crucial for retaining the capabilities of individual tasks. Building upon this insight, we propose DC-Merge, which maintains the directional consistency between the merged multi-task vector and each original task vector by energy smoothing and cover space merging. Our method achieves state-of-the-art performance in both FFT and LoRA settings. Limitation. There still exists a noticeable performance gap between merging LoRA fine-tuned models and full parameter fine-tuned models. This phenomenon may arise from the number of knowledge components in each task vector. A larger number of knowledge components provides redundancy that is robust to direction shift, whereas a smaller set makes the task vector more fragile to directional inconsistency. The knowledge components of each LoRA task vector are scarce, even fewer than the LoRA rank due to its long-tailed energy distribution. A potential remedy lies in promoting a balanced energy distribution of the knowledge components during fine-tuning.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>DC-Merge: Improving Model Merging with Directional Consistency</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Supplementary Material</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>A. Notations</head><p>We present the definitions used in our paper and their corresponding mathematical symbols in Table <ref type="table" target="#tab_8">7</ref> for ease of reference.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>B. Proof of Proposition 1</head><p>Proof 1 Let the (reduced) SVDs (knowledge-vector decompositions) of the two task updates be</p><formula xml:id="formula_19">∆W s = n i=1 σ i s u i s v i s ⊤ = U s diag(σ s ) V ⊤ s , ∆W t = m j=1 σ j t u j t v j t ⊤ = U t diag(σ t ) V ⊤ t ,<label>(12)</label></formula><p>where {u i s } n i=1 and {v i s } n i=1 (resp. {u j t } m j=1 and {v j t } m j=1 ) are orthonormal left/right singular vectors of ∆W s (resp. ∆W t ), and σ s ∈ R n ≥0 , σ t ∈ R m ≥0 collect the singular values in descending order. We calculate the numerator and denominator of CosSim as follows: Numerator. Using the Frobenius inner product ⟨A, B⟩ = tr(A ⊤ B) and bilinearity, we have:</p><formula xml:id="formula_20">∆W s , ∆W t = n i=1 σ i s u i s v i s ⊤ , m j=1 σ j t u j t v j t ⊤ = n i=1 m j=1 σ i s σ j t u i s v i s ⊤ , u j t v j t ⊤ .<label>(13</label></formula><p>) For rank-one matrices ab ⊤ and cd ⊤ we have ⟨ab ⊤ , cd ⊤ ⟩ = (a ⊤ c) (b ⊤ d). Thus, we have:</p><formula xml:id="formula_21">u i s v i s ⊤ , u j t v j t ⊤ = u i s ⊤ u j t • v i s ⊤ v j t = u i s ⊤ u j t • v j t ⊤ v i s .<label>(14</label></formula><p>) Therefore, we have:</p><formula xml:id="formula_22">∆W s , ∆W t = n i=1 m j=1 σ i s σ j t u i s ⊤ u j t v j t ⊤ v i s R i,j (s, t) = σ t R(s, t) σ ⊤ s = σ s R(s, t) σ ⊤ t ,<label>(15)</label></formula><p>where we have defined R(s, t) ∈ R n×m entrywise by R i,j (s, t) = (u i s ) ⊤ u j t (v j t ) ⊤ v i s .</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Denominator.</head><p>For any matrix A with SVD A = ℓ σ ℓ u ℓ v ℓ⊤ , the Frobenius norm satisfies ∥A∥ 2</p><formula xml:id="formula_23">F = ℓ σ ℓ 2 . Hence ∆W s F = n i=1 (σ i s ) 2 1/2 = σ s 2 , ∆W t F =   m j=1 (σ j t ) 2   1/2 = σ t 2 . (<label>16</label></formula><formula xml:id="formula_24">)</formula></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Conclusion. Combining the numerator and denominator gives</head><formula xml:id="formula_25">CosSim (∆W s , ∆W t ) = ⟨∆W s , ∆W t ⟩ ∥∆W s ∥ F ∥∆W t ∥ F = σ s R(s, t) (σ t ) ⊤ ∥σ s ∥ 2 ∥σ t ∥ 2 ,<label>(17)</label></formula><p>which proves the proposition.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>C. CosSim as Expressiveness via Coefficient Projections</head><p>Setting and notation. Let ∆ ∈ R m×n , and let U ∈ R m×k , V ∈ R n×k have orthonormal columns, i.e., U ⊤ U = V ⊤ V = I k . Define the bi-directional coefficient vector</p><formula xml:id="formula_26">σ(U , V , ∆) ≜ diag U ⊤ ∆ V ∈ R k .</formula><p>Proposition 2 With the notation above, the following hold:</p><formula xml:id="formula_27">(A) Least-squares fitting ↔ maximizing ℓ 2 -coefficients. min U ,V min σ∈R k ∆ − U diag(σ) V ⊤ F ↔ max U ,V ∥σ(U , V , ∆)∥ 2 (18) (B) Cosine similarity with the unweighted dyadic sum ↔ maximizing ℓ 1 -coefficients. max U ,V CosSim ∆, U V ⊤ ↔ max U ,V ∥σ(U , V , ∆)∥ 1 (19)</formula><p>The equivalences are up to the usual sign-alignment of column pairs {(u j , v j )} k j=1 (flipping both signs leaves U V ⊤ unchanged), which can be chosen to make all entries of σ(U , V , ∆) nonnegative. </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Symbol Definition</head><formula xml:id="formula_28">W 0 , {W i } T i=1</formula><p>The weights of pretrained model</p><formula xml:id="formula_29">{W i } T i=1</formula><p>The weights of T tasks fine-tuned model ∆W i</p><p>The task vector of task i</p><formula xml:id="formula_30">∆W i = r j=1 σ j i u j i v j⊤ i Knowledge decomposition of ∆W i σ j i u j i v j⊤ i j-th knowledge vector of ∆W i u j i v j⊤ i j-th knowledge component of ∆W i σ i = (σ 1 i , . . . , σ r i ) Energy distribution of task i {u j i v j⊤ i } r j=1</formula><p>Directional geometry of task i</p><formula xml:id="formula_31">∆W i = r j=1 σ j i r r j=1 u j i v j⊤ i Energy-balanced task vector of task i W , ∆ W</formula><p>The weights of merged model and merged task vector, respectively</p><formula xml:id="formula_32">U (r) i , V (r) i</formula><p>The top-r left and right singular vectors of ∆W i U , V</p><p>The concatenated per-task knowledge basis ( U , V )</p><p>The shared cover basis across all tasks</p><formula xml:id="formula_33">M i = U ⊤ ∆W i V Task vector i under shared cover space induced by ( U , V ) M = Element-wise Merging({M i } T i=1 )</formula><p>The merged vector under shared cover space</p><formula xml:id="formula_34">M = block-diag(1 r×r , • • • , 1 r×r )</formula><p>Structural mask for reconstructing parameters Proof 2 (A). Fix U , V orthonormal and consider</p><formula xml:id="formula_35">min σ∈R k ∆ − U diag(σ) V ⊤ 2 F . Let C = U ⊤ ∆ V and d = diag(C) = σ(U , V , ∆).</formula><p>Using orthonormality and the bilinearity of the Frobenius inner product,</p><formula xml:id="formula_36">∆, U diag(σ)V ⊤ = C, diag(σ) = k j=1 d j σ j . Therefore ∆ − U diag(σ)V ⊤ 2 F = ∥∆∥ 2 F + ∥diag(σ)∥ 2 F − 2 k j=1 d j σ j = ∥∆∥ 2 F + k j=1 (σ 2 j − 2d j σ j ).<label>(20)</label></formula><p>The unique minimizer is σ ⋆ j = d j for all j, i.e., σ ⋆ = d = σ(U , V , ∆), and the minimal value equals</p><formula xml:id="formula_37">∥∆∥ 2 F − k j=1 d 2 j = ∥∆∥ 2 F − σ(U , V , ∆) 2 2 .</formula><p>Hence, after inner minimization over σ, the outer optimization over U , V minimizes the residual iff it maximizes ∥σ(U , V , ∆)∥ 2 , proving Eq. ( <ref type="formula">18</ref>).</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>(B).</head><p>Using ⟨A, B⟩ = tr(A ⊤ B), we have:</p><formula xml:id="formula_38">∆, U V ⊤ = tr(U ⊤ ∆ V ) = k j=1 (U ⊤ ∆ V ) jj = k j=1 σ j (U , V , ∆) = σ(U , V , ∆) 1 (21) after sign alignment (flip (u j , v j ) together if needed). Moreover, ∥U V ⊤ ∥ 2 F = tr(V U ⊤ U V ⊤ ) = tr(V V ⊤ ) = k. Therefore CosSim ∆, U V ⊤ = ⟨∆, U V ⊤ ⟩ ∥∆∥ F ∥U V ⊤ ∥ F = σ(U , V , ∆) 1 ∥∆∥ F √ k . (<label>22</label></formula><formula xml:id="formula_39">)</formula><p>Since the denominator is independent of (U , V ), maximizing the cosine is equivalent to maximizing ∥σ(U , V , ∆)∥ 1 , establishing Eq. <ref type="bibr" target="#b18">(19)</ref>.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Interpretation.</head><p>Each entry of σ(U , V , ∆) = diag(U ⊤ ∆V ) is a bi-directional projection of ∆ onto the dyad u j v ⊤ j (input-and output-side alignments jointly). Part (A) shows that the best reconstruction by dyads in the basis (U , V ) is achieved when the coefficients equal these projections, and the residual decreases as the ℓ 2 energy of the projections increases. Part (B) shows that the cosine with the unweighted dyadic sum U V ⊤ is (up to a constant) the ℓ 1 sum of these projections. Consequently, a higher cosine indicates stronger ability of the basis (U , V ) to express (encode) the knowledge contained in ∆-exactly mirroring the main-text view where R(s, t) aggregates bi-directional projections to quantify how effectively task s represents task t.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>D. Theoretical Analysis of Merging in the Cover Space</head><p>In this section, we first provide a theoretical justification for whitening-based construction of cover space. The empirical results provide an intuitive and solid validation of the proposed objective in Eq. ( <ref type="formula" target="#formula_12">8</ref>). We also present visualization of task representations in cover space and investigate the effect of structural mask. Finally, we provide a toy example to intuitively demonstrate the crucial role that shared cover space plays in directional preservation.</p><p>Theoretical Analysis of Whitening-based Cover Space Construction. First, by expanding and applying the Hadamard norm inequality, we obtain:</p><formula xml:id="formula_40">T i=1 r j=1 σ( U , V , u j i v j⊤ i ) 2 2 = T i=1 r j=1 diag ( U ⊤ u j i )(v j⊤ i V ) 2 2 = T i=1 r j=1 U ⊤ u j i ⊙ V ⊤ v j i 2 2 = U ⊤ U ⊙ V ⊤ V 2 F ≤ U ⊤ U 2 F V ⊤ V 2 F ,<label>(23)</label></formula><p>where</p><formula xml:id="formula_41">U = ([U (r) 1 , . . . , U (r) T ]) and V = ([V (r) 1 , . . . , V (r) T ]</formula><p>). This shows that the surrogate objective is upper-bounded by two alignment terms</p><formula xml:id="formula_42">U ⊤ U 2 F and V ⊤ V 2 F</formula><p>, which characterize how well U aligns with all U (r) i and how well V aligns with all V (r) i . Next, using the diagonal-trace inequality and arithmetic mean inequality, we have:</p><formula xml:id="formula_43">U ⊤ U 2 F ≥ diag U ⊤ U 2 2 ≥ 1 k tr U ⊤ U 2 , V ⊤ V 2 F ≥ diag V ⊤ V 2 2 ≥ 1 k tr V ⊤ V 2 ,<label>(24)</label></formula><p>we see that maximizing the surrogate in Eq. ( <ref type="formula" target="#formula_12">8</ref>) effectively corresponds to maximizing these trace terms. Hence, the optimal ( U , V ) should maximize the average alignment with each task knowledge directions.</p><p>Finally, whitening <ref type="bibr" target="#b53">[54]</ref> naturally achieves this objective:</p><formula xml:id="formula_44">U = arg max U ⊤ U =I U , U , V = arg max V ⊤ V =I V , V .<label>(25)</label></formula><p>This whitening-based alignment maximizes tr U ⊤ U and tr V ⊤ V , which correspond to the lower-bound traces in Eq. <ref type="bibr" target="#b23">(24)</ref>. Therefore, whitening can be interpreted as an efficient approximate solution to the subspace alignment problem in Eq. ( <ref type="formula" target="#formula_11">7</ref>), providing a computationally simple yet theoretically justified way to construct shared cover basis. Validation of Objective for Cover Basis. We further verify the rationality of the proposed trace-based objective by directly optimizing it to obtain the cover basis that minimizes reconstruction error, and compare the result with the whitening-based approximation. Our goal is to confirm that whitening indeed provides a close approximation to the optimal cover subspace defined by Eq. ( <ref type="formula" target="#formula_12">8</ref>).</p><p>To optimize a set of rank-k orthonormal bases in a ddimensional space, we employ a differentiable parameterization using skew-symmetric matrices <ref type="bibr" target="#b34">[35]</ref>. Specifically, any orthonormal matrix U , V ∈ R d×k can be expressed as</p><formula xml:id="formula_45">U = exp(A) U 0 , V = exp(B) V 0 (<label>26</label></formula><formula xml:id="formula_46">)</formula><p>where A, B ∈ R d×d is a skew-symmetric matrix (A ⊤ = −A, B ⊤ = −B) and U 0 , V 0 is an initial orthonormal basis. This parameterization utilizes the isomorphic properties of Lie groups and rotation operations <ref type="bibr" target="#b34">[35]</ref> and ensures that U , V always remains on the Stiefel manifold S(d, k), thus preserving orthogonality during gradient-based optimization.</p><p>To further validate the rationality of our optimization target, we optimize the cover basis following Algorithm 2 Starting from a poor initialization U 0 , V 0 obtained by decomposing the merged task vector from TA <ref type="bibr" target="#b28">[29]</ref> through SVD, we perform iterative optimization toward the objective in Eq. ( <ref type="formula" target="#formula_12">8</ref>). Figure <ref type="figure">4</ref> illustrates the optimization trajectory of the alignment score (left) and its logarithmic scale counterpart (right), along with the corresponding accuracy evolution by using corresponding cover basis. Initially, the alignment score is low, indicating poor consistency between the cover basis and the directions of each task. As optimization proceeds, both the alignment score and downstream task accuracy increase steadily and exhibit similar trends, confirming that higher alignment directly translates to improved task retention and generalization. In particular, the convergence of the alignment score to a stable maximum implies that the optimized basis successfully captures the shared directional geometry among all tasks. </p><formula xml:id="formula_47">U ← exp(A−A ⊤ ) U 0 , V ← exp(B−B ⊤ ) V 0 9:</formula><p>Compute alignment score L from Eq. ( <ref type="formula" target="#formula_12">8</ref>) 10:</p><p>Compute gradients ∇ A L, ∇ B L 11:</p><formula xml:id="formula_48">A ← A + η∇ A L, B ← B + η∇ B L 12: end for 13: return U , V</formula><p>Notably, the final alignment and accuracy achieved by the optimized cover basis closely match those obtained via our whitening-based construction, validating that whitening provides a strong approximation to the optimal solution of the cover subspace objective. Therefore, this empirical results confirm the theoretical justification that whitening acts as an efficient surrogate optimizer for constructing a shared cover basis.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Visualization of Task Representations in Cover Space.</head><p>To provide an intuitive illustration of how each task vector is represented in the cover space constructed by Algorithm 2, we visualize the representation in Figure <ref type="figure">14</ref> using a blockwise averaged aggregation. We perform the optimization for 250 steps on ViT-B-32 8-task benchmark in LoRA setting, and the size of each block is r × r. Effect of Structural Masking. After projection and merging within the cover space, a block-diagonal mask M is applied:</p><formula xml:id="formula_49">∆ M = U M ⊙ M V ⊤ .</formula><p>We now investigate the underlying mechanism of the blockdiagonal mask. Consider T task vectors {∆ i } T i=1 that share approximately directional geometry. Suppose that there exist shared orthonormal basis U , V such that each task vector can be represented as:</p><formula xml:id="formula_50">∆ i ≈ U diag(σ i ) V ⊤ ,<label>(27)</label></formula><p>with</p><formula xml:id="formula_51">U ⊤ U = V ⊤ V = I.</formula><p>In this case, the merged model vector obtained by summation or averaging becomes:</p><formula xml:id="formula_52">T i=1 ∆ i ≈ U T i=1 diag(σ i ) V ⊤ ,<label>(28)</label></formula><p>which clearly preserves the original knowledge directions U and V and σ i is the corresponding optimal coefficients under U and V for ∆ i . That is, merging under a fixed cover basis ensures that the directional geometry of all task vectors remains unchanged while only the coefficients are combined. We construct a pair of cover basis under which task representations are largely distributed along diagonal blocks. When restricted to these diagonal components, merging does not change task directions. The mask explicitly suppresses off-diagonal elements to remove cross-task directional inconsistency that induces task interference.</p><p>The size of mask controls the trade-off between directional preservation and individual task reconstruction fidelity. In the extreme case where the mask size is 1 (i.e., only diagonal elements retained), merging reduces to purely aggregating the aligned components without mixing any directions, which perfectly preserves subspace directions but sacrifices per-task reconstruction fidelity. As the mask size increases, more cross-task interactions are included, improving reconstruction of each individual task at the cost of slight directional deviation. Therefore, M implicitly balances between directional consistency and task-specific fidelity.</p><formula xml:id="formula_53">U U U U U U U 0DVNVL]H $YHUDJH$EVROXWH$FFXUDF\ ))7 U U U U U U U 0DVNVL]H /R5$ Figure 5.</formula><p>The average absolute accuracy of DC-Merge with mask size {8r, 4r, 2r, r, r/2, r/4, r/8} in FFT (left) and LoRA (right) settings. Performance peaks near r for FFT and shows a milder variation for LoRA (slightly improves till r then decreases), indicating that moderate masks retain performance while overly small/large masks degrade it. The results are based on ViT-B-32 8-task benchmark.</p><p>Illustrative Example. We provide a simple two-task example to intuitively demonstrate the advantage of merging within the shared cover space. Consider two tasks, each represented by a single knowledge component:</p><formula xml:id="formula_54">u 1 = v 1 = [1, 0] ⊤ u 2 = v 2 = [0.1104, 0.9939] ⊤ .</formula><p>When directly merging in the parameter space,</p><formula xml:id="formula_55">∆ M = u 1 v ⊤ 1 + u 2 v ⊤ 2 =</formula><p>1.0121 0.1098 0.1098 0.9878</p><formula xml:id="formula_56">,WHUDWLRQVWHS $OLJQPHQW6FRUH :KLWHQ%DVHG&amp;RQVWUXFWHG$OLJQPHQW6FRUH $OLJQPHQW6FRUH $FFXUDF\ $FFXUDF\ :KLWHQ%DVHG&amp;RQVWUXFWHG$FF (a) Linear Scale ,WHUDWLRQVWHS $OLJQPHQW6FRUH $OLJQPHQW6FRUH/RJVFDOH $FFXUDF\ $FFXUDF\ (b) Semi-log scale Figure 4.</formula><p>Optimization trajectory of the cover basis. We start from a poor initialization U 0, V 0 obtained by SVD of task vectors from TA and iteratively optimize the surrogate objective in Eq. ( <ref type="formula" target="#formula_12">8</ref>). (a) The optimization trace of alignment score and average normalized accuracy of DC-Merge under linear scale. (b) The same process in semi-log scale for better visibility of early-stage dynamics. Both alignment score and accuracy increase monotonically during training and converge to a stable optimum, demonstrating that higher alignment directly corresponds to stronger task retention. The final accuracy and alignment closely match those of the whitening-based approximation, confirming that whitening yields a near-optimal cover basis.</p><p>the resulting SVD gives principal directions:</p><formula xml:id="formula_57">u ′ 1 = v ′ 1 = [0.7451, 0.6669] ⊤ , u ′ 2 = v ′ 2 = [0.</formula><p>6669, −0.7451] ⊤ , which significantly deviate from the original task directions, implying that direct merging distorts the directional geometric of task knowledge.</p><p>In contrast, when get shared cover basis by whitening the concatenation per-task knowledge basis before merging, we have:</p><formula xml:id="formula_58">U = V = [u ′ 1 , u ′ 2 ] , where u ′ 1 = [0.9985, −0.0533] ⊤ , u ′ 2 = [0.0533, 0.9985].</formula><p>When only using a diagonal mask M, the resulting directional equal to U , V remains nearly aligned with the original task directions. This demonstrates that whitening preserves the cover geometry of knowledge directions and prevents directional shift during model merging. The visualization of this result can refer to Figure <ref type="figure">6</ref>.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>E. Experimental Details</head><p>In this section, we first provide an overview of datasets and evaluation metrics employed in our experiments. We then present the implementation details of our experiments in depth and conclude with a discussion of different smoothing strategies.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>E.1. Datasets and Metrics</head><p>We present the datasets in the vision model benchmarks as follows. For full fine-tuning setting, the 8-task benchmark comprises the following datasets: Cars <ref type="bibr" target="#b31">[32]</ref>, DTD <ref type="bibr" target="#b6">[7]</ref>, EuroSAT <ref type="bibr" target="#b23">[24]</ref>, GTSRB <ref type="bibr" target="#b56">[57]</ref>, MNIST <ref type="bibr" target="#b33">[34]</ref>, RE-SISC45 <ref type="bibr" target="#b4">[5]</ref>, SUN397 <ref type="bibr" target="#b66">[67]</ref> and SVHN <ref type="bibr" target="#b47">[48]</ref>. The 14task benchmark extends the previous one by incorporating six additional datasets: CIFAR100 <ref type="bibr" target="#b32">[33]</ref>, STL10 <ref type="bibr" target="#b8">[9]</ref>,  Flowers102 <ref type="bibr" target="#b48">[49]</ref>, OxfordIIITPet <ref type="bibr" target="#b49">[50]</ref>, PCAM <ref type="bibr" target="#b59">[60]</ref> and FER2013 <ref type="bibr" target="#b20">[21]</ref>. The 20-task benchmark adds another six datasets to the 14-task configuration: EMNIST <ref type="bibr" target="#b9">[10]</ref>, CIFAR10 <ref type="bibr" target="#b32">[33]</ref>, Food101 <ref type="bibr" target="#b1">[2]</ref>, FashionMNIST <ref type="bibr" target="#b65">[66]</ref>, Ren-deredSST2 <ref type="bibr" target="#b55">[56]</ref> and KMNIST <ref type="bibr" target="#b7">[8]</ref>.</p><formula xml:id="formula_59">Knowledge</formula><p>For LoRA setting, the 8-task benchmark includes the same datasets as in the full fine-tuning setting. The 12task benchmark extends the previous one by introducing four new datasets: CIFAR100 <ref type="bibr" target="#b32">[33]</ref>, Flowers102 <ref type="bibr" target="#b48">[49]</ref>, Ox-fordIIITPet <ref type="bibr" target="#b49">[50]</ref> and STL10 <ref type="bibr" target="#b8">[9]</ref>. The 16-task benchmark  further adds four datasets to the 12-task configuration: FER2013 <ref type="bibr" target="#b20">[21]</ref>, CIFAR10 <ref type="bibr" target="#b32">[33]</ref>, FashionMNIST <ref type="bibr" target="#b65">[66]</ref> and RenderedSST2 <ref type="bibr" target="#b55">[56]</ref>.</p><p>The MM-MergeBench <ref type="bibr" target="#b69">[70]</ref> contain 8 multimodal datasets as seen tasks: ScienceQA <ref type="bibr" target="#b39">[40]</ref>, ImageNet <ref type="bibr" target="#b13">[14]</ref>, VQAv2 <ref type="bibr" target="#b21">[22]</ref>, REC-COCO <ref type="bibr" target="#b30">[31,</ref><ref type="bibr" target="#b43">44]</ref>, OCRVQA <ref type="bibr" target="#b46">[47]</ref>, Flickr30k <ref type="bibr" target="#b50">[51]</ref>, VizWiz-caption <ref type="bibr" target="#b22">[23]</ref> and IconQA <ref type="bibr" target="#b38">[39]</ref>, along with 4 additional datasets as unseen tasks for generalizability evaluation: ImageNet-R <ref type="bibr" target="#b24">[25]</ref>, AOKVQA <ref type="bibr" target="#b52">[53]</ref>, Screen2Word <ref type="bibr" target="#b60">[61]</ref>, TabMWP <ref type="bibr" target="#b40">[41]</ref>.</p><p>Since models fine-tuned on different datasets exhibit varying absolute accuracies, we measure the performance of the merged model by its average normalized accuracy:</p><formula xml:id="formula_61">Average Normalized Accuracy = 1 T T i=1 acc(θ M , i) acc(θ i , i)<label>(29)</label></formula><p>where acc(θ i , i) denotes the absolute accuracy of the model fine-tuned on task i, acc(θ M , i) denotes the absolute accuracy of the merged model on task i, and T is the total number of tasks.</p><p>Normalized Accuracy Improvement (NAI) is another commonly-used metric which incorporates zero-shot performance of each task. NAI of task i is defined as</p><formula xml:id="formula_62">NAI(θ M , θ i ; θ 0 ) = acc(θ M , i) − acc(θ 0 , i) acc(θ i , i) − acc(θ 0 , i)<label>(30)</label></formula><p>where acc(θ 0 , i) denotes the zero-shot performance on task i. We use NAI to evaluate the task-wise performance of merged models in Figure <ref type="figure">3b</ref>, 3c and 7.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>E.2. Implementation Details</head><p>Compute resources. All experiments involving the finetuning and merging of vision models are performed on a single NVIDIA RTX 4090, while the merging of visionlanguage models is conducted on a single NVIDIA A6000.</p><p>Choice of rescaling coefficient. For DC-Merge and other baselines which require a rescaling coefficient α before merging, we integrate the merged multi-task vector ∆ W with the pretrained weights W 0 to obtain the merged model by:</p><formula xml:id="formula_63">W = W 0 + α∆ W ,<label>(31)</label></formula><p>where α is chosen on a held-out validation set. Exceptionally, we adopt a fixed α = 2.0 for DC-Merge following RobustMerge <ref type="bibr" target="#b69">[70]</ref> in MM-MergeBench. Choice of checkpoints. We directly utilize the checkpoints released by TSV-M for evaluation in Table <ref type="table" target="#tab_3">2</ref>, which ensures a fair comparison with the state-of-the-art method Iso-CTS and other baselines. Similarly, we adopt the checkpoints released by RobustMerge in MM-Merge-Bench evaluation (Table <ref type="table" target="#tab_4">3</ref>) for fair comparison with baseline methods. Unlike previous works that only consider evaluation for LoRA finetuned vision models on the 8-task benchmark, we extend our evaluation to 12-task and 16-task benchmarks. Thus, we perform LoRA fine-tuning of vision models by ourselves and results with respect to LoRA fine-tuned vision models are based on our checkpoints unless otherwise specified. We present the training details as follows.</p><p>Fine-tuning vision models with LoRA. We obtain the CLIP visual encoders ViT-B-32, ViT-B-16 and ViT-L-14 from Hugging Face (HF). These models are then fine-tuned by LoRA using peft library. Across all our experiments of vision models, we set the LoRA target modules to the query, key, value and output projection weights, which are the only learnable modules. We set the LoRA rank to be 16, LoRA alpha to be 16, LoRA dropout to be 0.1 and disable the use of bias parameters. All vision models are trained using the AdamW optimizer, with a cosine learning rate scheduler using Cross-Entropy loss. We use a standard learning rate of 3e-4, weight decay of 1e-1 and label smoothing set to 0 across all datasets and different types of visual encoders. The text encoder in the CLIP model remains frozen across all our experiments of vision models. Choice of hyperparameters. We adopt TIES-Merging (TIES) <ref type="bibr" target="#b67">[68]</ref> for aggregation in the shared cover space across all our experiments, and the top-k parameter (i.e., the percentage of elements retained) in TIES is fixed to 0.1. For hyperparameter r, we plot the performance of our method with different r values in Figure <ref type="figure">8</ref> for both LoRA and FFT settings. Consequently, in all LoRA fine-tuning scenarios including vision models and vision-language models, we set r to the LoRA rank. For FFT setting, we set r to ⌊ min(m,n) T ⌋ (see <ref type="bibr">Algorithm 1)</ref>.</p><formula xml:id="formula_64">U $YHUDJH1RUPDOL]HG$FFXUDF\ /R5$ U ))7</formula><p>Figure <ref type="figure">8</ref>. Impact of hyperparameter r in LoRA and FFT settings. We report average normalized accuracy of DC-Merge on ViT-B-32 8-task benchmark. The empirical results align with our motivation to preserve the directional geometry of each task vector after merging as much as possible.</p><p>Baseline adaptation in LoRA settings. The state-of-theart approaches TSV-M <ref type="bibr" target="#b19">[20]</ref> and Iso-CTS <ref type="bibr" target="#b45">[46]</ref> are also based on SVD. Unfortunately, the former ignores merging models fine-tuned by LoRA and the latter does not specify details of LoRA model merging neither in its paper nor in its codebase. We assume that ranks of the merged vectors ∆ TSV-M and ∆ Iso-CTS should be T × LoRA rank where T is the total number of tasks. This setting aligns with our hyperparameter r in LoRA setting. Merging parameters with non-matrix structure. Some weights of the neural networks are represented by vectors, e.g. bias vectors and parameters of layer normalization <ref type="bibr" target="#b0">[1]</ref>. Following previous works <ref type="bibr" target="#b19">[20,</ref><ref type="bibr" target="#b45">46]</ref>, we apply simple averaging to merge these parameters.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>E.3. Details of Perturbation for Figure 3b</head><p>We separately construct controllable energy distribution and directional perturbation to verify that maintaining directional geometry is the key to maintaining performance. Controllable Energy Distribution Perturbation. When keeping the directions U i , V i fixed and perturbing only the energy distribution σ i to σ i , we have</p><formula xml:id="formula_65">CosSim(∆ i , ∆ i ) = CosSim(σ i , σ i ),<label>(32)</label></formula><p>where</p><formula xml:id="formula_66">∆ i = U i diag( σ i ) V ⊤ i .</formula><p>Hence, to obtain a controllable energy distribution perturbation, it suffices to con-struct σ i such that CosSim(σ i , σ i ) = p, where p ∈ [0, 1] prescribes the perturbation degree.</p><p>Let σ ≡ σ i ∈ R r ≥0 and let σ ∈ R r ≥0 be a balanced spectrum (e.g., the averaging or linearly smoothed spectrum that preserves total energy). We define the unit reference s = σ ∥σ∥2 and extract a component orthogonal to s from σ by Gram-Schmidt:</p><formula xml:id="formula_67">s ⊥ = σ − s ⊤ σ s ∥σ − (s ⊤ σ) s∥ 2<label>(33)</label></formula><p>For any target p ∈ [0, 1], we set</p><formula xml:id="formula_68">s = p s + 1 − p 2 s ⊥ , σ = ∥σ∥ 2 s.<label>(34)</label></formula><p>By definition we have ∥ s∥ 2 = 1, ∥s∥ 2 = 1, and s ⊤ s ⊥ = 0. Therefore,</p><formula xml:id="formula_69">CosSim(σ, σ) = σ ⊤ σ ∥σ∥ 2 ∥ σ∥ 2 = s ⊤ s = p s ⊤ s + 1 − p 2 s ⊤ s ⊥ = p.<label>(35)</label></formula><p>Hence Eq. ( <ref type="formula" target="#formula_68">34</ref>) yields an energy distribution perturbation with prescribed cosine p while keeping directions</p><formula xml:id="formula_70">(U i , V i ) unchanged.</formula><p>Controllable Directional Perturbation. To investigate the sensitivity of model merging to changes in knowledge directions, we introduce a procedure for applying controllable directional perturbations such that the resulting representation ∆ i satisfies DirSim(∆ i , ∆ i ) = p. Specifically, we perturb the orthogonal directions U i and V i by mixing them with randomly sampled bases from their orthogonal complements.</p><p>Let U ⊥ i and V ⊥ i denote the orthogonal complements of U i and V i , respectively. We randomly select r orthonormal columns U i ⊂ U ⊥ i and V i ⊂ V ⊥ i , then construct the perturbed bases U i (p) and V i (p) as linear combinations:</p><formula xml:id="formula_71">U i (p) = √ p U i + 1 − p U i , V i (p) = √ p V i + 1 − p V i ,<label>(36)</label></formula><p>which satisfy the orthonormality</p><formula xml:id="formula_72">U i (p) ⊤ U i (p) = V i (p) ⊤ V i (p) = I.</formula><p>The perturbed task vector ∆ i with directional geometry ( U i (p), V i (p)) achieves DirSim(∆ i , ∆ i ) = p, which can be easily verified by:</p><formula xml:id="formula_73">DirSim(∆ i , ∆ i ) = tr U ⊤ i U i (p) V i (p) ⊤ V i r = tr (p • I r×r ) r = p,<label>(37)</label></formula><p>where the second equality holds because</p><formula xml:id="formula_74">U ⊤ i U i (p) = V i (p) ⊤ V i = √ p • I r×r . Method ViT-B-16</formula><p>ViT-L-14 LLaVA-v1.5-7B   </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>E.4. Smoothing Strategies</head><p>In line 6 of Algorithm 1, we mention the smoothing of Σ</p><p>i . Here, we propose two explicit smoothing strategies as follows. Averaging. We consider the simplest and most effective form of smoothing by replacing all top-r singular values with their average value:</p><formula xml:id="formula_76">σ i,avg =   1 r r j=1 σ j i   1 r .<label>(38)</label></formula><p>Linear Smoothing. Beyond uniform averaging, we further consider a more flexible linear smoothing strategy that controls the energy flattening degree through a single hyperparameter ρ. Specifically, we first constrain the ratio between the largest and smallest smoothed singular values to be no greater than ρ, i.e.,</p><formula xml:id="formula_77">σ max σ min = min σ max σ min , ρ .<label>(39)</label></formula><p>We then generate a linearly decreasing distribution w = [w 1 , w 2 , . . . , w r ] whose entries sum to one, such that w 1 /w r = σ max /σ min . Finally, we scale this distribution by the sum of singular values, yielding the smoothed energy distribution</p><formula xml:id="formula_78">σ i,linear =   r j=1 σ j   w.<label>(40)</label></formula><p>This procedure maintains the relative ordering of the singular values while reducing their extreme disparity. We set ρ to 5.0 in all LoRA scenarios, including vision models and vision-language models. We provide a comprehensive comparison between averaging and linear smoothing in Table <ref type="table" target="#tab_5">4</ref> for ViT-B-32 and Table <ref type="table" target="#tab_11">8</ref> for ViT-B-16 and ViT-L-14. We report the better result of the two aforementioned smoothing strategies in Table <ref type="table" target="#tab_4">1 and 3</ref>. Besides, directly utilizing top-r singular values along with their corresponding singular vectors of each task vector to obtain ∆ i without any additional smoothing (i.e., skipping line 6 in Algorithm 1) can also serve as an implicit smoothing strategy, as it truncates the long-tailed energy parts. We only apply this truncation strategy to full finetuned vision models since we set r to LoRA rank in LoRA setting. Surprisingly, we notice that applying truncation to long-tailed singular values without further smoothing in FFT scenario can generally exhibit similar energy distribution to explicitly linearly smoothing in LoRA setting.</p><p>It is worth noting that energy smoothing can enhance cross-task transferability of each task vector at a cost of task performance fidelity (see Figure <ref type="figure" target="#fig_6">2a and 9b</ref>), so there may exist a trade-off between its pros and cons. To verify this, we perform a linear interpolation between original singular values of each task vector and averaging smoothed ones by:</p><formula xml:id="formula_79">Σ (r) i = τ Σ (r) i,orig + (1 − τ )Σ (r) i,avg<label>(41)</label></formula><p>The results are presented in Figure <ref type="figure" target="#fig_7">10</ref>. With τ decreases, the Table <ref type="table">9</ref>. Performance on ViT-B-32 8-task benchmark using checkpoints provided by KnOTS. We report normalized accuracy.</p><formula xml:id="formula_80">/R5$$YHUDJH$FFXUDF\ /R5$ ))<label>7</label></formula><p>))7$YHUDJH$FFXUDF\ energy distribution of each task vector tends to be smoother. We notice a consistent performance improvement as each Σ</p><p>i is smoothed gradually in LoRA setting, while a reverse trend can be observed in FFT setting. This phenomenon suggests that the aforementioned truncation strategy is sufficient to ensure the top-r knowledge components to be adequately expressed within each task vector, while further smoothing induces additional bias for individual tasks and thereby harms overall performance. We thus explicitly apply smoothing to LoRA fine-tuned task vectors across all experiments while obtaining ∆ i solely by retaining top-r knowledge vectors as implicitly smoothing in FFT setting.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>F. Additional Experiments and Analyses</head><p>In this section, we extend our evaluations of DC-Merge to additional checkpoints, larger task scales, and varying smoothing levels, demonstrating its strong robustness and scalability. Furthermore, we empirically verify that the two key modules in DC-Merge are both effective to preserve directional geometry of task vectors during merging and assess the generalization capability of DC-Merge on vision tasks. Finally, we provide a step-by-step analysis on computational complexity of our method.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>F.1. Additional checkpoints</head><p>Ideally, the performance of a well-designed model merging method is robust to various checkpoints. For LoRA setting, we present the performance of DC-Merge along with all baselines on ViT-B-32 checkpoints provided by KnOTS <ref type="bibr" target="#b57">[58]</ref> in Table <ref type="table">9</ref>. DC-Merge still achieves the stateof-the-art performance, outperforming Iso-CTS by 2.7%. For FFT setting, we provide the results on 8-task benchmarks using checkpoints from Task Arithmetic <ref type="bibr" target="#b28">[29]</ref> in Table 10, where the capability of DC-Merge is consistently superior (or comparable) to state-of-the-art methods. Table <ref type="table" target="#tab_2">10</ref>. Performance on 8-task benchmark using checkpoints provided by Task Arithmetic. We report average absolute accuracy.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>F.2. Complementary Modules in DC-Merge</head><p>We conduct comparative experiments on vanilla Task Arithemetic (TA) <ref type="bibr" target="#b28">[29]</ref> to demonstrate that both energy smoothing (ES) and cover space merging (CSM) are conducive to maintaining the directional consistency between merged vector and original task vectors. As illustrated in Figure <ref type="figure">11</ref>, individually applying ES and CSM significantly boosts the projected DirSim(∆W i , ∆ W i ) of each task. Furthermore, by combining ES and CSM, we can achieve higher projected DirSim, indicating that the two key modules in DC-Merge are complementary. We also present the task-wise projected CosSim of TA and DC-Merge on ViT-B-32 8-task benchmark in Figure 12. While TA exhibits higher projected CosSim on each individual task, its projected DirSim is much lower than DC-Merge across all tasks, indicating that TA fails to retain the directions of weaker but semantically important knowledge components within each task vector in the merging process and thereby suffers more performance degradation on each task than our method. Table <ref type="table" target="#tab_4">13</ref>. Task-wise absolute accuracy results on MM-MergeBench <ref type="bibr" target="#b69">[70]</ref>, containing eight seen tasks (LoRA fine-tuned) and four unseen tasks. The best results are in bold and the second-best are underlined.</p><p>• Project the aggregated M back to original parameter space for each layer, with the total complexity of O(T L(nk 2 + n 2 k)). As r ≤ ⌊n/T ⌋, the overall computational complexity of DC-Merge is O(T Ln 3 ), which shares the same asymptotic computational complexity with the current state-of-art method TSV-M <ref type="bibr" target="#b19">[20]</ref> and Iso-CTS <ref type="bibr" target="#b45">[46]</ref>. In practical applications, we recommend using randomized SVD for low-rank approximation to enhance computational efficiency.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>F.5. Performance under Increasing Task Scales</head><p>We compare the performance of DC-Merge with existing state-of-the-art methods under different task scales (i.e., the number of tasks). As illustrated in Table <ref type="table" target="#tab_5">14</ref>, with the increase of task scales, DC-Merge consistently achieves stateof-the-art overall performance while WUDI-Merging <ref type="bibr" target="#b5">[6]</ref> suffers severe performance degradation. Furthermore, the superiority of DC-Merge becomes more significant as the task scale increases, which demonstrates the strong robustness of our method to task scales. The same trend can be observed in Table <ref type="table" target="#tab_3">2</ref>  Table <ref type="table" target="#tab_5">14</ref>. Performance on ViT-B-32 benchmarks in FFT setting. We report average absolute accuracy and subscript (in parentheses) is the average normalized accuracy.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>F.6. Performance on Varying Smoothing Levels</head><p>In Appendix E.4, we propose a flexible linear smoothing strategy that controls the energy flattening degree through a single hyperparameter ρ. Higher ρ indicates more skewness in energy distribution. We present the performance of DC-Merge on 8-task benchmark in LoRA setting with varying ρ values in Figure <ref type="figure" target="#fig_8">13</ref>. Notably, DC-Merge exhibits strong robustness to the choice of ρ, achieving state-of-the-art performance across a wide range of smoothing levels. </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>F.7. Scaling to Vision-Language Models</head><p>Table <ref type="table" target="#tab_4">13</ref> presents task-wise performance of existing baselines in Table <ref type="table" target="#tab_4">3</ref>, along with additional state-of-the-art methods TSV-M <ref type="bibr" target="#b19">[20]</ref>, WUDI-Merging <ref type="bibr" target="#b5">[6]</ref> and Iso-CTS <ref type="bibr" target="#b45">[46]</ref>. While some state-of-the-art approaches struggle to maintain strong performance, DC-Merge consistently achieves superior results on both seen and unseen tasks, demonstrating that the effectiveness of DC-Merge is not limited to vision models, but naturally extends to large-scale multimodal models.  </p></div><figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_0"><head>Figure 2 .</head><label>2</label><figDesc>Figure 2. (a) Comparison of cross-task transferability before (left) and after (right) balancing the energy distribution. The diagonal elements represent the relative performance of each task with respect to its fine-tuned model, while the off-diagonal elements indicate the relative transfer performance on other tasks, normalized against their zero-shot baseline. (b)Each task vector's cosine similarity with multi-task vector (lines) and average normalized transfer accuracy of each task vector (bars). We compare original task vectors and their energy-balanced counterparts. The energy-balanced task vectors achieve higher CosSim with the multi-task vector (we use ∆Iso-C<ref type="bibr" target="#b45">[46]</ref> for simplicity) and better cross-task generalization, indicating that balancing the energy distribution across knowledge components enhances multi-task expressiveness.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_1"><head></head><label></label><figDesc>for Task Vector A and B and contributes equally to DirSim. Anisotropic for Task Vector A and B dominates in CosSim.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_2"><head>Algorithm 2 1 : 2 :</head><label>212</label><figDesc>Optimization of Cover Basis via Skew-Symmetric Parameterization Input: Task directional geometry {u j i v j⊤ i } r j=1 , Task vectors{∆ i } T i=1 , learning rate η, maximum iteration steps L Output: Optimized cover basis U , V3: ▷ Step 1: Initialize cover basis 4: Initialize A, B ∈ R d×d as zero matrices 5: U 0 , V 0 = SVD( T i=1 ∆ i ) 6: ▷ Step 2: Iterative optimization of cover basis 7: for ℓ = 1 → L do 8:</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_4"><head>Figure 6 . 2 by whitening. ( 3 ) 1 and u ′ 2 . ( 4 )</head><label>623124</label><figDesc>Figure 6. Illustration of mitigating directional shift when merging in the shared cover space. We take u1 and u2 as example. Left: (1) The direction of u1 and u2. (2) Directly merging in the original parameter space yields u ′ 1 and u ′ 2 , causing severe directional deviation. Right: (1) The direction of u1 and u2. (2) Obtain u ′ 1 and u ′ 2 by whitening. (3) Project u1 and u2 onto the space spanned by u ′ 1 and u ′ 2 . (4) Aggregate the projections along the directions of u ′ 1 and u ′ 2 respectively as merged knowledge vectors, which significantly alleviates directional shift.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_5"><head>Figure 7 .</head><label>7</label><figDesc>Figure 7. (a) Correlation of task-wise performance with DirSim. The result is based on ViT-B-32 8-task benchmark with our checkpoints, while we utilize checkpoints provided by KnOTS [58] for Figure 3c. (b) Layer-averaged projected DirSim between merged multi-task vector and original task vectors for varying number of tasks. (c) Task-wise NAI of the merged model for varying number of tasks. (b) and (c) are based on merging LoRA fine-tuned ViT-B-32 models.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_6"><head>Figure 9 .</head><label>9</label><figDesc>Figure 9. (a) The relationship between energy retention ratios and fractions of singular values averaged across all datasets. The result is based on the ViT-B-32 8-task benchmark. FFT (Truncated) considers reconstructing each task vector using the top-r singular values (and their associated singular vectors) in the full fine-tuning setting without additional smoothing. (b) Comparison of cross-task transferability w/o (left) and w/ (right) further balancing the energy distribution after truncating long-tailed energy parts. Compared with LoRA setting, applying energy smoothing in FFT scenario yields relatively small improvements in generalization.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_7"><head>Figure 10 .</head><label>10</label><figDesc>Figure 10. The relationship between average absolute accuracy of DC-Merge in LoRA/FFT setting and interpolation coefficient τ .</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_8"><head>Figure 13 .</head><label>13</label><figDesc>Figure<ref type="bibr" target="#b12">13</ref>. Performance of DC-Merge with respect to various smoothing levels in linear smoothing. We report average normalized accuracy. When ρ = 1.0, linear smoothing reduces to simple averaging.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_9"><head>Figure 15 .</head><label>15</label><figDesc>Figure 15. Layer-wise visualization of projected DirSim with each individual task. The results are based on ViT-B-32 8-task benchmark in LoRA setting. DC-Merge consistently exhibits higher projected DirSim with task vectors across all layers.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_1"><head></head><label></label><figDesc>Comparison of CosSim and DirSim. DirSim considers the similarity between every pair of directions equally, whereas CosSim mainly focuses on the similarity among the dominant directions while ignoring the minor ones. (b) Empirical validation of the importance of preserving directional geometry. Solid line: task performance vs. DirSim under random directional perturbations; dashed line: task performance vs. CosSim under energy distribution perturbations. (c) Correlation of task-wise performance with projected DirSim. The overall correlation is positive (Pearson R = 0.64) and per-method averages follow the same trend. Similar patterns persist under larger task scales as illustrated in Figure</figDesc><table><row><cell></cell><cell>'DWDVHWV</cell><cell cols="2">0HWKRGV</cell></row><row><cell></cell><cell>&amp;DUV</cell><cell>01,67</cell><cell>2XUV</cell></row><row><cell></cell><cell>'7'</cell><cell>5(6,6&amp;</cell><cell>7$</cell></row><row><cell></cell><cell>(XUR6$7</cell><cell>681</cell><cell>7690</cell></row><row><cell></cell><cell>*765%</cell><cell>69+1</cell></row><row><cell>$,</cell><cell>1$,</cell><cell></cell></row><row><cell></cell><cell>'DWDVHWV</cell><cell></cell></row><row><cell></cell><cell>&amp;DUV</cell><cell></cell></row><row><cell></cell><cell>'7'</cell><cell></cell></row><row><cell></cell><cell>(XUR6$7</cell><cell></cell></row><row><cell></cell><cell>*765%</cell><cell></cell></row><row><cell></cell><cell>01,67</cell><cell></cell><cell>$YHUDJH5 $YHUDJH5</cell></row><row><cell>3HUWXUEDWLRQ0HWKRGV</cell><cell>5(6,6&amp;</cell><cell></cell><cell>2XUVDYJ 2XUVDYJ</cell></row><row><cell>'LUHFWLRQ (QHUJ\</cell><cell>681 69+1</cell><cell></cell><cell>7690DYJ 7690DYJ 7$DYJ 7$DYJ</cell></row><row><cell></cell><cell></cell><cell cols="2">'LU6LP</cell></row><row><cell>(b)</cell><cell></cell><cell>(c)</cell></row><row><cell>Figure 3. (a)</cell><cell></cell><cell></cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_2"><head>Table 1 .</head><label>1</label><figDesc>68.40 (77.22) 66.27 (75.80) 70.53 (78.86) 73.12 (80.56) 70.57 (78.91) 82.61 (89.42) 83.62 (89.31) 79.53 (85.71) Average absolute accuracy results on vision model merging benchmarks in LoRA setting; subscript (in parentheses) is the average normalized accuracy. The best results are in bold and the second-best are underlined.</figDesc><table><row><cell>Method</cell><cell>8 tasks</cell><cell>ViT-B-32 12 tasks</cell><cell>16 tasks</cell><cell>8 tasks</cell><cell>ViT-B-16 12 tasks</cell><cell>16 tasks</cell><cell>8 tasks</cell><cell>ViT-L-14 12 tasks</cell><cell>16 tasks</cell></row><row><cell>Individual</cell><cell>87.82</cell><cell>88.90</cell><cell>87.50</cell><cell>89.71</cell><cell>90.76</cell><cell>89.11</cell><cell>92.36</cell><cell>93.57</cell><cell>92.11</cell></row><row><cell cols="2">Task Arithmetic 52.80 (61.73)</cell><cell>60.76 (69.12)</cell><cell>60.04 (68.94)</cell><cell>57.70 (65.30)</cell><cell>64.26 (71.12)</cell><cell>62.40 (70.16)</cell><cell>68.29 (74.38)</cell><cell>73.69 (78.84)</cell><cell>69.98 (75.58)</cell></row><row><cell>KnOTS-TIES</cell><cell>55.93 (65.03)</cell><cell>63.03 (71.43)</cell><cell>61.78 (70.78)</cell><cell>60.80 (68.59)</cell><cell>66.35 (73.38)</cell><cell>64.31 (72.29)</cell><cell>73.61 (79.92)</cell><cell>75.64 (80.90)</cell><cell>72.19 (77.98)</cell></row><row><cell cols="2">WUDI-Merging 55.25 (64.38)</cell><cell>62.20 (70.64)</cell><cell>61.24 (70.27)</cell><cell>58.95 (66.63)</cell><cell>65.29 (72.29)</cell><cell>64.59 (72.51)</cell><cell>69.78 (75.91)</cell><cell>74.25 (79.45)</cell><cell>71.79 (77.59)</cell></row><row><cell>TSV-M</cell><cell>58.91 (68.25)</cell><cell>65.30 (73.86)</cell><cell>63.51 (72.72)</cell><cell>62.97 (70.87)</cell><cell>68.92 (76.06)</cell><cell>67.21 (75.35)</cell><cell>76.52 (83.00)</cell><cell>79.67 (85.13)</cell><cell>74.37 (80.31)</cell></row><row><cell>Iso-CTS</cell><cell>63.01 (72.71)</cell><cell>66.28 (75.01)</cell><cell>64.61 (74.02)</cell><cell>69.06 (77.38)</cell><cell>71.52 (78.87)</cell><cell>69.88 (78.22)</cell><cell>81.64 (88.31)</cell><cell>81.35 (86.87)</cell><cell>77.50 (83.65)</cell></row><row><cell cols="2">DC-Merge 64.17 (73.90) Method 8 tasks</cell><cell>ViT-B-32 14 tasks</cell><cell>20 tasks</cell><cell>8 tasks</cell><cell>ViT-B-16 14 tasks</cell><cell>20 tasks</cell><cell>8 tasks</cell><cell>ViT-L-14 14 tasks</cell><cell>20 tasks</cell></row><row><cell>Individual</cell><cell>92.83</cell><cell>90.88</cell><cell>91.37</cell><cell>94.64</cell><cell>92.76</cell><cell>93.17</cell><cell>95.81</cell><cell>94.29</cell><cell>94.73</cell></row><row><cell cols="2">Weight Averaging 66.34 (72.13)</cell><cell>64.34 (71.12)</cell><cell>61.04 (67.53)</cell><cell>72.22 (76.60)</cell><cell>69.46 (74.82)</cell><cell>65.31 (70.36)</cell><cell>79.56 (83.15)</cell><cell>76.73 (81.10)</cell><cell>71.60 (75.60)</cell></row><row><cell>Task Arithmetic</cell><cell>70.79 (76.55)</cell><cell>65.32 (72.09)</cell><cell>60.52 (66.79)</cell><cell>75.41 (79.58)</cell><cell>70.52 (75.89)</cell><cell>65.78 (70.76)</cell><cell>84.93 (88.65)</cell><cell>79.41 (83.95)</cell><cell>74.01 (78.07)</cell></row><row><cell>TIES-Merging</cell><cell>75.09 (81.08)</cell><cell>68.02 (74.83)</cell><cell>63.38 (69.90)</cell><cell>79.74 (84.34)</cell><cell>73.22 (78.73)</cell><cell>68.18 (73.26)</cell><cell>86.88 (90.69)</cell><cell>79.46 (84.05)</cell><cell>75.71 (79.80)</cell></row><row><cell>Consensus TA</cell><cell>75.03 (80.84)</cell><cell>70.39 (77.36)</cell><cell>65.43 (71.98)</cell><cell>79.39 (83.86)</cell><cell>74.39 (79.92)</cell><cell>69.76 (74.93)</cell><cell>86.34 (90.08)</cell><cell>82.22 (86.94)</cell><cell>79.00 (83.22)</cell></row><row><cell>TSV-M</cell><cell>85.86 (92.31)</cell><cell>80.06 (87.88)</cell><cell>77.07 (84.29)</cell><cell>89.01 (93.94)</cell><cell>84.58 (91.01)</cell><cell>80.57 (86.45)</cell><cell>92.98 (96.98)</cell><cell>89.17 (94.43)</cell><cell>87.72 (92.50)</cell></row><row><cell>Iso-CTS</cell><cell>86.20 (91.78)</cell><cell>81.71 (89.70)</cell><cell>78.05 (85.48)</cell><cell>90.91 (95.95)</cell><cell>86.40 (92.81)</cell><cell>82.38 (88.36)</cell><cell>94.69 (98.81)</cell><cell>90.98 (96.28)</cell><cell>90.05 (94.88)</cell></row><row><cell>DC-Merge</cell><cell cols="3">87.05 (93.55) 82.52 (90.62) 80.58 (88.18)</cell><cell>90.78 (95.83)</cell><cell cols="2">87.06 (93.70) 84.57 (90.76)</cell><cell>94.31 (98.38)</cell><cell cols="2">91.01 (96.43) 90.51 (95.43)</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_3"><head>Table 2</head><label>2</label><figDesc></figDesc><table /><note>. Average absolute accuracy results on vision model merging benchmarks in FFT setting; subscript (in parentheses) is the average normalized accuracy. The best results are in bold and the second-best are underlined.</note></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_4"><head>Table 3 .</head><label>3</label><figDesc>Performance on MM-MergeBench<ref type="bibr" target="#b69">[70]</ref>, containing eight seen tasks (LoRA fine-tuned) and four unseen tasks. The best results are in bold and the second-best are underlined. We report average absolute accuracy. See Appendix F.7 for detailed results.</figDesc><table><row><cell></cell><cell>Seen Tasks</cell><cell>Unseen Tasks</cell></row><row><cell>Zeroshot</cell><cell>43.37</cell><cell>25.22</cell></row><row><cell>Individual</cell><cell>69.23</cell><cell>−</cell></row><row><cell>Multi Task</cell><cell>63.62</cell><cell>36.06</cell></row><row><cell>Task Arithmetic</cell><cell>53.93</cell><cell>33.31</cell></row><row><cell>DARE-Merging</cell><cell>53.84</cell><cell>33.15</cell></row><row><cell>TIES-Merging</cell><cell>53.09</cell><cell>33.14</cell></row><row><cell>PCB-Merging</cell><cell>53.70</cell><cell>33.53</cell></row><row><cell>RobustMerge</cell><cell>57.33</cell><cell>37.99</cell></row><row><cell>DC-Merge</cell><cell>59.63</cell><cell>39.84</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_5"><head>Table 4 .</head><label>4</label><figDesc>Performance comparison of different smoothing strategies. We report average normalized accuracy using ViT-B-32.</figDesc><table><row><cell>Method</cell><cell>8 tasks</cell><cell>12 tasks</cell><cell>16 tasks</cell></row><row><cell>No smoothing</cell><cell>69.27</cell><cell>74.60</cell><cell>74.47</cell></row><row><cell>Averaging</cell><cell cols="3">73.09 (+3.82) 76.42 (+1.82) 75.51 (+1.04)</cell></row><row><cell cols="4">Linear smoothing 73.90 (+4.63) 77.22 (+2.62) 75.80 (+1.33)</cell></row></table><note><ref type="bibr" target="#b15">16</ref> and ViT-L-14 in Appendix E.4.</note></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_6"><head>Table 5 .</head><label>5</label><figDesc>Comparison of performance with and w/o applying masks. We report average normalized accuracy using ViT-B-32.</figDesc><table><row><cell>Method</cell><cell>Tasks</cell><cell>w/o mask</cell><cell>w/ mask</cell></row><row><cell></cell><cell>8 tasks</cell><cell>87.98</cell><cell>93.55 (+5.57)</cell></row><row><cell>FFT</cell><cell>14 tasks</cell><cell>82.39</cell><cell>90.50 (+8.11)</cell></row><row><cell></cell><cell>20 tasks</cell><cell>77.63</cell><cell>88.18 (+10.55)</cell></row><row><cell></cell><cell>8 tasks</cell><cell>73.61</cell><cell>73.90 (+0.29)</cell></row><row><cell>LoRA</cell><cell>12 tasks</cell><cell>75.94</cell><cell>77.22 (+1.28)</cell></row><row><cell></cell><cell>16 tasks</cell><cell>74.42</cell><cell>75.80 (+1.38)</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_8"><head>Table 7 .</head><label>7</label><figDesc>List of definitions and their corresponding mathematical symbols used in this paper.</figDesc><table /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_11"><head>Table 8 .</head><label>8</label><figDesc>Performance with different smoothing strategies. We report average normalized accuracy.</figDesc><table /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_14"><head></head><label></label><figDesc>on ViT-B-16 and ViT-L-14.</figDesc><table><row><cell>Method</cell><cell>8 tasks</cell><cell>14 tasks</cell><cell>20 tasks</cell></row><row><cell>Zeroshot</cell><cell>48.26</cell><cell>57.21</cell><cell>56.10</cell></row><row><cell>Individual</cell><cell>92.83</cell><cell>90.88</cell><cell>91.37</cell></row><row><cell>TSV-M</cell><cell>85.86 (92.31)</cell><cell>80.06 (87.88)</cell><cell>77.07 (84.29)</cell></row><row><cell>WUDI-Merging</cell><cell>86.47 (93.05)</cell><cell>78.87 (86.71)</cell><cell>69.90 (76.71)</cell></row><row><cell>Iso-CTS</cell><cell>86.20 (91.78)</cell><cell>81.71 (89.70)</cell><cell>78.05 (85.48)</cell></row><row><cell>DC-Merge</cell><cell>87.05 (93.55)</cell><cell>82.52 (90.62)</cell><cell>80.58 (88.18)</cell></row></table></figure>
+		</body>
+		<back>
+			<div type="annex">
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>F.3. Generalization Capability on Vision Tasks</head><p>We evaluate the generalization capability with four additional vision tasks on both ViT-B-32 and ViT-L-14 8-task benchmarks in LoRA setting and the results are respectively presented in Figure <ref type="figure">11</ref> and 12. Unlike visionlanguage tasks, all baselines along with DC-Merge exhibit limited generalization capabilities due to the complexity of unseen tasks. Nevertheless, DC-Merge consistently outperforms other methods across both benchmarks.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>F.4. Computational Complexity Analysis</head><p>We provide a comprehensive computational complexity analysis on DC-Merge in this subsection. For simplicity, we follow previous work <ref type="bibr" target="#b45">[46]</ref> to consider a deep neutral network with L layers, and each layer consists of a single task vector ∆ i ∈ R n×n . Besides, we consider the traditional full SVD implementation with a complexity of O(n 3 ) [59] and compute r-rank SVD by first computing full SVD and then retaining the top-r singular values and their corresponding singular vectors. Supposing that the number of tasks is T , the step-by-step computational complexity of DC-Merge is:</p><p>• Compute r-rank SVD for each task vector ∆ i in each layer, with the total complexity of O(T Ln 3 ); • Perform energy smoothing for each task vector in each layer, with the total complexity of O(T Lr); • Reconstruct energy-balanced task vector ∆ i layer-wise, with the total complexity of O(T Ln 2 r); • Whiten concatenated basis U ∈ R n×k and V ∈ R n×k respectively, with the total complexity of O(T L(nk 2 + k 3 )); • Project each energy-balanced task vector ∆ i onto cover space for each layer, with the total complexity of O(T L(nk   (i) encoder.layers.8.self attn.v proj.weight Figure <ref type="figure">14</ref>. Visualization of task representations in the shared cover space. We apply block-diagonal masks to eliminate cross-task directional interference (off-diagonal blocks) when projecting the aggregated task representations back to parameter space, where the mask size implicitly balances directional preservation and task fidelity.</p></div>			</div>
+			<div type="references">
+
+				<listBibl>
+
+<biblStruct xml:id="b0">
+	<monogr>
+		<title level="m" type="main">Layer normalization</title>
+		<author>
+			<persName><forename type="first">Jimmy</forename><surname>Lei Ba</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jamie</forename><surname>Ryan Kiros</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Geoffrey</forename><forename type="middle">E</forename><surname>Hinton</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1607.06450</idno>
+		<idno>2016. 18</idno>
+		<imprint/>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b1">
+	<analytic>
+		<title level="a" type="main">Food-101 -Mining Discriminative Components with Random Forests</title>
+		<author>
+			<persName><forename type="first">Lukas</forename><surname>Bossard</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Matthieu</forename><surname>Guillaumin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Luc</forename><surname>Van Gool</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">ECCV</title>
+				<imprint>
+			<date type="published" when="2014">2014</date>
+			<biblScope unit="page">16</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b2">
+	<analytic>
+		<title level="a" type="main">End-toend object detection with transformers</title>
+		<author>
+			<persName><forename type="first">Nicolas</forename><surname>Carion</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Francisco</forename><surname>Massa</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Gabriel</forename><surname>Synnaeve</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Nicolas</forename><surname>Usunier</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Alexander</forename><surname>Kirillov</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sergey</forename><surname>Zagoruyko</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">ECCV</title>
+				<imprint>
+			<date type="published" when="2020">2020</date>
+			<biblScope unit="page">1</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b3">
+	<analytic>
+		<title level="a" type="main">Emerging properties in self-supervised vision transformers</title>
+		<author>
+			<persName><forename type="first">Mathilde</forename><surname>Caron</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Hugo</forename><surname>Touvron</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ishan</forename><surname>Misra</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Herve</forename><surname>Jegou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Julien</forename><surname>Mairal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Piotr</forename><surname>Bojanowski</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Armand</forename><surname>Joulin</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">ICCV</title>
+		<imprint>
+			<biblScope unit="page">1</biblScope>
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b4">
+	<analytic>
+		<title level="a" type="main">Remote sensing image scene classification: Benchmark and state of the art</title>
+		<author>
+			<persName><forename type="first">Gong</forename><surname>Cheng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Junwei</forename><surname>Han</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xiaoqiang</forename><surname>Lu</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the IEEE</title>
+				<meeting>the IEEE</meeting>
+		<imprint>
+			<date type="published" when="2017">2017</date>
+			<biblScope unit="page">16</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b5">
+	<analytic>
+		<title level="a" type="main">Whoever started the interference should end it: Guiding data-free model merging via task vectors</title>
+		<author>
+			<persName><forename type="first">Runxi</forename><surname>Cheng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Feng</forename><surname>Xiong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yongxian</forename><surname>Wei</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Wanyun</forename><surname>Zhu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Chun</forename><surname>Yuan</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">ICML</title>
+		<imprint>
+			<biblScope unit="volume">1</biblScope>
+			<biblScope unit="issue">6</biblScope>
+			<biblScope unit="page">22</biblScope>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b6">
+	<analytic>
+		<title level="a" type="main">Describing textures in the wild</title>
+		<author>
+			<persName><forename type="first">Mircea</forename><surname>Cimpoi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Subhransu</forename><surname>Maji</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Iasonas</forename><surname>Kokkinos</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sammy</forename><surname>Mohamed</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Andrea</forename><surname>Vedaldi</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">CVPR</title>
+				<imprint>
+			<date type="published" when="2014">2014</date>
+			<biblScope unit="page">16</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b7">
+	<monogr>
+		<title level="m" type="main">Deep Learning for Classical Japanese Literature</title>
+		<author>
+			<persName><forename type="first">Tarin</forename><surname>Clanuwat</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mikel</forename><surname>Bober-Irizar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Asanobu</forename><surname>Kitamoto</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Alex</forename><surname>Lamb</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Kazuaki</forename><surname>Yamamoto</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">David</forename><surname>Ha</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1607.06450</idno>
+		<idno>2018. 16</idno>
+		<imprint/>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b8">
+	<analytic>
+		<title level="a" type="main">An Analysis of Single-Layer Networks in Unsupervised Feature Learning</title>
+		<author>
+			<persName><forename type="first">Adam</forename><surname>Coates</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Andrew</forename><surname>Ng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Honglak</forename><surname>Lee</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the Fourteenth International Conference on Artificial Intelligence and Statistics. JMLR Workshop and Conference Proceedings</title>
+				<meeting>the Fourteenth International Conference on Artificial Intelligence and Statistics. JMLR Workshop and Conference Proceedings</meeting>
+		<imprint>
+			<date type="published" when="2011">2011</date>
+			<biblScope unit="page">16</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b9">
+	<analytic>
+		<title level="a" type="main">EMNIST: Extending MNIST to handwritten letters</title>
+		<author>
+			<persName><forename type="first">Gregory</forename><surname>Cohen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Saeed</forename><surname>Afshar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jonathan</forename><surname>Tapson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">André</forename><surname>Van Schaik</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IJCNN</title>
+		<imprint>
+			<biblScope unit="page">16</biblScope>
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b10">
+	<analytic>
+		<title level="a" type="main">Model merging by uncertainty-based gradient matching</title>
+		<author>
+			<persName><forename type="first">Nico</forename><surname>Daheim</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Thomas</forename><surname>Möllenhoff</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Edoardo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Iryna</forename><surname>Ponti</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mohammad</forename><forename type="middle">Emtiyaz</forename><surname>Gurevych</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Khan</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">ICLR</title>
+		<imprint>
+			<biblScope unit="volume">1</biblScope>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b11">
+	<analytic>
+		<title level="a" type="main">Model breadcrumbs: Scaling multi-task model merging with sparse masks</title>
+		<author>
+			<persName><forename type="first">Mohammad-Javad</forename><surname>Davari</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Eugene</forename><surname>Belilovsky</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">ECCV</title>
+				<imprint>
+			<date type="published" when="2024">2024</date>
+			<biblScope unit="volume">1</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b12">
+	<monogr>
+		<title level="m" type="main">Language modeling is compression</title>
+		<author>
+			<persName><forename type="first">Grégoire</forename><surname>Delétang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Anian</forename><surname>Ruoss</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Paul-Ambroise</forename><surname>Duquenne</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Elliot</forename><surname>Catt</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tim</forename><surname>Genewein</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Christopher</forename><surname>Mattern</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jordi</forename><surname>Grau-Moya</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Li</forename></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Kevin</forename><surname>Wenliang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Matthew</forename><surname>Aitchison</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Laurent</forename><surname>Orseau</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Marcus</forename><surname>Hutter</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Joel</forename><surname>Veness</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2309.10668</idno>
+		<idno>2024. 5</idno>
+		<imprint/>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b13">
+	<analytic>
+		<title level="a" type="main">Imagenet: A large-scale hierarchical image database</title>
+		<author>
+			<persName><forename type="first">Jia</forename><surname>Deng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Wei</forename><surname>Dong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Richard</forename><surname>Socher</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Li-Jia</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Kai</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Li</forename><surname>Fei-Fei</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">CVPR</title>
+				<imprint>
+			<date type="published" when="2009">2009</date>
+			<biblScope unit="page">17</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b14">
+	<analytic>
+		<title level="a" type="main">An image is worth 16x16 words: Transformers for image recognition at scale</title>
+		<author>
+			<persName><forename type="first">Alexey</forename><surname>Dosovitskiy</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Lucas</forename><surname>Beyer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Alexander</forename><surname>Kolesnikov</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dirk</forename><surname>Weissenborn</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xiaohua</forename><surname>Zhai</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Thomas</forename><surname>Unterthiner</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mostafa</forename><surname>Dehghani</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Matthias</forename><surname>Minderer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Georg</forename><surname>Heigold</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sylvain</forename><surname>Gelly</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jakob</forename><surname>Uszkoreit</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Neil</forename><surname>Houlsby</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">ICLR</title>
+		<imprint>
+			<biblScope unit="volume">2</biblScope>
+			<biblScope unit="page">6</biblScope>
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b15">
+	<analytic>
+		<title level="a" type="main">Parameter competition balancing for model merging</title>
+		<author>
+			<persName><forename type="first">Guodong</forename><surname>Du</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Junlin</forename><surname>Lee</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jing</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Runhua</forename><surname>Jiang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yifei</forename><surname>Guo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shuyang</forename><surname>Yu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Hanting</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sim</forename><forename type="middle">K</forename><surname>Goh</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ho-Kin</forename><surname>Tang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Daojing</forename><surname>He</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">NeurIPS</title>
+		<imprint>
+			<biblScope unit="volume">6</biblScope>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b16">
+	<analytic>
+		<title level="a" type="main">Federated learning with bilateral curation for partially class-disjoint data</title>
+		<author>
+			<persName><forename type="first">Ziqing</forename><surname>Fan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ruipeng</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jiangchao</forename><surname>Yao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bo</forename><surname>Han</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ya</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yanfeng</forename><surname>Wang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 37th International Conference on Neural Information Processing Systems</title>
+				<meeting>the 37th International Conference on Neural Information Processing Systems</meeting>
+		<imprint>
+			<date type="published" when="2023">2023</date>
+			<biblScope unit="page">1</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b17">
+	<analytic>
+		<title level="a" type="main">Locally estimated global perturbations are better than local perturbations for federated sharpness-aware minimization</title>
+		<author>
+			<persName><forename type="first">Ziqing</forename><surname>Fan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shengchao</forename><surname>Hu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jiangchao</forename><surname>Yao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Gang</forename><surname>Niu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ya</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Masashi</forename><surname>Sugiyama</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yanfeng</forename><surname>Wang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 41st International Conference on Machine Learning</title>
+				<meeting>the 41st International Conference on Machine Learning</meeting>
+		<imprint>
+			<date type="published" when="2024">2024</date>
+			<biblScope unit="page">1</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b18">
+	<monogr>
+		<author>
+			<persName><forename type="first">Giorgio</forename><surname>Franceschelli</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Claudia</forename><surname>Cevenini</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mirco</forename><surname>Musolesi</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2407.13493</idno>
+		<idno>2025. 5</idno>
+		<title level="m">Training foundation models as data compression: On information, model weights and copyright law</title>
+				<imprint/>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b19">
+	<analytic>
+		<title level="a" type="main">Task singular vectors: Reducing task interference in model merging</title>
+		<author>
+			<persName><forename type="first">Andrea</forename><surname>Antonio</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Donato</forename><surname>Gargiulo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Maria</forename><forename type="middle">Sofia</forename><surname>Crisostomi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Simone</forename><surname>Bucarelli</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Fabrizio</forename><surname>Scardapane</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Emanuele</forename><surname>Silvestri</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Rodolà</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">CVPR</title>
+		<imprint>
+			<biblScope unit="volume">1</biblScope>
+			<biblScope unit="issue">6</biblScope>
+			<biblScope unit="page">22</biblScope>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b20">
+	<analytic>
+		<title level="a" type="main">Challenges in Representation Learning: A Report on Three Machine Learning Contests</title>
+		<author>
+			<persName><forename type="first">Ian</forename><forename type="middle">J</forename><surname>Goodfellow</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dumitru</forename><surname>Erhan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Pierre</forename><forename type="middle">Luc</forename><surname>Carrier</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Aaron</forename><surname>Courville</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mehdi</forename><surname>Mirza</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ben</forename><surname>Hamner</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Will</forename><surname>Cukierski</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yichuan</forename><surname>Tang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">David</forename><surname>Thaler</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dong-Hyun</forename><surname>Lee</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yingbo</forename><surname>Zhou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Chetan</forename><surname>Ramaiah</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Fangxiang</forename><surname>Feng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ruifan</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xiaojie</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dimitris</forename><surname>Athanasakis</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">John</forename><surname>Shawe-Taylor</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Maxim</forename><surname>Milakov</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">John</forename><surname>Park</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Radu</forename><surname>Ionescu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Marius</forename><surname>Popescu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Cristian</forename><surname>Grozea</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">James</forename><surname>Bergstra</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jingjing</forename><surname>Xie</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Lukasz</forename><surname>Romaszko</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bing</forename><surname>Xu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhang</forename><surname>Chuang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yoshua</forename><surname>Bengio</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Neural Networks</title>
+		<imprint>
+			<biblScope unit="volume">16</biblScope>
+			<biblScope unit="page">17</biblScope>
+			<date type="published" when="2013">2013</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b21">
+	<analytic>
+		<title level="a" type="main">Making the v in vqa matter: Elevating the role of image understanding in visual question answering</title>
+		<author>
+			<persName><forename type="first">Yash</forename><surname>Goyal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tejas</forename><surname>Khot</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Douglas</forename><surname>Summers-Stay</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dhruv</forename><surname>Batra</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Devi</forename><surname>Parikh</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">CVPR</title>
+				<imprint>
+			<date type="published" when="2017">2017</date>
+			<biblScope unit="page">17</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b22">
+	<analytic>
+		<title level="a" type="main">Vizwiz grand challenge: Answering visual questions from blind people</title>
+		<author>
+			<persName><forename type="first">Danna</forename><surname>Gurari</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Qing</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Abigale</forename><forename type="middle">J</forename><surname>Stangl</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Anhong</forename><surname>Guo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Chi</forename><surname>Lin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Kristen</forename><surname>Grauman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jiebo</forename><surname>Luo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jeffrey</forename><forename type="middle">P</forename><surname>Bigham</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">CVPR</title>
+				<imprint>
+			<date type="published" when="2018">2018</date>
+			<biblScope unit="page">17</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b23">
+	<analytic>
+		<title level="a" type="main">Eurosat: A novel dataset and deep learning benchmark for land use and land cover classification</title>
+		<author>
+			<persName><forename type="first">Patrick</forename><surname>Helber</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Benjamin</forename><surname>Bischke</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Andreas</forename><surname>Dengel</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Damian</forename><surname>Borth</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of Selected Topics in Applied Earth Observations and Remote Sensing</title>
+		<imprint>
+			<biblScope unit="page">16</biblScope>
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b24">
+	<analytic>
+		<title level="a" type="main">The many faces of robustness: A critical analysis of out-of-distribution generalization</title>
+		<author>
+			<persName><forename type="first">Dan</forename><surname>Hendrycks</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Steven</forename><surname>Basart</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Norman</forename><surname>Mu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Saurav</forename><surname>Kadavath</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Frank</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Evan</forename><surname>Dorundo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Rahul</forename><surname>Desai</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tyler</forename><surname>Zhu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Samyak</forename><surname>Parajuli</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mike</forename><surname>Guo</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">ICCV</title>
+				<imprint>
+			<date type="published" when="2021">2021</date>
+			<biblScope unit="page">17</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b25">
+	<analytic>
+		<title level="a" type="main">Lora: Low-rank adaptation of large language models</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Edward</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yelong</forename><surname>Hu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Phillip</forename><surname>Shen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zeyuan</forename><surname>Wallis</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yuanzhi</forename><surname>Allen-Zhu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shean</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Lu</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Weizhu</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Chen</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">ICLR</title>
+		<imprint>
+			<biblScope unit="volume">2</biblScope>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b26">
+	<analytic>
+		<title level="a" type="main">Emr-merging: Tuning-free highperformance model merging</title>
+		<author>
+			<persName><forename type="first">Chenyu</forename><surname>Huang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Peng</forename><surname>Ye</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tao</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tong</forename><surname>He</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xiangyu</forename><surname>Yue</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Wanli</forename><surname>Ouyang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">NeurIPS</title>
+		<imprint>
+			<biblScope unit="volume">8</biblScope>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b27">
+	<analytic>
+		<title level="a" type="main">Patching open-vocabulary models by interpolating weights</title>
+		<author>
+			<persName><forename type="first">Gabriel</forename><surname>Ilharco</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mitchell</forename><surname>Wortsman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yitzhak</forename><surname>Samir</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shuran</forename><surname>Gadre</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Hannaneh</forename><surname>Song</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Simon</forename><surname>Hajishirzi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ali</forename><surname>Kornblith</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ludwig</forename><surname>Farhadi</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Schmidt</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">NeurIPS</title>
+		<imprint>
+			<biblScope unit="volume">1</biblScope>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b28">
+	<analytic>
+		<title level="a" type="main">Editing models with task arithmetic</title>
+		<author>
+			<persName><forename type="first">Gabriel</forename><surname>Ilharco</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Marco</forename><surname>Túlio Ribeiro</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mitchell</forename><surname>Wortsman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ludwig</forename><surname>Schmidt</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Hannaneh</forename><surname>Hajishirzi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ali</forename><surname>Farhadi</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">ICLR</title>
+		<imprint>
+			<biblScope unit="volume">1</biblScope>
+			<biblScope unit="issue">2</biblScope>
+			<biblScope unit="page">20</biblScope>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b29">
+	<analytic>
+		<title level="a" type="main">Dataless knowledge fusion by merging weights of language models</title>
+		<author>
+			<persName><forename type="first">Xisen</forename><surname>Jin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xiang</forename><surname>Ren</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Daniel</forename><surname>Preotiuc-Pietro</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Pengxiang</forename><surname>Cheng</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">ICLR</title>
+		<imprint>
+			<biblScope unit="volume">1</biblScope>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b30">
+	<analytic>
+		<title level="a" type="main">Referitgame: Referring to objects in photographs of natural scenes</title>
+		<author>
+			<persName><forename type="first">Sahar</forename><surname>Kazemzadeh</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Vicente</forename><surname>Ordonez</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mark</forename><surname>Matten</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tamara</forename><surname>Berg</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">EMNLP</title>
+				<imprint>
+			<date type="published" when="2014">2014</date>
+			<biblScope unit="page">17</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b31">
+	<analytic>
+		<title level="a" type="main">3D Object representations for fine-grained categorization</title>
+		<author>
+			<persName><forename type="first">Jonathan</forename><surname>Krause</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Michael</forename><surname>Stark</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jia</forename><surname>Deng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Li</forename><surname>Fei-Fei</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">ICCV Workshops</title>
+				<imprint>
+			<date type="published" when="2013">2013</date>
+			<biblScope unit="page">16</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b32">
+	<monogr>
+		<title level="m" type="main">Learning multiple layers of features from tiny images</title>
+		<author>
+			<persName><forename type="first">Alex</forename><surname>Krizhevsky</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Geoffrey</forename><surname>Hinton</surname></persName>
+		</author>
+		<imprint>
+			<date type="published" when="2009">2009</date>
+			<biblScope unit="volume">16</biblScope>
+			<biblScope unit="page">17</biblScope>
+		</imprint>
+		<respStmt>
+			<orgName>University of Toronto</orgName>
+		</respStmt>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b33">
+	<analytic>
+		<title level="a" type="main">Gradientbased learning applied to document recognition</title>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Lecun</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Bottou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Bengio</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Haffner</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the IEEE</title>
+				<meeting>the IEEE</meeting>
+		<imprint>
+			<date type="published" when="1998">1998</date>
+			<biblScope unit="page">16</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b34">
+	<analytic>
+		<title level="a" type="main">Cheap orthogonal constraints in neural networks: A simple parametrization of the orthogonal and unitary group</title>
+		<author>
+			<persName><forename type="first">Mario</forename><surname>Lezcano</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">-</forename><surname>Casado</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">David</forename><surname>Martínez-Rubio</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">ICML</title>
+				<imprint>
+			<date type="published" when="2019">2019</date>
+			<biblScope unit="page">14</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b35">
+	<analytic>
+		<title level="a" type="main">Model merging in the essential subspace</title>
+		<author>
+			<persName><forename type="first">Longhua</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Lei</forename><surname>Qi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Qi</forename><surname>Tian</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xin</forename><surname>Geng</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">CVPR</title>
+				<imprint>
+			<date type="published" when="2026">2026</date>
+			<biblScope unit="page">8</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b36">
+	<monogr>
+		<title level="m" type="main">Deep model fusion: A survey</title>
+		<author>
+			<persName><forename type="first">Weishi</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yong</forename><surname>Peng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Miao</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Liang</forename><surname>Ding</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Han</forename><surname>Hu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Li</forename><surname>Shen</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2309.15698</idno>
+		<idno>2023. 1</idno>
+		<imprint/>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b37">
+	<analytic>
+		<title level="a" type="main">Visual instruction tuning</title>
+		<author>
+			<persName><forename type="first">Haotian</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Chunyuan</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Qingyang</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yong</forename><forename type="middle">Jae</forename><surname>Lee</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">NeurIPS</title>
+		<imprint>
+			<biblScope unit="page">6</biblScope>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b38">
+	<monogr>
+		<title level="m" type="main">Iconqa: A new benchmark for abstract diagram understanding and visual language reasoning</title>
+		<author>
+			<persName><forename type="first">Pan</forename><surname>Lu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Liang</forename><surname>Qiu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jiaqi</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tony</forename><surname>Xia</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yizhou</forename><surname>Zhao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Wei</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhou</forename><surname>Yu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xiaodan</forename><surname>Liang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Song-Chun</forename><surname>Zhu</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2110.13214</idno>
+		<idno>2021. 17</idno>
+		<imprint/>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b39">
+	<analytic>
+		<title level="a" type="main">Learn to explain: Multimodal reasoning via thought chains for science question answering</title>
+		<author>
+			<persName><forename type="first">Pan</forename><surname>Lu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Swaroop</forename><surname>Mishra</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tanglin</forename><surname>Xia</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Liang</forename><surname>Qiu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Kai-Wei</forename><surname>Chang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Song-Chun</forename><surname>Zhu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Oyvind</forename><surname>Tafjord</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Peter</forename><surname>Clark</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ashwin</forename><surname>Kalyan</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">NeurIPS</title>
+		<imprint>
+			<biblScope unit="page">17</biblScope>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b40">
+	<monogr>
+		<title level="m" type="main">Dynamic prompt learning via policy gradient for semi-structured mathematical reasoning</title>
+		<author>
+			<persName><forename type="first">Pan</forename><surname>Lu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Liang</forename><surname>Qiu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Kai-Wei</forename><surname>Chang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ying</forename><forename type="middle">Nian</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Song-Chun</forename><surname>Zhu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tanmay</forename><surname>Rajpurohit</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Peter</forename><surname>Clark</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ashwin</forename><surname>Kalyan</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2209.14610</idno>
+		<idno>2022. 17</idno>
+		<imprint/>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b41">
+	<analytic>
+		<title level="a" type="main">Twin-merging: Dynamic integration of modular expertise in model merging</title>
+		<author>
+			<persName><forename type="first">Zhenyi</forename><surname>Lu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Chenghao</forename><surname>Fan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Wei</forename><surname>Wei</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xiaoye</forename><surname>Qu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dangyang</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yu</forename><surname>Cheng</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">NeurIPS</title>
+		<imprint>
+			<biblScope unit="volume">8</biblScope>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b42">
+	<analytic>
+		<title level="a" type="main">KeeploRA: Continual learning with residual gradient adaptation</title>
+		<author>
+			<persName><forename type="first">Mao-Lin</forename><surname>Luo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zi-Hao</forename><surname>Zhou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yi-Lin</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yuanyu</forename><surname>Wan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Min-Ling</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tong</forename><surname>Wei</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">The Fourteenth International Conference on Learning Representations</title>
+				<imprint>
+			<date type="published" when="2026">2026</date>
+			<biblScope unit="page">1</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b43">
+	<analytic>
+		<title level="a" type="main">Generation and comprehension of unambiguous object descriptions</title>
+		<author>
+			<persName><forename type="first">Junhua</forename><surname>Mao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jonathan</forename><surname>Huang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Alexander</forename><surname>Toshev</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Oana</forename><surname>Camburu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Alan</forename><forename type="middle">L</forename><surname>Yuille</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Kevin</forename><surname>Murphy</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">CVPR</title>
+				<imprint>
+			<date type="published" when="2016">2016</date>
+			<biblScope unit="page">17</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b44">
+	<analytic>
+		<title level="a" type="main">MagMax: Leveraging Model Merging for Seamless Continual Learning</title>
+		<author>
+			<persName><forename type="first">Daniel</forename><surname>Marczak</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bartlomiej</forename><surname>Twardowski</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tomasz</forename><surname>Trzcinski</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sebastian</forename><surname>Cygert</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">ECCV</title>
+				<imprint>
+			<date type="published" when="2024">2024</date>
+			<biblScope unit="page">1</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b45">
+	<analytic>
+		<title level="a" type="main">No Task Left Behind: Isotropic Model Merging with Common and Task-Specific Subspaces</title>
+		<author>
+			<persName><forename type="first">Daniel</forename><surname>Marczak</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Simone</forename><surname>Magistri</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sebastian</forename><surname>Cygert</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bartłomiej</forename><surname>Twardowski</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Andrew</forename><forename type="middle">D</forename><surname>Bagdanov</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Joost</forename><surname>Van De Weijer</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">ICML</title>
+		<imprint>
+			<biblScope unit="volume">4</biblScope>
+			<biblScope unit="issue">5</biblScope>
+			<biblScope unit="page">22</biblScope>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b46">
+	<analytic>
+		<title level="a" type="main">Ocr-vqa: Visual question answering by reading text in images</title>
+		<author>
+			<persName><forename type="first">Anand</forename><surname>Mishra</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shashank</forename><surname>Shekhar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ajeet</forename><forename type="middle">Kumar</forename><surname>Singh</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Anirban</forename><surname>Chakraborty</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">ICDAR</title>
+				<imprint>
+			<date type="published" when="2019">2019</date>
+			<biblScope unit="page">17</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b47">
+	<analytic>
+		<title level="a" type="main">Reading digits in natural images with unsupervised feature learning</title>
+		<author>
+			<persName><forename type="first">Yuval</forename><surname>Netzer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tao</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Adam</forename><surname>Coates</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Alessandro</forename><surname>Bissacco</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bo</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Andrew</forename><forename type="middle">Y</forename><surname>Ng</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">NeurIPS Workshops</title>
+				<imprint>
+			<date type="published" when="2011">2011</date>
+			<biblScope unit="page">16</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b48">
+	<analytic>
+		<title level="a" type="main">Automated Flower Classification over a Large Number of Classes</title>
+		<author>
+			<persName><forename type="first">Maria-Elena</forename><surname>Nilsback</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Andrew</forename><surname>Zisserman</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Sixth Indian Conference on Computer Vision, Graphics &amp; Image Processing</title>
+				<imprint>
+			<date type="published" when="2008">2008. 2008</date>
+			<biblScope unit="page">16</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b49">
+	<analytic>
+		<title level="a" type="main">Cats and dogs</title>
+		<author>
+			<persName><forename type="first">Andrea</forename><surname>Omkar M Parkhi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Andrew</forename><surname>Vedaldi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><forename type="middle">V</forename><surname>Zisserman</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Jawahar</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">CVPR</title>
+				<imprint>
+			<date type="published" when="2012">2012</date>
+			<biblScope unit="page">16</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b50">
+	<analytic>
+		<title level="a" type="main">Flickr30k entities: Collecting region-to-phrase correspondences for richer image-to-sentence models</title>
+		<author>
+			<persName><forename type="first">Liwei</forename><surname>Bryan A Plummer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Chris</forename><forename type="middle">M</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Juan</forename><forename type="middle">C</forename><surname>Cervantes</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Julia</forename><surname>Caicedo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Svetlana</forename><surname>Hockenmaier</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Lazebnik</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">ICCV</title>
+				<imprint>
+			<date type="published" when="2015">2015</date>
+			<biblScope unit="page">17</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b51">
+	<analytic>
+		<title level="a" type="main">Learning transferable visual models from natural language supervision</title>
+		<author>
+			<persName><forename type="first">Alec</forename><surname>Radford</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jong</forename><forename type="middle">Wook</forename><surname>Kim</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Chris</forename><surname>Hallacy</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Aditya</forename><surname>Ramesh</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Gabriel</forename><surname>Goh</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sandhini</forename><surname>Agarwal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Girish</forename><surname>Sastry</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Amanda</forename><surname>Askell</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Pamela</forename><surname>Mishkin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jack</forename><surname>Clark</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">ICML</title>
+		<imprint>
+			<biblScope unit="volume">1</biblScope>
+			<biblScope unit="page">6</biblScope>
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b52">
+	<analytic>
+		<title level="a" type="main">A-okvqa: A benchmark for visual question answering using world knowledge</title>
+		<author>
+			<persName><forename type="first">Dustin</forename><surname>Schwenk</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Apoorv</forename><surname>Khandelwal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Christopher</forename><surname>Clark</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Kenneth</forename><surname>Marino</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Roozbeh</forename><surname>Mottaghi</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">ECCV</title>
+				<imprint>
+			<date type="published" when="2022">2022</date>
+			<biblScope unit="page">17</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b53">
+	<analytic>
+		<title level="a" type="main">A generalized solution of the orthogonal procrustes problem</title>
+		<author>
+			<persName><forename type="first">H</forename><surname>Peter</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Schönemann</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Psychometrika</title>
+		<imprint>
+			<biblScope unit="volume">6</biblScope>
+			<biblScope unit="page">14</biblScope>
+			<date type="published" when="1966">1966</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b54">
+	<monogr>
+		<title level="m" type="main">Model merging with functional dual anchors</title>
+		<author>
+			<persName><forename type="first">Kexuan</forename><surname>Shi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yandong</forename><surname>Wen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Weiyang</forename><surname>Liu</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2510.21223</idno>
+		<idno>2025. 8</idno>
+		<imprint/>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b55">
+	<analytic>
+		<title level="a" type="main">Recursive deep models for semantic compositionality over a sentiment treebank</title>
+		<author>
+			<persName><forename type="first">Richard</forename><surname>Socher</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Alex</forename><surname>Perelygin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jean</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jason</forename><surname>Chuang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Christopher</forename><forename type="middle">D</forename><surname>Manning</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Andrew</forename><surname>Ng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Christopher</forename><surname>Potts</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">EMNLP</title>
+				<imprint>
+			<date type="published" when="2013">2013</date>
+			<biblScope unit="volume">16</biblScope>
+			<biblScope unit="page">17</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b56">
+	<analytic>
+		<title level="a" type="main">The german traffic sign recognition benchmark: a multi-class classification competition</title>
+		<author>
+			<persName><forename type="first">Johannes</forename><surname>Stallkamp</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Marc</forename><surname>Schlipsing</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jan</forename><surname>Salmen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Christian</forename><surname>Igel</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IJCNN</title>
+		<imprint>
+			<biblScope unit="page">16</biblScope>
+			<date type="published" when="2011">2011</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b57">
+	<analytic>
+		<title level="a" type="main">Model merging with SVD to tie the Knots</title>
+		<author>
+			<persName><forename type="first">George</forename><surname>Stoica</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Pratik</forename><surname>Ramesh</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Boglarka</forename><surname>Ecsedi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Leshem</forename><surname>Choshen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Judy</forename><surname>Hoffman</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">ICLR</title>
+		<imprint>
+			<biblScope unit="volume">6</biblScope>
+			<biblScope unit="issue">8</biblScope>
+			<biblScope unit="page">20</biblScope>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b58">
+	<monogr>
+		<title level="m" type="main">A hierarchical singular value decomposition algorithm for low rank matrices</title>
+		<author>
+			<persName><forename type="first">Vinita</forename><surname>Vasudevan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Ramakrishna</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1710.02812</idno>
+		<idno>2017. 21</idno>
+		<imprint/>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b59">
+	<analytic>
+		<title level="a" type="main">Rotation Equivariant CNNs for Digital Pathology</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Bastiaan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jasper</forename><surname>Veeling</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jim</forename><surname>Linmans</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Taco</forename><surname>Winkens</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Max</forename><surname>Cohen</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Welling</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">MICCAI</title>
+		<imprint>
+			<biblScope unit="page">16</biblScope>
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b60">
+	<analytic>
+		<title level="a" type="main">Screen2words: Automatic mobile ui summarization with multimodal learning</title>
+		<author>
+			<persName><forename type="first">Bryan</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Gang</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xin</forename><surname>Zhou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhourong</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tovi</forename><surname>Grossman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yang</forename><surname>Li</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">UIST</title>
+				<imprint>
+			<date type="published" when="2021">2021</date>
+			<biblScope unit="page">17</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b61">
+	<analytic>
+		<title level="a" type="main">Localizing task information for improved model merging and compression</title>
+		<author>
+			<persName><forename type="first">Ke</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Nikolaos</forename><surname>Dimitriadis</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Guillermo</forename><surname>Ortiz-Jiménez</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Franc</forename><surname>¸ois Fleuret</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Pascal</forename><surname>Frossard</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">ICML</title>
+		<imprint>
+			<biblScope unit="volume">6</biblScope>
+			<biblScope unit="page">8</biblScope>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b62">
+	<monogr>
+		<title level="m" type="main">Modeling multi-task model merging as adaptive projective gradient descent</title>
+		<author>
+			<persName><forename type="first">Yongxian</forename><surname>Wei</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Anke</forename><surname>Tang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Li</forename><surname>Shen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Chun</forename><surname>Yuan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xiaochun</forename><surname>Cao</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2501.01230</idno>
+		<idno>2025. 8</idno>
+		<imprint/>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b63">
+	<analytic>
+		<title level="a" type="main">Model soups: averaging weights of multiple fine-tuned models improves accuracy without increasing inference time</title>
+		<author>
+			<persName><forename type="first">Mitchell</forename><surname>Wortsman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Gabriel</forename><surname>Ilharco</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yitzhak</forename><surname>Samir</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Rebecca</forename><surname>Gadre</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Raphael</forename><surname>Roelofs</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ari</forename><forename type="middle">S</forename><surname>Gontijo-Lopes</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Hongseok</forename><surname>Morcos</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ali</forename><surname>Namkoong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yair</forename><surname>Farhadi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Simon</forename><surname>Carmon</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Kornblith</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">ICML</title>
+				<imprint>
+			<date type="published" when="2022">2022</date>
+			<biblScope unit="volume">6</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b64">
+	<analytic>
+		<title level="a" type="main">Robust fine-tuning of zero-shot models</title>
+		<author>
+			<persName><forename type="first">Mitchell</forename><surname>Wortsman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Gabriel</forename><surname>Ilharco</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jong</forename><forename type="middle">Wook</forename><surname>Kim</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mike</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Simon</forename><surname>Kornblith</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Rebecca</forename><surname>Roelofs</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Raphael</forename><forename type="middle">Gontijo</forename><surname>Lopes</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Hannaneh</forename><surname>Hajishirzi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ali</forename><surname>Farhadi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Hongseok</forename><surname>Namkoong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ludwig</forename><surname>Schmidt</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">CVPR</title>
+				<imprint>
+			<date type="published" when="2022">2022</date>
+			<biblScope unit="volume">1</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b65">
+	<monogr>
+		<title level="m" type="main">Fashionmnist: a novel image dataset for benchmarking machine learning algorithms</title>
+		<author>
+			<persName><forename type="first">Han</forename><surname>Xiao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Kashif</forename><surname>Rasul</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Roland</forename><surname>Vollgraf</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1708.07747</idno>
+		<imprint>
+			<date type="published" when="2017">2017</date>
+			<biblScope unit="volume">16</biblScope>
+			<biblScope unit="page">17</biblScope>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b66">
+	<analytic>
+		<title level="a" type="main">Sun database: Exploring a large collection of scene categories</title>
+		<author>
+			<persName><forename type="first">Jianxiong</forename><surname>Xiao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Krista</forename><forename type="middle">A</forename><surname>Ehinger</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">James</forename><surname>Hays</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Antonio</forename><surname>Torralba</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Aude</forename><surname>Oliva</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IJCV</title>
+		<imprint>
+			<biblScope unit="page">16</biblScope>
+			<date type="published" when="2016">2016</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b67">
+	<analytic>
+		<title level="a" type="main">TIES-merging: Resolving interference when merging models</title>
+		<author>
+			<persName><forename type="first">Prateek</forename><surname>Yadav</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Derek</forename><surname>Tam</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Leshem</forename><surname>Choshen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Colin</forename><surname>Raffel</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mohit</forename><surname>Bansal</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">NeurIPS</title>
+		<imprint>
+			<biblScope unit="volume">1</biblScope>
+			<biblScope unit="issue">6</biblScope>
+			<biblScope unit="page">18</biblScope>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b68">
+	<analytic>
+		<title level="a" type="main">Language models are super mario: Absorbing abilities from homologous models as a free lunch</title>
+		<author>
+			<persName><forename type="first">Le</forename><surname>Yu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bowen</forename><surname>Yu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Haiyang</forename><surname>Yu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Fei</forename><surname>Huang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yongbin</forename><surname>Li</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">ICML</title>
+				<imprint>
+			<date type="published" when="2024">2024</date>
+			<biblScope unit="volume">6</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b69">
+	<monogr>
+		<title level="m" type="main">Robustmerge: Parameter-efficient model merging for mllms with direction robustness</title>
+		<author>
+			<persName><forename type="first">Fanhu</forename><surname>Zeng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Haiyang</forename><surname>Guo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Fei</forename><surname>Zhu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Li</forename><surname>Shen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Hao</forename><surname>Tang</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2502.17159</idno>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+			<biblScope unit="volume">6</biblScope>
+			<biblScope unit="page">22</biblScope>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b70">
+	<analytic>
+		<title level="a" type="main">Sigmoid loss for language image pre-training</title>
+		<author>
+			<persName><forename type="first">Xiaohua</forename><surname>Zhai</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Basil</forename><surname>Mustafa</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Alexander</forename><surname>Kolesnikov</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Lucas</forename><surname>Beyer</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">ICCV</title>
+				<imprint>
+			<date type="published" when="2023">2023</date>
+			<biblScope unit="page">1</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+				</listBibl>
+			</div>
+		</back>
+	</text>
+</TEI>

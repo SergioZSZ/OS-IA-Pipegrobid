@@ -1,0 +1,1792 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xml:space="preserve" xmlns="http://www.tei-c.org/ns/1.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.tei-c.org/ns/1.0 https://raw.githubusercontent.com/kermitt2/grobid/master/grobid-home/schemas/xsd/Grobid.xsd"
+ xmlns:xlink="http://www.w3.org/1999/xlink">
+	<teiHeader xml:lang="en">
+		<fileDesc>
+			<titleStmt>
+				<title level="a" type="main">Spatiotemporal noise stabilizes unbounded diversity in strongly-competitive communities</title>
+			</titleStmt>
+			<publicationStmt>
+				<publisher/>
+				<availability status="unknown"><licence/></availability>
+				<date type="published" when="2026-02-17">February 17, 2026</date>
+			</publicationStmt>
+			<sourceDesc>
+				<biblStruct>
+					<analytic>
+						<author>
+							<persName><forename type="first">Amer</forename><surname>Al-Hiyasat</surname></persName>
+							<affiliation key="aff0">
+								<orgName type="department">Department of Physics</orgName>
+								<orgName type="institution">Massachusetts Institute of Technology</orgName>
+								<address>
+									<postCode>02139</postCode>
+									<settlement>Cambridge</settlement>
+									<region>Massachusetts</region>
+									<country key="US">USA</country>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Daniel</forename><forename type="middle">W</forename><surname>Swartz</surname></persName>
+							<affiliation key="aff0">
+								<orgName type="department">Department of Physics</orgName>
+								<orgName type="institution">Massachusetts Institute of Technology</orgName>
+								<address>
+									<postCode>02139</postCode>
+									<settlement>Cambridge</settlement>
+									<region>Massachusetts</region>
+									<country key="US">USA</country>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Jeff</forename><surname>Gore</surname></persName>
+							<affiliation key="aff0">
+								<orgName type="department">Department of Physics</orgName>
+								<orgName type="institution">Massachusetts Institute of Technology</orgName>
+								<address>
+									<postCode>02139</postCode>
+									<settlement>Cambridge</settlement>
+									<region>Massachusetts</region>
+									<country key="US">USA</country>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Mehran</forename><surname>Kardar</surname></persName>
+							<affiliation key="aff0">
+								<orgName type="department">Department of Physics</orgName>
+								<orgName type="institution">Massachusetts Institute of Technology</orgName>
+								<address>
+									<postCode>02139</postCode>
+									<settlement>Cambridge</settlement>
+									<region>Massachusetts</region>
+									<country key="US">USA</country>
+								</address>
+							</affiliation>
+						</author>
+						<title level="a" type="main">Spatiotemporal noise stabilizes unbounded diversity in strongly-competitive communities</title>
+					</analytic>
+					<monogr>
+						<imprint>
+							<date type="published" when="2026-02-17">February 17, 2026</date>
+						</imprint>
+					</monogr>
+					<idno type="MD5">EFD8B278DB39EC194E0A473AD07960F7</idno>
+					<idno type="arXiv">arXiv:2602.13423v1[q-bio.PE]</idno>
+				</biblStruct>
+			</sourceDesc>
+		</fileDesc>
+		<encodingDesc>
+			<appInfo>
+				<application version="0.7.2" ident="GROBID" when="2026-05-14T17:26+0000">
+					<desc>GROBID - A machine learning software for extracting information from scholarly documents</desc>
+					<ref target="https://github.com/kermitt2/grobid"/>
+				</application>
+			</appInfo>
+		</encodingDesc>
+		<profileDesc>
+			<abstract>
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>Classical ecological models predict that large, diverse communities should be unstable, presenting a central challenge to explaining the stable biodiversity seen in nature. We revisit this long-standing problem by extending the generalized Lotka-Volterra model to include both spatial structure and environmental fluctuations across space and time. We find that neither space nor environmental noise alone can resolve the tension between diversity and stability, but that their combined effects permit arbitrarily many species to stably coexist despite strongly disordered competitive interactions. We analytically characterize the noise-induced transition to coexistence, showing that spatiotemporal noise drives an anomalous scaling of abundance fluctuations, known empirically as Taylor's law. At the community level, this manifests as an effective sublinear self-inhibition that renders the community stable and asymptotically neutral in the high-diversity limit. Spatiotemporal noise thus provides a novel resolution to the diversity-stability paradox and a generic mechanism by which complex communities can persist.</p></div>
+			</abstract>
+		</profileDesc>
+	</teiHeader>
+	<text xml:lang="en">
+		<body>
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>Natural ecosystems are extraordinarily diverse, with hundreds to thousands of species coexisting across scales, from tropical rainforests and coral reefs to microbial communities <ref type="bibr">[1]</ref><ref type="bibr">[2]</ref><ref type="bibr">[3]</ref><ref type="bibr">[4]</ref>. Classical ecological models, however, predict that such diversity is unstable to competitive exclusion <ref type="bibr">[5]</ref>. May's diversity-stability paradox sharpens this tension <ref type="bibr">[6]</ref>: in large, randomly-interacting communities, adding species makes stable coexistence increasingly unlikely. Consistent with this prediction, when species that co-occur in nature are placed in well-mixed, controlled laboratory conditions, they often fail to coexist and instead competitively exclude <ref type="bibr">[7]</ref><ref type="bibr">[8]</ref><ref type="bibr">[9]</ref><ref type="bibr">[10]</ref>. How, then, is stable biodiversity maintained in nature?</p><p>Several routes around this paradox have been proposed <ref type="bibr">[11,</ref><ref type="bibr">12]</ref>. One approach is to impart a specific structure onto the matrix of interspecific interactions; for example, through sparsity, modularity, or strong correlations <ref type="bibr" target="#b12">[13]</ref><ref type="bibr" target="#b13">[14]</ref><ref type="bibr" target="#b14">[15]</ref><ref type="bibr" target="#b15">[16]</ref><ref type="bibr" target="#b16">[17]</ref><ref type="bibr" target="#b17">[18]</ref><ref type="bibr" target="#b18">[19]</ref>. Spatial structure provides further mechanisms: if the interaction coefficients vary as much throughout space as they do between species, then different spatial patches select different winners, and diversity can be maintained at the community level <ref type="bibr" target="#b19">[20,</ref><ref type="bibr" target="#b20">21]</ref>. A second approach has been to move beyond static theories, where stationary abundances correspond to stable equilibria of a dynamical system, and instead take account of temporal fluctuations <ref type="bibr" target="#b17">[18,</ref><ref type="bibr" target="#b20">[21]</ref><ref type="bibr" target="#b21">[22]</ref><ref type="bibr" target="#b22">[23]</ref>. Environmental variability, due to fluctuations in abiotic factors such as weather or nutrient availability, has been suggested to create temporal niches that favor coexistence if it acts asymmetrically on different species <ref type="bibr">[11,</ref><ref type="bibr" target="#b23">[24]</ref><ref type="bibr" target="#b24">[25]</ref><ref type="bibr" target="#b25">[26]</ref><ref type="bibr" target="#b26">[27]</ref><ref type="bibr" target="#b27">[28]</ref><ref type="bibr" target="#b28">[29]</ref><ref type="bibr" target="#b29">[30]</ref><ref type="bibr" target="#b30">[31]</ref>. However, in the disordered competitive setting most directly tied to May's argument, environmental noise alone does not generically stabilize coexistence <ref type="bibr" target="#b31">[32,</ref><ref type="bibr" target="#b32">33]</ref> and can instead accelerate diversity loss by driving rare species toward extinction <ref type="bibr" target="#b33">[34]</ref>.</p><p>A standard setting in which May's argument is borne * These authors contributed equally to this work.</p><p>out is the generalized Lotka-Volterra (gLV) model with random (quenched) interactions <ref type="bibr" target="#b34">[35]</ref>, which reproduces key dynamical features of laboratory microcosms <ref type="bibr">[10,</ref><ref type="bibr" target="#b35">36,</ref><ref type="bibr" target="#b36">37]</ref>. In the recent theoretical literature, it has been typical to focus on weakly-interacting communities, where interaction coefficients are made to vanish as the inverse of the species pool size <ref type="bibr" target="#b19">[20,</ref><ref type="bibr" target="#b34">35,</ref><ref type="bibr" target="#b37">[38]</ref><ref type="bibr" target="#b38">[39]</ref><ref type="bibr" target="#b39">[40]</ref><ref type="bibr" target="#b40">[41]</ref>. Although this scaling can generate diverse stable equilibria, it implies that in rich communities, cross-inhibition is negligible compared to self-inhibition. This is at odds with direct measurements in microbial systems <ref type="bibr">[10]</ref>, and is least plausible precisely where the diversity-stability paradox is most acute-for instance, the coexistence of thousands of very similar phytoplankton on only a handful of resources <ref type="bibr" target="#b41">[42]</ref>.</p><p>In this work, we demonstrate that two ubiquitous features of natural ecosystems, (1) spatial structure and (2) spatiotemporal environmental noise, suffice to stabilize extensive coexistence in strongly-competitive metacommunities. Working in the randomly-interacting generalized Lotka-Volterra framework, we show that neither ingredient alone stabilizes diversity, but that their combination creates a new phase in which arbitrarily many species coexist despite strong competition. The mechanism of this noise-induced transition leaves clear macroecological footprints with empirical backing: spatiotemporal noise generates heavy-tailed abundance distributions <ref type="bibr" target="#b29">[30,</ref><ref type="bibr" target="#b42">43,</ref><ref type="bibr" target="#b43">44]</ref>, giving rise to a manifestation of Taylor's law <ref type="bibr" target="#b44">[45]</ref><ref type="bibr" target="#b45">[46]</ref><ref type="bibr" target="#b46">[47]</ref>, where abundance fluctuations scale as an anomalous power of the mean. This, in turn, leads to an emergent nonanalytic, sublinear self-inhibition at the community level, which we show to stabilize unbounded diversity <ref type="bibr" target="#b40">[41]</ref>. Within the coexistence phase, individual species become progressively less distinguishable as diversity is increased, so that the limiting model approaches neutrality in spite of strongly heterogeneous pairwise interactions. These macroecological patterns are not imposed as modeling choices; they emerge together with the stabilization of richness, strengthening the plausibility of our framework. </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>I. gLV METACOMMUNITIES WITH SPATIOTEMPORAL NOISE</head><p>To model spatiotemporal noise, we augment the gLV model as follows (Fig. <ref type="figure" target="#fig_0">1a</ref>): we implement spatial structure using a metacommunity, comprising a network of "patches" with local interactions within each patch and dispersal between them <ref type="bibr" target="#b17">[18,</ref><ref type="bibr" target="#b19">20,</ref><ref type="bibr" target="#b47">48,</ref><ref type="bibr" target="#b48">49]</ref>. We include environmental noise through fluctuations in the species growth rates, which amounts to a multiplicative noise term proportional to the species abundance. This is to be distinguished from demographic noise, which scales as the square root of the abundance. The abundance of species i ∈ 1, . . . , S on patch α ∈ 1, . . . , P then evolves as</p><formula xml:id="formula_0">Ṅiα =rN iα 1 − N iα − j̸ =i A ij N jα + D c α β∈∂α (N iβ − N iα ) + √ 2T N iα η iα (t),<label>(1)</label></formula><p>where ∂α denotes the neighbors of patch α and c α its connectivity, D is the dispersal rate, and T sets the strength of environmental noise, which is to be interpreted in the Itô sense. For simplicity and in line with prior literature <ref type="bibr" target="#b19">[20,</ref><ref type="bibr" target="#b29">30,</ref><ref type="bibr" target="#b49">50]</ref>, the same D and T are used for all species. We take η iα (t) to be a unit Gaussian white noise, independent among species and patches:</p><formula xml:id="formula_1">⟨η iα (t)η jβ (t ′ )⟩ = δ ij δ αβ δ(t − t ′ ),<label>(2)</label></formula><p>where ⟨•⟩ denotes an ensemble average. The interaction matrix, A, is uniform across patches, with elements that are independent and identically distributed with finite mean and variance:</p><formula xml:id="formula_2">A ij = µ, (A ij A kℓ ) c = δ ik δ jℓ σ 2 .<label>(3)</label></formula><p>Here, (•) denotes an average over the realizations of A, equivalent to a species average for large pool size S. Since µ, σ 2 ∈ O(S 0 ), the ecological communities considered here are strongly interacting. To model demographic extinction, we impose a cutoff N c ≪ 1/S below which N iα (t) is set to zero, which is valid for large but finite populations <ref type="bibr" target="#b50">[51]</ref>.</p><p>To make analytical progress, we focus on fullyconnected networks of size P ≫ S ≫ 1, though we later consider the extension to finite networks and spatial lattices. The dynamics then take the form <ref type="bibr" target="#b42">[43,</ref><ref type="bibr" target="#b43">44]</ref> Ṅi</p><formula xml:id="formula_3">=rN i 1−N i − j̸ =i A ij N j +D(⟨N i ⟩−N i )+ √ 2T N i η i ,<label>(4)</label></formula><p>where the patch index has been dropped and ⟨N i ⟩ denotes the patch-averaged abundance ⟨N i ⟩ ≡ 1 P α N iα , equivalent to an ensemble average in the limit P → ∞.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>II. NOISE-INDUCED TRANSITION TO COEXISTENCE</head><p>We performed numerical simulations of Eq. ( <ref type="formula" target="#formula_3">4</ref>) in the presence or absence of spatial dispersal or environmental noise (Fig. <ref type="figure" target="#fig_0">1b</ref>). In absence of both (T = D = 0), most species abundances flow towards the extinction cutoff, with only a handful of survivors at long times. Adding space or noise alone does not alter this behavior. Surprisingly, however, when the dispersal rate is nonzero and the noise is sufficiently strong, all species persist indefinitely, with abundances fluctuating between a migration floor set by D⟨N i ⟩/r, and an O(1) ceiling set by the carrying capacity. Notably, we find that the patch-averaged abundances, ⟨N i ⟩, are O(1/S). Spatiotemporal noise thus stabilizes a coexistence state in which an O(1) total biomass is shared among S species.</p><p>To quantify how much diversity can be stabilized by spatiotemporal noise, we measured the local richness, S * , defined as the average number of long-time survivors on one patch (for D &gt; 0, local richness equals global richness, as any extant species is present on all patches). This is plotted in Fig <ref type="figure" target="#fig_0">1c</ref> as a function of the initial pool sizes S. In the standard gLV case (T = D = 0), consistent with known results <ref type="bibr">[6,</ref><ref type="bibr" target="#b34">35]</ref>, the surviving richness initially increases with S but then saturates to an upper bound independent of S, implying an asymptotic survival fraction of ϕ ≡ lim S→∞ S * /S = 0. Environmental noise (T &gt; 0, D = 0) lowers the upper bound on S * , showing that environmental noise alone in fact favors extinction. Without noise but with nonzero dispersal (T = 0, D &gt; 0), the limiting value of S * remains O(1) <ref type="bibr" target="#b20">[21]</ref>, so that the survival fraction is still zero for large S (but see Ref. <ref type="bibr" target="#b17">[18]</ref>, where a nonzero survival fraction is obtained for strongly asymmetric interactions A ij = −A ji . We do not consider this special choice here as it is not required for coexistence). With both space and noise, however, the surviving richness grows indefinitely with S as S * = S, implying coexistence of every species from the initial pool and a survival fraction of unity. Crucially, the interaction parameters µ and σ 2 are kept O(S 0 ), so that larger communities are not stabilized by weakening interactions. Spatiotemporal noise thus stabilizes arbitrarily rich communities.</p><p>An illustrative consequence of this result is provided in Fig. <ref type="figure" target="#fig_0">1d</ref>: here, new species are periodically introduced at random points in space and made to interact with the resident community. In absence of noise (top panel), most attempted invasions fail, and those that succeed typically displace a resident species. When spatiotemporal noise is sufficiently strong, however, all invasions succeed and only minimally disturb the resident community.</p><p>We next asked how strong the noise must be to stabilize this high-diversity state. We find that there is a critical noise strength, T c , below which the survival fraction approaches zero and above which it approaches unity. The transition becomes sharp in the infinite P limit, with a width that vanishes as 1/ √ P (Fig. <ref type="figure" target="#fig_1">2a</ref>, inset). To determine how T c depends on the dispersal rate, D, we plot in Fig. <ref type="figure" target="#fig_1">2</ref>(b) the survival fraction as a function of both T and D. We identify three phases: when the noise is weak (phase 1), the metacommunity is in a low diversity competitive exclusion phase with an O(1) number of survivors, so that ϕ → 0 for large S. As T is increased, the system transitions to a noise-stabilized coexistence phase with a survival fraction of unity (phase 2). If T is increased further still, so that it is significantly larger than r, the diversity collapses again and even a single species cannot survive (S * = 0) due to the large noise. As we show in the Supplementary Information (SI), this extinction phase vanishes if P is exponentially large in T − r, and is thus a finite-P effect. We thus hereafter focus only on phases ( <ref type="formula" target="#formula_0">1</ref>) and ( <ref type="formula" target="#formula_1">2</ref>) and the transition line between them T c (D).</p><p>For D ≪ r, the critical noise strength T c (D) approaches a constant independent of D. The limit D → 0 is thus singular, since there is no transition in absence of dispersal. In this small-D regime, T c is of the order 10 −1 r, implying that growth rate fluctuations of as little as ∼ 10% suffice to stabilize coexistence. Increasing the dispersal rate delays the coexistence transition: for D ≫ r, the critical noise strength scales linearly as T c (D) ∝ D. As we soon show, this is because the patches evolve synchronously when D is large, behaving effectively as a single-patch gLV system, unless the noise is strong enough to desynchronize them. Coexistence thus requires the dispersal rate to be positive but sufficiently smaller than T .</p><p>In the following, we develop an analytical theory, formally valid for D ≫ r, to uncover the mechanism behind the noise-induced stabilization. This limit corresponds to high-migration scenarios where many dispersal events occur within a single generation time-typical for longlived organisms such as plants or mammals.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>III. EFFECTIVE DYNAMICS OF MEAN ABUNDANCES</head><p>Averaging Eq. ( <ref type="formula" target="#formula_3">4</ref>) for a fully-connected network yields the following dynamics for the mean (patch-averaged) abundances:</p><formula xml:id="formula_4">⟨N i ⟩ = r ⟨N i ⟩ − ⟨N 2 i ⟩ − j A ij ⟨N i N j ⟩ .<label>(5)</label></formula><p>Since the evolution of the means depends on the correlators ⟨N i N j ⟩, Eq. ( <ref type="formula" target="#formula_4">5</ref>) is not closed in general. As we show in the SI, however, a closure may be obtained in the limit D ≫ r: the correlator ⟨N i N j̸ =i ⟩ becomes a fast variable relaxing on a time scale D −1 and can thus be adiabatically eliminated in favor of the means {⟨N i ⟩}, which evolve slowly on a time scale r −1 (Eq. 5). This yields</p><formula xml:id="formula_5">⟨N i N j̸ =i ⟩ = ⟨N i ⟩⟨N j ⟩ + O r D .<label>(6)</label></formula><p>Whereas Eq. ( <ref type="formula" target="#formula_5">6</ref>) holds irrespective of the value of T , the closure for N 2 i instead exhibits a transition at T = D that portends the onset of the coexistence phase. For T &lt; D, we find</p><formula xml:id="formula_6">⟨N 2 i ⟩ = D D − T ⟨N i ⟩ 2 + O r D−T , (T &lt; D).<label>(7)</label></formula><p>Substituting into Eq. ( <ref type="formula" target="#formula_4">5</ref>) then yields an effective (singlepatch) gLV dynamics for the means, reducing the effect of spatiotemporal noise to a renormalization of the carrying capacity. This places the region T &lt; D within the lowdiversity competitive exclusion phase.</p><p>To understand the coexistence phase, we require a closure for ⟨N 2 i ⟩ which is valid for T &gt; T c ≥ D. To achieve this, we study Eq. ( <ref type="formula" target="#formula_0">1</ref>) under the conditions that: (1) all S species coexist with ⟨N i ⟩ &gt; 0, (2) the mean abundances are of order 1/S, and (3) the means are held adiabatically fixed in time because D ≫ r. Conditions (1) and (2) will be verified as self-consistent above a critical noise strength that will be determined shortly and identified with T c . Subject to these conditions, our first result, derived in the SI, is that the abundance of species i is distributed according to a truncated power law (Fig. <ref type="figure" target="#fig_6">3a</ref>):</p><formula xml:id="formula_7">p(N i ) ∝ e −rβN e −βD⟨Ni⟩/N N −2−βD ,<label>(8)</label></formula><p>where β ≡ T −1 denotes the inverse noise strength. The lower cutoff at N ∼ βD⟨N i ⟩ ∝ 1/S constitutes the migration floor observed in Fig. <ref type="figure" target="#fig_0">1</ref> and becomes arbitrarily small as S → ∞. Equation ( <ref type="formula" target="#formula_7">8</ref>) can be interpreted as a distribution of abundances across patches at a given time, or as a distribution over time on a single patch. Power law abundance distributions have been reported broadly in the empirical literature <ref type="bibr" target="#b51">[52,</ref><ref type="bibr" target="#b52">53]</ref> with a range of exponents. We note that the form in Eq. ( <ref type="formula" target="#formula_7">8</ref>) was previously derived by some of us in the single-species setting <ref type="bibr" target="#b42">[43,</ref><ref type="bibr" target="#b43">44]</ref>, and, very recently, reported in neutral multi-species models <ref type="bibr" target="#b29">[30]</ref>. That it survives in the strongly-disordered competitive setting studied here is a novel result. The most important consequence of Eq. ( <ref type="formula" target="#formula_7">8</ref>) is that it leads to an anomalous scaling of moments <ref type="bibr" target="#b42">[43,</ref><ref type="bibr" target="#b43">44]</ref>:</p><formula xml:id="formula_8">⟨N 2 i ⟩ ∝ ⟨N i ⟩ 1+βD , (T &gt; T c ).<label>(9)</label></formula><p>This constitutes an instance of Taylor's law, the widely verified empirical observation that the variance of species abundance scales as a power of the mean abundance <ref type="bibr" target="#b44">[45,</ref><ref type="bibr" target="#b45">46]</ref>. Spatiotemporal noise thus provides a possible mechanistic explanation of this empirical law. We verify Eq. ( <ref type="formula" target="#formula_8">9</ref>), together with Eq. ( <ref type="formula" target="#formula_5">6</ref>), in large-scale simulations reported in Fig. <ref type="figure" target="#fig_6">3(b)</ref>. Although our analytical results should in principle apply only when D ≫ r, numerical data shows excellent agreement for dispersal rates as modest as D = 2r. We note that Eq. ( <ref type="formula" target="#formula_8">9</ref>) in fact generalizes to all higher moments as ⟨N 1+p ⟩ ∝ ⟨N ⟩ 1+βD <ref type="bibr" target="#b42">[43,</ref><ref type="bibr" target="#b43">44]</ref>. This implies that if the logistic self-regulation term of the gLV model, −N 2 , is replaced with an arbitrary analytic term −N f (N ), spatiotemporal noise renormalizes this to a universal form at the community level:</p><formula xml:id="formula_9">⟨N f (N )⟩ ∝ ⟨N ⟩ 1+βD .</formula><p>Combining these results, we obtain the following effective dynamics for the mean abundances:</p><formula xml:id="formula_10">⟨ Ṅi ⟩ = r⟨N i ⟩ 1 − K −θ ⟨N i ⟩ θ − j̸ =i A ij ⟨N j ⟩ ,<label>(10)</label></formula><p>where the carrying capacity K(D, T ) is given in the SI. The self-regulation exponent θ is equal to unity for T &lt; D, whereas in the coexistence phase T &gt; T c we have θ = βD. The growth law in Eq. ( <ref type="formula" target="#formula_10">10</ref>) is often referred to as θlogistic <ref type="bibr" target="#b40">[41,</ref><ref type="bibr" target="#b53">54]</ref> or Richard's <ref type="bibr" target="#b43">[44,</ref><ref type="bibr" target="#b54">55]</ref> growth, and we thus hereafter refer to the interacting model as a θ-logistic gLV (θ-gLV) equation. Previous attempts to fit empirical data have introduced this model phenomenologically <ref type="bibr" target="#b40">[41,</ref><ref type="bibr" target="#b55">56]</ref>; here, we show that it emerges as a natural and universal consequence of spatiotemporal noise. Equation <ref type="bibr">(10)</ref> reduces the stochastic metacommunity with S × P variables into a single-patch deterministic system of only S variables, making predictions that are valid at the single-trajectory level, as verified in Fig. <ref type="figure">4a</ref>. To understand how the θ-gLV model allows for stable coexistence, we now analyze its fixed points and study their stability, from which we determine the critical noise threshold for the coexistence transition, T c . </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>IV. FIXED POINTS OF THE θ-gLV MODEL</head><p>In the steady state, the mean abundances will obey Eq. ( <ref type="formula" target="#formula_10">10</ref>) with ⟨ Ṅi ⟩ = 0. It can then be shown using standard techniques <ref type="bibr" target="#b40">[41]</ref> that a typical ⟨N i ⟩ will, for large S, converge in distribution to the random variable</p><formula xml:id="formula_11">⟨N ⟩ = K max 0, 1 − µS⟨N ⟩ − σ S⟨N ⟩ 2 Z 1/θ ,<label>(11)</label></formula><p>where Z ∼ N (0, 1) is a standard Gaussian variable representing the randomness in A. The species (or quench) averages (•) are then obtained by averaging over Z, and the survival fraction is ϕ ≡ P[⟨N ⟩ &gt; 0]. We show in the SI that the self-consistent system can be solved exactly for large S, revealing a transition to a novel coexistence phase when θ crosses 1/2 from above:</p><formula xml:id="formula_12">ϕ = 0, θ &gt; 1/2 1, θ &lt; 1/2. (<label>12</label></formula><formula xml:id="formula_13">)</formula><p>Notably, for µ, σ &gt; 0, the coexistence condition has no dependence on µ or σ; this is qualitatively different from the weakly-interacting gLV model, where coexistence is possible only below a maximal degree of disorder, σ. In the special case of uniform interactions (σ = 0) with µ &gt; 1, the coexistence criterion is weakened to θ &lt; 1 (SI). Together with the D ≫ r solution θ = βD, Eq. ( <ref type="formula" target="#formula_12">12</ref>) predicts the critical noise strength for coexistence in the metacommunity to be T c = 2D, a result consistent with our numerical phase diagram (Fig. <ref type="figure">4b</ref>). This also proves that the region D &lt; T &lt; 2D cannot support a coexistence phase, though the detailed dynamics in this region cannot be inferred from Eq. ( <ref type="formula" target="#formula_10">10</ref>), whose derivation for T &gt; D relies on coexistence. Within the coexistence phase, the distribution (over species) of patch-averaged abundances is characterized by the moments ⟨N ⟩ and ⟨N ⟩ 2 , which we obtain perturbatively for large S as</p><formula xml:id="formula_14">⟨N ⟩ ≃ 1 µS 1 − 1 (KµS) θ , ⟨N ⟩ 2 ≃ 1 µ 2 S 2 . (<label>13</label></formula><formula xml:id="formula_15">)</formula><p>This explains our numerical finding that ⟨N i ⟩ ∝ 1/S. Furthermore, since ⟨N ⟩ 2 → ⟨N ⟩ 2 as S → ∞, it predicts that all patch-averaged abundances ⟨N i ⟩ will, for large S, become sharply peaked around their species average:</p><formula xml:id="formula_16">⟨N i ⟩ S≫1 − −− → ⟨N ⟩ = 1 µS . (<label>14</label></formula><formula xml:id="formula_17">)</formula><p>This result, confirmed in Fig. <ref type="figure">4c</ref>, implies that quenched disorder is asymptotically irrelevant within the coexistence phase. This has an important biological interpretation: despite strongly-disordered pairwise interactions, the resulting coexistence state is indistinguishable from a neutral one with identical species. This emergent neutrality may help account for the empirical success of neutral models in capturing many features of natural ecosystems <ref type="bibr" target="#b56">[57,</ref><ref type="bibr" target="#b57">58]</ref>.</p><p>To see how the high diversity fixed point identified in Eq. ( <ref type="formula" target="#formula_16">14</ref>) evades the diversity-stability problem, we linearize Eq. ( <ref type="formula" target="#formula_10">10</ref>) about this fixed point. Writing ⟨N i ⟩ ≡ 1/µS + δ⟨N i ⟩, we obtain the linearized dynamics</p><formula xml:id="formula_18">δ⟨N⟩ = − r µS θK −θ (µS) 1−θ 1 + A δ⟨N⟩.<label>(15)</label></formula><p>The stability matrix has negative diagonal entries scaling as S −θ and random off-diagonals ∝ 1/S. It then follows from standard results that the eigenvalues lie in a disk in the complex plane, centered at −rθ(µSK) −θ and with radius rσ/µ √ S. For large-S, the fixed point is thus almost surely stable if and only if θ &lt; 1/2, confirming the stability of coexistence when T &gt; 2D. This is illustrated in Fig. <ref type="figure">4</ref>, which shows the distribution of eigenvalues shifting towards stability when diversity is increased, as reported for the related model in Ref. <ref type="bibr" target="#b40">[41]</ref> with weak interactions.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>V. DISCUSSION</head><p>Almost every natural environment is spatially structured and fluctuates throughout space and time. In this work, we have shown that these two ingredients suffice to resolve the tension between diversity and stability in precisely the setting that has confounded the field since May's seminal work: large communities with dense, heterogeneous interaction matrices that do not vanish with S. Our mechanism makes no appeal to specific patterns of sparsity, correlation, or (anti)symmetry in the interaction matrix. We do not claim such structure is absent in real systems, only that it is not necessary for stable coexistence.</p><p>Our choice to implement environmental noise through fluctuations in the bare growth rates was motivated by parsimony and prior literature, but is not unique <ref type="bibr" target="#b30">[31]</ref>. Indeed, it has been shown that diversity may be enhanced if the interaction matrix, A, itself fluctuates throughout space <ref type="bibr" target="#b19">[20,</ref><ref type="bibr" target="#b20">21]</ref> or time <ref type="bibr" target="#b58">[59,</ref><ref type="bibr" target="#b59">60]</ref>. In these cases, however, to stabilize extensive diversity requires the fluctuations in A to be at least as large as the quenched part of A. The latter is expected to dominate the former in many settings, since ecological interactions are strongly constrained by species traits and rarely reverse sign across space or time (e.g., prey do not become predators). In contrast, singlespecies growth rates often fluctuate widely <ref type="bibr" target="#b60">[61,</ref><ref type="bibr" target="#b61">62]</ref>.</p><p>In the coexistence phase, we found that every species from the initial pool persists. This may seem unrealistic, as real ecosystems do experience extinctions, but we stress that our result applies to the limiting case of infinite spatial networks. When the number of patches, P , is finite, we show in the SI that there is a maximal sustainable richness, S * (P ), that does not scale with the initial pool size, S. For large P , preliminary results suggest that S * (P ) grows at least linearly in P . This means that finite habitats can sustain a maximal richness level, and that habitat destruction can dramatically reduce this richness, with implications for conservation efforts. Further analysis will be necessary to address this in detail and connect to the empirical literature on speciesarea relationships <ref type="bibr" target="#b62">[63]</ref>. Besides the infinite-P limit, another simplifying assumption made in this work is the fully-connected network topology. To make quantitative comparison with empirical data on terrestrial or marine ecosystems will require the extension of our results to two-or three-dimensional spaces <ref type="bibr" target="#b43">[44]</ref>. We leave this interesting theoretical problem to future work, but present, in the SI, preliminary numerical evidence supporting a coexistence transition in two-dimensional lattices.</p><p>The mechanism of the transition to coexistence pre-sented here is intimately tied to the macroecological consequences of spatiotemporal noise: noise generates power-law abundance distributions, which then imply Taylor's law of fluctuation scaling. At the community level, this manifests as a sublinear self-inhibition in the dynamics of the mean abundances, which in turn exhibit a transition to coexistence. The θ-gLV model studied here bears similarities to the sublinear growth model analyzed in Ref. <ref type="bibr" target="#b40">[41]</ref>, which constitutes a θ-gLV model with θ &lt; 0 and displays stable diversity. Here, however, we start with an entirely analytic dynamics and show that spatiotemporal fluctuations renormalize these into the nonanalytic θ-gLV equation. We further note that, unlike in the sublinear growth model, the per-capita growth rate does not diverge at low abundance for θ &gt; 0, making the intuition for its stabilization of diversity more subtle.</p><p>From a broader physics perspective, most work on noisy gLV dynamics has focused on demographic noise, proportional to √ N , rather than environmental noise, which scales as N <ref type="bibr" target="#b19">[20,</ref><ref type="bibr" target="#b39">40,</ref><ref type="bibr" target="#b48">49,</ref><ref type="bibr" target="#b49">50]</ref>. The former has the advantage of satisfying a fluctuation-dissipation theorem (FDT), so that by choosing the interaction matrix to be symmetric, the dynamics resemble an equilibrium spin glass and can be treated using standard techniques <ref type="bibr" target="#b19">[20,</ref><ref type="bibr" target="#b39">40]</ref>. Environmental noise, on the other hand, violates the FDT, driving the system out of equilibrium regardless of the symmetry of the interactions. This allows breaking out of the low-diversity glassy phase even with strong O(1) interactions, which would be impossible from demographic noise alone. Our work thus connects to a broader literature on nonequilibrium glass transitions, which has been a topic of interest in recent years <ref type="bibr" target="#b63">[64,</ref><ref type="bibr" target="#b64">65]</ref>.</p><p>On the empirical side, our framework challenges the standard practice of inferring interaction networks by fitting to bare gLV models. Indeed, unobserved spatial fluctuations could masquerade as neutrality in the interaction matrix, confounding estimates derived from well-mixed models. However, our results also offer an empirical simplification: we have identified the emergent self-regulation exponent, θ, as the control parameter for the transition to coexistence. This parameter, manifesting macroecologically through Taylor's law, can be estimated from single-species data, implying that the persistence of a complex ecosystem could be diagnosed without reconstructing the full interaction matrix. Future work should aim to test this prediction in controlled microcosms, establishing Taylor's law as a potential probe of dynamical stability.</p><p>A. Single patch (P = 1)</p><p>The finite-P transition to phase (3) is easiest to understand analytically on a single patch (P = 1), where ⟨N ⟩ = N , so there is no dispersal term. Changing to log-abundances z ≡ log N , the dynamics read ż</p><formula xml:id="formula_19">= r − T − re z + √ 2T η(t),</formula><p>where the −T term arises from Ito's lemma. This is a Brownian motion with drift r − T and an upper exponential wall at z ≃ 0. Given infinite time, z(t) will hit the cutoff at log N c ≪ 0 with probability 1. However, the time to extinction, τ ex , scales differently with N c depending on the value of T . When T &lt; r, the Brownian motion has positive drift, and the upper wall is important. The extinction time can be estimated by treating the exponential wall as a reflecting boundary at z = 0. It then follows from standard results <ref type="bibr">[2]</ref> that the τ ex will, for N c ≪ 1, scale as</p><formula xml:id="formula_20">τ ex ∼ T (r − T ) 2 N −(r−T )/T c</formula><p>When T &gt; r, on the other hand, the drift is negative and the upper wall is irrelevant, so the extinction time scales as</p><formula xml:id="formula_21">τ ex ∼ | log N c | T − r</formula><p>We thus observe a transition at T ex ≡ r: For T &lt; T ex , the extinction time diverges as a negative power of N c , whereas for T &gt; T ex it is only logarithmic in N c . Since the values of N c considered in this work are exponentially small, extinction is only numerically observed in the T &gt; T ex regime.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>B. Infinitely many patches (P → ∞)</head><p>To understand why adding patches delays the onset of noise-driven extinction, we first consider the infinite patch limit P → ∞, where ⟨N ⟩ becomes deterministic and equal to the ensemble average of N . It can then be shown analytically that, in absence of the cutoff (N c = 0), Eq. (S1) has a ⟨N ⟩ &gt; 0 steady-state irrespective of the value of T : To do this, we fix ⟨N ⟩ and solve for the stationary probability density p(N ) corresponding to Eq. (S1) . The mean abundance is then obtained self-consistently as ⟨N ⟩ = dN N p(N ). This is detailed in a prior work by some of us (Ref. <ref type="bibr">[3]</ref>, see also Sec. below), where it is shown that a ⟨N ⟩ &gt; 0 solution always exists. The log-abundance dynamics on a particular patch can then be written</p><formula xml:id="formula_22">ż = −U ′ (z) + √ 2T η(t), U (z) ≡ −(r − T − D)z + re z + D⟨N ⟩e −z .</formula><p>Adding an extinction cutoff N c ≪ ⟨N ⟩ will not affect this steady state on relevant time scales: on a particular patch, the time for z(t) to hit the cutoff can be estimated through an Arrhenius-type argument and diverges exponentially as τ ∼ e βU (log Nc) . The time for ⟨N ⟩ itself to reach the cutoff is then at least as large as this, so that</p><formula xml:id="formula_23">τ ex ≳ exp D⟨N ⟩ T N c (S2)</formula><p>The ⟨N ⟩ &gt; 0 stationary solution, obtained with N c = 0, is thus valid for 0 &lt; N c ≪ 1, except on exponentially large time scales. We conclude that the noise-driven extinction phase does not survive the P → ∞ limit.</p><p>C. Large but finite (1 ≪ P ≪ ∞)</p><p>For 1 &lt; P &lt; ∞, analytical treatment is more difficult. We instead report numerical simulations of Eq. (S1) for different P in Fig. <ref type="figure" target="#fig_0">S1</ref>. We observe an extinction transition from ϕ = 1 to ϕ = 0 at a critical noise strength T ex . The curves can be collapsed by plotting as a function of (T − r)/ log P , implying a critical noise which diverges logarithmically in P :</p><formula xml:id="formula_24">T ex = r + c log P</formula><p>for some c(D) &gt; 0 with dimensions of inverse time. To prevent extinction when T &gt; r thus requires the number of patches to be exponentially large in T − r. </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>II. THE D ≫ r ADIABATIC LIMIT</head><p>In this section, we study the evolution of the mean abundances {⟨N i ⟩} in the fast dispersal limit D ≫ r. The starting point is Eq. ( <ref type="formula" target="#formula_3">4</ref>) of the main text, repeated below for convenience:</p><formula xml:id="formula_25">Ṅi = rN i 1 − N i − j̸ =i A ij N j + D (⟨N i ⟩ − N i ) + √ 2T N i η i (t). (<label>S3</label></formula><formula xml:id="formula_26">)</formula><p>The interaction matrix is unspecified so far, so that the results of this section are general. Averaging Eq. (S3) yields:</p><formula xml:id="formula_27">⟨N i ⟩ = r ⟨N i ⟩ − ⟨N 2 i ⟩ − j A ij ⟨N i N j ⟩ ,<label>(S4)</label></formula><p>The second moments in turn evolve as</p><formula xml:id="formula_28">∂ t ⟨N 2 i ⟩ =2D ⟨N i ⟩ 2 − ⟨N 2 i ⟩ + 2T ⟨N 2 i ⟩ + 2r ⟨N 2 i ⟩ − ⟨N 3 i ⟩ − j A ij ⟨N 2 i N j ⟩ ,<label>(S5)</label></formula><formula xml:id="formula_29">∂ t ⟨N i N j ⟩ =2D (⟨N i ⟩⟨N j ⟩ − ⟨N i N j ⟩) + O(r),<label>(S6)</label></formula><p>for j ̸ = i. Notably, every term in Eq. (S4) is proportional to r, indicating a relaxation time proportional to 1/r, whereas Eq. (S6) relaxes on a time proportional to 1/2D. In the limit r ≪ D, we may thus set ∂ t ⟨N i N j̸ =i ⟩ = 0, yielding an adiabatic closure for the two-species correlator</p><formula xml:id="formula_30">⟨N i N j̸ =i ⟩ = ⟨N i ⟩⟨N j ⟩ + O r D .<label>(S7)</label></formula><p>A similar closure can be obtained for ⟨N 2 i ⟩ only when T &lt; D: Equation (S5) relaxes on a time ∼ 1/2(D − T ), so that ⟨N 2 i ⟩ becomes a fast variable when r ≪ D − T , yielding</p><formula xml:id="formula_31">⟨N 2 i ⟩ = D D − T ⟨N i ⟩ 2 + O r D − T . (<label>S8</label></formula><formula xml:id="formula_32">)</formula><p>Substituting Eqs. (S7) and (S8) into Eq. (S4) then shows that, for D − T ≫ r, the mean abundances evolve according to a single-patch GLV equation with a reduced carrying capacity equal to 1−T /D. This reduction in carrying capacity is equivalent to a weakening of interactions, as can be seen through the rescaling</p><formula xml:id="formula_33">M i ≡ (1 − T /D) −1 ⟨N i ⟩: Ṁi = rM i 1 − M i − 1 − T D j A ij M j . (S9)</formula><p>We thus conclude that, when T &lt; D, the effect of spatiotemporal noise is to weaken the interactions. For finite S, this will increase the fraction of surviving species ϕ ≡ S ⋆ /S, but is insufficient to stabilize a nonzero ϕ as S → ∞, showing that the region T &lt; D cannot support coexistence. As T approaches D, the effective interaction strength vanishes, but the adiabatic approximation breaks down. In the next section, we show how an appropriate closure for ⟨N 2 i ⟩ may be obtained in the coexistence phase through a different method.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>III. SPECIES ABUNDANCE DISTRIBUTION AND TAYLOR'S LAW A. Power law distribution over patches</head><p>Standard treatments of the gLV equations using Dynamical Mean-Field Theory (DMFT) typically start by defining a stochastic process corresponding to the "competitive load",</p><formula xml:id="formula_34">ξ i (t) ≡ j̸ =i A ij N j (t)</formula><p>and then fixing the correlators ⟨ξ(t)⟩ and ⟨ξ(t)ξ(t ′ )⟩ by imposing self-consistency. We will show here that in the coexistence phase and for D ≫ r, the self-consistent solution for ξ has negligible fluctuations over time or between species. To do so, we replace ξ with its stationary mean</p><formula xml:id="formula_35">ξ i ≃ ⟨ξ i ⟩ = j̸ =i A ij ⟨N j ⟩,</formula><p>and then show that ⟨ξ 2 i ⟩ c ≃ 0 self-consistently. Dropping the species index, our dynamics follow</p><formula xml:id="formula_36">Ṅ = N (1 − ⟨ξ⟩ − N ) + D(⟨N ⟩ − N ) + √ 2T N η(t),<label>(S10)</label></formula><p>where r has been set to unity by rescaling time, so that D and T now represent the ratios D/r and T /r, respectively. The corresponding Fokker-Planck equation reads:</p><formula xml:id="formula_37">∂ t p(N ) = −∂ N {[N (1 − ⟨ξ⟩ − N ) + D(⟨N ⟩ − N )]p(N )} + T ∂ 2 N N 2 p(N ) . (S11)</formula><p>In the adiabatic limit T, D ≫ 1, the mean abundance ⟨N ⟩ may be held quasistatically fixed. All higher moments relax quickly to values determined by the stationary solution to Eq. (S11), which can be verified to take the truncated power law form <ref type="bibr">[3]</ref><ref type="bibr">[4]</ref><ref type="bibr">[5]</ref>:</p><formula xml:id="formula_38">p(N ) = 1 Z e −βN e −βD⟨N ⟩/N N −γ ,<label>(S12)</label></formula><p>where </p><formula xml:id="formula_39">β ≡ 1 T , γ ≡ 2 + β(D + ⟨ξ⟩ − 1), Z ≡ 2 [D⟨N ⟩]</formula><formula xml:id="formula_40">⟨N ⟩ = D⟨N ⟩K γ−2 2β D⟨N ⟩ K γ−1 2β D⟨N ⟩ . (<label>S13</label></formula><formula xml:id="formula_41">)</formula><p>We will use this condition to determine ⟨ξ⟩. In the coexistence phase, we know from numerics that ⟨N ⟩ ∈ O(1/S). This motivates a small ⟨N ⟩ expansion of Eq. (S13), for which we rely on the series <ref type="bibr">[3]</ref>:</p><formula xml:id="formula_42">K ν (2x) K ν+1 (2x) = x ν 1 + x 2 ν(1 − ν) + Γ(−ν) Γ(ν) x 2ν + O(x 4 , x 2ν+2 ) . (<label>S14</label></formula><formula xml:id="formula_43">)</formula><p>Defining x ≡ β D⟨N ⟩, we have from Eq. (S13),</p><formula xml:id="formula_44">x = βD K γ−2 (2x) K γ−1 (2x) ≃ βD γ − 2 x 1 + x 2 (γ − 2)(3 − γ) + Γ(1 − γ) Γ(γ − 1) x 2γ−4 . (S15)</formula><p>Using the definition of γ, we may now solve for ⟨ξ⟩ perturbatively in powers of x. For γ ≥ 2, the terms in x 2 and x 2γ−4 are subleading. Self-consistency at leading order then requires γ − 2 = βD, from which we obtain</p><formula xml:id="formula_45">⟨ξ⟩ = 1 + o(1). (S16)</formula><p>Notably, at leading order, ⟨ξ⟩ does not depend on x, so that every species has the same value of ⟨ξ⟩ even if the mean abundances ⟨N i ⟩ are different (in the DMFT language, the quenched fluctuations of ξ(t) are vanishing). This does not hold at finite S: the leading correction to Eq. (S16) can be obtained from Eq. (S15) as</p><formula xml:id="formula_46">⟨ξ⟩ − 1 = T 1 − βD x 2 + Γ(−1 − βD) Γ(1 + βD) x 2βD + O(x 4 , x 2+2βD ).</formula><p>This scales as S −1 for T &lt; D and as S −βD for T &gt; D. Substituting back into Eq. (S10) yields a dynamics whose linear (mass) term vanishes for large-S, constituting a kind of self-organized criticality <ref type="bibr">[6,</ref><ref type="bibr">7]</ref>. For S → ∞, setting ⟨ξ⟩ = 1 shows that every species follows a power law distribution with the same exponent, but with a different lower cutoff set by the mean ⟨N i ⟩:</p><formula xml:id="formula_47">p(N i ) = 1 Z e −βN e −βD⟨Ni⟩/N N −2−βD . (S17)</formula><p>This may be interpreted as a distribution over patches at any point in time, or, if the mean ⟨N i ⟩ has reached its steady state, as a distribution over time on a single patch.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>B. Anomalous scaling of the second moment</head><p>The second moment of the stationary distribution (Eq. S12) can be evaluated as</p><formula xml:id="formula_48">N 2 = D⟨N ⟩ K γ−3 (2β D⟨N ⟩) K γ−1 (2β D⟨N ⟩ .</formula><p>Rewriting ⟨N ⟩ using Eq. (S13) puts this into the form of Eq. (S14), allowing for a small x ≡ β D⟨N ⟩ expansion. We find:</p><formula xml:id="formula_49">N 2 ⟨N ⟩ ≃ T x 2 βD − 1 1 + x 2 (βD − 1)(2 − βD) + Γ(1 − βD) Γ(βD − 1)</formula><p>x 2(βD−1) .</p><p>Where we have used the solution γ = 2 + βD (Eq. S16). The term in x 2 is always subleading, whereas the term in x 2(βD−1) is subleading for T &lt; D and dominant for T &gt; D. We thus have a transition at T = D <ref type="bibr">[3,</ref><ref type="bibr">4]</ref>:</p><formula xml:id="formula_50">N 2 =    D D − T ⟨N ⟩ 2 , (T &lt; D), a(T, D) ⟨N ⟩ 1+βD , (T &gt; D),<label>(S18)</label></formula><p>where</p><formula xml:id="formula_51">a(T, D) ≡ Γ(1 − βD) Γ(βD) (βD) βD T 1−βD .</formula><p>The result for T &lt; D recovers the adiabatic large-D solution from the previous section (Eq. S8). The T &gt; D case is new and shows an anomalous power law scaling of the second moment in the coexistence phase, with a tunable exponent 1 + βD <ref type="bibr">[3,</ref><ref type="bibr">4]</ref>. This is an instance of Taylor's law of fluctuation scaling <ref type="bibr">[8,</ref><ref type="bibr">9]</ref>, thus providing a mechanistic origin for this empiricial macroecological law. With these results in hand, we revisit the self-consistency of the approximation ξ ≃ ⟨ξ i ⟩. We have</p><formula xml:id="formula_52">ξ 2 i = k,j A ij A ik ⟨N j N k ⟩</formula><p>In the D ≫ 1 regime, we may invoke Eq. (S7), yielding</p><formula xml:id="formula_53">ξ 2 i = j A 2 ij N 2 j + k,j A ij A ik ⟨N j ⟩ ⟨N k ⟩ − j A 2 ij ⟨N j ⟩ 2 = O S −βD + ⟨ξ i ⟩ 2 + O S −1 .</formula><p>As S → ∞, we have ξ 2 i = ⟨ξ i ⟩ 2 . The competitive load ξ i (t) thus has neither temporal nor interspecific fluctuations. We stress that the derivation above relies on being in the coexistence phase, where the mean abundances are O(1/S). The results are thus guaranteed to hold only above the coexistence threshold T c , which will be determined in the next section both for constant and disordered interaction matrices. fixed point. Allowing for the extinction solution M i = 0, we define the distribution of a typical fixed-point abundance through the random variable</p><formula xml:id="formula_54">M = max 0, 1 − µSM − σ SM 2 Z 1/θ , Z ∼ N (0, 1). (S27)</formula><p>M and M 2 are then determined by the self-consistency equations</p><formula xml:id="formula_55">M n = 1 2πσ 2 SM 2 ∞ 0 dx x n/θ e − (x−1+µSM ) 2 2σ 2 SM 2 , (n &gt; 0). (<label>S28</label></formula><formula xml:id="formula_56">)</formula><p>These equations may be solved numerically by recursion, as is usually done for the GLV case (θ = 1) with interactions scaling as µ, σ 2 ∝ S −1 . However, we will show here that with interactions of order unity, the self-consistency conditions can be solved analytically for large S, revealing a novel coexistence phase when θ &lt; 1/2. For notational convenience, we let m and g 2 denote the mean and variance of the shifted Gaussian appearing in Eq. (S27):</p><formula xml:id="formula_57">m ≡ 1 − µSM , g 2 ≡ σ 2 SM 2 ,</formula><p>so that we may write M = max(0, ξ) 1/θ , with ξ ∼ N (m, g 2 ). For a given species to survive, we require ξ &gt; 0. The probability of this is</p><formula xml:id="formula_58">ϕ = P[M &gt; 0] = 1 √ 2π ∞ −m/g dxe −x 2 /2 .</formula><p>Searching for a coexistence phase, we demand that lim S→∞ ϕ = 1. This requires m/g → +∞ as S is made large, so that ξ is almost surely positive in this limit. We posit the divergence to occur with some positive exponent η:</p><formula xml:id="formula_59">m g ∼ hS η , η, h &gt; 0,<label>(S29)</label></formula><p>where h ∈ O(1) is a prefactor that will be determined self-consistently. We furthermore define exponents describing the large-S behavior of M and M 2 :</p><formula xml:id="formula_60">M ∼ M S −α , M 2 ∼ M 2 S −γ ,</formula><p>where M and M 2 are the respective O(1) parts. The program is now to substitute these scaling forms into the self-consistency equations and expand in S to obtain exponent identities relating α, γ, η and θ.</p><p>We first rewrite the self-consistency equation (S28) through the change of variable z ≡ (x − m)/g:</p><formula xml:id="formula_61">M n = 1 √ 2π ∞ −m/g dz(m + gz) n/θ e −z 2 /2 = m n/θ √ 2π ∞ −hS η dz 1 + z hS η n/θ e −z 2 /2 .</formula><p>To study the large-S behavior, we expand the factor 1 + zh −1 S −η n/θ as a binomial series, reducing the integral to a sum over truncated Gaussian moments</p><formula xml:id="formula_62">M n = m n/θ √ 2π ∞ k=0 n/θ k h −k S −kη ∞ −hS η dzz k e −z 2 /2 .</formula><p>For large S, we may extend the lower integation bound to −∞, incurring only an exponentially-small error. We then find, using the formula for Gaussian central moments, </p><formula xml:id="formula_63">M n = m n/θ</formula></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>V. BEYOND FULLY CONNECTED, INFINITE NETWORKS</head><p>In the main text and in the above, we showed that spatiotemporal noise can stabilize the coexistence of arbitrarilymany species on a fully-connected and infinite spatial network. Real environments, however, are finite-dimensional spaces of finite extent. To address this, this section presents preliminary numerical results on finite fully-connected networks as well spatial lattices in one and two dimensions.</p><p>A. Fully connected networks with finite P Figure <ref type="figure" target="#fig_0">1</ref> of the main text shows that the long-time number of survivors S * is O(1) on a single patch, whereas on an infinite fully-connected network it is equal to the pool size S * = S. When the number of patches is greater than unity but finite, there is a cap on the richness S * (P ) which depends on P . To estimate this dependence, we performed numerical simulations for different P , starting with a large pool size S ≫ S * (P ). Our results confirm that S * (P ) grows with P , but suggest that the large-P asymptotic scaling is nonuniversal. This is illustrated in Fig. <ref type="figure" target="#fig_1">S2</ref> for two representative parameter sets: in one case, with D, T ∈ O(1) (orange squares in Fig. <ref type="figure" target="#fig_1">S2</ref>), our results are consistent with a linear scaling S * (P ) ∝ P , suggesting a maximal richness per patch. In another case, with D ≪ T &lt; 1 (blue circles in Fig. <ref type="figure" target="#fig_1">S2</ref>), we find S * (P ) ∝ P α with 1 &lt; α &lt; 2. The latter case is interesting because it suggests that coexistence can be stabilized with S ≫ P for sufficiently large S, P . Further numerical analysis is necessary to determine the detailed dependence of S * on P , which connects to the broader empirical literature on species-area relationships <ref type="bibr">[10]</ref>. = δ αβ . This may be interpreted as the discretization of a continuous space R d by defining an appropriate dimensionful diffusivity D ≡ a 2 D/2d, and noise T ≡ a d T , where a is the lattice spacing.</p><p>We performed numerical simulations of Eq. (S38) in d = 1 and d = 2. Figure <ref type="figure" target="#fig_6">S3</ref>(a) reports the surviving richness, S * , as a function of the initial pool size S, in analogy to Fig. <ref type="figure" target="#fig_0">1(c</ref>) of the main text. The results for d = 2 resemble the fully-connected case, with S * = S, even for S as large as 10 3 . In d = 1, however, the surviving richness saturates</p></div><figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_0"><head>TFIG. 1 .</head><label>1</label><figDesc>FIG. 1. Spatiotemporal noise stabilizes diversity. (a) Generalized Lotka-Volterra metacommunity with fluctuating growth rates. (b) Sample abundance traces on a single patch for different dispersal rates, D, and noise magnitudes, T . The same interaction matrix is used in all cases and a particular focal species is emphasized in black. Initial pool size is S = 64. (b) Surviving richness S ⋆ as a function of initial pool size S for the different combinations of T and D in (b). (d) A metacommunity with S = 16 is prepared (grey) and new species are introduced at fixed intervals (colored curves), with and without noise. In all panels, r = 1, P = 2 14 , Aij ∼ N (0.7, 0.2 2 ) and Nc = 10 −15 .</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_1"><head>FIG. 2 .</head><label>2</label><figDesc>FIG. 2. Noise-induced transition to full coexistence. (a) Survival fraction ϕ = S ⋆ /S as a function of noise strength T , showing a transition from ϕ = 0 to ϕ = 1 which sharpens as P is increased. Inset shows collapse of the curves near Tc upon rescaling with √ P . D = r = 1, S = 512. (b) Survival fraction ϕ as a function of dispersal rate and noise magnitude, showing different phases of community diversity. S = 256, P = 2 14 . In both panels, Aij ∼ N (2, 1), Nc = 10 −15 .</figDesc><graphic coords="3,193.88,57.11,82.44,78.60" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_2"><head>10 −6 10 − 4 10 −2 10 0 10 2 NFIG. 3 .</head><label>10423</label><figDesc>FIG. 3. Species abundance distribution in the coexistence phase. (a) Truncated power law abundance distribution over patches for a particular species, showing agreement with Eq. (8). S = 256. (b) Verification of the closure ⟨NiNj⟩ = ⟨Ni⟩⟨Nj⟩ (left) and the anomalous scaling ⟨N 2 i ⟩ ∝ ⟨Ni⟩ 1+βD (right), demonstrating the emergence of Taylor's law. Data combines simulations with S = 128 and S = 256 for the three indicated values of βD. In all panels, P = 2 22 , Aij ∼ N (4, 4), and D = 2r.</figDesc><graphic coords="4,405.01,57.59,97.20,86.76" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_3"><head>S : 2 8 2 11 2 14 FIG. 4 .</head><label>144</label><figDesc>FIG. 4. Effective θ-logistic gLV dynamics of mean abundances. (a) Patch-averaged abundance trajectories from metacommunity simulations (left) compared to the prediction of Eq. (10) (right). For clarity, six species are emphasized within a background of 256 in the coexistence case T &gt; 2D. (b) Survival fraction as a function of (T, D) obtained from metacommunity simulations and plotted on a linear axis. The boundaries at T = D and T = 2D are indicated, representing the breakdown of effective gLV dynamics followed by the transition to coexistence (θ &lt; 1/2). (c) Distribution (over species) of patch-averaged abundances, obtained from simulations of the effective θ-gLV dynamics. The distribution narrows as S is increased, demonstrating the emergent neutrality of the model. (d) Stability spectrum of the θ-gLV model: each point is an eigenvalue of the fixed-point Jacobian, obtained numerically from one simulation at each indicated pool size, S. Black circles show the prediction of Eq. (15). Parameter values are given in the SI.</figDesc><graphic coords="5,248.65,72.59,91.32,74.52" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_4"><head></head><label></label><figDesc>FIG. S1. Noise-driven extinction phase at finite P . Left: Survival fraction as a function of noise strength for different P , showing extinction above a critical Tex. Right: data collapse when plotting ϕ as a function of (T − r)/ log P , implying Tex ∼ log P . Species are noninteracting. D = r = 1, Nc = 10 −15 .</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_5"><head>1 −γ 2 K</head><label>12</label><figDesc>γ−1 2β D⟨N ⟩ , and K n denotes the nth modified Bessel function of the second kind. The mean must satisfy the self-consistency relation ⟨N ⟩ = ∞ 0 zp(z)dz, which upon evaluating the integral reads</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_6"><head>3</head><label>3</label><figDesc>FIG. S2. Surviving richness as a function of the number of patches for two different parameter sets. Richness is sampled at a time tmax √ P , chosen based on separate measurements on the convergence time of S * (P ) (not shown). Blue circles correspond to: D = 10 −4 , T = 0.5, µ = 2σ = 0.8, tmax = 10 5 . Orange squares correspond to D = 1, T = 3, µ = 2σ = 2, tmax = 640. In both cases, the extinction cutoff is Nc = 10 −15 and the initial pool size is S = 4096. Data represents the average of many replicates (error bars are smaller than the markers).</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_7"><head>B</head><label></label><figDesc>. One-and two-dimensional lattices Next, we consider the case where the network of patches has the connectivity of a hyper-cubic lattice in d dimensions. Equation (1) of the main text then becomes:Ṅi,r = rN i,r 1 − N i,r − j̸ =i A ij N j,r + D 2d d β=1 N i,r+e (β) + N i,r−e (β) − 2N i,r + √ 2T N i,r η i,r (t),(S38)where r ∈ Z d is the spatial index and e (β) is the unit vector in direction β, with entries e (β) α</figDesc></figure>
+		</body>
+		<back>
+
+			<div type="acknowledgement">
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>Acknowledgments. We are grateful to Yizhou Liu for an early derivation of Eq. ( <ref type="formula">12</ref>) in the weaklyinteracting case. We thank Thibaut Arnoulx de Pirey, Jiliang Hu, and Julien Tailleur for helpful discussions. A.A. acknowledges the support of the Tushar Shah and Sarah Zion Physics Fellowship, as well as a grant from the Institute for Complex Adaptive Matter (ICAM). M.K. was supported by the NSF through Grant No. DMR-2218849.</p></div>
+			</div>
+
+			<div type="annex">
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>Supplementary Information for "Spatiotemporal noise stabilizes unbounded diversity in strongly-interacting metacommunities"</p><p>Amer Al-Hiyasat, * Daniel W. Swartz, * Jeff Gore, and Mehran Kardar </p><p>Here, we show that phase (3) is not a true thermodynamic phase because T ex diverges logarithmically in P , so that the P → ∞ model displays only phases (1) and <ref type="bibr">(2)</ref>.</p><p>Since there are no survivors in phase (3), the extinction transition can be understood as a single-species problem <ref type="bibr">[1]</ref>. The dynamics then read</p><p>The quantity ⟨N ⟩ is defined as the patch average, which for finite P is a fluctuating quantity. Extinction occurs when ⟨N ⟩(t) hits the cutoff N c ≪ 1. * These authors contributed equally to this work.</p><p>IV. THE θ-LOGISTIC GENERALIZED LOTKA-VOLTERRA MODEL</p><p>The results of Sections II and III imply the patch-averaged abundances to evolve according to the θ-gLV equations given in Eq. ( <ref type="formula">10</ref>) of the main text, repeated below:</p><p>where θ and K depend on the noise and dispersal rate as</p><p>In this section, we study the fixed points of the θ-gLV model and determine their stability, allowing us to explain and characterize the novel coexistence phase. For brevity, we rescale the patch-averaged abundance, the interaction matrix, and the time variable as</p><p>The dynamics then read</p><p>For T &lt; D, we have θ = 1, corresponding to the standard gLV model. Within the coexistence phase T &gt; T c , we instead have θ = βD.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>A. Constant interactions</head><p>We first treat the case A ij = µ, which can be solved directly through a large-S perturbation theory. We recast the equation in terms of the variables</p><p>The quantity ε ≪ 1 will prove to be a natural expansion parameter, with y i ∈ O(ε 0 ) at the coexisting fixed point. The rescaled equations read:</p><p>We look for a fixed point in which all species coexist. By symmetry, all abundances must be equal at this point:</p><p>The fixed point condition then reads:</p><p>Though this admits no closed-form solution, we can derive an expansion for y in powers of ε. The zeroth-order solution is immediately read off as y = 1 + O(ε), but this order will turn out insufficient to determine stability. To obtain the leading corrections, we write y = 1 + δ and substitute into (S22), yielding</p><p>We now invoke the binomial expansion (1</p><p>), and further expand δ = ∞ n=1 c n ε n . The c n can then be determined order by order in ε, yielding the following expression for the fixed-point abundance:</p><p>Having located the fixed point, we now determine its stability. The Jacobian of Eq. (S21) can be computed as</p><p>At the fixed point y i = y, this equals</p><p>where we have used Eq. (S22) to replace y θ with (1 − y)/ε. The matrix J * has one eigenvector (1, . . . , 1) T with eigenvalue λ 1 , and S − 1 degenerate eigenvalues λ 2 whose eigenvectors are orthogonal to (1, . . . , 1) T . It can be verified that λ 1 = λ 2 − µε 1/2 S, and</p><p>Since λ 1 &lt; λ 2 , stability relies on the negativity of λ 2 . Using the small ε expansion of y (Eq. S23), we find</p><p>In the special case θ = 1, we find λ 2 (ε) = (µ − 1)ε + O(ε 2 ), which yields the usual gLV condition for stability, µ &lt; 1. If θ &lt; 1, the term in ε 1/θ is subleading, and so λ 2 is always negative for sufficiently small ε (large S). We conclude that, for constant interactions A ij = µ, the coexisting fixed point is asymptotically stable whenever θ &lt; 1. Using θ = βD, this implies that the critical noise strength for coexistence is T c = D.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>B. Disordered interactions</head><p>We now treat the case of random heterogeneous interactions. The starting point is Eq. (S20) with quenched disorder in A, whose moments are specified as</p><p>where µ, σ 2 &gt; 0 are kept O(S 0 ). A fixed point for which</p><p>We now separate A into its mean and fluctuations A ij = µ + σa ij , where the a ij are i.i.d. with zero mean and unit variance. We then have</p><p>where j̸ =i M j has been replaced with SM ≡ j M j , which is valid for large S. The final term can be treated by the cavity method in the limit S → ∞, which justifies replacing j̸ =i a ij M j with a Gaussian variable whose statistics are computed by treating the M j as fixed and independent of the a ij :</p><p>we note that, although standard derivations of the cavity method rely on the scaling of µ, σ 2 as S −1 , the forms posited in Eq. (S25) will prove self-consistent in the coexistence phase, owing to the O(S −1 ) scaling of M i . Equations (S24) and (S25) together give</p><p>where Z ∼ N (0, 1) represents the quenched (interspecific) fluctuations. If, for a given realization of Z, the right hand side of Eq. (S26) is negative, then there is no real and positive solution for M i , and species i cannot be extant at the</p><p>The leading term of this series suffices to set conditions on the scaling exponents. For n = 1 and n = 2, we find:</p><p>Demanding that the above remain O(1) as S → ∞, we obtain the following identities:</p><p>Adding these equations gives</p><p>Using this relation and the definition in Eq. (S29):</p><p>For the above to be positive, as required for coexistence, the numerator imposes that α ≥ 1. But if α &gt; 1, then η = α − 1/2. Substituting this into Eq. (S33) yields θα = 0, which is a contradiction unless θ = 0. We thus must have α = 1, implying γ = 2, and, by Eqs. (S33) and (S34), η = 1 2 − θ. For this to be self consistent, Eq. (S35) requires</p><p>.</p><p>But since M and M 2 are O(1) by construction, we must have</p><p>Thus, M = 1/µ at leading order, but the O S −θ correction must be included for self-consistency. The leading-order result suffices to determine h: from Eqs. (S31) and (S32), we have M 2 = M 2 at order S 0 , so that</p><p>Using these results, Eq. (S36) becomes µ M = 1 − (µS) −θ .</p><p>To summarize, we have solved the self-consistent cavity equations exactly in the large-S limit, finding</p><p>Recalling that η = 1/2 − θ &gt; 0 was required for an asymptotic survival fraction of unity, we obtain the coexistence criterion:</p><p>Notice that, at leading order, we have M 2 = M 2 , implying that disorder is irrelevant in the true S → ∞ limit, and that all abundances converge to the mean M defined in Eq. (S37). for the indicated patch numbers P (corresponding to system volume). The initial increase with T represents noise-stabilized coexistence, whereas the fall for large T represents noise-driven extinction. In d = 1, full coexistence is never achieved, and increasing P does not delay noise-driven extinction. In contrast, the d = 2 case resembles the fully-connected results (Fig. <ref type="figure">2</ref> of the main text), showing a well-defined coexistence transition and no noise-driven extinction for sufficiently large P .</p><p>to a value of the order 10 2 . Figure <ref type="figure">S3</ref>(b) reports the survival fraction as a function of noise strength: once again, the d = 2 case resembles the fully-connected model, displaying, for sufficiently large P , a transition from ϕ ≃ 0 to ϕ = 1 at a threshold noise strength T c . In d = 1, this transition is not observed, and the data furthermore suggest that the large-T noise-driven extinction phase is not abrogated by increasing P .</p><p>More detailed analysis will be necessary to conclude on the fate of the coexistence phase in finite dimensions; in particular, measurements of the θ exponent will be necessary to determine the stability of coexistence in the infinite-S limit (see Ref. <ref type="bibr">[4]</ref>, where such a measurement is reported for a single species in d = 1). Present data is consistent with the hypothesis that the coexistence phase persists in d = 2, but not d = 1. In the latter case, spatiotemporal noise increases richness but cannot stabilize truly extensive diversity. We plan to pursue this question in a future work.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>VI. NUMERICAL DETAILS A. Simulation methods</head><p>Simulations of the stochastic metacommunity dynamics were performed using the Milstein method, though the standard Euler-Maruyama method achieves comparable performance for the observables reported in this work. Since our simulations involve a large number of fields, S, over a large number of spatial points, P , they are uniquely amenable to massively-parallel GPU acceleration. This allows for simulations where the number of variables is on the order of a billion (for example, Fig. <ref type="figure">4</ref> of the main text includes simulations with SP = 2 32 ≈ 4 × 10 9 ). We anticipate that the methods developed for this work could have several applications outside ecology.</p><p>All numerical methods where implemented in the Julia programming language using CUDA.jl <ref type="bibr">[11]</ref> for GPU programming, and run on a combination of Nvidia L40S, H100, and A30 GPUs. We are grateful to the MIT Office of Research Computing and Data (ORCD) and the SubMIT facility <ref type="bibr">[12]</ref> at MIT Physics for providing GPU resources.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>B. Simulation parameter values for figures in the main text</head><p>All measurements of species richness or survival fraction represent quasi-stationary values, defined by sampling at a time t max such that S * (t max /2) differs from S * (t max ) by less than 10%. For large S, P and small N c , our measurements are consistent with the following empirical scaling form for the relaxation time of S(t):</p><p>This is well-separated from the noise-driven extinction time, which is exponential in 1/N c (Eq. S2), showing that the quasi-stationary regime is well-defined for small N c (that is, large populations).</p><p>Most simulation parameter values are listed in the Figure captions; below. We list remaining ones that were left out of the captions for brevity:</p><p>• Figure <ref type="figure">1:</ref> (c) t max = 8000. </p></div>			</div>
+			<div type="references">
+
+				<listBibl>
+
+<biblStruct xml:id="b0">
+	<monogr>
+		<author>
+			<persName><forename type="first">E</forename><forename type="middle">O</forename><surname>Wilson</surname></persName>
+		</author>
+		<title level="m">The diversity of life</title>
+				<imprint>
+			<publisher>WW Norton &amp; Company</publisher>
+			<date type="published" when="1999">1999</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b1">
+	<analytic>
+		<title level="a" type="main">Coral reef biodiversity</title>
+		<author>
+			<persName><forename type="first">N</forename><surname>Knowlton</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">E</forename><surname>Brainard</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Fisher</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Moews</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Plaisance</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">J</forename><surname>Caley</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Life in the world&apos;s oceans: diversity distribution and abundance</title>
+		<imprint>
+			<biblScope unit="volume">65</biblScope>
+			<date type="published" when="2010">2010</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b2">
+	<analytic>
+		<title level="a" type="main">Estimating prokaryotic diversity and its limits</title>
+		<author>
+			<persName><forename type="first">T</forename><forename type="middle">P</forename><surname>Curtis</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><forename type="middle">T</forename><surname>Sloan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">W</forename><surname>Scannell</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Proceedings of the National Academy of Sciences</title>
+		<imprint>
+			<biblScope unit="volume">99</biblScope>
+			<biblScope unit="page">10494</biblScope>
+			<date type="published" when="2002">2002</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b3">
+	<analytic>
+		<title level="a" type="main">A human gut microbial gene catalogue established by metagenomic sequencing</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Qin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Raes</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Arumugam</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><forename type="middle">S</forename><surname>Burgdorf</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Manichanh</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Nielsen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Pons</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Levenez</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Yamada</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nature</title>
+		<imprint>
+			<biblScope unit="volume">464</biblScope>
+			<biblScope unit="page">59</biblScope>
+			<date type="published" when="2010">2010</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b4">
+	<analytic>
+		<title level="a" type="main">The competitive exclusion principle: an idea that took a century to be born has implications in ecology, economics, and genetics</title>
+		<author>
+			<persName><forename type="first">G</forename><surname>Hardin</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Science</title>
+		<imprint>
+			<biblScope unit="volume">131</biblScope>
+			<biblScope unit="page">1292</biblScope>
+			<date type="published" when="1960">1960</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b5">
+	<analytic>
+		<title level="a" type="main">Will a large complex system be stable?</title>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">M</forename></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nature</title>
+		<imprint>
+			<biblScope unit="volume">238</biblScope>
+			<biblScope unit="page">413</biblScope>
+			<date type="published" when="1972">1972</date>
+		</imprint>
+	</monogr>
+	<note>May,</note>
+</biblStruct>
+
+<biblStruct xml:id="b6">
+	<monogr>
+		<author>
+			<persName><forename type="first">G</forename><forename type="middle">F</forename><surname>Gause</surname></persName>
+		</author>
+		<title level="m">The struggle for existence</title>
+				<meeting><address><addrLine>Baltimore</addrLine></address></meeting>
+		<imprint>
+			<publisher>Williams &amp; Wilkins</publisher>
+			<date type="published" when="1934">1934</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b7">
+	<analytic>
+		<title level="a" type="main">Resource competition between plankton algae: an experimental and theoretical approach</title>
+		<author>
+			<persName><forename type="first">D</forename><surname>Tilman</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Ecology</title>
+		<imprint>
+			<biblScope unit="volume">58</biblScope>
+			<biblScope unit="page">338</biblScope>
+			<date type="published" when="1977">1977</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b8">
+	<analytic>
+		<title level="a" type="main">Resourcediversity relationships in bacterial communities reflect the network structure of microbial metabolism</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Bello</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Lee</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Goyal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Gore</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nature ecology &amp; evolution</title>
+		<imprint>
+			<biblScope unit="volume">5</biblScope>
+			<biblScope unit="page">1424</biblScope>
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b9">
+	<analytic>
+		<title level="a" type="main">Emergent phases of ecological diversity and dynamics mapped in microcosms</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Hu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">R</forename><surname>Amor</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Barbier</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Bunin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Gore</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Science</title>
+		<imprint>
+			<biblScope unit="volume">378</biblScope>
+			<biblScope unit="page">85</biblScope>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b10">
+	<analytic>
+		<title level="a" type="main">Mechanisms of maintenance of species diversity</title>
+		<author>
+			<persName><forename type="first">P</forename><surname>Chesson</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Annual review of Ecology and Systematics</title>
+		<imprint>
+			<biblScope unit="volume">31</biblScope>
+			<biblScope unit="page">343</biblScope>
+			<date type="published" when="2000">2000</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b11">
+	<analytic>
+		<title level="a" type="main">The diversity-stability debate</title>
+		<author>
+			<persName><forename type="first">K</forename><forename type="middle">S</forename><surname>Mccann</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nature</title>
+		<imprint>
+			<biblScope unit="volume">405</biblScope>
+			<biblScope unit="page">228</biblScope>
+			<date type="published" when="2000">2000</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b12">
+	<analytic>
+		<title level="a" type="main">Stability criteria for complex ecosystems</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Allesina</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Tang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nature</title>
+		<imprint>
+			<biblScope unit="volume">483</biblScope>
+			<biblScope unit="page">205</biblScope>
+			<date type="published" when="2012">2012</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b13">
+	<analytic>
+		<title level="a" type="main">On the structural stability of mutualistic systems</title>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">P</forename><surname>Rohr</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Saavedra</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Bascompte</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Science</title>
+		<imprint>
+			<biblScope unit="volume">345</biblScope>
+			<biblScope unit="page">1253497</biblScope>
+			<date type="published" when="2014">2014</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b14">
+	<analytic>
+		<title level="a" type="main">Modularity and stability in ecological communities</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Grilli</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Rogers</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Allesina</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nature communications</title>
+		<imprint>
+			<biblScope unit="volume">7</biblScope>
+			<biblScope unit="page">12031</biblScope>
+			<date type="published" when="2016">2016</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b15">
+	<analytic>
+		<title level="a" type="main">Higher-order interactions stabilize dynamics in competitive network models</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Grilli</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Barabás</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">J</forename><surname>Michalska-Smith</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Allesina</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nature</title>
+		<imprint>
+			<biblScope unit="volume">548</biblScope>
+			<biblScope unit="page">210</biblScope>
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b16">
+	<analytic>
+		<title level="a" type="main">Metabolic trade-offs promote diversity in a model ecosystem</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Posfai</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Taillefumier</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><forename type="middle">S</forename><surname>Wingreen</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Physical review letters</title>
+		<imprint>
+			<biblScope unit="volume">118</biblScope>
+			<biblScope unit="page">28103</biblScope>
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b17">
+	<analytic>
+		<title level="a" type="main">Stabilization of extensive fine-scale diversity by ecologically driven spatiotemporal chaos</title>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">T</forename><surname>Pearce</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Agarwala</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">S</forename><surname>Fisher</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Proceedings of the National Academy of Sciences</title>
+		<imprint>
+			<biblScope unit="volume">117</biblScope>
+			<biblScope unit="page">14572</biblScope>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b18">
+	<analytic>
+		<title level="a" type="main">Will a large complex model ecosystem be viable? the essential role of positive interactions</title>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">P</forename><surname>Rohr</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>-F. Bersier</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Arditi</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Ecology</title>
+		<imprint>
+			<biblScope unit="volume">106</biblScope>
+			<biblScope unit="page">e70064</biblScope>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b19">
+	<analytic>
+		<title level="a" type="main">Interactions and migration rescuing ecological diversity</title>
+		<author>
+			<persName><forename type="first">G</forename><surname>Garcia Lorenzana</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Altieri</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Biroli</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">PRX Life</title>
+		<imprint>
+			<biblScope unit="volume">2</biblScope>
+			<biblScope unit="page">13014</biblScope>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b20">
+	<analytic>
+		<title level="a" type="main">Complex interactions can create persistent fluctuations in highdiversity ecosystems</title>
+		<author>
+			<persName><forename type="first">F</forename><surname>Roy</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Barbier</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Biroli</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Bunin</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">PLoS computational biology</title>
+		<imprint>
+			<biblScope unit="volume">16</biblScope>
+			<biblScope unit="page">e1007827</biblScope>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b21">
+	<analytic>
+		<title level="a" type="main">Diversity in tropical rain forests and coral reefs: high diversity of trees and corals is maintained only in a nonequilibrium state</title>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">H</forename><surname>Connell</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Science</title>
+		<imprint>
+			<biblScope unit="volume">199</biblScope>
+			<biblScope unit="page">1302</biblScope>
+			<date type="published" when="1978">1978</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b22">
+	<analytic>
+		<title level="a" type="main">Biodiversity and ecosystem productivity in a fluctuating environment: the insurance hypothesis</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Yachi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Loreau</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Proceedings of the National Academy of Sciences</title>
+		<imprint>
+			<biblScope unit="volume">96</biblScope>
+			<biblScope unit="page">1463</biblScope>
+			<date type="published" when="1999">1999</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b23">
+	<analytic>
+		<title level="a" type="main">Multispecies competition in variable environments</title>
+		<author>
+			<persName><forename type="first">P</forename><surname>Chesson</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Theoretical population biology</title>
+		<imprint>
+			<biblScope unit="volume">45</biblScope>
+			<biblScope unit="page">227</biblScope>
+			<date type="published" when="1994">1994</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b24">
+	<analytic>
+		<title level="a" type="main">Chaotic population dynamics favors the evolution of dispersal</title>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">D</forename><surname>Holt</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">A</forename><surname>Mcpeek</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">The American Naturalist</title>
+		<imprint>
+			<biblScope unit="volume">148</biblScope>
+			<biblScope unit="page">709</biblScope>
+			<date type="published" when="1996">1996</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b25">
+	<analytic>
+		<title level="a" type="main">Noise promotes species diversity in nature</title>
+		<author>
+			<persName><forename type="first">Y.-C</forename><surname>Lai</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y.-R</forename><surname>Liu</surname></persName>
+		</author>
+		<idno type="DOI">10.1103/PhysRevLett.94.038102</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Phys. Rev. Lett</title>
+		<imprint>
+			<biblScope unit="volume">94</biblScope>
+			<biblScope unit="page">38102</biblScope>
+			<date type="published" when="2005">2005</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b26">
+	<analytic>
+		<title level="a" type="main">Biodiversity enhancement induced by environmental noise</title>
+		<author>
+			<persName><forename type="first">P</forename><surname>Odorico</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Laio</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Ridolfi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">T</forename><surname>Lerdau</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of Theoretical Biology</title>
+		<imprint>
+			<biblScope unit="volume">255</biblScope>
+			<biblScope unit="page">332</biblScope>
+			<date type="published" when="2008">2008</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b27">
+	<analytic>
+		<title level="a" type="main">Periodic temporal environmental variations induce coexistence in resource competition models</title>
+		<author>
+			<persName><forename type="first">T</forename><surname>Burkart</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Willeke</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Frey</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Physical Review E</title>
+		<imprint>
+			<biblScope unit="volume">108</biblScope>
+			<biblScope unit="page">34404</biblScope>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b28">
+	<analytic>
+		<title level="a" type="main">A tiny fraction of all species forms most of nature: Rarity as a sticky state</title>
+		<author>
+			<persName><forename type="first">E</forename><forename type="middle">H</forename><surname>Van Nes</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">G</forename><surname>Pujoni</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">A</forename><surname>Shetty</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Straatsma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><forename type="middle">M</forename><surname>De Vos</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Scheffer</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Proceedings of the National Academy of Sciences</title>
+		<imprint>
+			<biblScope unit="volume">121</biblScope>
+			<biblScope unit="page">e2221791120</biblScope>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b29">
+	<monogr>
+		<author>
+			<persName><forename type="first">E</forename><surname>Mallmin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Traulsen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>De Monte</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2505.01376</idno>
+		<title level="m">Fluctuating growth rates link turnover and unevenness in species-rich communities</title>
+				<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b30">
+	<monogr>
+		<author>
+			<persName><forename type="first">M</forename><surname>Asker</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Swailem</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">U</forename><forename type="middle">C</forename><surname>Täuber</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Mobilia</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2504.08433</idno>
+		<title level="m">Fixation and extinction in time-fluctuating spatially structured metapopulations</title>
+				<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b31">
+	<analytic>
+		<title level="a" type="main">Does environmental variability limit niche overlap?</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Turelli</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Proceedings of the National Academy of Sciences</title>
+		<imprint>
+			<biblScope unit="volume">75</biblScope>
+			<biblScope unit="page">5085</biblScope>
+			<date type="published" when="1978">1978</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b32">
+	<analytic>
+		<title level="a" type="main">The intermediate disturbance hypothesis should be abandoned</title>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">W</forename><surname>Fox</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Trends in ecology &amp; evolution</title>
+		<imprint>
+			<biblScope unit="volume">28</biblScope>
+			<biblScope unit="page">86</biblScope>
+			<date type="published" when="2013">2013</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b33">
+	<analytic>
+		<title level="a" type="main">Risks of population extinction from demographic and environmental stochasticity and random catastrophes</title>
+		<author>
+			<persName><forename type="first">R</forename><surname>Lande</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">The American Naturalist</title>
+		<imprint>
+			<biblScope unit="volume">142</biblScope>
+			<biblScope unit="page">911</biblScope>
+			<date type="published" when="1993">1993</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b34">
+	<analytic>
+		<title level="a" type="main">Ecological communities with Lotka-Volterra dynamics</title>
+		<author>
+			<persName><forename type="first">G</forename><surname>Bunin</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Physical Review E</title>
+		<imprint>
+			<biblScope unit="volume">95</biblScope>
+			<biblScope unit="page">42414</biblScope>
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b35">
+	<analytic>
+		<title level="a" type="main">Fast growth can counteract antibiotic susceptibility in shaping microbial community resilience to antibiotics</title>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">R</forename><surname>Amor</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Gore</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Proceedings of the National Academy of Sciences</title>
+		<imprint>
+			<biblScope unit="volume">119</biblScope>
+			<biblScope unit="page">e2116954119</biblScope>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b36">
+	<analytic>
+		<title level="a" type="main">Collective dynamical regimes predict invasion success and impacts in microbial communities</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Hu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Barbier</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Bunin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Gore</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nature Ecology &amp; Evolution</title>
+		<imprint>
+			<biblScope unit="volume">9</biblScope>
+			<biblScope unit="page">406</biblScope>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b37">
+	<analytic>
+		<title level="a" type="main">Patterns of species interaction strength in assembled theoretical competition communities</title>
+		<author>
+			<persName><forename type="first">G</forename><surname>Kokkoris</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Troumbis</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Lawton</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Ecology Letters</title>
+		<imprint>
+			<biblScope unit="volume">2</biblScope>
+			<biblScope unit="page">70</biblScope>
+			<date type="published" when="1999">1999</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b38">
+	<analytic>
+		<title level="a" type="main">Marginally stable equilibria in critical ecosystems</title>
+		<author>
+			<persName><forename type="first">G</forename><surname>Biroli</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Bunin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Cammarota</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">New Journal of Physics</title>
+		<imprint>
+			<biblScope unit="volume">20</biblScope>
+			<biblScope unit="page">83051</biblScope>
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b39">
+	<analytic>
+		<title level="a" type="main">Properties of equilibria and glassy phases of the random Lotka-Volterra model with demographic noise</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Altieri</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Roy</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Cammarota</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Biroli</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Physical Review Letters</title>
+		<imprint>
+			<biblScope unit="volume">126</biblScope>
+			<biblScope unit="page">258301</biblScope>
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b40">
+	<analytic>
+		<title level="a" type="main">Diversity begets stability: Sublinear growth and competitive coexistence across ecosystems</title>
+		<author>
+			<persName><forename type="first">I</forename><forename type="middle">A</forename><surname>Hatton</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">O</forename><surname>Mazzarisi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Altieri</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Smerlak</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Science</title>
+		<imprint>
+			<biblScope unit="volume">383</biblScope>
+			<biblScope unit="page">8488</biblScope>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b41">
+	<analytic>
+		<title level="a" type="main">The paradox of the plankton</title>
+		<author>
+			<persName><forename type="first">G</forename><forename type="middle">E</forename><surname>Hutchinson</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">The American Naturalist</title>
+		<imprint>
+			<biblScope unit="volume">95</biblScope>
+			<biblScope unit="page">137</biblScope>
+			<date type="published" when="1961">1961</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b42">
+	<analytic>
+		<title level="a" type="main">Population extinction on a random fitness seascape</title>
+		<author>
+			<persName><forename type="first">B</forename><surname>Ottino-Löffler</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Kardar</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Physical Review E</title>
+		<imprint>
+			<biblScope unit="volume">102</biblScope>
+			<biblScope unit="page">52106</biblScope>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b43">
+	<analytic>
+		<title level="a" type="main">Seascape origin of richards growth</title>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">W</forename><surname>Swartz</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Ottino-Löffler</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Kardar</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Physical Review E</title>
+		<imprint>
+			<biblScope unit="volume">105</biblScope>
+			<biblScope unit="page">14417</biblScope>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b44">
+	<analytic>
+		<title level="a" type="main">Aggregation, variance and the mean</title>
+		<author>
+			<persName><forename type="first">L</forename><forename type="middle">R</forename><surname>Taylor</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nature</title>
+		<imprint>
+			<biblScope unit="volume">189</biblScope>
+			<biblScope unit="page">732</biblScope>
+			<date type="published" when="1961">1961</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b45">
+	<analytic>
+		<title level="a" type="main">Fluctuation scaling in complex systems: Taylor&apos;s law and beyond</title>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Eisler</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">I</forename><surname>Bartos</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Kertész</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Advances in Physics</title>
+		<imprint>
+			<biblScope unit="volume">57</biblScope>
+			<biblScope unit="page">89</biblScope>
+			<date type="published" when="2008">2008</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b46">
+	<monogr>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">A</forename><surname>Munoz</surname></persName>
+		</author>
+		<idno>arXiv preprint cond- mat/0303650</idno>
+		<title level="m">Multiplicative noise in non-equilibrium phase transitions: A tutorial</title>
+				<imprint>
+			<date type="published" when="2003">2003</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b47">
+	<analytic>
+		<title level="a" type="main">Metapopulation dynamics</title>
+		<author>
+			<persName><forename type="first">I</forename><surname>Hanski</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nature</title>
+		<imprint>
+			<biblScope unit="volume">396</biblScope>
+			<biblScope unit="page">41</biblScope>
+			<date type="published" when="1998">1998</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b48">
+	<analytic>
+		<title level="a" type="main">Self-consistent dispersal puts tight constraints on the spatiotemporal organization of species-rich metacommunities</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Denk</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">O</forename><surname>Hallatschek</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Proceedings of the National Academy of Sciences</title>
+		<imprint>
+			<biblScope unit="volume">119</biblScope>
+			<biblScope unit="page">e2200390119</biblScope>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b49">
+	<monogr>
+		<author>
+			<persName><forename type="first">T</forename><forename type="middle">A</forename><surname>De Pirey</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2512.06961</idno>
+		<title level="m">Self-organized criticality in complex model ecosystems</title>
+				<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b50">
+	<analytic>
+		<title level="a" type="main">Stochastic models of population extinction</title>
+		<author>
+			<persName><forename type="first">O</forename><surname>Ovaskainen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Meerson</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Trends in ecology &amp; evolution</title>
+		<imprint>
+			<biblScope unit="volume">25</biblScope>
+			<biblScope unit="page">643</biblScope>
+			<date type="published" when="2010">2010</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b51">
+	<analytic>
+		<title level="a" type="main">Macroecological laws describe variation and diversity in microbial communities</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Grilli</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nature communications</title>
+		<imprint>
+			<biblScope unit="volume">11</biblScope>
+			<biblScope unit="page">4743</biblScope>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b52">
+	<analytic>
+		<title level="a" type="main">The powerbend distribution provides a unified model for the species abundance distribution across animals, plants and microbes</title>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Gao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Abdullah</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Wu</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nature Communications</title>
+		<imprint>
+			<biblScope unit="volume">16</biblScope>
+			<biblScope unit="page">4035</biblScope>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b53">
+	<analytic>
+		<title level="a" type="main">On the regulation of populations of mammals, birds, fish, and insects</title>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">M</forename><surname>Sibly</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Barker</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">C</forename><surname>Denham</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Hone</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Pagel</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Science</title>
+		<imprint>
+			<biblScope unit="volume">309</biblScope>
+			<biblScope unit="page">607</biblScope>
+			<date type="published" when="2005">2005</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b54">
+	<analytic>
+		<title level="a" type="main">A flexible growth function for empirical use</title>
+		<author>
+			<persName><forename type="first">F</forename><forename type="middle">J</forename><surname>Richards</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of experimental Botany</title>
+		<imprint>
+			<biblScope unit="volume">10</biblScope>
+			<biblScope unit="page">290</biblScope>
+			<date type="published" when="1959">1959</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b55">
+	<analytic>
+		<title level="a" type="main">Global models of growth and competition</title>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">E</forename><surname>Gilpin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><forename type="middle">J</forename><surname>Ayala</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Proceedings of the National Academy of Sciences</title>
+		<imprint>
+			<biblScope unit="volume">70</biblScope>
+			<biblScope unit="page">3590</biblScope>
+			<date type="published" when="1973">1973</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b56">
+	<analytic>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">P</forename><surname>Hubbell</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">The Unified Neutral Theory of Biodiversity and Biogeography</title>
+				<imprint>
+			<publisher>Princeton University Press</publisher>
+			<date type="published" when="2001">2001</date>
+			<biblScope unit="volume">32</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b57">
+	<analytic>
+		<title/>
+		<author>
+			<persName><forename type="first">G</forename><surname>Bell</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Neutral macroecology</title>
+		<imprint>
+			<biblScope unit="volume">293</biblScope>
+			<biblScope unit="page">2413</biblScope>
+			<date type="published" when="2001">2001</date>
+		</imprint>
+	</monogr>
+	<note>Science</note>
+</biblStruct>
+
+<biblStruct xml:id="b58">
+	<analytic>
+		<title level="a" type="main">Maritan, Generalized lotka-volterra systems with time correlated stochastic interactions</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Suweis</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Ferraro</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Grilletta</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Azaele</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Physical Review Letters</title>
+		<imprint>
+			<biblScope unit="volume">133</biblScope>
+			<biblScope unit="page">167101</biblScope>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b59">
+	<analytic>
+		<title level="a" type="main">Emergence of ecological structure and species rarity from fluctuating metabolic strategies</title>
+		<author>
+			<persName><forename type="first">D</forename><surname>Zanchetta</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Gupta</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Moschin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Suweis</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Maritan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Azaele</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">PRX Life</title>
+		<imprint>
+			<biblScope unit="volume">3</biblScope>
+			<biblScope unit="page">33016</biblScope>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b60">
+	<analytic>
+		<title level="a" type="main">Diel size distributions reveal seasonal growth dynamics of a coastal phytoplankter</title>
+		<author>
+			<persName><forename type="first">K</forename><forename type="middle">R</forename><surname>Hunter-Cevera</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">G</forename><surname>Neubert</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">R</forename><surname>Solow</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">J</forename><surname>Olson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Shalapyonok</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><forename type="middle">M</forename><surname>Sosik</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Proceedings of the National Academy of Sciences</title>
+		<imprint>
+			<biblScope unit="volume">111</biblScope>
+			<biblScope unit="page">9852</biblScope>
+			<date type="published" when="2014">2014</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b61">
+	<analytic>
+		<title level="a" type="main">Diel changes in bacterial biomass and growth rates in coastal environments, determined by means of thymidine incorporation into dna, frequency of dividing cells (fdc), and microautoradiography</title>
+		<author>
+			<persName><forename type="first">B</forename><surname>Riemann</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Nielsen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Jeppesen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Marcussen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">A</forename><surname>Fuhrman</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Marine Ecology Progress Series</title>
+		<imprint>
+			<biblScope unit="volume">17</biblScope>
+			<biblScope unit="page">227</biblScope>
+			<date type="published" when="1984">1984</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b62">
+	<monogr>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">L</forename><surname>Rosenzweig</surname></persName>
+		</author>
+		<title level="m">Species diversity in space and time</title>
+				<imprint>
+			<date type="published" when="1995">1995</date>
+		</imprint>
+	</monogr>
+	<note>No Title</note>
+</biblStruct>
+
+<biblStruct xml:id="b63">
+	<analytic>
+		<title level="a" type="main">Nonequilibrium dynamics of spin glasses</title>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">S</forename><surname>Fisher</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">A</forename><surname>Huse</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Physical Review B</title>
+		<imprint>
+			<biblScope unit="volume">38</biblScope>
+			<biblScope unit="page">373</biblScope>
+			<date type="published" when="1988">1988</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b64">
+	<analytic>
+		<title level="a" type="main">Non-equilibrium glass transitions in driven and active matter</title>
+		<author>
+			<persName><forename type="first">L</forename><surname>Berthier</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Kurchan</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nature Physics</title>
+		<imprint>
+			<biblScope unit="volume">9</biblScope>
+			<biblScope unit="page">310</biblScope>
+			<date type="published" when="2013">2013</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b65">
+	<monogr>
+		<author>
+			<persName><surname>Concretely</surname></persName>
+		</author>
+		<title level="m">we imagine extinctions happening sequentially</title>
+				<imprint/>
+	</monogr>
+	<note>, and consider the dynamics of the final extinction event in which there is only one remaining species</note>
+</biblStruct>
+
+<biblStruct xml:id="b66">
+	<monogr>
+		<author>
+			<persName><forename type="first">C</forename><forename type="middle">W</forename><surname>Gardiner</surname></persName>
+		</author>
+		<title level="m">Handbook of stochastic methods</title>
+				<meeting><address><addrLine>Berlin</addrLine></address></meeting>
+		<imprint>
+			<publisher>springer</publisher>
+			<date type="published" when="2004">2004</date>
+			<biblScope unit="volume">3</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b67">
+	<analytic>
+		<title level="a" type="main">Population extinction on a random fitness seascape</title>
+		<author>
+			<persName><forename type="first">B</forename><surname>Ottino-Löffler</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Kardar</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Physical Review E</title>
+		<imprint>
+			<biblScope unit="volume">102</biblScope>
+			<biblScope unit="page">52106</biblScope>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b68">
+	<analytic>
+		<title level="a" type="main">Seascape origin of richards growth</title>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">W</forename><surname>Swartz</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Ottino-Löffler</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Kardar</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Physical Review E</title>
+		<imprint>
+			<biblScope unit="volume">105</biblScope>
+			<biblScope unit="page">14417</biblScope>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b69">
+	<monogr>
+		<author>
+			<persName><forename type="first">E</forename><surname>Mallmin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Traulsen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>De Monte</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2505.01376</idno>
+		<title level="m">Fluctuating growth rates link turnover and unevenness in species-rich communities</title>
+				<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b70">
+	<monogr>
+		<author>
+			<persName><forename type="first">T</forename><forename type="middle">A</forename><surname>De Pirey</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2512.06961</idno>
+		<title level="m">Self-organized criticality in complex model ecosystems</title>
+				<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b71">
+	<analytic>
+		<title level="a" type="main">Self-consistent dispersal puts tight constraints on the spatiotemporal organization of speciesrich metacommunities</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Denk</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">O</forename><surname>Hallatschek</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Proceedings of the National Academy of Sciences</title>
+		<imprint>
+			<biblScope unit="volume">119</biblScope>
+			<biblScope unit="page">e2200390119</biblScope>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b72">
+	<analytic>
+		<title level="a" type="main">Aggregation, variance and the mean</title>
+		<author>
+			<persName><forename type="first">L</forename><forename type="middle">R</forename><surname>Taylor</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nature</title>
+		<imprint>
+			<biblScope unit="volume">189</biblScope>
+			<biblScope unit="page">732</biblScope>
+			<date type="published" when="1961">1961</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b73">
+	<analytic>
+		<title level="a" type="main">Fluctuation scaling in complex systems: Taylor&apos;s law and beyond</title>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Eisler</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">I</forename><surname>Bartos</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Kertész</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Advances in Physics</title>
+		<imprint>
+			<biblScope unit="volume">57</biblScope>
+			<biblScope unit="page">89</biblScope>
+			<date type="published" when="2008">2008</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b74">
+	<monogr>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">L</forename><surname>Rosenzweig</surname></persName>
+		</author>
+		<title level="m">Species diversity in space and time</title>
+				<imprint>
+			<date type="published" when="1995">1995</date>
+		</imprint>
+	</monogr>
+	<note>No Title</note>
+</biblStruct>
+
+<biblStruct xml:id="b75">
+	<analytic>
+		<title level="a" type="main">Effective extensible programming: Unleashing Julia on GPUs</title>
+		<author>
+			<persName><forename type="first">T</forename><surname>Besard</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Foket</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><forename type="middle">De</forename><surname>Sutter</surname></persName>
+		</author>
+		<idno type="DOI">10.1109/TPDS.2018.2872064</idno>
+		<idno type="arXiv">arXiv:1712.03112</idno>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Transactions on Parallel and Distributed Systems</title>
+		<imprint>
+			<biblScope unit="volume">10</biblScope>
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+	<note>cs.PL</note>
+</biblStruct>
+
+<biblStruct xml:id="b76">
+	<monogr>
+		<author>
+			<persName><forename type="first">J</forename><surname>Bendavid</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>D'alfonso</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Eysermans</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Freer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Goncharov</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Heine</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Lavezzo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Moore</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Paus</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Shen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Walter</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Wang</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2506.01958</idno>
+		<title level="m">SubMIT: A Physics Analysis Facility at MIT</title>
+				<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note>cs.DC</note>
+</biblStruct>
+
+				</listBibl>
+			</div>
+		</back>
+	</text>
+</TEI>

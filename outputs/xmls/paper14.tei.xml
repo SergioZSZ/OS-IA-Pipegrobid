@@ -1,0 +1,949 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xml:space="preserve" xmlns="http://www.tei-c.org/ns/1.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.tei-c.org/ns/1.0 https://raw.githubusercontent.com/kermitt2/grobid/master/grobid-home/schemas/xsd/Grobid.xsd"
+ xmlns:xlink="http://www.w3.org/1999/xlink">
+	<teiHeader xml:lang="en">
+		<fileDesc>
+			<titleStmt>
+				<title level="a" type="main">Collaboration drives phase transitions towards cooperation in prisoner&apos;s dilemma</title>
+			</titleStmt>
+			<publicationStmt>
+				<publisher/>
+				<availability status="unknown"><licence/></availability>
+				<date type="published" when="2026-02-12">12 Feb 2026</date>
+			</publicationStmt>
+			<sourceDesc>
+				<biblStruct>
+					<analytic>
+						<author>
+							<persName><forename type="first">Joy</forename><surname>Das Bairagya</surname></persName>
+							<affiliation key="aff0">
+								<orgName type="department">Department of Physics</orgName>
+								<orgName type="institution">Indian Institute of Technology Kanpur</orgName>
+								<address>
+									<postCode>208016</postCode>
+									<region>Uttar Pradesh, PIN</region>
+									<country key="IN">India</country>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Jonathan</forename><surname>Newton</surname></persName>
+							<email>newton@kier.kyoto-u.ac.jp</email>
+							<affiliation key="aff1">
+								<orgName type="department">Institute of Economic Research</orgName>
+								<orgName type="institution">Kyoto University</orgName>
+								<address>
+									<settlement>Kyoto</settlement>
+									<country key="JP">Japan</country>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Sagar</forename><surname>Chakraborty</surname></persName>
+							<email>sagarc@iitk.ac.in</email>
+							<affiliation key="aff0">
+								<orgName type="department">Department of Physics</orgName>
+								<orgName type="institution">Indian Institute of Technology Kanpur</orgName>
+								<address>
+									<postCode>208016</postCode>
+									<region>Uttar Pradesh, PIN</region>
+									<country key="IN">India</country>
+								</address>
+							</affiliation>
+						</author>
+						<title level="a" type="main">Collaboration drives phase transitions towards cooperation in prisoner&apos;s dilemma</title>
+					</analytic>
+					<monogr>
+						<imprint>
+							<date type="published" when="2026-02-12">12 Feb 2026</date>
+						</imprint>
+					</monogr>
+					<idno type="MD5">E2B0AD49DCDA724189A5FE696587405B</idno>
+					<idno type="arXiv">arXiv:2602.11601v1[physics.soc-ph]</idno>
+				</biblStruct>
+			</sourceDesc>
+		</fileDesc>
+		<encodingDesc>
+			<appInfo>
+				<application version="0.7.2" ident="GROBID" when="2026-05-14T17:26+0000">
+					<desc>GROBID - A machine learning software for extracting information from scholarly documents</desc>
+					<ref target="https://github.com/kermitt2/grobid"/>
+				</application>
+			</appInfo>
+		</encodingDesc>
+		<profileDesc>
+			<abstract>
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>We present a collaboration ring model-a network of players playing the prisoner's dilemma game and collaborating among the nearest neighbours by forming coalitions. The microscopic stochastic updating of the players' strategies are driven by their innate nature of seeking selfish gains and shared intentionality. Cooperation emerges in such a structured population through non-equilibrium phase transitions driven by propensity of the players to collaborate and by the benefit that a cooperator generates. The robust results are qualitatively independent of number of neighbours and collaborators.</p></div>
+			</abstract>
+		</profileDesc>
+	</teiHeader>
+	<text xml:lang="en">
+		<body>
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>Following Axelrod's famous prisoner's dilemma (PD) tournament <ref type="bibr" target="#b0">[1]</ref>, more than four decades of research on the evolution of cooperation has converged to the socalled "five rules of cooperation": kin selection <ref type="bibr" target="#b1">[2]</ref>, direct reciprocity <ref type="bibr" target="#b2">[3]</ref>, indirect reciprocity <ref type="bibr" target="#b3">[4]</ref>, network reciprocity <ref type="bibr" target="#b4">[5]</ref>, and group selection <ref type="bibr" target="#b5">[6]</ref>. Nevertheless, when humans are specifically in focus, it cannot be ignored that they are cognitively able; consequently, a complete explanation of cooperation must naturally also include shared intentionality <ref type="bibr" target="#b6">[7]</ref> as an ingredient which manifests as mutualistic collaborative behaviour. It is interesting to note that direct reciprocity may arise from the phenomenon of collaborative strategy choice as it involves strategy rule conditional on opponents' strategy.</p><p>The collaborative actions of multiple selfish individuals lead to formation of coalitions to obtain individual benefits. Such collaborative behaviour can be observed across all forms of life, including the ones with limited cognitive ability, such as bacteria <ref type="bibr" target="#b7">[8]</ref>, trees <ref type="bibr" target="#b8">[9]</ref>, and animals <ref type="bibr" target="#b9">[10]</ref>; e.g., in mobbing behaviour of birds during the breeding season, when a predator approaches a nest, birds nesting nearby-often genetically unrelated-form temporary coalitions to collectively harass and drive away the predator <ref type="bibr" target="#b10">[11]</ref><ref type="bibr" target="#b11">[12]</ref><ref type="bibr" target="#b12">[13]</ref><ref type="bibr" target="#b13">[14]</ref>. Notably, humans-cognitively superior to any other organism-are far more collaborative than any other living organisms, including their closest evolutionary relatives, the great apes <ref type="bibr" target="#b14">[15,</ref><ref type="bibr" target="#b15">16]</ref>. This observation has further inspired the shared intentionality hypothesis <ref type="bibr" target="#b6">[7]</ref>, which posits that the cooperative nature and societal structure of human beings have been crucial for the evolution of sophisticated cognitive abilities <ref type="bibr" target="#b16">[17]</ref><ref type="bibr" target="#b17">[18]</ref><ref type="bibr" target="#b18">[19]</ref>.</p><p>A recent study <ref type="bibr" target="#b19">[20]</ref> numerically demonstrates that collaboration among individuals playing a PD game in sparsely connected populations sustain a stable fraction of cooperators. In this paper, we intend to put this observation into a firm footing by introducing a mathematical model that not only provides an analytically tractable template of the phenomenon but also provides insights about microscopic reasoning behind the emergence of cooperation via this route.</p><p>Of course, the cooperation level in any population is result of a collective behaviour resulting from the interactions between its players. A change in the collective global behaviour of the population due to changing character of local interactions is readily reminiscent of the phenomenon of phases transition. The statistical physical concept of phase transition has been researched extensively in the context of games <ref type="bibr" target="#b20">[21]</ref><ref type="bibr" target="#b21">[22]</ref><ref type="bibr" target="#b22">[23]</ref><ref type="bibr" target="#b23">[24]</ref><ref type="bibr" target="#b24">[25]</ref><ref type="bibr" target="#b25">[26]</ref><ref type="bibr" target="#b26">[27]</ref>. The model introduced here presents a novel methodology of investigating transitions in population's collaboration induced cooperation level using the combined framework of nonequilibrium statistical physics and non-linear dynamicswhile the former is used in framing and simulating the inherent stochastic Markov process, the latter is used in analysing the deterministic equations extracted therefrom by adopting pairwise approximation (cf. Bethe approximation <ref type="bibr" target="#b27">[28]</ref><ref type="bibr" target="#b28">[29]</ref><ref type="bibr" target="#b29">[30]</ref><ref type="bibr" target="#b30">[31]</ref><ref type="bibr" target="#b31">[32]</ref>).</p><p>Specifically, consider a simple yet non-trivial structured population modelled by a ring network <ref type="bibr" target="#b32">[33]</ref> [see Fig. <ref type="figure" target="#fig_8">1(a)</ref>]: Each of N nodes represent individuals, and the edges represent connections between them. Thus, each individual is directly connected to exactly two neighbours (they are the nearest neighbours) and plays Prisoner's Dilemma (PD) with both of them. The mathematical form of the PD game matrix is given in Fig. <ref type="figure" target="#fig_1">1</ref> Let the number of cooperators (action C) be N C and so rest of the N D = N − N C individuals are defectors (action D). The updating rule is as follows: At any time instant, τ , an individual is selected randomly, say i, who chooses one action, either C or D, while playing a PD game with her two neighbours, i + 1 and i − 1. Player i updates her action in two ways:</p><p>1. With probability p (propensity of collaboration), she forms a collaboration with one of her two nearest neighbours, chosen randomly (either i − 1 or i + 1). In the collaboration thus established, they jointly choose a (coalitional) better response <ref type="bibr" target="#b33">[34]</ref><ref type="bibr" target="#b34">[35]</ref><ref type="bibr" target="#b35">[36]</ref> such that each player in the coalition receives a payoff at least as high as her payoff in the current configuration. If there is no better response, they stick with their current actions. If multiple better responses exist, they choose one of them randomly with equal probability.</p><p>2. Otherwise with probability 1 − p, she independently adopts a best response <ref type="bibr" target="#b36">[37]</ref>-an action that maximizes her payoff in a play against her opponents whose actions are held fixed. If multiple best responses exist, she chooses one of them randomly with equal probability.</p><p>We want to understand how the fraction of cooperators, x = N C N = P(C) (the probability that a randomly chosen node is a cooperator), varies with the two control parameters b and p.</p><p>To this end, we first perform simulate the aforementioned stochastic Markov process. The corresponding results can meaningfully be presented as average over ensemble (defined by fixed number of cooperators) at each time-step and over different initial conditions: we denote such averaged cooperation fraction as x(τ ). For all numerical analyses presented in this work, we initialize the population with x = 1 2 . In the limit, τ → ∞, the system reaches a stationary distribution that either corresponds to reaching an absorbing state which we call absorbing phase or a limiting distribution which we call active phase. 3 , in the presence of best-response plays (p ̸ = 1), the system always converges to the absorbing all-defector phase, x * = 0. This is also the case for b ≥ b c if collaboration is completely absent (p = 0).</p><p>(2) In contrast, for b ≥ b c and p ∈ (0, 1), the population enters an active phase x * ̸ = 0: Time average is close to the ensemble average at large times and there exists no absorbing state. (3) In the presence of full propensity of collaboration (p = 1), the system is driven to an absorbing phase; however, unlike the p = 0 case, there exists many absorbing states (see Appendices B, C and D). Naturally, five distinct phase transitions leading to increase in cooperators in population are visible:</p><p>1. For p ∈ (0, 1), at b = b c there is a discontinuous phase transition from all-defectors to mixture of cooperators and defectors.</p><p>2. For p = 1, at b = b c there is a discontinuous phase transition from an absorbing cooperatorsdefectors mixture state with no two adjacent cooperators to another absorbing cooperators-defectors mixture state with no two adjacent defectors [see also Fig. <ref type="figure" target="#fig_8">1(c)</ref>].</p><p>3. For b &gt; b c , at p = 0 the system undergoes a continuous phase transition from all-defectors to mixture of cooperators and defectors.</p><p>4. For b &gt; b c , at p = 1 the system undergoes a discontinuous phase transition from an active phase with high fraction of cooperators to an absorbing cooperators-defectors mixture state with no two adjacent defectors.</p><p>5. For b &lt; b c , as p increases at p = 1, there is a discontinuous phase transition from all-defectors to cooperators-defectors mixture with no two adjacent cooperators. This is a completely collaboration driven emergence of cooperation otherwise absent in the absence of collaboration in PD.</p><p>In order to analytically understand the mechanism of these phase transitions, the route is well-established. One writes the master equation <ref type="bibr" target="#b37">[38]</ref> and solves it; however, the absence of knowledge of the exact solution, one makes approximations about the correlations between nodes with a view to closing the resulting hierarchical differential equations. The simplest one of such approximations is the mean-field approximation <ref type="bibr" target="#b38">[39]</ref> which unfortunately is not meaningful in the presence of collaboration (see Appendix C). Thus, one core goal of this paper is to propose a reasonable ansatz that betters mean-field approximation and closely explains the simulation-results. This ansatz happens to be pairwise approximation ansatz that we detail in due course.</p><p>First, however, to understand the basic principles underlying these transitions, one must know the microscopic rules that induce changes in the system. There are two mechanisms are available for microscopic updates-better response and best response. All possible microscopic changes in one time step, from one configuration to another, are presented pictorially in Fig. <ref type="figure" target="#fig_3">2</ref>.</p><p>Next let's assume that correlations exist only between nearest neighbours (pairwise approximation). Under this approximation, the microscopic state of the population can no longer be described solely by N C (or N D )-one must also specify how many adjacent pairs adopt each possible combination of actions, i.e., CC; DD; CD; and DC. Let N CC and N DD , respectively denote the number of CC and DD pairs; and N CD denote the number of mixed CD and DC pairs. These five quantities are not independent as they are constrained by following three relations:</p><formula xml:id="formula_0">(i)N CC + N CD 2 = N C , (ii)N DD + N CD 2 = N D , and (iii)N C + N D = N .</formula><p>The first relation (and similarly the second one) is due to the fact that every block of n contiguous C's has n − 1 CC pairs and 2 CD/DC pairs. Therefore, it is sufficient to describe the macroscopic state of the system using the two variables, say, N C and N CD under pairwise approximation. Now, if P(N C , N CD ; τ ) denotes the probability of having N C cooperators and N CD CD-pairs at time τ , then the master equation is given by</p><formula xml:id="formula_1">P(N C , N CD ; τ + 1) = δ1,δ2 P(N C − δ 1 , N CD − δ 2 ; τ ) T (N C , N CD | N C − δ 1 , N CD − δ 2 ) + P(N C , N CD ; τ )   1 − δ1,δ2 T (N C + δ 1 , N CD + δ 2 | N C , N CD )   ,<label>(1)</label></formula><p>where  and rescaling time by defining t = τ /N , then in the limit of large N (so that 1/N → 0), one arrives at equations of the form:</p><formula xml:id="formula_2">δ 1 ∈ {−2, −1, +2}, δ 2 ∈ {−2,</formula><formula xml:id="formula_3">dx(t) dt = f (x(t), ȳ(t)) = J C − J D ,<label>(2a)</label></formula><formula xml:id="formula_4">dȳ(t) dt = g(x(t), ȳ(t)). (<label>2b</label></formula><formula xml:id="formula_5">)</formula><p>The explicit forms of f and g are given in Appendix B.</p><p>Here, we find it insightful to introduce the inflow rate J C that represents the probability per unit time that a cooperator is born at a random node; similarly, the outflow rate J D represents the probability per unit time that a defector is born, which corresponds to the death of a cooperator. In Eq. ( <ref type="formula" target="#formula_3">2</ref>), we have adopted the following pairwise approximation ansatz <ref type="bibr" target="#b29">[30,</ref><ref type="bibr" target="#b31">32]</ref>, which in essence is relatable to Bethe approximation in the statistical physics literature <ref type="bibr" target="#b27">[28,</ref><ref type="bibr" target="#b28">29,</ref><ref type="bibr" target="#b30">31]</ref>, ensuring that the set of equation do not involve correlations beyond that of pairs:</p><formula xml:id="formula_6">P(α 1 α 2 α 3 α 4 ) ≈ [P(α 2 α 3 )][P(α 1 | α 2 )][P(α 4 | α 3 )], (3a) P(α 1 α 2 α 3 ) ≈ [P(α 2 )][P(α 1 | α 2 )][P(α 3 | α 2 )], (3b) P(α 1 α 2 ) ≈ [P(α 2 )][P(α 1 | α 2 )],<label>(3c)</label></formula><p>where α i ∈ {C, D} ∀i ∈ {1, 2, 3, 4}. Note that when Eq. 3c) is used in Eqs. (3b) and (3a) to replace the conditional probability terms, it becomes clear that the relations are closed such that no higher order correlations are involved. As coalition formation imposes joint decision-making between two individuals, the mean-field approximation becomes increasingly inaccurate when the propensity of collaboration increases. It is this fact that has motivated us to move beyond the mean-field description and adopt the aforementioned pairwise-correlation framework in which the actions of only the two nearest neighbours are correlated, while correlations vanish beyond pairs. The validity and justification of the ansatz would appear more reasonable a posteriori in the light of its effectiveness in accurately predicting numerical simulation results. Now, if the theory presented is true then the different phases in steady state as in Fig. <ref type="figure" target="#fig_1">1</ref>(a) should correspond to stable fixed points of Eq. (2); also, the numerically found J C and the one found using Eq. ( <ref type="formula" target="#formula_3">2</ref>) would match too. To our satisfaction, indeed this what we find. Specifically, 1. For b &lt; b c and p ∈ [0, 1), the only stable fixed point (x * , ȳ * ) is (0, 0) which corresponds to the absorbing all-D state. However, at p = 1, the fixed point (0, 0) disappears and is replaced by a line of stable fixed points satisfying x − y 2 = 0; the each point on the line naturally correspond to a stationary distribution marked by an absorbing state, characterised by the absence of CC pairs. Consequently, at p = 1, the order parameter x * exhibits a discontinuous jump. ∆(p) ≡ −15p 2 + 12p + 4 is stable. In this steady state,</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.">For</head><formula xml:id="formula_7">b = b c and p ∈ [0, 1], only p p+1 , p+2 − √ 2p 3 −3p 2 −2p+4 (1+p) 2</formula><formula xml:id="formula_8">J C = 2p(1 − x * − ȳ *</formula><p>2 ). This stable fixed point corresponds to the average cooperation level in the active phase and matches very closely (within one standard deviation) with x found from the simulations (see Fig. <ref type="figure">3</ref>). At p = 1, this stable fixed point ceases to exist and a line of stable fixed points satisfying x * + ȳ * 2 = 1 emerges. This explains the phase transition observed at p = 1. This neutrally stable line corresponds to the absorbing state in which no DD pair exists.</p><p>In conclusion, we have successfully analytically identified the microscopic mechanisms responsible for macroscopic phase changes, and have obtained a close prediction of the steady-state average behaviour of the system using the pairwise approximation ansatz.</p><p>The readers may further appreciate the importance of this collaboration ring model when it is revealed through further calculations (see Appendix E) that its predictions remain qualitatively same even if one varies certain system parameters like the number of neighbours (i.e., degrees of the nodes) and the number of collaborators: The collaboration driven phase transition to cooperation is a robust phenomenon. Consider, for example, if k max is the degree of player with maximum number of neighbours (say, all defectors) on a network where coalition-size of collaboration is two, the focal player and her collaborator (who is also a nearest neighbour) would unanimously choose action C when  <ref type="bibr" target="#b19">[20]</ref>, the more readily one would witness cooperation in PD games.</p><formula xml:id="formula_9">(k max − 1)(b − c) + (2b − c) ≥ 0, i.</formula><p>It is important to note that our framework incorporates ideas from both non-cooperative game theory (bestresponse dynamics) and cooperative game theory (coalitional better-response dynamics). However, the cooperative aspect of forming a coalition should not be confused with group selection: Players do not optimise grouplevel outcomes but instead act selfishly to choose the action that maximises their own payoff within a coalition. Thus, the collaboration-driven phase transition represents a mechanism for cooperation distinct from the five classical rules of cooperation <ref type="bibr" target="#b39">[40]</ref>.</p><p>Several promising research directions naturally follow from this work. Firstly, the collaboration ring model can be applied to coordination games <ref type="bibr" target="#b40">[41]</ref>, especially in light of recent numerical studies <ref type="bibr" target="#b35">[36]</ref> investigating how social conventions transform in the presence of collaboration.</p><p>Secondly, although we have demonstrated how collaboration facilitates cooperation in structured populations, we have not explored the evolutionary stability of collaboration itself. Understanding when collaboration is an evolutionary viable strategy is a compelling open question. Finally, our framework motivates behavioural experiments on both human and non-human animals to examine how collaboration influences strategic outcomes, and to test whether our theoretical predictions qualitatively capture behavioural patterns in real-life systems. J.D.B. gratefully acknowledges IIT Kanpur (India) for the financial support through Fellowship for Academic and Research Excellence (FARE). Khushi is thanked for validating mathematical calculations done in this paper. The authors thank ICTS (India) for funding that supported the program 'Decisions, Games, and Evolution (2025)' where the collaboration leading to the present work ensued. , where b denotes the benefit of cooperation and c its cost. Along the y-axis, we vary b from c/2 to c consistent with a PD game; while along the x-axis we vary p from 0 to 1.</p><p>For each of the 100 × 100 uniformly spaced points in the (p, b) parameter plane, we compute the ensemble average of the fraction of cooperators, starting from an initial condition with x 0 = 0.5. To this end, we generate 500 random initial population configurations satisfying x(τ = 0) = 0.5 and run each realization for τ = 10,000 steps. Thus, for each pair (p, b) we obtain 500 independent outcomes for the final fraction of cooperators. Denoting the outcome of the k-th realization by xk (10,000), the ensemble average plotted in the figure is given by x * ≈ x(10,000) = 1 500 500 k=1 xk (10,000).</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>(A1)</head><p>For generating this figure, we used a population of size N = 100 and set c = 1.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.">Figure. 3</head><p>The x-axis and y-axis represent the propensity of collaboration p and the ensemble-averaged fraction of cooperators x * , respectively. For the simulation data, we evaluate 20 uniformly spaced values of p in the interval [0, 1]. For each value of p, we numerically compute the ensemble average x(10,000) starting from the macroscopic initial condition (x 0 , y 0 ) = (0.5, 0.5), following the same procedure described in Sec. A 1. The population size used for these simulations is N = 100. For the active phase (p &lt; 1), we set b = 5  6 and c = 1, whereas at p = 1, we use b = 4  6 and c = 1.</p><formula xml:id="formula_10">∆N C (τ ) = N C (τ + 1) − N C (τ ) = N C =0 N C [P(N C , N CD τ + 1) − P(N C , N CD , τ )] . (B1) ∆N CD (τ ) = N CD (τ + 1) − N CD (τ ) = N N CD =0 N CD [P(N C , N CD τ + 1) − P(N C , N CD , τ )] . (B2)</formula><p>From the above Eqs. B2, it is straight forward to write the changes in N C and N CD as follows:</p><formula xml:id="formula_11">∆N C (τ ) = δ1,δ2 δ 1 T (N C + δ 1 , N CD + δ 2 | N C , N CD ) (B3) ∆N CD (τ ) = δ2,δ2 δ 2 T (N C + δ 1 , N CD + δ 2 | N C , N CD ) ,<label>(B4)</label></formula><p>where δ 1 ∈ {−2, −1, +2}, δ 2 ∈ {−2, 0, +2}, and T (given in Table <ref type="table" target="#tab_0">I</ref>) denotes the respective transition probabilities per unit time. Therefore, to write the differential equations for x(τ ) and ȳ(τ ), at the first step, we have to rewrite the microscopic transition rules which account for the macroscopic changes, i.e., changes in both N C and N CD , in the population. All relevant transition probabilities are given in Table <ref type="table" target="#tab_0">I</ref>.</p><p>Making use of Table <ref type="table">.</ref> (I) and pair approximation [Eq. (3c)] in Eq. (B2); subsequently, rescaling time by defining t = τ /N , one finds in the limit of large N (so that 1/N → 0), Eq. (B2) becomes for 3b − 2c &lt; 0, 3b − 2c = 0 and 3b − 2c &gt; 0, respectively, 1. For 3b − 2c &lt; 0:</p><formula xml:id="formula_12">d x(t) dt = −2p x(t) − ȳ(t) 2 − (1 − p)x(t),<label>(B5a)</label></formula><formula xml:id="formula_13">d ȳ(t) dt ≈ 2 x(t) − ȳ(t) x(t) x(t) − p ȳ(t) 2 .<label>(B5b)</label></formula><p>2. For 3b − 2c = 0:</p><formula xml:id="formula_14">d x(t) dt = p (1 − 2x(t)) − (1 − p)x(t),<label>(B6a)</label></formula><formula xml:id="formula_15">d ȳ(t) dt ≈ x(t) − ȳ(t) x(t) (2 − p)x(t) − p ȳ(t) 2 + p 1 − x(t) − ȳ(t)) [1 − x(t) − ȳ(t) 2 ) 1 − x(t) .<label>(B6b)</label></formula><p>3. For 3b − 2c &gt; 0:</p><formula xml:id="formula_16">d x(t) dt = 2p 1 − x(t) − ȳ(t) 2 − (1 − p)x(t), (B7a) d ȳ(t) dt ≈2p [1 − x(t) − ȳ(t)) [1 − x(t) − ȳ(t) 2 ) 1 − x(t) + 2(1 − p) x(t) − ȳ(t) . (<label>B7b</label></formula><formula xml:id="formula_17">)</formula><p>All the stable fixed points of the set of differential equations, for three parameter ranges of b, are given in the main text. Here, we want to discuss the two sets of non-isolated stable fixed points that arise at p = 1 when b ̸ = b c .</p><p>1. For 3b − 2c &lt; 0 and p = 1: In this parameter range, the stable set of non-isolated fixed points fall on a line whose equation is given bellow:</p><formula xml:id="formula_18">x − ȳ 2 = 0.</formula><p>This line corresponds to an absorbing state of an infinite population and represents the absence of CC pair. Now let us determine for a finite population, how many microstates exist such that N CC = 0 and distinguishable by their macroscopic description, i.e., (N DD , N CD ). For finite N , the exact number of distinct absorbing states at p = 1 can be computed by counting the integer pairs (N DD , N CD ) satisfying the constraint</p><formula xml:id="formula_19">N DD + N CD = N.</formula><p>Although this yields N + 1 possible pairs, N CD must be even, reducing the number of valid absorbing states to</p><formula xml:id="formula_20">N +1 2 if N + 1 is even and N +2 2 if N + 1 is odd.</formula><p>2. For 3b−2c &gt; 0 and p = 1: Similar to the above discussed case, for this parameter range, the stable set of non-isolated fixed points are x * + ȳ * 2 = 1. This line corresponds to the absorbing state in which no DD pair exists.</p><p>Similar to the previous case, here also let us determine the exact number of distinct absorbing states at p = 1 for finite N . The number of distinct absorbing states can be computed by counting the integer pairs (N CC , N CD ) satisfying the constraint if N + 1 is odd.</p><formula xml:id="formula_21">N CC + N CD = N. Transition 3b − 2c &lt; 0 3b − 2c = 0 3b − 2c &gt; 0 T (N C + 2, N CD + 2) 0 1 2 p Prob(DDDD) p Prob(DDDD) T (N C − 2, N CD + 2) p Prob(CCCC) 1 2 p Prob(CCCC) 0 T (N C + 2, N CD ) 0 1 2 p Prob(DDDC) + 1 2 p Prob(CDDD) p Prob(DDDC) + p Prob(CDDD) T (N C − 2, N CD ) p Prob(CCCD) + p Prob(DCCC) 1 2 p Prob(CCCD) + 1 2 p Prob(DCCC) 0 T (N C + 2, N CD − 2) 0 1 2 p Prob(CDDC) p Prob(CDDC) T (N C − 2, N CD − 2) p Prob(DCCD) 1 2 p Prob(DCCD) 0 T (N C − 1, N CD + 2) (1 − p)Prob(CCC) (1 − p)Prob(CCC) (1 − p)Prob(CCC) T (N C − 1, N CD ) (1 − p)Prob(CCD) + (1 − p)Prob(DCC) (1 − p)Prob(CCD) + (1 − p)Prob(DCC) (1 − p)Prob(CCD) + (1 − p)Prob(DCC) T (N C − 1, N CD − 2) (1 − p)Prob(DCD) (1 − p)Prob(DCD) (1 − p)Prob(DCD)</formula></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Appendix C: Thermodynamical limit with mean-field ansatz</head><p>Here we present the predictions of the collaboration ring model when the mean-field approximation is adopted.</p><p>Under this approximation, if two nearest neighbours play α 1 and α 2 (α 1 , α 2 ∈ {C, D}) and their joint probabilities is denoted by Prob(α 1 α 2 ), then it is assumed that, on average, there are no correlations between the actions of any two individuals; mathematically,</p><formula xml:id="formula_22">Prob(α 1 α 2 ) ≈ Prob(α 1 )Prob(α 2 ).<label>(C1)</label></formula><p>Now, to comprehend how changes in microscopic rules of the system give rise to different phases, let us pinpoint all the transition rules that govern the macroscopic description of the population. The macroscopic description of the structured population at time τ is given by the number of cooperators, N C . Since the update process in the agent-based model is probabilistic, the macroscopic state at the next time step τ + 1 is also probabilistic. One can compute the transition probabilities from N C to the possible subsequent states as given in Table <ref type="table" target="#tab_0">II</ref>. In principle, for any game with possibility of coalition in a ring network, four types of transitions are possible:</p><formula xml:id="formula_23">N C → N C ± 1 and N C → N C ± 2.</formula><p>However, in a PD game, the transition N C → N C + 1 cannot occur.</p><p>If P(N C , τ ) denotes the probability of having N C co-</p><formula xml:id="formula_24">Probability 3b − 2c &lt; 0 3b − 2c = 0 3b − 2c &gt; 0 T (NC + 2 | NC ) 0 1 2 p Prob (DD) p Prob (DD) T (NC − 2 | NC ) p Prob (CC) 1 2 p Prob (CC) 0 T (NC + 1 | NC ) 0 0 0 T (NC − 1 | NC ) (1 − p) Prob(C) (1 − p) Prob(C) (1 − p) Prob(C) TABLE II.</formula><p>Transition probabilities per unit time: All the possible transition probabilities in a unit time step (τ → τ +1) are given in this table. Here, Prob (DD) and Prob (CC) are the joint probabilities that a randomly selected individual and the neighbour chosen for coalition plays same action C and D, respectively. Similarly, Prob(C) is the probability that the randomly selected individual is a cooperator. operators at time τ , then the evolution equation is</p><formula xml:id="formula_25">P(N C , τ + 1) = δ P (N C − δ, τ ) T (N C | N C − δ) + P(N C , τ ) 1 − δ T (N C + δ | N C ) ,<label>(C2)</label></formula><p>where δ = {+2, −2, −1}.</p><p>From here one can calculate the expected change in the average macroscopic state. By definition,</p><formula xml:id="formula_26">∆N C (τ ) = N C (τ + 1) − N C (τ ) = N N C =0 N C [P(N C , τ + 1) − P(N C , τ )] . (C3)</formula><p>Making use of Eq. (C2) and mean-filed approximation [Eq. (C1)] in Eq. (C3); subsequently, rescaling time by defining t = τ /N , one finds in the limit of large N (so that 1/N → 0), Eq. (C3) becomes for 3b − 2c &lt; 0, 3b − 2c = 0 and 3b − 2c &gt; 0, respectively,</p><formula xml:id="formula_27">d x(t) dt ≈ −2p x 2 − (1 − p)x,<label>(C4a)</label></formula><formula xml:id="formula_28">d x(t) dt ≈ p 1 − x 2 − p x 2 − (1 − p)x,<label>(C4b)</label></formula><formula xml:id="formula_29">d x(t) dt ≈ 2p 1 − x 2 − (1 − p)x.<label>(C4c)</label></formula><p>The mean-field dynamical equations described above [Eqs. (C4)] approximate the temporal change of x. By analysing the long-term behaviour of these equations, we expect to approximately understand the phase transitions of the system.</p><p>Let us now list the fixed points of Eqs. (C4) and their nature of stability:</p><p>1. For 3b − 2c &lt; 0 and p ∈ [0, 1], only one fixed point exists-and it is naturally stable-x * = 0. Clearly, this can not explain the discontinuous phase transition at p = 1, which highlights the limitations of the mean-field approximation for this system. In this case, in steady state J C = J D = 0. 3. For 3b−2c &gt; 0 and p ∈ [0, 1], two fixed points exist:</p><formula xml:id="formula_30">xf = 1 + 3p ± 1 + 6p − 7p 2 4p .</formula><p>Among these, only the lower branch,</p><formula xml:id="formula_31">x * = 1 + 3p − 1 + 6p − 7p 2 4p ,</formula><p>is stable and inside the range [0, 1]. This expression describes how the average fraction of cooperators varies with the probability of cooperation p in the active phase. In this regime, the mean-field dynamics qualitatively capture the non-zero cooperation observed in the system.</p><p>We observe that the mean-field ansatz qualitatively captures several features of the system, such as the discontinuous phase transition at the critical point b = 2 3 c for p ∈ (0, 1]. Specifically, it predicts full defection for b &lt; 2  3 c and a non-zero fraction of cooperators for b &gt; b c . Interestingly, at critical b = b c , the mean-field prediction of the average number of cooperators closely matches the numerical simulation results. However, the mean-field theory also incorrectly predicts that for p = 1, the only possible steady states are full cooperation (for b &gt; b c ) or full defection (for b &lt; b c ), which contradicts the numerical simulation results. Moreover, for p &lt; 1 2 , the meanfield predictions remain reasonably close to the numerical simulation results, but for p ≥ 1 2 , the discrepancy becomes substantial. Furthermore, the prediction of the inflow current J C is extremely poor under the mean-field ansatz. These mismatches underscore the limited applicability of the mean-field approximation for collaboration ring model. See Fig. <ref type="figure">3</ref> in the main text for depiction of the above points.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Appendix D: Number of microstates</head><p>In statistical physics language, a single macroscopic initial condition (e.g., a fixed number of cooperators N C ) can correspond to many possible microscopic configurations. For example, if we represent a node with cooperator by 1 and that with a defector by 0, so that the complete population configuration-a microstateis specified by a sequence of 0s and 1s. Formally, an agent at node i may, thus, be denoted by γ i ∈ {0, 1} ∀i ∈ {1, 2, . . . , N } and fixing the number of cooperators imposes the following constraint on the allowable configurations:</p><formula xml:id="formula_32">N i=1 γ i = N C . (D1)</formula><p>If furthermore number of CC pairs is fixed macroscopically, an additional constraint on microscopic configuration is the following:</p><formula xml:id="formula_33">N i=1 γ i γ i+1 = N C − N CD 2 ,<label>(D2)</label></formula><p>where, of course, γ N +1 ≡ γ 1 .</p><p>Let us first compute the number of microstates, Ω 1 , satisfying only constraint in Eq. (D1). The problem effectively reduces to counting the number of ways to choose N C sites out of N to be occupied by cooperators. However, one must be cautious: Since the underlying network has a ring structure, some microscopic configurations are distinct in the counting process but physically identical due to rotational symmetry. To eliminate this overcounting, we must divide the number of configurations by N . Therefore, the total number of physically distinct microstates is</p><formula xml:id="formula_34">Ω 1 = N N C N . (<label>D3</label></formula><formula xml:id="formula_35">)</formula><p>Next we compute the number of microstates, Ω 2 , that satisfy both Eq. (D1) and Eq. (D2). Let's agree to call a block of contiguous agents of same type a block in short. A block of cooperators can have one to N C agents and total number of such blocks must be n b ≡ N CD /2 (since blocks of cooperators and blocks of defectors must appear alternately on the ring). Thus, N C −1 n b −1 is the number of ways N C (identical) cooperators can be arranged in n b (distinct) blocks such that there is at least one cooperator in each block. Similarly the number of ways to arrange the N − N C defectors in n b blocks, such that there is at least one defector, is</p><formula xml:id="formula_36">N −N C −1 n b −1</formula><p>. Over-counting due to rotational symmetry arise in this case with respect to rotation of blocks as a whole: cyclic permutations (of cycle n b ) of all the blocks of same type (say, consisting of cooperators) correspond to the same ring configuration physically. Therefore, to correct for this redundancy, we divide the total count by n b . Thus, the total number of microstates is found to be</p><formula xml:id="formula_37">Ω 2 = N C − 1 N CD 2 − 1 N − N C − 1 N CD 2 − 1 N CD 2 . (<label>D4</label></formula><formula xml:id="formula_38">)</formula><p>Appendix E: Beyond ring network</p><p>As illustrated in Fig. <ref type="figure" target="#fig_10">4</ref>, suppose we select a connected set of m nodes (individuals) who form a coalition. Let the degree of the ith individual in the coalition be l i (where i ∈ {1, 2, . . . , m}) among which n C i and n D i are the numbers of cooperators and defectors, respectively. Every two nearest-neighbours are playing the PD game among themselves.</p><p>From the perspective of the emergence of cooperation, we now examine whether a better-response update can induce additional cooperators within the coalition that initially consists of non-zero number of defectors. In a PD game, defection is the unique best response against any action of the opponents. Consequently, no single defector can increase her payoff by unilaterally deviating from defection to cooperation. This further implies that if the coalition adopts a response where only a single defector switches her action to cooperation and all other individuals' actions remain unchanged, then the response can not be a better response.</p><p>We next consider whether two defectors within the coalition can jointly increase their payoffs by switching to cooperation, while all other individuals' strategies remain unchanged. If these two defectors are not nearest neighbours, then such a simultaneous switching of their strategies to cooperation would not fetch any additional benefit of mutual cooperation to them as they are not playing with each other. Hence, a simultaneous deviation by two non-neighbouring defectors cannot be a better response.</p><p>Next consider the scenario in which two defectors, who are nearest neighbours within a coalition, simultaneously switch to cooperation; as earlier, all other individuals' strategies are assumed to remain unchanged. Since each of these two individuals receives an additional benefit from mutual cooperation, there is a possibility that the scenario may constitute a better response. Let us now scrutinize this possibility in more detail.</p><p>Suppose that the ith and the (i + 1)th members of the coalition [see Fig. <ref type="figure" target="#fig_10">4(a)</ref>] are nearest neighbours and defectors. We ask whether the action-configuration, in which both switch to cooperation, constitutes a better response, i. (E4)</p><p>These inequalities together imply that a necessary and sufficient condition for such a joint deviation (DD→CC) to be a better response is</p><formula xml:id="formula_39">l(b − c) + b ≥ 0,<label>(E5)</label></formula><p>where l = max{l i , l i+1 }. Going further, suppose there is a set D of more than two, say η D , connected defectors so that ith defector in D has η D i ∈ {1, 2, • • • , η D − 1} nearest neighbours in D. Along the line of arguments followed above, switching of action to cooperation by all the defectors in D would constitute a better response if</p><formula xml:id="formula_40">(n C i + η D i )(2b − c) + (n D i − η D i )(b − c) ≥ n C i b(E6) =⇒ l i (b − c) + η D i b ≥ 0, (E7)</formula><p>∀i ∈ D. Hence, a threshold b-whose exact value depends on exact network structure-can exist above which all the inequalities are satisfied. Nevertheless, we can find an upper bound of such a threshold.</p><p>To this end, we note that since b &gt; 0, the requirement of D such conditions can be reduced to a single sufficient condition:</p><p>(max In conclusion, the phase transitions from all defectors to cooperative state is qualitatively a general phenomenon witnessed in all connected networks of players playing PD.</p></div><figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_0"><head></head><label></label><figDesc>(a): Benefit of cooperation b and cost of cooperation c follow two relations, viz., c &gt; b and c &lt; 2b.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_1"><head>FIG. 1 .</head><label>1</label><figDesc>FIG. 1. Emergence of cooperation, in a PD game, in a ring-structured population through phase transition. Subfigure (a): Schematic of the ring-structured population: white and black nodes denote defectors and cooperators, respectively, and solid black lines represent nearest neighbour interactions. Subfigure (b): Average order parameter, x * , as a function of the control parameters b and p, shown using the colour bar. Critical lines where phase transitions occur are indicated by red dashed lines, with illustrative population configuration states shown in different parameter regions. Subfigure (c): Bar plots at p = 1 display the fractions of nearest-neighbour pairs (DD, CD/DC, CC) for: (i) 3b − 2c &gt; 0 (only CC and CD/DC present), (ii) 3b − 2c = 0 (all pair types present), and (iii) 3b − 2c &lt; 0 (only DD and CD/DC present). Numerical details are given in Appendix A.</figDesc><graphic coords="2,54.00,52.07,508.11,207.78" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_2"><head>Fig. 1 (</head><label>1</label><figDesc>b) exhibits the numerically generated phase diagram showcasing how the order parameter x * ≡ x(∞) varies with p and b. Three classes of phases are visible: (1) for b &lt; b c ≡ 2c</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_3"><head>FIG. 2 .</head><label>2</label><figDesc>FIG. 2. All feasible microscopic transitions:This schematic presents all possible microscopic transitions arising from better-response and best-response updates. In the figure, the arrowheads indicate the direction of change, and above each arrow we specify the parameter range for which the corresponding transition occurs; in case of no specification, the transition is unconditional. Above the selected individuals (chosen to play the game either by forming a coalition or independently), we indicate the payoffs they obtain in the given configuration, where the actions are written inside the circles.</figDesc><graphic coords="3,78.51,52.08,196.06,194.24" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_4"><head></head><label></label><figDesc>0, +2}, and T denotes the respective transition probabilities per unit time. Defining y ≡ P(C, D) = N CD</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_5"><head>N</head><label></label><figDesc></figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_6"><head></head><label></label><figDesc>FIG. 3. Prediction of the average fraction of cooperators and its inflow rate using mean-field and pairwise ansatzs. This figure shows the average fraction of cooperators x * [subfigure (a)], and the inflow rate JC [subfigure (b)] as functions of the coalition probability p in an active phase with p &lt; 1, b = 5 6 and c = 1 (green colour) and the phase at p = 1 with b = 4 6 and c = 1 (pink colour). Results generated from the numerical simulations are depicted by filled square. All dashed lines denote the mean-field prediction, which deviates significantly from the numerical simulation results. In contrast, the pairwise approximation ansatz, represented by solid line, closely matches the numerical simulation results across the full range of p, remaining within one standard deviation of the simulated time averages. Numerical details are provided in Appendix A.</figDesc><graphic coords="4,317.01,52.07,245.09,90.19" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_7"><head></head><label></label><figDesc>e., b &gt; b c ≡ kmax kmax+1 c; note that for collaboration ring model k max = 2. Therefore, except for change in critical value of parameters, qualitatively the phase diagram in Fig. 1(b) remains intact even for such a network. More-over, the b-parameter range for realizing the active phase is c − b c = c kmax+1 implying that the sparser (smaller k max ) a network</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_8"><head>Appendix A: Numerics 1 .</head><label>1</label><figDesc>Figure. 1(b) To generate the colour plot in Fig. 1(b), we used a Prisoner's Dilemma (PD) game with payoff matrix 2b−c b b−c 0</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_9"><head>2 . 1 ,</head><label>21</label><figDesc>For 3b − 2c = 0 and p ∈ [0, 1], again only one fixed point, viz., exists and it is stable. This shows that the meanfield dynamics correctly capture the behaviour around the discontinuous phase transition at the critical point b = b c = 2 3 c. Before moving to other parameter regimes, it is worth noting that the phase at b = b c = 2 3 c serves as a mixed phase between the absorbing and active phases. In this case, for steady state J C = J D = p 1 − x * 2 .</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_10"><head>FIG. 4 .</head><label>4</label><figDesc>FIG. 4. One feasible transition in an irregular network: This figure illustrates the transition where two defectors [subfigure (a)] become two cooperators [subfigure (b)] in a coalition of size m, and vice versa, in an irregular network driven by better-response dynamics. Each individual in the coalition is labelled by an index i ∈ {1, • • • , m}. Node i has degree li and therefore interacts with its li nearest neighbours. Here l = max{li, li+1}.</figDesc><graphic coords="9,54.00,52.07,245.08,102.68" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_11"><head></head><label></label><figDesc>e., the payoff of each individual in the new configuration [Fig 4 (b)] must be at least as high as in the original one [Fig 4 (a)]. Note that for every other member (who has been assumed not to change her action) of the coalition, the simultaneous shift of the ith and (i + 1)th individuals from defection to cooperation necessarily results in an increase in her payoff. Specifically, for a defector interacting with either of these individuals, the payoff increases from 0 to b, while for a cooperator the payoff increases from b − c to 2b − c. Thus, if the actionswitch does not decrease payoff for any of the two focal defectors, the action-configuration in question qualifies as better response strategy. Mathematically, the conditions for the new configuration [Fig 4 (b)] be a better response are:(n C i + 1)(2b − c) + (n D i − 1)(b − c) ≥ n C i b,(E1)(n C i+1 + 1)(2b − c) + (n D i+1 − 1)(b − c) ≥ n C i+1 b; (E2) which simplifies to l i (b − c) + b ≥ 0, (E3) l i+1 (b − c) + b ≥ 0.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_12"><head></head><label></label><figDesc>i∈D l i )(b − c) + b ≥ 0.Since many such sets like D can exist, the threshold b beyond which cooperation can be fostered by better response can be expressed as b c ≤ c min</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_0"><head>TABLE I .</head><label>I</label><figDesc>Transition probabilities per unit time: The table summarises all possible transition probabilities occurring in a single update step (τ → τ +1). The expression Prob(α1, α2, . . . , ακ) denotes the joint probability of the action sequence α1, α2, . . . , ακ, where each consecutive pair αi and αi+1 is connected, and the terminal actions α1 and ακ remain fixed. Each αi belongs to {C, D}, and the sequence length κ is either 3 or 4.</figDesc><table><row><cell cols="2">Although this yields N + 1 possible pairs, N CD</cell></row><row><cell cols="2">must be even, reducing the number of valid ab-</cell></row><row><cell>sorbing states to N +1 2</cell><cell>if N + 1 is even and N +2 2</cell></row></table></figure>
+		</body>
+		<back>
+			<div type="annex">
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Appendix B: Thermodynamic limit with pairwise approximation</head><p>From Eq. 1, one can write the following equations</p></div>			</div>
+			<div type="references">
+
+				<listBibl>
+
+<biblStruct xml:id="b0">
+	<analytic>
+		<title level="a" type="main">The evolution of cooperation</title>
+		<author>
+			<persName><forename type="first">R</forename><surname>Axelrod</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><forename type="middle">D</forename><surname>Hamilton</surname></persName>
+		</author>
+		<idno type="DOI">10.1126/science.7466396</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Science</title>
+		<imprint>
+			<biblScope unit="volume">211</biblScope>
+			<biblScope unit="page" from="1390" to="1396" />
+			<date type="published" when="1981">1981</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b1">
+	<analytic>
+		<title level="a" type="main">The genetical evolution of social behaviour. i</title>
+		<author>
+			<persName><forename type="first">W</forename><surname>Hamilton</surname></persName>
+		</author>
+		<idno type="DOI">10.1016/0022-5193(64)90038-4</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of Theoretical Biology</title>
+		<imprint>
+			<biblScope unit="volume">7</biblScope>
+			<biblScope unit="page">1</biblScope>
+			<date type="published" when="1964">1964</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b2">
+	<analytic>
+		<title level="a" type="main">Tit for tat in heterogeneous populations</title>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">A</forename><surname>Nowak</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Sigmund</surname></persName>
+		</author>
+		<idno type="DOI">10.1038/355250a0</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Nature</title>
+		<imprint>
+			<biblScope unit="volume">355</biblScope>
+			<biblScope unit="page" from="250" to="253" />
+			<date type="published" when="1992">1992</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b3">
+	<analytic>
+		<title level="a" type="main">Evolution of indirect reciprocity by image scoring</title>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">A</forename><surname>Nowak</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Sigmund</surname></persName>
+		</author>
+		<idno type="DOI">10.1038/31225</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Nature</title>
+		<imprint>
+			<biblScope unit="volume">393</biblScope>
+			<biblScope unit="page" from="573" to="577" />
+			<date type="published" when="1998">1998</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b4">
+	<analytic>
+		<title level="a" type="main">Evolutionary dynamics on graphs</title>
+		<author>
+			<persName><forename type="first">E</forename><surname>Lieberman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Hauert</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">A</forename><surname>Nowak</surname></persName>
+		</author>
+		<idno type="DOI">10.1038/nature03204</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Nature</title>
+		<imprint>
+			<biblScope unit="volume">433</biblScope>
+			<biblScope unit="page" from="312" to="316" />
+			<date type="published" when="2005">2005</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b5">
+	<analytic>
+		<title level="a" type="main">Evolution of cooperation by multilevel selection</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Traulsen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">A</forename><surname>Nowak</surname></persName>
+		</author>
+		<idno type="DOI">10.1073/pnas.0602530103</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Proceedings of the National Academy of Sciences</title>
+		<imprint>
+			<biblScope unit="volume">103</biblScope>
+			<biblScope unit="page" from="10952" to="10955" />
+			<date type="published" when="2006">2006</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b6">
+	<analytic>
+		<title level="a" type="main">Contrasting the social cognition of humans and nonhuman apes: The shared intentionality hypothesis</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Call</surname></persName>
+		</author>
+		<idno type="DOI">10.1111/j.1756-8765.2009.01025.x</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Topics in Cognitive Science</title>
+		<imprint>
+			<biblScope unit="volume">1</biblScope>
+			<biblScope unit="page" from="368" to="379" />
+			<date type="published" when="2009">2009</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b7">
+	<analytic>
+		<title level="a" type="main">Collaborations between microbes and those who love them</title>
+		<author>
+			<persName><forename type="first">N</forename><forename type="middle">M</forename><surname>Høyland-Kroghsbo</surname></persName>
+		</author>
+		<idno type="DOI">10.1002/ijch.202200082</idno>
+		<idno>.1002/ijch.202200082</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Israel Journal of Chemistry</title>
+		<imprint>
+			<biblScope unit="volume">63</biblScope>
+			<biblScope unit="page">10</biblScope>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b8">
+	<analytic>
+		<title level="a" type="main">The Hidden Life of Trees: What They Feel</title>
+		<author>
+			<persName><forename type="first">P</forename><surname>Wohlleben</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Flannery</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Billinghurst</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">how They Communicate : Discoveries from a Secret World , The Mysteries of Nature Series</title>
+				<meeting><address><addrLine>Vancouver</addrLine></address></meeting>
+		<imprint>
+			<publisher>David Suzuki Institute</publisher>
+			<date type="published" when="2016">2016</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b9">
+	<analytic>
+		<title level="a" type="main">How animals collaborate: Underlying proximate mechanisms</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Duguid</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">P</forename><surname>Melis</surname></persName>
+		</author>
+		<idno type="DOI">10.1002/wcs.1529</idno>
+		<idno>.1002/wcs.1529</idno>
+	</analytic>
+	<monogr>
+		<title level="j">WIREs Cognitive Science</title>
+		<imprint>
+			<biblScope unit="volume">11</biblScope>
+			<biblScope unit="page">10</biblScope>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b10">
+	<analytic>
+		<title level="a" type="main">Avian mobbing behavior and predator recognition</title>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">A</forename><surname>Altmann</surname></persName>
+		</author>
+		<idno type="DOI">10.2307/1364703</idno>
+	</analytic>
+	<monogr>
+		<title level="j">The Condor</title>
+		<imprint>
+			<biblScope unit="volume">58</biblScope>
+			<biblScope unit="page" from="241" to="253" />
+			<date type="published" when="1956">1956</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b11">
+	<analytic>
+		<title level="a" type="main">The adaptive significance of avian mobbing: Ii. cultural transmission of enemy recognition in blackbirds: Effectiveness and some constraints</title>
+		<author>
+			<persName><forename type="first">E</forename><surname>Curio</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">U</forename><surname>Ernst</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><surname>Vieth</surname></persName>
+		</author>
+		<idno type="DOI">10.1111/j.1439-0310.1978.tb00255.x</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Zeitschrift für Tierpsychologie</title>
+		<imprint>
+			<biblScope unit="volume">48</biblScope>
+			<biblScope unit="page" from="184" to="202" />
+			<date type="published" when="1978">1978</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b12">
+	<analytic>
+		<title level="a" type="main">Eavesdropping on heterospecific alarm calls: from mechanisms to consequences</title>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">D</forename><surname>Magrath</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><forename type="middle">M</forename><surname>Haff</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><forename type="middle">M</forename><surname>Fallow</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">N</forename><surname>Radford</surname></persName>
+		</author>
+		<idno type="DOI">10.1111/brv.12122</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Biological Reviews</title>
+		<imprint>
+			<biblScope unit="volume">90</biblScope>
+			<biblScope unit="page" from="560" to="586" />
+			<date type="published" when="2014">2014</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b13">
+	<analytic>
+		<title level="a" type="main">Mobbing of the top predator: a correlation between avian community richness and the number of mobbing species</title>
+		<author>
+			<persName><forename type="first">P</forename><surname>Pawlak</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Kwieciński</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Hušek</surname></persName>
+		</author>
+		<idno type="DOI">10.1007/s10336-019-01662-x</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of Ornithology</title>
+		<imprint>
+			<biblScope unit="volume">160</biblScope>
+			<biblScope unit="page" from="665" to="672" />
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b14">
+	<analytic>
+		<title level="a" type="main">Ape and human cognition: What&apos;s the difference?</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Tomasello</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Herrmann</surname></persName>
+		</author>
+		<idno type="DOI">10.1177/0963721409359300</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Current Directions in Psychological Science</title>
+		<imprint>
+			<biblScope unit="volume">19</biblScope>
+			<biblScope unit="page" from="3" to="8" />
+			<date type="published" when="2010">2010</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b15">
+	<analytic>
+		<title level="a" type="main">Shared intentionality</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Tomasello</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Carpenter</surname></persName>
+		</author>
+		<idno type="DOI">10.1111/j.1467-7687.2007.00573.x</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Developmental Science</title>
+		<imprint>
+			<biblScope unit="volume">10</biblScope>
+			<biblScope unit="page" from="121" to="125" />
+			<date type="published" when="2006">2006</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b16">
+	<monogr>
+		<author>
+			<persName><forename type="first">L</forename><forename type="middle">S</forename><surname>Vygotsky</surname></persName>
+		</author>
+		<title level="m">Mind in Society: The Development of Higher Psychological Processes</title>
+				<meeting><address><addrLine>Cambridge, MA, USA</addrLine></address></meeting>
+		<imprint>
+			<publisher>Harvard University Press</publisher>
+			<date type="published" when="1980">1980</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b17">
+	<monogr>
+		<author>
+			<persName><forename type="first">M</forename><surname>Tomasello</surname></persName>
+		</author>
+		<title level="m">A Natural History of Human Thinking</title>
+				<meeting><address><addrLine>Cambridge, MA, USA</addrLine></address></meeting>
+		<imprint>
+			<publisher>Harvard University Press</publisher>
+			<date type="published" when="2014">2014</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b18">
+	<analytic>
+		<title level="a" type="main">Cooperation and human cognition: the vygotskian intelligence hypothesis</title>
+		<author>
+			<persName><forename type="first">H</forename><surname>Moll</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Tomasello</surname></persName>
+		</author>
+		<idno type="DOI">10.1098/rstb.2006.2000</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Philosophical Transactions of the Royal Society B: Biological Sciences</title>
+		<imprint>
+			<biblScope unit="volume">362</biblScope>
+			<biblScope unit="page" from="639" to="648" />
+			<date type="published" when="2007">2007</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b19">
+	<analytic>
+		<title level="a" type="main">Collaboration leads to cooperation on sparse networks</title>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">D</forename><surname>Angus</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Newton</surname></persName>
+		</author>
+		<idno type="DOI">10.1371/journal.pcbi.1007557</idno>
+	</analytic>
+	<monogr>
+		<title level="j">PLOS Computational Biology</title>
+		<imprint>
+			<biblScope unit="volume">16</biblScope>
+			<biblScope unit="page">e1007557</biblScope>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b20">
+	<analytic>
+		<title level="a" type="main">Evolutionary potential games on lattices</title>
+		<author>
+			<persName><forename type="first">G</forename><surname>Szabó</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">I</forename><surname>Borsos</surname></persName>
+		</author>
+		<idno type="DOI">10.1016/j.physrep.2016.02.006</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Physics Reports</title>
+		<imprint>
+			<biblScope unit="volume">624</biblScope>
+			<biblScope unit="page">1</biblScope>
+			<date type="published" when="2016">2016</date>
+		</imprint>
+	</monogr>
+	<note>evolutionary potential games on lattices</note>
+</biblStruct>
+
+<biblStruct xml:id="b21">
+	<analytic>
+		<title level="a" type="main">Phase transitions for rock-scissors-paper game on different networks</title>
+		<author>
+			<persName><forename type="first">G</forename><surname>Szabó</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Szolnoki</surname></persName>
+		</author>
+		<idno type="DOI">10.1063/1.1646185</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Chaos</title>
+		<imprint>
+			<biblScope unit="volume">14</biblScope>
+			<biblScope unit="page">121</biblScope>
+			<date type="published" when="2004">2004</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b22">
+	<analytic>
+		<title level="a" type="main">Phase transitions in evolutionary dynamics</title>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">D</forename><surname>Scott</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">M</forename><surname>King</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">W</forename><surname>Ordway</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Bahar</surname></persName>
+		</author>
+		<idno type="DOI">10.1063/5.0124274</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Chaos</title>
+		<imprint>
+			<biblScope unit="volume">32</biblScope>
+			<biblScope unit="page">122101</biblScope>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b23">
+	<monogr>
+		<author>
+			<persName><forename type="first">T</forename><surname>Si</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:cond-mat/0601014[cond-mat.stat-mech</idno>
+		<title level="m">Game theory and topological phase transition</title>
+				<imprint>
+			<date type="published" when="2008">2008</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b24">
+	<analytic>
+		<title level="a" type="main">The long-run behavior of the stochastic replicator dynamics</title>
+		<author>
+			<persName><forename type="first">L</forename><forename type="middle">A</forename><surname>Imhof</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">The Annals of Applied Probability</title>
+		<imprint>
+			<biblScope unit="volume">15</biblScope>
+			<biblScope unit="page">1019</biblScope>
+			<date type="published" when="2005">2005</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b25">
+	<analytic>
+		<title level="a" type="main">The statistical mechanics of strategic interaction</title>
+		<author>
+			<persName><forename type="first">L</forename><forename type="middle">E</forename><surname>Blume</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Games and Economic Behavior</title>
+		<imprint>
+			<biblScope unit="volume">5</biblScope>
+			<biblScope unit="page">387</biblScope>
+			<date type="published" when="1993">1993</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b26">
+	<analytic>
+		<title level="a" type="main">Analogies between phase transitions in potential games and quantum phase transitions</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Mukhopadhyay</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Saha</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Sur</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Chakraborty</surname></persName>
+		</author>
+		<idno type="DOI">10.1088/1367-2630/ae2356</idno>
+	</analytic>
+	<monogr>
+		<title level="j">New Journal of Physics</title>
+		<imprint>
+			<biblScope unit="volume">27</biblScope>
+			<biblScope unit="page">123901</biblScope>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b27">
+	<analytic>
+		<title level="a" type="main">Proceedings of the</title>
+		<author>
+			<persName><forename type="first">H</forename><surname>Bethe</surname></persName>
+		</author>
+		<idno type="DOI">10.1098/rspa.1935.0122</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Royal Society of London. Series A -Mathematical and Physical Sciences</title>
+		<imprint>
+			<biblScope unit="volume">150</biblScope>
+			<biblScope unit="page" from="552" to="575" />
+			<date type="published" when="1935">1935</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b28">
+	<analytic>
+		<title level="a" type="main">A theory of cooperative phenomena</title>
+		<author>
+			<persName><forename type="first">R</forename><surname>Kikuchi</surname></persName>
+		</author>
+		<idno type="DOI">10.1103/physrev.81.988</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Physical Review</title>
+		<imprint>
+			<biblScope unit="volume">81</biblScope>
+			<biblScope unit="page" from="988" to="1003" />
+			<date type="published" when="1951">1951</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b29">
+	<analytic>
+		<title level="a" type="main">The effects of local spatial structure on epidemiological invasions, Proceedings of the Royal Society</title>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">J</forename><surname>Keeling</surname></persName>
+		</author>
+		<idno type="DOI">10.1098/rspb.1999.0716</idno>
+	</analytic>
+	<monogr>
+		<title level="j">of London. Series B: Biological Sciences</title>
+		<imprint>
+			<biblScope unit="volume">266</biblScope>
+			<biblScope unit="page" from="859" to="867" />
+			<date type="published" when="1999">1999</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b30">
+	<analytic>
+		<title level="a" type="main">Bethe free energy, kikuchi approximations, and belief propagation algorithms</title>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">S</forename><surname>Yedidia</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><forename type="middle">T</forename><surname>Freeman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Weiss</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Advances in neural information processing systems</title>
+		<imprint>
+			<biblScope unit="volume">13</biblScope>
+			<date type="published" when="2001">2001</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b31">
+	<analytic>
+		<title level="a" type="main">Pair approximation models for disease spread</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Benoit</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Nunes</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Telo Da Gama</surname></persName>
+		</author>
+		<idno type="DOI">10.1140/epjb/e2006-00096-x</idno>
+	</analytic>
+	<monogr>
+		<title level="j">The European Physical Journal B -Condensed Matter and Complex Systems</title>
+		<imprint>
+			<biblScope unit="volume">50</biblScope>
+			<biblScope unit="page" from="177" to="181" />
+			<date type="published" when="2006">2006</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b32">
+	<analytic>
+		<title level="a" type="main">Theory of finite and infinite graphs</title>
+		<author>
+			<persName><forename type="first">D</forename><surname>Konig</surname></persName>
+		</author>
+		<idno type="DOI">10.1007/978-1-4684-8971-2_2</idno>
+	</analytic>
+	<monogr>
+		<title level="m">Theory of Finite and Infinite Graphs</title>
+				<meeting><address><addrLine>Birkhauser Boston</addrLine></address></meeting>
+		<imprint>
+			<date type="published" when="1990">1990</date>
+			<biblScope unit="page" from="45" to="421" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b33">
+	<analytic>
+		<title level="a" type="main">Coalitional stochastic stability</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Newton</surname></persName>
+		</author>
+		<idno type="DOI">10.1016/j.geb.2012.02.014</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Games and Economic Behavior</title>
+		<imprint>
+			<biblScope unit="volume">75</biblScope>
+			<biblScope unit="page" from="842" to="854" />
+			<date type="published" when="2012">2012</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b34">
+	<analytic>
+		<title level="a" type="main">Coalitional stochastic stability in games, networks and markets</title>
+		<author>
+			<persName><forename type="first">R</forename><surname>Sawa</surname></persName>
+		</author>
+		<idno type="DOI">10.1016/j.geb.2014.07.005</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Games and Economic Behavior</title>
+		<imprint>
+			<biblScope unit="volume">88</biblScope>
+			<biblScope unit="page" from="90" to="111" />
+			<date type="published" when="2014">2014</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b35">
+	<analytic>
+		<title level="a" type="main">Coalitions, tipping points and the speed of evolution</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Newton</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">D</forename><surname>Angus</surname></persName>
+		</author>
+		<idno type="DOI">10.1016/j.jet.2015.01.003</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of Economic Theory</title>
+		<imprint>
+			<biblScope unit="volume">157</biblScope>
+			<biblScope unit="page" from="172" to="187" />
+			<date type="published" when="2015">2015</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b36">
+	<analytic>
+		<title level="a" type="main">Equilibrium points in n -person games</title>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">F</forename><surname>Nash</surname></persName>
+		</author>
+		<idno type="DOI">10.1073/pnas.36.1.48</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Proceedings of the National Academy of Sciences</title>
+		<imprint>
+			<biblScope unit="volume">36</biblScope>
+			<biblScope unit="page" from="48" to="49" />
+			<date type="published" when="1950">1950</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b37">
+	<analytic>
+		<title level="a" type="main">Chapter v -the master equation</title>
+		<author>
+			<persName><forename type="first">N</forename><surname>Van Kampen</surname></persName>
+		</author>
+		<idno type="DOI">10.1016/B978-044452965-7/50008-8</idno>
+	</analytic>
+	<monogr>
+		<title level="m">Stochastic Processes in Physics and Chemistry (Third Edition)</title>
+				<editor>
+			<persName><forename type="first">N</forename><surname>Van Kampen</surname></persName>
+		</editor>
+		<meeting><address><addrLine>North-; Amsterdam</addrLine></address></meeting>
+		<imprint>
+			<publisher>Elsevier</publisher>
+			<date type="published" when="2007">2007</date>
+			<biblScope unit="page" from="96" to="133" />
+		</imprint>
+	</monogr>
+	<note>Holland Personal Library. third edition ed</note>
+</biblStruct>
+
+<biblStruct xml:id="b38">
+	<analytic>
+		<title level="a" type="main">Chapter i -the fundamental principles of statistical physics</title>
+		<author>
+			<persName><forename type="first">L</forename><surname>Landau</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Lifshitz</surname></persName>
+		</author>
+		<idno type="DOI">10.1016/B978-0-08-057046-4.50008-7</idno>
+	</analytic>
+	<monogr>
+		<title level="m">Statistical Physics</title>
+				<editor>
+			<persName><forename type="first">L</forename><surname>Landau</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">E</forename><surname>Lifshitz</surname></persName>
+		</editor>
+		<meeting><address><addrLine>Oxford</addrLine></address></meeting>
+		<imprint>
+			<publisher>Butterworth-Heinemann</publisher>
+			<date type="published" when="1980">1980</date>
+			<biblScope unit="page" from="1" to="33" />
+		</imprint>
+	</monogr>
+	<note>Third Edition. third edition ed</note>
+</biblStruct>
+
+<biblStruct xml:id="b39">
+	<analytic>
+		<title level="a" type="main">Five rules for the evolution of cooperation</title>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">A</forename><surname>Nowak</surname></persName>
+		</author>
+		<idno type="DOI">10.1126/science.1133755</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Science</title>
+		<imprint>
+			<biblScope unit="volume">314</biblScope>
+			<biblScope unit="page" from="1560" to="1563" />
+			<date type="published" when="2006">2006</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b40">
+	<monogr>
+		<author>
+			<persName><forename type="first">T</forename><surname>Schelling</surname></persName>
+		</author>
+		<title level="m">The Strategy of Conflict, A Galaxy book ; GB101</title>
+				<meeting><address><addrLine>Cambridge, MA</addrLine></address></meeting>
+		<imprint>
+			<publisher>Oxford University Press</publisher>
+			<date type="published" when="1963">1963</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+				</listBibl>
+			</div>
+		</back>
+	</text>
+</TEI>

@@ -1,0 +1,2414 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xml:space="preserve" xmlns="http://www.tei-c.org/ns/1.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.tei-c.org/ns/1.0 https://raw.githubusercontent.com/kermitt2/grobid/master/grobid-home/schemas/xsd/Grobid.xsd"
+ xmlns:xlink="http://www.w3.org/1999/xlink">
+	<teiHeader xml:lang="en">
+		<fileDesc>
+			<titleStmt>
+				<title level="a" type="main">REFERENCE-GUIDED POLICY OPTIMIZATION FOR MOLECULAR OPTIMIZATION VIA LLM REASONING</title>
+			</titleStmt>
+			<publicationStmt>
+				<publisher/>
+				<availability status="unknown"><licence/></availability>
+				<date type="published" when="2026-03-06">6 Mar 2026</date>
+			</publicationStmt>
+			<sourceDesc>
+				<biblStruct>
+					<analytic>
+						<author>
+							<persName><forename type="first">Xuan</forename><surname>Li</surname></persName>
+							<affiliation key="aff0">
+								<orgName type="institution">Hong Kong Baptist University</orgName>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Zhanke</forename><surname>Zhou</surname></persName>
+							<affiliation key="aff0">
+								<orgName type="institution">Hong Kong Baptist University</orgName>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Zongze</forename><surname>Li</surname></persName>
+						</author>
+						<author>
+							<persName><forename type="first">Jiangchao</forename><surname>Yao</surname></persName>
+							<affiliation key="aff0">
+								<orgName type="institution">Hong Kong Baptist University</orgName>
+							</affiliation>
+							<affiliation key="aff1">
+								<orgName type="department">CMIC</orgName>
+								<orgName type="institution">Shanghai Jiao Tong University</orgName>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Yu</forename><surname>Rong</surname></persName>
+							<affiliation key="aff2">
+								<orgName type="laboratory">Alibaba Group</orgName>
+								<orgName type="institution">DAMO Academy</orgName>
+							</affiliation>
+							<affiliation key="aff3">
+								<orgName type="laboratory">Hupan Lab</orgName>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Lu</forename><surname>Zhang</surname></persName>
+							<affiliation key="aff0">
+								<orgName type="institution">Hong Kong Baptist University</orgName>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Bo</forename><surname>Han</surname></persName>
+							<affiliation key="aff0">
+								<orgName type="institution">Hong Kong Baptist University</orgName>
+							</affiliation>
+						</author>
+						<title level="a" type="main">REFERENCE-GUIDED POLICY OPTIMIZATION FOR MOLECULAR OPTIMIZATION VIA LLM REASONING</title>
+					</analytic>
+					<monogr>
+						<imprint>
+							<date type="published" when="2026-03-06">6 Mar 2026</date>
+						</imprint>
+					</monogr>
+					<idno type="MD5">A8A41AE6BE113DB5B358F0DA8383125B</idno>
+					<idno type="arXiv">arXiv:2603.05900v1[cs.LG]</idno>
+				</biblStruct>
+			</sourceDesc>
+		</fileDesc>
+		<encodingDesc>
+			<appInfo>
+				<application version="0.7.2" ident="GROBID" when="2026-05-14T17:26+0000">
+					<desc>GROBID - A machine learning software for extracting information from scholarly documents</desc>
+					<ref target="https://github.com/kermitt2/grobid"/>
+				</application>
+			</appInfo>
+		</encodingDesc>
+		<profileDesc>
+			<abstract>
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>Large language models (LLMs) benefit substantially from supervised fine-tuning (SFT) and reinforcement learning with verifiable rewards (RLVR) in reasoning tasks. However, these recipes perform poorly in instruction-based molecular optimization, where each data point typically provides only a single optimized reference molecule and no step-by-step optimization trajectory. We reveal that answer-only SFT on the reference molecules collapses reasoning, and RLVR provides sparse feedback under similarity constraints due to the model's lack of effective exploration, which slows learning and limits optimization. To encourage the exploration of new molecules while balancing the exploitation of the reference molecules, we introduce Reference-guided Policy Optimization (RePO), an optimization approach that learns from reference molecules without requiring trajectory data. At each update, RePO samples candidate molecules with their intermediate reasoning trajectories from the model and trains the model using verifiable rewards that measure property satisfaction under similarity constraints in an RL manner. Meanwhile, it applies reference guidance by keeping the policy's intermediate reasoning trajectory as context and training only the answer in a supervised manner. Together, the RL term promotes exploration, while the guidance term mitigates reward sparsity and stabilizes training by grounding outputs to references when many valid molecular edits exist. Across molecular optimization benchmarks, RePO consistently outperforms SFT and RLVR baselines (e.g., GRPO), achieving improvements on the optimization metric (Success Rate × Similarity), improving balance across competing objectives, and generalizing better to unseen instruction styles. Our code is publicly available at https://github.com/tmlr-group/RePO.</p></div>
+			</abstract>
+		</profileDesc>
+	</teiHeader>
+	<text xml:lang="en">
+		<body>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="1">INTRODUCTION</head><p>LLMs have advanced rapidly on reasoning-intensive tasks through supervised fine-tuning (SFT) and reinforcement learning with verifiable rewards (RLVR) <ref type="bibr" target="#b16">(Guo et al., 2025;</ref><ref type="bibr" target="#b38">Muennighoff et al., 2025;</ref><ref type="bibr">Zhang et al., 2025b)</ref>. Both paradigms allow LLMs to perform deliberative reasoning before generating answers and solve problems requiring multiple reasoning steps <ref type="bibr" target="#b63">(Zelikman et al., 2022;</ref><ref type="bibr">Zhou et al., 2024;</ref><ref type="bibr" target="#b64">2025a)</ref>. However, how these recipes perform in scientific tasks remains under-investigated.</p><p>In this paper, we study instruction-based molecular optimization, where the model is required to optimize the molecular property while maintaining structural similarity with the original molecule (Fig. <ref type="figure" target="#fig_0">1</ref>). This task involves competing objectives: improving a target property requires non-trivial structural edits (e.g., adding functional groups), but those edits will reduce structural similarity to the original molecule and can even break chemical validity <ref type="bibr" target="#b31">(Liao et al., 2024;</ref><ref type="bibr" target="#b35">López-Pérez et al., 2024)</ref>.</p><p>The data point in most datasets, however, provides only a single optimized molecule for reference, without a reasoning trajectory. This supervision mismatch raises a key challenge: how to support (i) effective exploration of the constrained chemical space for molecules with desired properties and (ii) answer-level anchoring to the available references to exploit dataset-provided reference molecules.  <ref type="bibr" target="#b57">(Weininger, 1988)</ref>, a sequence of symbols representing atoms and bonds. Notably, established RLVR/SFT recipes face substantial limitations in this domain <ref type="bibr" target="#b62">(Yue et al., 2025;</ref><ref type="bibr" target="#b15">Gandhi et al., 2025;</ref><ref type="bibr" target="#b9">Chen et al., 2025)</ref>. We show that, with only reference molecules as supervision, SFT often collapses into deterministic, answer-only outputs and suppresses the multi-step reasoning needed for exploration. When RL starts from such an SFT initialization, RLVR updates often fail to produce multi-step reasoning trajectories and instead preserve the short-response style. Conversely, direct RL from the base model depends on rare answers that both improve the property and satisfy similarity; early successes are usually tiny edits with marginal gains, which drive conservative optimizations, yield sparse learning signals, and limit final performance.</p><p>To address these limitations, we propose Reference-guided Policy Optimization (RePO), an optimization approach that provides reference guidance while permitting many valid molecular edits (Fig. <ref type="figure" target="#fig_1">2</ref>). Concretely, each RePO step samples candidate molecules from the model given an instruction, scores them with a verifiable reward (property satisfaction while enforcing similarity), and updates the policy with three terms: (i) an RLVR term that upweights higher-reward candidates and lowers the low-reward ones, (ii) an answer-level reference-guidance term that increases the likelihood of the reference conditioned on the model's sampled trajectories, and (iii) a KL regularizer that stabilizes updates. Overall, RePO couples reward-driven exploration in the constrained chemical space with answer-level anchoring to the references, without requiring any labeled intermediate trajectories.</p><p>We evaluate RePO on instruction-based molecular optimization benchmarks, including TOMG-Bench <ref type="bibr">(Li et al., 2024a)</ref> and MuMOInstruct <ref type="bibr" target="#b10">(Dey et al., 2025)</ref>. On TOMG-Bench single-objective tasks, RePO achieves the best Success Rate × Similarity in four out of six tasks, with up to 17.4% success rate improvement over GRPO (Fig. <ref type="figure">3</ref>). On MuMOInstruct multi-objective tasks, RePO better balances competing objectives and maintains its advantage under unseen instruction styles. RePO also generalizes across model families and benefits from increased inference-time compute.</p><p>Task formulation. Molecular optimization aims to modify an input molecule to optimize target properties while preserving structural similarity <ref type="bibr" target="#b35">(López-Pérez et al., 2024;</ref><ref type="bibr" target="#b32">Lipinski &amp; Hopkins, 2004)</ref>.</p><p>As illustrated in Fig. <ref type="figure" target="#fig_0">1</ref>, we denote the query as q = (x, m 0 ), where x is the textual instruction and m 0 is the input molecule. </p><p>Here m * denotes an optimized molecule that satisfies both property and similarity constraints. We use m for a generic molecule, m 0 for the input molecule in q. Each dataset instance also provides a reference molecule, denoted by m ref , which serves as a reference for m * and is used as the guidance target in Sec. 4. We provide additional discussions in Appendix G.1.</p><p>LLM reasoning in molecular optimization. Despite their merits, conventional molecular design approaches struggle to synthesize molecules with precisely tailored properties <ref type="bibr">(Li et al., 2024b;</ref><ref type="bibr">c)</ref> and often generalize poorly to novel objectives or constraint combinations <ref type="bibr" target="#b10">(Dey et al., 2025;</ref><ref type="bibr">Li et al., 2024a;</ref><ref type="bibr" target="#b64">Zhang et al., 2025a)</ref>. These limitations motivate us to leverage LLMs' ability to follow natural-language instructions <ref type="bibr" target="#b31">(Chang et al., 2024)</ref> for optimizing molecules. In addition, prior work suggests LLMs can capture non-trivial knowledge of molecular properties <ref type="bibr" target="#b17">(Guo et al., 2023)</ref>.</p><p>Nevertheless, LLMs still struggle under chemistry-specific constraints. Benchmarks such as SciBench <ref type="bibr">(Wang et al., 2023a)</ref> and ChemBench <ref type="bibr" target="#b37">(Mirza et al., 2025)</ref> report substantial degradation when tasks require validity preservation or property-preference satisfaction. Accordingly, recent GPTbased molecular optimization methods often embed LLMs in black-box pipelines: MOLLEO <ref type="bibr">(Wang et al., 2025b)</ref> uses evolutionary search with LLM-proposed edits, while others fine-tune LLMs as scoring oracles <ref type="bibr" target="#b39">(Nguyen &amp; Grover, 2025)</ref> or couple them with chemistry tools <ref type="bibr" target="#b4">(Bran et al., 2023)</ref>.</p><p>RLVR for LLM reasoning. We adopt GRPO <ref type="bibr" target="#b46">(Shao et al., 2024)</ref> for training the LLM in the RLVR paradigm. For data pair (q, m ref ) ∼ D, the old policy π old samples G responses {o i } G i=1 . Let r(o i , q) be the scalar reward computed from the molecule m i in o i and the input molecule m 0 in q, and π ref be the reference policy for KL regularization. GRPO maximizes the following objective</p><formula xml:id="formula_1">J GRPO (π θ ) = E (q,m ref )∼D,{oi} G i=1 ∼πold(•|q) 1 G G i=1 1 |o i | |oi| k=1 min π θ (o i,k |q, o i,&lt;k ) π old (o i,k |q, o i,&lt;k ) Âi,k , clip π θ (o i,k |q, o i,&lt;k ) π old (o i,k |q, o i,&lt;k ) , 1 − ε, 1 + ε Âi,k − γ D KL (π θ ∥π ref ) ,<label>(2)</label></formula><p>where Âi,k = (r(o i , q) − mean({r(o j , q)} G j=1 ))/std({r(o j , q)} G j=1 ) is the token-wise group-relative advantage. We use the K3 estimator <ref type="bibr" target="#b43">(Schulman., 2020)</ref> for calculating the KL regularization:</p><formula xml:id="formula_2">D KL (π θ ∥π ref ) = π ref (o i,k |q, o i,&lt;k ) π θ (o i,k |q, o i,&lt;k ) − log π ref (o i,k |q, o i,&lt;k ) π θ (o i,k |q, o i,&lt;k ) − 1.</formula><p>(3)</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3">SUPERVISION MISMATCH UNDER COMPETING OBJECTIVES</head><p>Eqn. 2 improves the policy by increasing the likelihood of responses that achieve higher reward.</p><p>In instruction-based molecular optimization, however, high-reward samples are often rare early in training: among generated molecules, only a small fraction both (i) achieves meaningful targetproperty improvement and (ii) satisfies the similarity constraint. In addition, each data point typically provides only a single reference molecule m ref without intermediate edit trajectories. This supervision mismatch leaves the model with little guidance on how to transform m 0 into better molecules under the constraint, causing the policy to be conservative, near-identity edits.</p><p>To examine how these issues manifest in practice, we compare three training recipes under matched settings: (i) GRPO from a base model, (ii) final-answer-only SFT from a base model, and (iii) GRPO initialized from a final-answer-only SFT model, denoted GRPO (SFT-init). We report success rate,  Observation 3.1 (GRPO on the base model struggles under competing objectives in molecular optimization). GRPO tends to generate conservative edits that remain very close to the input molecule m 0 . These edits keep similarity high, but yield limited property improvement (Fig. <ref type="figure" target="#fig_3">4</ref>). As a result, most sampled molecules contribute weak learning signals, and updates concentrate on a narrow local regime rather than exploring larger yet promising edits in chemical space.</p><p>Observation 3.2 (SFT on the base model produces answer-only outputs and weak similarity control).</p><p>Answer-only SFT trains the model to directly imitate the reference molecule, producing short, answeronly outputs whose lengths match the SFT training data (dashed line in Fig. <ref type="figure" target="#fig_4">5</ref>). While SFT attains a moderate success rate, it yields lower similarity than RL methods (Fig. <ref type="figure" target="#fig_3">4</ref>), indicating that token-level imitation of the reference alone provides limited control over the similarity-property trade-off.</p><p>Since SFT collapses outputs into short, answer-only responses, we next ask whether applying GRPO on top of this SFT initialization can recover multi-step reasoning.</p><p>Observation 3.3 (GRPO on the SFT model does not recover multi-step reasoning). In Fig. <ref type="figure" target="#fig_4">5</ref>, GRPO (SFT-init) largely preserves the short-response style, producing completion lengths that closely match the SFT data rather than recovering the multi-step reasoning observed in GRPO from the base model. This short-response behavior carries over to test performance: GRPO (SFT-init) achieves the lowest success rate among all methods while maintaining high similarity (Fig. <ref type="figure" target="#fig_3">4</ref>), indicating that it inherits the SFT model's limited exploration without gaining RL-driven property improvement.</p><p>Taken together, these observations highlight a modeling gap: reward-only updates are often too sparse to reliably push the policy beyond conservative edits, yet naive token-level imitation of the reference molecule can over-constrain the policy and suppress diverse edit trajectories. An improved approach should therefore provide (i) directional, answer-level reference guidance toward m ref enhancing the learning signal, while (ii) avoiding token-level process imitation so that multiple valid reasoning traces and edit paths remain possible under the same instruction.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4">REPO: REFERENCE-GUIDED POLICY OPTIMIZATION</head><p>The previous analysis identifies two desiderata: answer-level guidance that enhances learning signal and trajectory-level RL updates that avoid token-level imitation and preserve diverse exploration. RePO satisfies both by using the reference molecule as an answer-level anchor, while retaining RLVR-style updates on the full reasoning trajectories to preserve exploration over diverse edits.</p><p>Objective. For each query q = (x, m 0 ), we sample</p><formula xml:id="formula_3">{o i } G i=1 ∼ π old (• | q)</formula><p>, where each response is partitioned as o i = [t i ; mi ] with reasoning tokens t i and a final molecule mi (Fig. <ref type="figure" target="#fig_5">6</ref>). Let r(o i , q) be the scalar reward computed from mi and the input molecule m 0 in q (Sec. 4). We compute the token-wise group-relative advantage Âi,k as in Eqn. 2. The RePO objective is</p><formula xml:id="formula_4">J RePO (π θ ) = E (q,m ref )∼D {oi} G i=1 ∼πold(•|q) 1 G G i=1 1 |o i | |oi| k=1 min ρ i,k Âi,k , clip(ρ i,k , 1 − ε, 1 + ε) Âi,k Exploration term + β log π θ (m ref | q, t i ) Answer-level reference guidance −γ 1 |o i | |oi| k=1 D KL (π θ ∥π ref ) KL regularization ,<label>(4)</label></formula><p>where Reward design. The reward instantiates the objective in Eqn. 1. For any molecule m, let FP(m) denote its molecular fingerprint, a fixed-length binary vector whose entries indicate the presence of specific substructures in m. We define the scalar reward as r(m, m 0 ) = r prop (m, m 0 )+r struct (m, m 0 ).</p><formula xml:id="formula_5">ρ i,k = π θ (o i,k | q, o i,&lt;k )/π old (o i,k | q, o i,&lt;k</formula><p>• Structural similarity r struct : we use Tanimoto similarity <ref type="bibr" target="#b0">(Bajusz et al., 2015</ref>)</p><formula xml:id="formula_6">r struct (m, m 0 ) = |FP(m) ∩ FP(m 0 )| |FP(m) ∪ FP(m 0 )| ∈ [0, 1].<label>(5)</label></formula><p>This term encourages structural preservation by assigning higher rewards to molecules close to m 0 . • Target property r prop : the instruction specifies a target property and whether it should be increased or decreased (e.g., increasing the molecular LogP value); let F (•) denote the corresponding property function. We use a binary improvement property reward defined as follows:  Training. For each query q, we sample {o i = [t i ; mi ]} G i=1 and compute rewards r(o i , q) on the parsed mi (with m 0 from q). We then (i) compute group-relative advantages and apply the clipped GRPO update to all tokens in o i (the GRPO term in Eqn. 4); and (ii) add the reference-guidance term log π θ (m ref | q, t i ), which is computed over the answer tokens only, with the sampled reasoning prefix t i as context (Fig. <ref type="figure" target="#fig_5">6</ref>). Thus, RePO does not imitate reasoning tokens; instead, it leverages m ref to provide an answer-level anchor while letting RL update on sampled trajectories. Remark 4.1. Reference guidance operates solely at the answer level: it increases the likelihood of instruction-satisfying answers early in training, reducing reward sparsity and yielding more informative RL updates, which in turn shape the reasoning tokens and support model to explore molecules with better properties while satisfying the constraint. </p><formula xml:id="formula_7">r prop (m, m 0 ) =    1, if F (m) ≥ F (m 0 ) (for increasing), 1, if F (m) ≤ F (m 0 ) (for decreasing), 0, otherwise.<label>(6)</label></formula></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5">EXPERIMENTS</head><p>We evaluate RePO on instruction-based molecular optimization. For readability, we organize this section into four blocks: setup (Sec. 5.1), main quantitative results (Sec. 5.2), mechanism and robustness analyses (Sec. 5.3), and qualitative plus inference-scaling analyses (Sec. 5.4).</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5.1">EXPERIMENT SETTINGS</head><p>In what follows, we describe the setting of the experiments, including the dataset, baselines, and evaluation metrics. Detailed settings are provided in Appendix I.</p><p>Evaluation Metrics. We evaluate model performance using three complementary metrics. Success Rate is the fraction of test molecules for which the model meets the specified property objective. Similarity is measured by the Tanimoto coefficient <ref type="bibr" target="#b0">(Bajusz et al., 2015)</ref>, which assesses the structural similarity between the input and optimized molecules. Following <ref type="bibr">Li et al. (2024a)</ref>, to jointly capture both optimization effectiveness and structural preservation, we report Success Rate × Similarity, which reflects the model's ability to balance property improvement with maintenance of molecular structure. Detailed discussions on metrics are in Appendix I.1.</p><p>Datasets. We employ two instruction-based molecular optimization benchmarks, TOMG-Bench <ref type="bibr">(Li et al., 2024a)</ref> and MuMOInstruct <ref type="bibr" target="#b10">(Dey et al., 2025)</ref>, to evaluate the knowledge of LLM on molecular structure and properties. We employ the reference molecules from the molecule optimization datasets as demonstration molecules. We provide a detailed discussion on the validity of the demonstration molecules in Appendix J.5. More detailed description of the datasets in Appendix I.2.</p><p>Baselines. We use Qwen-2.5-3B Instruct as the base model. We compare with Distill-SFT, which applies SFT on the s1.1K dataset <ref type="bibr" target="#b38">(Muennighoff et al., 2025)</ref>; SFT, which fine-tunes the model on each benchmark training split; GRPO, which applies Eqn. 2; and GRPO (SFT init).</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5.2">QUANTITATIVE RESULTS</head><p>We summarize the main findings from Tabs. 1 and 2.</p><p>RePO elicits the model's chemical reasoning on single-objective optimization tasks. Tab. 1 summarizes the results for single-objective molecular optimization. For structure-based tasks, RePO achieves the best performance on AddComponent and SubComponent, corresponding to improvements of 8.3% and 4% over the next best method, respectively. For property-based optimization, RePO achieves superior or competitive performance compared to all baselines, highlighting its effectiveness and robustness across evaluation settings, achieving up to 13.0% absolute improvement over the base model. Notably, GRPO without SFT initialization performs markedly worse, particularly on structure-based tasks, underscoring the challenges of unconstrained exploration in the vast chemical space. In contrast, RePO, which integrates demonstration guidance, consistently outperforms SFT and GRPO, yielding more effective molecular optimization.</p><p>We also provide experiments with domain-specific optimizers (Bio-T5 <ref type="bibr" target="#b41">(Pei et al., 2023)</ref>, Mol-T5 (Edwards et al., 2022)) and general LLM-based optimizers (GPT-4o-mini) and multi-round evolutionary methods (Graph-GA <ref type="bibr" target="#b21">(Jensen, 2019)</ref>, <ref type="bibr">REINVENT (Olivecrona et al., 2017)</ref>, and MOLLEO <ref type="bibr">(Wang et al., 2025b</ref>)) in Tab. 7. Notably, RePO is competitive with or outperforms these methods, despite its single-round optimization and smaller open backbone.</p><p>RePO helps the model to balance multi-objective optimization problems. Tab. 2 presents the results for multi-objective molecular optimization. Notably, RePO outperforms baseline methods on BDP and BPQ tasks, achieving up to 4% improvements over baseline methods, highlighting its ability to effectively balance multiple competing objectives simultaneously.</p><p>RePO elicit model's generalization ability on unseen instruction styles. Shown in Tab. 2, the performance advantage of RePO is maintained for unseen instructions, achieving superior results despite the model encountering novel instruction formats. The most significant gains are observed in the BDP task, where RePO's approach to guided exploration proves particularly effective at navigating the complex optimization landscape involving multiple constraints. These results collectively validate that RePO's demonstration-guided approach constrains the exploration space while maintaining the model's reasoning capabilities across scenarios of multi-objective optimization.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5.3">MECHANISM AND ROBUSTNESS ANALYSES</head><p>We first validate the core mechanism via gradient masking, then analyze training dynamics and outcome distributions, and finally report robustness checks (reasoning-quality evaluation, demonstration quality, prompting baselines, and stronger backbones).</p><p>Mechanism validation via gradient masking. We ablate gradient masking on TOMG-Bench using RePO with random masking (40%/80%) and a no-mask variant. Fig. <ref type="figure">7</ref> shows that all ablations underperform full RePO, and removing masking can even fall below the baseline. This is consistent with the role of masking: without it, the answer-level supervision can backpropagate through intermediate tokens t i , reinforcing spurious or chemically unsound reasoning patterns.  Masking improves optimization stability. Fig. <ref type="figure">8</ref> compares RePO with and without gradient masking.</p><p>With masking, the property-improvement reward increases over training; without masking, learning largely stagnates. This trend matches the ablation results in Fig. <ref type="figure">7</ref>.</p><p>Robustness under reference corruption. We evaluate robustness by corrupting query-reference alignments within subtasks. As shown in Fig. <ref type="figure">9</ref>, RePO remains above the baseline with 30% corruption and stays competitive at 50% corruption, indicating graceful degradation under corruption.</p><p>Reference-quality robustness. We report the full reference-quality ablation in Fig 10 <ref type="figure">.</ref> The results show that even reduced reference supervision remains competitive with the GRPO, while full RePO achieves the strongest performance.</p><p>Property-gain distributions show stronger optimization outcomes. Fig. <ref type="figure" target="#fig_0">11</ref> compares histograms of property gains. RePO shifts toward larger positive gains relative to the base model and GRPO, suggesting that improvements are widespread across candidates rather than driven by a few outliers.</p><p>LLM-as-a-judge evaluation supports reasoning-quality gains. We evaluate explanation quality with an LLM-as-a-judge protocol calibrated to expert chemists <ref type="bibr">(Zhuang et al., 2025)</ref>. For TOMG-Bench LogP, we sample 50 trajectories per method and score the associated explanations. Fig. <ref type="figure" target="#fig_1">12</ref> shows that RePO achieves the highest reasoning-quality score.</p><p>RePO also improves larger backbones and different architectures. We conduct an additional experiment using a larger model, Qwen-2.5-7B Instruct. Tab. 4 shows that with a larger model, RePO exceeds the base model by up to 4.9% absolute improvement. In the LogP and MR tasks, RePO also outperforms SFT by a large margin. We also adopt Llama-3.1-8B-Instruct, which differs substantially in architecture and tokenizer, and train the model using the TOMG-Bench property optimization task. As shown in Tab. 3, RePO achieves the overall best performance.</p><p>Prompting-only CoT baselines are insufficient. We compare RePO with zero-shot and few-shot CoT prompting on TOMG-Bench property optimization. As shown in Fig. <ref type="figure" target="#fig_0">13</ref>, CoT prompting does   not close the gap and is often worse than the baseline, while RePO consistently performs best. This result indicates that end-to-end policy optimization with reference guidance is more effective than prompt-only reasoning elicitation in this domain.</p><p>Performance of continuous reward. The property reward r prop is defined as the improvement in the target property, ±(F (m * ) − F (m 0 )), where the sign depends on the optimization direction. In Tab. 5, we report RePO on the property-optimization task of TOMG-Bench. The binary r prop variant yields more stable gains than the continuous version, suggesting that a discretized success signal is easier to optimize under the similarity constraint.</p><p>Experiments on reward weighting. Fig. <ref type="figure" target="#fig_3">14</ref> studies sensitivity to the guidance weight β on optimizing LogP. β = 0 reduces to GRPO, while large β increasingly resembles SFT. Performance improves as β increases, but saturates for β ≥ 10, suggesting that overly strong guidance can limit exploration.</p><p>Out-of-distribution generalization on unseen structure tasks. We train on TOMG-Bench property optimization and evaluate on withheld structure-editing tasks. Fig. <ref type="figure" target="#fig_4">15</ref> shows that RePO generalizes better than its counterparts, indicating that its learned strategy transfers across instruction types.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5.4">CASE STUDIES</head><p>Chemically-validated reasoning. Fig. <ref type="figure" target="#fig_5">16</ref> illustrates the qualitative differences in reasoning approaches between RePO and GRPO on a molecular optimization task. The left panel demonstrates RePO's chemically sound reasoning process: it correctly identifies structural elements and proposes an effective modification (substituting Br with Cl). In contrast, GRPO exhibits invalid chemical expressions and proposes chemically implausible modifications (removing nitrogen from a heterocyclic ring). This comparison underscores RePO's capacity to generate not only structurally valid molecules but also to produce coherent reasoning that captures the underlying chemical principles governing validated and robust molecular property optimization.  Inference-scaling properties. Fig. <ref type="figure" target="#fig_10">17</ref> shows RePO's inference-scaling characteristics. We sample multiple times from the subset of the MR optimization task. The plot reveals that as the number of sampling trials (k) increases, RePO's best-of-k success rate (solid curve) and the similarity of the trials (dashed curve) both demonstrate marked improvements. These results underscore RePO's proficiency in leveraging increased computational budgets at inference.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="6">CONCLUSION</head><p>We studied the supervision mismatch that arises when applying SFT and RLVR to instruction-based molecular optimization. Our analysis showed that answer-only SFT collapses multi-step reasoning, while reward-only RLVR (e.g., GRPO) under similarity constraints suffers from sparse feedback and conservative optimization. To address this mismatch, we proposed RePO, which balances exploration of new molecules via reward-driven RL updates on sampled trajectories with exploitation of the reference molecules via answer-level reference guidance, regularized by a KL term to stabilize training, all without requiring trajectory supervision. Across TOMG-Bench and MuMOInstruct, RePO consistently outperforms SFT and GRPO baselines on single-objective, multi-objective, unseeninstruction, and inference-scaling evaluations. Future works include improving automatic reference construction and extending to broader scientific optimization domains. </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>B REPRODUCTION STATEMENT</head><p>The experimental setups for training and evaluation are described in detail in Appendix I, and the experiments are all conducted using public datasets. We provide the link to our source codes to ensure the reproducibility of our experimental results: https://github.com/tmlr-group/RePO.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>C LLM USAGE DISCLOSURE</head><p>This submission was prepared with the assistance of LLMs, which were utilized for refining content and checking grammar. The authors assume full responsibility for the entire content of the manuscript, including any potential issues related to plagiarism and factual accuracy. It is confirmed that no LLM is listed as an author.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>D IMPACT STATEMENT</head><p>This paper introduces RePO, a novel framework for enhancing large language model (LLM) reasoning in molecular optimization. By leveraging reference-guided policy optimization, our work aims to accelerate the discovery and design of new molecules, which could have positive impacts in fields such as medicine, materials science, and sustainable chemistry.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>E LIMITATIONS</head><p>Despite RePO's promising results, limitations remain. First, the framework relies on the availability of demonstrations, which may be scarce for novel or complex molecular optimization tasks. In addition, while our approach improves LLM reasoning for molecular optimization, the black-box nature of LLM still presents challenges for domain experts seeking to understand the precise reasoning behind specific structural modifications.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>F FUTURE WORK</head><p>Although RePO is designed to be domain-agnostic, we believe it is particularly well-suited for complex scientific reasoning tasks that, like molecular optimization, involve vast search spaces and require domain-specific, multi-step reasoning-where the solution is difficult to specify but straightforward to verify. We outline two promising directions for future work:</p><p>• Retrosynthesis Planning: This task aims to predict a sequence of chemical reactions to synthesize a target molecule. The combinatorial explosion of possible reaction pathways makes the search space extremely large, and LLMs may generate chemically invalid or suboptimal steps. By leveraging known synthesis routes from chemical literature as demonstrations, the policy model can be trained to generate retrosynthetic reasoning chains (i.e., stepwise breakdowns of the target molecule). The RL reward can be based on the chemical validity of each proposed reaction (using tools such as ASKCOS <ref type="bibr" target="#b49">(Tu et al., 2025)</ref>). • Drug-Drug Interaction (DDI) Prediction: This task involves predicting whether two drugs will interact and providing a mechanistic explanation. Accurate prediction requires understanding complex pharmacological mechanisms (e.g., metabolic pathways), and LLMs are prone to generating plausible but incorrect explanations. Demonstrations can be constructed from known DDI pairs in databases such as DrugBank <ref type="bibr" target="#b23">(Knox et al., 2024)</ref>. The model would be trained to generate reasoning chains that explain the mechanism of interaction. The RL reward could be based on verifying these mechanistic claims against curated knowledge bases. In both cases, RePO's ability to utilize sparse, final-answer demonstrations to guide complex and unconstrained reasoning is central. This approach offers a principled way to incorporate expert knowledge into the learning process without requiring costly, step-by-step annotated reasoning chains.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>G FURTHER DISCUSSION</head><p>G.1 COMPREHENSIVE COMPARISON WITH RELATED WORKS Tab. 6 summarizes where RePO differs from reward-shaping and knowledge-guided exploration strategies. We further position RePO against representative black-box optimization pipelines:</p><p>• Direct prompting (e.g., MOLLEO <ref type="bibr">(Wang et al., 2025b</ref>)) uses the LLM as a proposal module inside an external optimizer. This improves candidate generation but does not train an end-to-end optimization policy within the LLM.</p><p>• Surrogate-property fine-tuning (e.g., LICO <ref type="bibr" target="#b39">(Nguyen &amp; Grover, 2025)</ref>) trains property predictors used by external Bayesian or search loops. This supports evaluation, but optimization decisions remain outside the LLM policy.</p><p>• RePO directly trains the LLM as the optimizer. The model learns to generate reasoning and final molecular edits jointly under reward and reference guidance, and can still be integrated into broader optimization workflows.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>G.2 ADDITIONAL BACKBONE AND BASELINE COMPARISONS</head><p>This subsection evaluates whether the observed gains persist across stronger backbones and broader baseline families, shown in Tab. 7.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>G.3 TRAINING DYNAMICS CONFIRM GUIDED EXPLORATION</head><p>Fig. <ref type="figure" target="#fig_0">18</ref> shows that RePO improves rewards more steadily than GRPO during property optimization. GRPO often remains in a low-reward regime, whereas RePO climbs and converges to higher reward This targeted supervision prevents the policy collapse often seen with pure SFT, promoting a more effective and varied exploration strategy that balances guidance with retained reasoning capability.</p><p>Notably, molecular optimization presents a significant challenge for LLMs due to the vast search space, where unguided exploration often fails. Without sufficient guidance, models trained with GRPO struggle to navigate this space, leading to limited reward on property optimization. RePO addresses this by leveraging demonstrations to constrain the search to promising regions.</p><p>Experimentally, the demonstration guidance prompts the model's exploration capability. We sampled 100 responses per query from RePO, GRPO, and SFT models. RePO generated a higher average number of unique molecular structures (e.g., 34 unique valid molecules vs. 6 for GRPO and 64 for SFT on optimizing the molecular logP properties), indicating broader exploration. These In summary, the demonstration guidance will not limit the model's exploration capability while reducing the sparse reward issues during exploration of the vast search space.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>G.6 EXPLAIN THE EXPLORATION TERM</head><p>The core idea of this term is not to promote directionless exploration. Notably, its purpose is to make exploration more efficient and effective within the vast and sparse chemical space. As we discuss in Sec. 3, purely RL-based exploration struggles to find rewarding solutions in such a complex domain, leading to inefficient learning.</p><p>The "demonstration-guidance" term addresses this by using expert knowledge (the demonstrated molecule a i ) to steer the policy's search process. Specifically, Focusing the Search: By maximizing the likelihood of the expert-provided answer a i conditioned on the model's self-generated reasoning steps t i , we encourage the model to explore pathways that lead to known good solutions. This prevents the policy from wasting resources exploring chemically invalid or unpromising regions of the search space.</p><p>Structuring the Exploration: The model is still free to explore different reasoning paths (t i ) to arrive at the solution. The guidance is applied only to the final answer. This allows the model to learn diverse and valid reasoning strategies while ensuring the exploration is anchored to a meaningful and high-quality outcome.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>G.7 EXPLICIT CHEMICAL VALIDITY CONSTRAINTS</head><p>We ground our evaluation in state-of-the-art, validated computational tools, ensuring our methodology is robust and reliable. Specifically:</p><p>• Graph-Based Prediction for Complex Properties: For challenging properties like BBBP, we follow the MuMOInstruct benchmark protocol, which uses ADMET-AI. Crucially, this platform employs Chemprop <ref type="bibr" target="#b60">(Yang et al., 2019)</ref>, a message-passing graph neural network (GNN). While the input is an SMILES string, Chemprop internally converts it into a molecular graph. This allows the model to learn from the molecule's topological structure, capturing connectivity and relationships that a linear string cannot. This GNN-based approach has demonstrated leading performance on 22 ADMET tasks from the rigorous Therapeutics Data Commons (TDC) benchmark <ref type="bibr" target="#b20">(Huang et al., 2021)</ref>, confirming its reliability.</p><p>• Standardized Tools for Physicochemical Properties: For other well-defined properties such as QED and LogP, we use RDKit, the widely validated toolkit in cheminformatics.</p><p>In summary, while our model generates SMILES strings, the evaluation of these molecules relies on more sophisticated graph-based neural networks and established cheminformatics libraries. This ensures that the "ground truth" used for reward and evaluation is as reliable as current computational methods permit, and it is a standard practice in the field.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>H RELATED WORK</head><p>LLM reasoning. Chain-of-thought prompting <ref type="bibr" target="#b56">(Wei et al., 2022)</ref> and its extensions <ref type="bibr" target="#b61">(Yao et al., 2023;</ref><ref type="bibr" target="#b55">Wang et al., 2023b)</ref> demonstrate that eliciting intermediate reasoning steps substantially improves LLM performance on complex tasks. Recent studies further examine the robustness of such reasoning under noisy or incomplete conditions <ref type="bibr">(Zhou et al., 2024;</ref><ref type="bibr" target="#b64">2025a)</ref>, and propose visualization tools for analyzing the reasoning process <ref type="bibr">(Zhou et al., 2025b)</ref>. Multi-role and scriptbased generation frameworks <ref type="bibr" target="#b45">(Shang et al., 2026</ref>) also highlight the growing diversity of structured generation paradigms in LLMs. Our work builds on these insights by studying how reasoning emerges or fails to emerge when LLMs are applied to constrained scientific optimization.</p><p>Reinforcement learning for LLM post-training. RLVR methods such as GRPO <ref type="bibr" target="#b46">(Shao et al., 2024)</ref> and PPO <ref type="bibr" target="#b44">(Schulman et al., 2017)</ref> have been widely adopted to improve LLM reasoning through reward-based optimization <ref type="bibr" target="#b16">(Guo et al., 2025;</ref><ref type="bibr">Zhang et al., 2025b)</ref>. Exploration efficiency remains a central challenge: recent work proposes exploration-enhanced objectives <ref type="bibr" target="#b9">(Chen et al., 2025)</ref> and trajectory-level balancing <ref type="bibr" target="#b1">(Bartoldson et al., 2025)</ref> to address sparse-reward settings. RePO contributes to this line by introducing answer-level reference guidance that alleviates reward sparsity without requiring process-level supervision.</p><p>LLMs for molecular design. Molecular optimization has been approached through genetic algorithms <ref type="bibr" target="#b21">(Jensen, 2019;</ref><ref type="bibr" target="#b40">Nigam et al., 2022)</ref>, reinforcement learning on molecular graphs <ref type="bibr" target="#b40">(Olivecrona et al., 2017;</ref><ref type="bibr" target="#b14">Fu et al., 2022)</ref>, diffusion models <ref type="bibr" target="#b19">(Hoogeboom et al., 2022;</ref><ref type="bibr">Wang et al., 2025c)</ref>, and flow-based generative models <ref type="bibr" target="#b2">(Bengio et al., 2021;</ref><ref type="bibr">Zhu et al., 2023)</ref>. Graph neural networks have also advanced molecular representation learning, enabling long-range interaction propagation <ref type="bibr" target="#b30">(Li et al., 2024c)</ref> and fast molecular docking <ref type="bibr" target="#b64">(Zhang et al., 2025a)</ref>. More recently, LLM-based approaches integrate language models into optimization pipelines via prompting <ref type="bibr">(Wang et al., 2025b)</ref>, surrogate scoring <ref type="bibr" target="#b39">(Nguyen &amp; Grover, 2025)</ref>, or tool augmentation <ref type="bibr" target="#b4">(Bran et al., 2023;</ref><ref type="bibr" target="#b36">M. Bran et al., 2024)</ref>. RePO differs by training the LLM as an end-to-end optimizer that jointly generates reasoning and molecular edits under reward and reference guidance.</p><p>LLM capabilities and robustness. The breadth of tasks that LLMs can handle continues to expand, from out-of-distribution detection <ref type="bibr" target="#b5">(Cao et al., 2024)</ref> and noisy test-time adaptation in vision-language models <ref type="bibr" target="#b6">(Cao et al., 2025)</ref> to agentic tasks under model compression <ref type="bibr" target="#b11">(Dong et al., 2025)</ref> and adversarial jailbreaking <ref type="bibr" target="#b29">(Li et al., 2023)</ref>. These studies underscore both the versatility and the fragility of LLM capabilities under distribution shift or capacity constraints <ref type="bibr" target="#b18">(Han et al., 2025)</ref>, themes that are echoed in the molecular-optimization setting studied here, where the policy must generalize across diverse property objectives and unseen instruction styles.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>I EXPERIMENT SETTINGS</head><p>In this section, we provide the detailed experimental settings for all the experiments.</p><p>I.1 PHARMACOLOGICAL METRICS.</p><p>We employ the following pharmacological metrics for the molecular optimization tasks:</p><p>• QED (Quantitative Estimation of Drug-likeness) <ref type="bibr" target="#b3">(Bickerton et al., 2012)</ref>: QED provides a composite score that quantifies the drug-likeness of a molecule by integrating multiple molecular properties, such as molecular weight, logP, topological polar surface area, counts of hydrogen bond donors and acceptors, aromatic rings, rotatable bonds, and the presence of undesirable chemical functionalities.</p><p>• LogP (lipophilicity) <ref type="bibr" target="#b33">(Lipinski et al., 1997)</ref>: LogP quantifies the lipophilicity of a compound, reflecting its tendency to partition into non-polar (lipid-like) versus polar (aqueous) environments. Higher LogP values indicate greater solubility in non-polar solvents, which is relevant for drug absorption.</p><p>• plogP (penalized logP) denotes the logP penalized by the ring size and synthetic accessibility.</p><p>• MR (molar refractivity) <ref type="bibr" target="#b26">(Le Fevre, 1965)</ref>: MR is a physicochemical descriptor that quantifies molecular size and polarizability, both of which are critical for modeling molecular interactions with biological targets and membranes.</p><p>• BBBP (blood-brain barrier permeability) <ref type="bibr" target="#b58">(Wu et al., 2023)</ref>: BBBP quantifies a molecule's ability to permeate the blood-brain barrier (BBB), a selective interface that regulates molecular exchange between the systemic circulation and the central nervous system. The BBB is formed by specialized endothelial cells with tight junctions, minimal vesicular transport, and absence of fenestrations, collectively restricting passive diffusion of most compounds.</p><p>Table <ref type="table">9</ref>: System prompt adopted for training. Task will be replaced with the specific molecular optimization task.</p><p>A conversation between User and Assistant. The user asks a question, and the Assistant solves it.</p><p>The assistant first thinks about the reasoning process in the mind and then provides the user with the answer. The reasoning process and answer are enclosed within &lt;think&gt; and &lt;/think&gt; &lt;answer&gt; &lt;/answer&gt; tags, respectively, i.e., &lt;think&gt; reasoning process here &lt;/think&gt; &lt;answer&gt; answer here &lt;/answer&gt;. User: Task. Assistant:</p><p>This barrier protects neural tissue from toxins and maintains brain homeostasis, but also limits drug delivery to the brain. BBB permeability is modulated by interactions among endothelial cells, astrocytes, pericytes, and the extracellular matrix, which together constitute the neurovascular unit.</p><p>• Mutag (mutagenicity) <ref type="bibr" target="#b48">(Sundar et al., 2018)</ref>: Mutag refers to the induction of permanent transmissible changes in the amount or structure of the genetic material of cells or organisms.</p><p>• DRD2 (dopamine receptor D2 binding affinity) <ref type="bibr" target="#b13">(Fan et al., 2020)</ref>: DRD2 measures the binding affinity of a molecule to the D2 subtype of dopamine receptors, which are G-protein-coupled receptors primarily located in brain regions such as the striatum, nucleus accumbens, and prefrontal cortex. These receptors are central to regulating reward, motivation, and motor control. Higher DRD2 affinity indicates stronger ligand-receptor binding, which can modulate dopaminergic signaling and is relevant for the treatment of neurological disorders such as Parkinson's disease.</p><p>I.2 DATASETS.</p><p>We detailed the dataset used in the experiments, including the construction of the dataset and the training splits.</p><p>• TOMG-Bench is derived from Zinc-250K <ref type="bibr" target="#b47">(Sterling &amp; Irwin, 2015)</ref> and PubChem <ref type="bibr" target="#b22">(Kim et al., 2019)</ref>, comprising two task categories: structure-based and single-property optimization. In structure-based tasks, the LLM is instructed to operate on specific functional groups within molecules. Single-property optimization tasks require the LLM to modify molecules to enhance target properties such as QED (Bickerton et al., 2012) (drug-likeness), LogP <ref type="bibr" target="#b33">(Lipinski et al., 1997)</ref> (lipophilicity), and MR (Le Fevre, 1965) (molecular size and polarizability).</p><p>• MuMOInstruct is a multi-objective molecular optimization benchmark designed to reflect the complexity of real-world drug discovery. Derived from Zinc-250K, it requires models to optimize multiple molecular properties concurrently, thereby increasing task difficulty. It incorporates both seen and unseen instruction styles to evaluate the model's instruction-following robustness.</p><p>The benchmark covers five critical pharmaceutical properties: plogP (lipophilicity, balancing permeability, solubility, and metabolic stability; higher is better), QED (drug-likeness), BBBP (blood-brain barrier permeability, relevant for central nervous system drugs), Mutag (mutagenicity, where lower values indicate reduced toxicity), and DRD2 (dopamine receptor D2 binding affinity, with higher values indicating greater specificity).</p><p>For TOMG-Bench, we utilize the light training split, comprising 1,500 samples (500 per subtask for both structure-based and property-based optimization). The full TOMG-Bench test set is used for evaluation. To ensure comparability in training data volume, we randomly select 500 samples from MuMOInstruct for training, which resulting 1500 samples for training. All the training samples only contain the instruction and the target molecule, without any intermediate reasoning process.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>I.3 TRAINING CONFIGURATIONS</head><p>Supervised Fine-Tuning. We configure the training process as follows. We employ the Llama-Factory <ref type="bibr" target="#b66">(Zheng et al., 2024)</ref> to SFT the model. All the SFT models are trained using two A100 GPU. Each device processes a batch size of 2, and gradients are accumulated over 2 steps before an update. The learning rate is set to 1.0 × 10 −5 and optimized using a cosine scheduler, with a warmup ratio of 0.05 to stabilize early training. The model is trained for 5 epochs using BF16 precision on the training split of TOMG-Bench and 1 epoch on the training split of MuMOInstruct.</p><p>We carefully followed the commonly adopted Llama-Factory <ref type="bibr" target="#b66">(Zheng et al., 2024)</ref> SFT recipe. We also performed an extensive hyper-parameter sweep (e.g., learning rate = 1e-5, 3e-5 and warm-up ratio = 0.05, 0.1), but could not recover reasoning. Notably, our SFT stage observes only questionanswer pairs without any chain-of-thought. Such data encourages the model to exploit the shortcut "jump straight to the answer," permanently shrinking its output length <ref type="bibr" target="#b34">(Lobo et al., 2025)</ref>. Once this preference is instilled, subsequent GRPO fine-tuning fails to restore reasoning depth.</p><p>Reinforcement Learning. We utilize the Transformer Reinforcement Learning (TRL) library <ref type="bibr" target="#b50">(von Werra et al., 2020)</ref> for model training. All reinforcement learning approaches, including GRPO, GRPO (SFT init), and RePO, are trained using a unified system prompt (see Tab. 9), consistent with the DeepSeek-R1 protocol <ref type="bibr" target="#b16">(Guo et al., 2025)</ref>. Unless otherwise specified, we adopt the default TRL hyperparameters, with the following exceptions: the learning rate is set to 5.0 × 10 −6 , and the maximum prompt length is limited to 256 tokens. We use a group size of 4 per input and a maximum completion length of 1024 tokens. Training is conducted for 4 epochs with a per-device batch size of 2 for training and 1 for evaluation. To ensure reproducibility, we fix the random seed to 42 and apply a warmup ratio of 0.15. Model generation is performed on a single GPU, hosted by vLLM <ref type="bibr" target="#b25">(Kwon et al., 2023)</ref>, while two additional GPUs are allocated for training.</p><p>Evaluation. We employ vLLM to host the model to accelerate the generation process. For all generation tasks, we set the temperature to 0.75 and top p to 0.85 to balance diversity and relevance in the generated outputs. We use a single beam (num beams = 1) and limit the maximum number of new tokens to 512. These hyperparameters are chosen to ensure consistent and controlled generation quality across experiments.</p><p>Obtaining CoT examples for prompt-based baselines. For zero-shot CoT, we follow <ref type="bibr" target="#b24">(Kojima et al., 2022)</ref> by appending the phrase "Let's think step by step" to each question. To create our few-shot CoT setup, we first apply this zero-shot prompt to queries from the training set to generate full reasoning traces. We then select a handful of high-quality Q&amp;A-with-reasoning pairs from those outputs and prepend them as demonstrations to new questions, enabling in-context few-shot learning.</p><p>Licenses. The MuMOInstruct dataset is released under the MIT License. Qwen-2.5-3B-Instruct is distributed under the Qwen Research License Agreement. vLLM, TRL, and Llama-Factory are all licensed under Apache 2.0.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>J FULL EXPERIMENT RESULTS AND FURTHER ANALYSIS</head><p>In this section, we provide and analyze the full results of all the experiments. Notably, for TOMG-Bench, we analyze the full results for the structure-based optimization tasks and the property-based optimization tasks in Tab. 1. For MuMOInstruct, we analyze the full results for the seen instruction and the unseen instruction in Tab. 2. We also provide a discussion on the infeasibility of GRPO with SFT initialization on the multi-objective tasks in Appendix J.3. Finally, we conduct the empirical analysis on the performance of domain-specific LMs in Appendix J.4.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>J.1 PROPERTY OPTIMIZATION ACROSS RANDOM SEEDS</head><p>In this part, we present the performance of RePO and other baseline approaches in Tab. 10, evaluating these methods over multiple random seeds, and reporting the mean performance to show their performance stability.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>J.2 MOLECULAR OPTIMIZATION PERFORMANCE</head><p>Single-objective optimization tasks. Table <ref type="table" target="#tab_2">1</ref> presents the performance of each model on the structure-based and property-based tasks of TOMG-Bench. Performance is measured using Success Rate (SR) and molecular Similarity. Several key patterns are observed:</p><p>• RePO consistently achieves a strong trade-off between SR and molecular similarity across tasks. In the AddComponent task (Table <ref type="table" target="#tab_2">1</ref>), RePO attains an SR of 0.307 and a similarity of 0.778.</p><p>In QED optimization (Table <ref type="table" target="#tab_2">1</ref>), it leads with an SR of 0.312 and a similarity of 0.756. These results underscore RePO's capacity to generate molecules that are both successful in meeting task objectives and structurally faithful to the input. • SFT improves SR but sacrifices similarity. Supervised Fine-Tuning (SFT) markedly increases SR relative to the baseline (e.g., from 0.057 to 0.366 for SubComponent in Table <ref type="table" target="#tab_2">1</ref>), but this improvement often comes at the expense of molecular similarity, which remains lower than that of RePO (e.g., SFT similarity of 0.721 vs. RePO's 0.802 for SubComponent). GRPO with SFT initialization can achieve competitive SRs in certain cases (e.g., 0.420 for Sub-Component), but its similarity is less consistent (0.713 for SubComponent). Distill-SFT generally underperforms SFT in both SR and similarity.</p><p>• GRPO without SFT init preserves similarity but has low SR. GRPO without SFT initialization adopts a conservative modification strategy, frequently yielding the highest similarity scores across tasks (e.g., &gt;0.97 in structure-based tasks in Table <ref type="table" target="#tab_2">1</ref>). However, this preservation of structural integrity results in very low SRs for most structure-based tasks (e.g., 0.005 for AddComponent). GRPO does exhibit task-specific strengths, such as a high SR of 0.379 for LogP optimization.</p><p>Multi-objective optimization tasks. Table <ref type="table" target="#tab_3">2</ref> presents the performance of each model on the MuMOInstruct benchmark, evaluating both instructions encountered during training and those not seen previously. Performance is measured using Success Rate (SR) and molecular Similarity. The results reveal several key patterns:</p><p>• Clear trade-off exhibit between SR and Similarity is apparent across methods. Notably, SFT often yields high SR, particularly on seen instructions (e.g., SR of 0.398 for BDP in Table <ref type="table" target="#tab_3">2</ref>), but typically results in lower molecular similarity (e.g., SFT Similarity scores are 0.254, 0.279, 0.244, while RePO's are 0.569, 0.365, 0.509). This suggests that SFT can aggressively modify molecules to meet property targets, sometimes at the expense of significant structural deviation.</p><p>• RePO consistently demonstrates a more balanced performance profile. While its standalone SR might occasionally be surpassed by SFT (e.g., the SR for SFT on BDQ with seen instruction is 0.319 vs RePO's 0.160 in Table <ref type="table" target="#tab_3">2</ref>), RePO generally maintains higher similarity scores than SFT (compare RePO and SFT in Table <ref type="table" target="#tab_3">2</ref>). This ability to achieve competitive SR while preserving structural similarity contributes to its strong performance in the combined metric (SR × Similarity) reported in Table <ref type="table" target="#tab_3">2</ref>.</p><p>• The GRPO variants exhibit distinct behaviors. GRPO without SFT initialization tends to preserve molecular structure effectively, achieving high similarity scores (e.g., GRPO Similarity for BDP seen is 0.759 in Table <ref type="table" target="#tab_3">2</ref>). However, its SR can be variable (e.g., SR of 0.156 for BDP with seen instruction vs 0.082 for BDQ with seen instruction in Table <ref type="table" target="#tab_3">2</ref>). Conversely, GRPO initialized with SFT performs poorly on the MuMOInstruct benchmark, with notably low SR and often low similarity, leading to very low scores (e.g., 0.012 for BDP with seen instruction).</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>J.3 GRPO WITH SFT INITIALIZATION CANNOT GENERATE READABLE OUTPUTS</head><p>While GRPO with SFT initialization demonstrates noteworthy performance on single-objective tasks (as detailed in Tab. 1), its efficacy significantly diminishes on the more complex multi-objective tasks within the MuMOInstruct benchmark. The combined SR × Similarity scores presented in Tab. 2 for GRPO (SFT init) are markedly low across all evaluated multi-objective settings.</p><p>This quantitative underperformance aligns with qualitative observations of problematic generation behavior, such as those illustrated in Section K.2, where the model may produce multiple, unreasoned molecular outputs or invalid SMILES strings. These issues suggest that while SFT initialization can be beneficial for simpler tasks, it may hinder the model's reasoning ability to effectively navigate the chemical space of multi-objective molecular optimization, leading to a failure to generate both valid and high-quality solutions.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>J.4 COMPARISON WITH DOMAIN-SPECIFIC LMS</head><p>We report the SR × Similarity scores for BioT5-base <ref type="bibr" target="#b41">(Pei et al., 2023)</ref> and MolT5-large <ref type="bibr" target="#b12">(Edwards et al., 2022)</ref> as provided in <ref type="bibr">(Li et al., 2024a)</ref>. BioT5 leverages biochemical text to enhance both molecular understanding and generation, while MolT5-large utilizes large-scale pretraining to improve SMILES generation from textual descriptions. We report the results in Tab. 11.</p><p>Notably, the results demonstrate that fine-tuned generalist language models can perform competitively, and often surpass, domain-specific models in molecular optimization tasks. Notably, RePO consistently outperforms both BioT5-base and MolT5-large across all evaluated objectives. For example, in QED optimization, RePO achieves a score of 0.236, substantially higher than BioT5-base (0.080) and MolT5-large (0.055). Moreover, the baseline generalist LLM, without additional task-specific fine-tuning, often matches or exceeds the performance of domain-specific models (e.g., Baseline LogP score of 0.168 vs. 0.079 for BioT5-base and 0.043 for MolT5-large).</p><p>These findings suggest that general-purpose LLMs, when adapted with RePO, are highly effective for molecular optimization and can match or outperform models pre-trained specifically on biomedical and chemical corpora.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>J.5 THE DEMONSTRATION DATA GENERATION PROCESS</head><p>The training sets of both datasets are constructed in an instruction-tuning style, where each query is paired with a ground-truth optimized molecule as the answer. We use these ground-truth molecules as demonstrations. These demonstrations satisfy task constraints by design and are filtered through standard quality-control pipelines in the benchmark construction process.</p><p>For TOMG-Bench, seed molecules come from PubChem for training and ZINC-250k for testing; molecular edits are generated with RDKit and validated for chemical validity and target-property computation. For MuMOInstruct, training pairs are built from molecules that satisfy both structuralsimilarity and multi-property-improvement constraints, with canonicalized and deduplicated SMILES and benchmark-standard property tools.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>J.6 THE DESIGN OF THE REWARD FUNCTIONS</head><p>Following TOMG-Bench and MuMOInstruct protocols, we use Tanimoto similarity on ECFP4 fingerprints for structural preservation and combine it with a property reward. This choice ensures direct comparability with prior benchmark results while preserving reproducibility of reward computation.</p><p>We also evaluate continuous property rewards, but the binary property reward is more stable in our setting and produces stronger overall optimization trade-offs. QED value, we need to remove its substituents. ¡think¿ QED value is a quantitative measure of the complexity of chemical structure. Generally, the higher the branching and presence of functional groups in the molecule, the higher its QED value will be. Hence, the best way to decrease the QED value would be to remove substituents. RePO, in contrast, successfully combines guided exploration with preserved reasoning capabilities, leading to chemically sound analysis and a reasoned modification. This highlights RePO's ability to effectively navigate the complexities of molecular optimization by leveraging demonstrations to inform its search process, resulting in more reliable and interpretable outputs.</p><p>We summarize the key findings as follows:</p><p>The baseline model fails to understand the chemical context. The baseline model fails to understand the term "MR" in the chemical context, requesting clarification. This highlights a lack of specialized knowledge required for targeted molecular optimization, a common issue with generalpurpose LLMs.</p><p>SFT provides a direct answer without intermediate reasoning. Model after SFT provides a direct answer by removing the bromine atom: Cc1ccc(NC(=O)C(C)(C)C(=O)N2CCCC2)cc1. While this modification is chemically valid and likely reduces MR (by removing a heavy atom), the output lacks any reasoning process.</p><p>GRPO (SFT init) exhibits similar behavior as SFT. GRPO (SFT init) substitutes the bromine with an oxygen atom: Cc1ccc(NC(=O)C(C)(C)C(=O)N2CCCC2)cc1O. Similar to SFT, this is a direct modification without explicit reasoning. While potentially effective, it underscores Observation 3.3, indicating that GRPO may not fully recover the detailed reasoning capabilities when initialized from an SFT model that favors direct answers.</p><p>GRPO shows flawed chemical reasoning. GRPO misinterprets "MR" as "Magic Angle Spinning," incorrectly analyzes the molecular structure (e.g., its depiction of the molecule and the claim about the heterocyclic ring), and proposes a chemically implausible modification (removing a nitrogen atom from the heterocyclic ring). This behavior is consistent with Observation 3.1, where GRPO, without proper guidance, struggles to navigate the chemical space and may generate suboptimal or incorrect solutions. The output shown is directly referenced in Fig. <ref type="figure" target="#fig_5">16</ref> (right) of Section 5.4.</p><p>RePO demonstrates a more robust and chemically sound approach. RePO demonstrates a more robust and chemically sound approach. The model correctly interprets the task in the context of MTR (Magnetization Transfer Ratio), identifies key structural features (bromine, carbonyl groups, nitrogen), and reasons about their impact on MR (steric hindrance, electronegativity). The RePO output shown is related to Fig. <ref type="figure" target="#fig_5">16</ref> (left) of Section 5.4.</p><p>It proposes substituting bromine with chlorine (Cc1ccc(NC(=O)C(C)(C)C(=O)N2CCCC2)cc1Cl), a chemically plausible modification aimed at reducing steric hindrance and altering electronegativity to lower MR. This case study aligns with the principles of RePO outlined in Section 4, where demonstration guidance helps constrain exploration to chemically valid and promising regions.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>K.2 CASE STUDY ON MULTI-OBJECTIVE OPTIMIZATION</head><p>In this part, we present the case studies of different approaches to multi-objective optimization tasks.</p><p>We summarize the key findings as follows:</p><p>Case study of Baseline model (Qwen-2.5-3B-Instruct). can struggle to explore chemical space without explicit guidance, often resulting in conservative outputs, particularly in complex multi-objective scenarios.</p><p>RePO exhibits systematic reasoning and targeted molecular modification for multi-objective optimization. In contrast, RePO proposes a modified molecule, CCOc1cc([C@H]2NC(=O)NC(C)=C2 C(=O)OC)ccc1OC[C@H](O)N/N=C/c1ccc(Cl)c(Cl)c1, and provides a clear rationale for its design. The model explains its chemical modifications in complete sentences. For example, it states that the dichlorination of the terminal phenyl ring is intended to influence the desired properties. It also notes that the removal of the hydroxyl group from the molecule increases the octanol-water partition coefficient. This change is beneficial for both blood-brain barrier permeability and penalized logP.</p><p>Although RePO acknowledges that it did not make direct changes to improve DRD2 inhibition, it demonstrates an understanding of the multiple objectives and justifies its design choices accordingly. This structured and interpretable approach aligns with RePO's use of demonstration-based guidance, as described in Section 4. The effectiveness of this method is also evident in RePO's superior performance on multi-objective tasks, as shown in Tab. 2. In summary, RePO is better able to balance competing objectives and provide transparent and actionable outputs.</p></div><figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_0"><head>Figure 1 :</head><label>1</label><figDesc>Figure 1: Molecular optimization aims to optimize the given molecule by modifying its components while maintaining the structural similarity of the original molecule after modification. The molecule is presented as SMILES<ref type="bibr" target="#b57">(Weininger, 1988)</ref>, a sequence of symbols representing atoms and bonds.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_1"><head>Figure 2 :</head><label>2</label><figDesc>Figure 2: Illustration of RePO. The model generates answers via reasoning; reference guidance anchors to the reference conditioned on the reasoning context, while RLVR optimizes the property under similarity constraints.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_2"><head></head><label></label><figDesc>The model outputs a response o = [t; m] consisting of reasoning tokens t and an optimized molecule m. Given the candidate molecule space M, target-property function F : M → R, similarity function Similarity(•, •), and threshold δ ∈ [0, 1], the task is formulated as m * = arg max m∈M F (m) s.t. Similarity(m, m 0 ) ≥ δ.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_3"><head>Figure 4 :</head><label>4</label><figDesc>Figure4: Average success rate and similarity for SFT, GRPO, GRPO (SFT-init), and RePO on property optimization. GRPO achieves high similarity but a low success rate. RePO improves success while maintaining high similarity.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_4"><head>Figure 5 :</head><label>5</label><figDesc>Figure 5: Training dynamics of completion lengths of different methods. GRPO (SFT-init) generates short responses that match the SFT data. similarity on the test set, and response length during training (as a proxy for whether multi-step reasoning is expressed). We employ Qwen-2.5-3B Instruct (Qwen et al., 2024) as the base model and the property optimization task of TOMG-Bench for training and evaluation. We employ structural similarity (Eqn. 5) and target properties (Eqn. 6) as rewards for GRPO training. Detailed settings are provided in Appendix I. Figs. 4 and 5 summarize the results, leading to three observations.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_5"><head>Figure 6 :</head><label>6</label><figDesc>Figure6: Token partition and gradient application for SFT, GRPO, and RePO.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_6"><head>Figure 7 :Figure 8 :Figure 9 :</head><label>789</label><figDesc>Figure 7: SR, Sim, and SR×Sim for RePO masking ablations on the property optimization task.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_7"><head>Figure 10 :Figure 11 :</head><label>1011</label><figDesc>Figure 10: Performance of GRPO, RePO, and reference on MR optimization.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_8"><head>Figure 12 :Figure 13 :</head><label>1213</label><figDesc>Figure 12: Quantification analysis of the reasoning trajectories' quality.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_9"><head>Figure 14 :Figure 15 :</head><label>1415</label><figDesc>Figure 14: Performance comparison of the base model, RePO with different β, and SFT.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_10"><head>Figure 17 :</head><label>17</label><figDesc>Figure17: Inference-scaling effect on the success rate and similarity metrics.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_11"><head></head><label></label><figDesc>&lt;/think&gt;&lt;answer&gt; Cn1cc(S(=O)(=O)NCC(O)c2cccs2)cn1 &lt;/answer&gt; Case study of RePO. Prompt: Optimize the molecule C=CCCC[SiH]1CCC(c2ccc(OC(=O)c3ccc(Cl)cc3)cc2)CC1 to have a lower LogP value. LLM Output: &lt;think&gt; In order to optimize the molecule in the given problem to have a lower LogP value, one can reduce the molecular size and complexity. Moreover, smaller molecules often have lower LogP values. In the current structure, the LogP value can be improved by replacing the bulky OC(=O)c1ccc(Cl)cc1 group with a smaller functionality. Chlorine can be replaced with hydrogen or an alkyl group, for instance. By reducing the overall size of the molecule, we can create a more streamlined structure that favors lower LogP values at the expense of some structural stability.&lt;/think&gt;&lt;answer&gt;C=CCCC[SiH]1CCC(OC(=O)Cl)CC1 &lt;/answer&gt;</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_12"><head></head><label></label><figDesc>Prompt: Your task is to modify the given molecule to adjust specific molecular properties while keeping structural changes as minimal as possible. Your response should only contain a valid SMILES representation of the modified molecule enclosed with &lt;SMILES&gt; &lt;/SMILES&gt; tag.Input : &lt;SMILES&gt; CCOc1cc([C@H]2NC(=O)NC(C)=C2C(=O)OC)ccc1OC[C@H](O)N/N=C/c1ccc (OC)c(C)c1 &lt;/SMILES&gt;Adjust: increase BBB permeability, increase DRD2 inhibition and increase Penalized octanol-water partition coefficient (penalized logP) LLM Output: without large structural modifications.&lt;SMILES&gt; CCOc1cc([C@H]2NC(=O)NC(C)=C2C(=O)OC)ccc1OC[C@H](O)Nc1ccc(C)nc1 &lt;/SMILES&gt;The baseline model struggles with complex instructions and multiple objectives. The baseline model generates a molecule by modifying the end part of the SMILES string: CCOc1cc([C@H]2NC(= O)NC(C)=C2C(=O)OC)ccc1OC[C@H](O)Nc1ccc(C)nc1. While it produces a valid SMILES string, the output lacks explicit reasoning regarding how the modification addresses the three specified objectives (increasing BBB permeability, DRD2, and penalized logP). The effectiveness of the modification is unclear without analysis. This indicates a potential difficulty in handling multi-faceted optimization goals simultaneously and providing transparent reasoning.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_0"><head></head><label></label><figDesc>), and D KL (π θ ∥π ref ) uses the estimator as Eqn. 2. The exploration term applies updates to all tokens in o i . The guidance term increases the likelihood of the reference molecule conditioned on the reasoning prefix t i , and β controls its strength.Reference molecules. For each query q, we have the dataset providing a reference molecule m ref , which serves as a proxy for the (unknown) optimal solution m * in Eqn. 1. RePO uses m ref only as an answer-level anchor in Eqn. 4. In practice, we apply RDKit validity checks to m ref ; For notation convenience, we continue to denote the checked reference as m ref . Importantly, m ref does not provide reasoning supervision: RePO does not treat it as a preferred reasoning path, and trajectory learning is driven by rewards on model-sampled responses. We showcase a m ref as follows:</figDesc><table><row><cell>We next provide a detailed description of the remaining key design choices in our framework,</cell></row><row><cell>including (i) the reference molecule, (ii) the reward function and (iii) the overall training procedure.</cell></row><row><cell>Query: "Please modify the molecule CCCC(C(=O)OC)C(O)C1CCCCC1 to increase its LogP value."</cell></row><row><cell>Reference molecule: O=C(OC(CCCCO)CCCCS)c1ccccc1</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_2"><head>Table 1 :</head><label>1</label><figDesc>SuccessRate (SR), Similarity (Sim), and their product (SR×Sim) on TOMG-Bench for structure-and property-based optimization tasks. The higher the better. The best results for each task are bolded, and the second-best results are underlined.</figDesc><table><row><cell>Task type</cell><cell>Objective</cell><cell cols="6">Metric Base Model Distill-SFT SFT GRPO GRPO (SFT init) RePO</cell></row><row><cell></cell><cell></cell><cell>SR</cell><cell>0.086</cell><cell>0.100</cell><cell>0.238 0.005</cell><cell>0.246</cell><cell>0.307</cell></row><row><cell></cell><cell>AddComponent</cell><cell>Sim</cell><cell>0.763</cell><cell>0.604</cell><cell>0.619 0.992</cell><cell>0.635</cell><cell>0.778</cell></row><row><cell></cell><cell></cell><cell>SR×Sim</cell><cell>0.066</cell><cell>0.060</cell><cell>0.147 0.005</cell><cell>0.156</cell><cell>0.239</cell></row><row><cell>Structure-</cell><cell></cell><cell>SR</cell><cell>0.107</cell><cell>0.188</cell><cell>0.203 0.008</cell><cell>0.232</cell><cell>0.158</cell></row><row><cell>based</cell><cell>DelComponent</cell><cell>Sim</cell><cell>0.864</cell><cell>0.682</cell><cell>0.755 0.994</cell><cell>0.759</cell><cell>0.887</cell></row><row><cell>optimization</cell><cell></cell><cell>SR×Sim</cell><cell>0.092</cell><cell>0.128</cell><cell>0.153 0.008</cell><cell>0.176</cell><cell>0.140</cell></row><row><cell></cell><cell></cell><cell>SR</cell><cell>0.057</cell><cell>0.078</cell><cell>0.366 0.053</cell><cell>0.420</cell><cell>0.429</cell></row><row><cell></cell><cell>SubComponent</cell><cell>Sim</cell><cell>0.815</cell><cell>0.633</cell><cell>0.721 0.972</cell><cell>0.713</cell><cell>0.802</cell></row><row><cell></cell><cell></cell><cell>SR×Sim</cell><cell>0.046</cell><cell>0.049</cell><cell>0.264 0.052</cell><cell>0.299</cell><cell>0.344</cell></row><row><cell></cell><cell></cell><cell>SR</cell><cell>0.188</cell><cell>0.208</cell><cell>0.297 0.138</cell><cell>0.223</cell><cell>0.312</cell></row><row><cell></cell><cell>QED</cell><cell>Sim</cell><cell>0.693</cell><cell>0.594</cell><cell>0.697 0.889</cell><cell>0.863</cell><cell>0.756</cell></row><row><cell></cell><cell></cell><cell>SR×Sim</cell><cell>0.130</cell><cell>0.124</cell><cell>0.207 0.123</cell><cell>0.192</cell><cell>0.236</cell></row><row><cell>Property optimization</cell><cell>LogP</cell><cell>SR Sim SR×Sim</cell><cell>0.268 0.627 0.168</cell><cell>0.234 0.579 0.135</cell><cell>0.298 0.379 0.692 0.806 0.206 0.305</cell><cell>0.212 0.863 0.183</cell><cell>0.415 0.715 0.297</cell></row><row><cell></cell><cell></cell><cell>SR</cell><cell>0.252</cell><cell>0.214</cell><cell>0.359 0.214</cell><cell>0.265</cell><cell>0.399</cell></row><row><cell></cell><cell>MR</cell><cell>Sim</cell><cell>0.685</cell><cell>0.619</cell><cell>0.663 0.880</cell><cell>0.850</cell><cell>0.736</cell></row><row><cell></cell><cell></cell><cell>SR×Sim</cell><cell>0.173</cell><cell>0.132</cell><cell>0.238 0.188</cell><cell>0.225</cell><cell>0.294</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_3"><head>Table 2 :</head><label>2</label><figDesc>Success Rate (SR), Similarity (Sim), and their product (SR×Sim) on MuMOInstruct for seen and unseen instructions. The best results are bolded, and the second bests are underlined.</figDesc><table><row><cell cols="2">Task type Objective</cell><cell>Metric</cell><cell cols="5">Base Model Distill-SFT SFT GRPO GRPO (SFT init) RePO</cell></row><row><cell></cell><cell></cell><cell>SR</cell><cell>0.052</cell><cell>0.078</cell><cell>0.398 0.156</cell><cell>0.088</cell><cell>0.206</cell></row><row><cell></cell><cell>BDP</cell><cell>Sim</cell><cell>0.149</cell><cell>0.207</cell><cell>0.254 0.759</cell><cell>0.141</cell><cell>0.569</cell></row><row><cell></cell><cell></cell><cell>SR×Sim</cell><cell>0.008</cell><cell>0.016</cell><cell>0.101 0.118</cell><cell>0.012</cell><cell>0.117</cell></row><row><cell>Seen instruction</cell><cell>BDQ</cell><cell>SR Sim SR×Sim</cell><cell>0.034 0.117 0.004</cell><cell>0.022 0.106 0.002</cell><cell>0.319 0.082 0.279 0.479 0.089 0.039</cell><cell>0.022 0.045 0.001</cell><cell>0.160 0.365 0.058</cell></row><row><cell></cell><cell></cell><cell>SR</cell><cell>0.052</cell><cell>0.064</cell><cell>0.471 0.212</cell><cell>0.056</cell><cell>0.274</cell></row><row><cell></cell><cell>BPQ</cell><cell>Sim</cell><cell>0.194</cell><cell>0.165</cell><cell>0.244 0.567</cell><cell>0.085</cell><cell>0.509</cell></row><row><cell></cell><cell></cell><cell>SR×Sim</cell><cell>0.010</cell><cell>0.011</cell><cell>0.115 0.120</cell><cell>0.005</cell><cell>0.139</cell></row><row><cell></cell><cell></cell><cell>SR</cell><cell>0.052</cell><cell>0.016</cell><cell>0.310 0.148</cell><cell>0.092</cell><cell>0.198</cell></row><row><cell></cell><cell>BDP</cell><cell>Sim</cell><cell>0.143</cell><cell>0.099</cell><cell>0.261 0.727</cell><cell>0.147</cell><cell>0.572</cell></row><row><cell></cell><cell></cell><cell>SR×Sim</cell><cell>0.007</cell><cell>0.002</cell><cell>0.081 0.108</cell><cell>0.014</cell><cell>0.113</cell></row><row><cell>Unseen instruction</cell><cell>BDQ</cell><cell>SR Sim SR×Sim</cell><cell>0.042 0.104 0.004</cell><cell>0.020 0.077 0.002</cell><cell>0.342 0.078 0.257 0.457 0.088 0.036</cell><cell>0.026 0.058 0.002</cell><cell>0.170 0.322 0.055</cell></row><row><cell></cell><cell></cell><cell>SR</cell><cell>0.050</cell><cell>0.050</cell><cell>0.419 0.186</cell><cell>0.042</cell><cell>0.242</cell></row><row><cell></cell><cell>BPQ</cell><cell>Sim</cell><cell>0.130</cell><cell>0.143</cell><cell>0.248 0.573</cell><cell>0.063</cell><cell>0.596</cell></row><row><cell></cell><cell></cell><cell>SR×Sim</cell><cell>0.007</cell><cell>0.007</cell><cell>0.104 0.107</cell><cell>0.003</cell><cell>0.144</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_4"><head>Table 3 :</head><label>3</label><figDesc>Performance comparison using Llama-3.1-8B Instruct on TOMG-Bench property optimization tasks. Best per row is bolded; second-best is underlined.</figDesc><table><row><cell></cell><cell>Metric</cell><cell>Base Model</cell><cell>SFT</cell><cell>GRPO</cell><cell>GRPO (SFT init)</cell><cell>RePO</cell></row><row><cell></cell><cell>SR</cell><cell>0.237</cell><cell>0.287</cell><cell>0.197</cell><cell>0.192</cell><cell>0.360</cell></row><row><cell>LogP</cell><cell>Sim</cell><cell>0.692</cell><cell>0.763</cell><cell>0.763</cell><cell>0.775</cell><cell>0.746</cell></row><row><cell></cell><cell>SR×Sim</cell><cell>0.164</cell><cell>0.219</cell><cell>0.151</cell><cell>0.149</cell><cell>0.269</cell></row><row><cell></cell><cell>SR</cell><cell>0.159</cell><cell>0.185</cell><cell>0.115</cell><cell>0.121</cell><cell>0.243</cell></row><row><cell>QED</cell><cell>Sim</cell><cell>0.722</cell><cell>0.809</cell><cell>0.805</cell><cell>0.811</cell><cell>0.783</cell></row><row><cell></cell><cell>SR×Sim</cell><cell>0.115</cell><cell>0.150</cell><cell>0.093</cell><cell>0.098</cell><cell>0.190</cell></row><row><cell></cell><cell>SR</cell><cell>0.169</cell><cell>0.230</cell><cell>0.142</cell><cell>0.141</cell><cell>0.293</cell></row><row><cell>MR</cell><cell>Sim</cell><cell>0.763</cell><cell>0.808</cell><cell>0.819</cell><cell>0.827</cell><cell>0.789</cell></row><row><cell></cell><cell>SR×Sim</cell><cell>0.129</cell><cell>0.186</cell><cell>0.117</cell><cell>0.116</cell><cell>0.231</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_5"><head>Table 4 :</head><label>4</label><figDesc>Performance comparison of the Qwen-2.5-7B Instruct.</figDesc><table><row><cell></cell><cell cols="3">Baseline SFT GRPO GRPO (SFT init) RePO</cell></row><row><cell cols="2">QED 0.174 0.252 0.165</cell><cell>0.147</cell><cell>0.213</cell></row><row><cell cols="2">LogP 0.277 0.288 0.285</cell><cell>0.302</cell><cell>0.326</cell></row><row><cell>MR</cell><cell>0.279 0.318 0.270</cell><cell>0.286</cell><cell>0.328</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_6"><head>Table 5 :</head><label>5</label><figDesc>Comparison of RePO with binary and continuous reward functions.</figDesc><table><row><cell></cell><cell>LogP QED MR</cell></row><row><cell>RePO (binary rprop)</cell><cell>0.297 0.236 0.294</cell></row><row><cell cols="2">RePO (continuous rprop) 0.301 0.203 0.292</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_8"><head></head><label></label><figDesc>Zhanke Zhou, Xiao Feng, Zhaocheng Zhu, JiangchaoYao, Sanmi Koyejo, and Bo Han. From   passive to active reasoning: Can large language models ask the right questions under incomplete information? In ICML, 2025a.Zhanke Zhou, Zhaocheng Zhu, Xuan Li, Mikhail Galkin, Xiao Feng, Sanmi Koyejo, Jian Tang, and Bo Han. Landscape of thoughts: Visualizing the reasoning process of large language models. arXiv preprint arXiv:2503.22165, 2025b.Yiheng Zhu, Jialu Wu, Chaowen Hu, Jiahuan Yan, Tingjun Hou, Jian Wu, et al. Sample-efficient multi-objective molecular optimization with gflownets. In NeurIPS, 2023.Jiaxi Zhuang, Yaorui Shi, Jue Hou, Yunong He, Mingwei Ye, Mingjun Xu, Yuming Su, Linfeng Zhang, Guolin Ke, and Hengxing Cai. Reasoning-enhanced large language models for molecular property prediction. arXiv preprint arXiv:2510.10248, 2025. study does not involve human subjects, data set releases, potentially harmful insights, applications, conflicts of interest, sponsorship, discrimination, bias, fairness concerns, privacy or security issues, legal compliance issues, or research integrity issues.</figDesc><table><row><cell>APPENDIX A ETHIC STATEMENT</cell><cell></cell></row><row><cell>A Ethic Statement</cell><cell>17</cell></row><row><cell>B Reproduction Statement</cell><cell>17</cell></row><row><cell>C LLM Usage Disclosure</cell><cell>17</cell></row><row><cell>D Impact Statement</cell><cell>17</cell></row><row><cell>E Limitations</cell><cell>17</cell></row><row><cell>F Future work</cell><cell>17</cell></row><row><cell>G Further Discussion</cell><cell>18</cell></row><row><cell>H Related Work</cell><cell>20</cell></row><row><cell>I Experiment Settings</cell><cell>21</cell></row><row><cell>J Full Experiment Results and Further Analysis</cell><cell>23</cell></row></table><note>G.1 Comprehensive Comparison with Related Works . . . . . . . . . . . . . . . . . . 18 G.2 Additional Backbone and Baseline Comparisons . . . . . . . . . . . . . . . . . . . 18 G.3 Training dynamics confirm guided exploration . . . . . . . . . . . . . . . . . . . . 18 G.4 Demonstration-Quality Ablation . . . . . . . . . . . . . . . . . . . . . . . . . . . 19 G.5 Further Discussion on the RePO's Demonstration Term . . . . . . . . . . . . . . . 19 G.6 Explain the exploration term . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 20 G.7 Explicit chemical validity constraints . . . . . . . . . . . . . . . . . . . . . . . . . 20 I.1 Pharmacological metrics. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 21 I.2 Datasets. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 22 I.3 Training configurations . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 22 The</note></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_9"><head>Table 6 :</head><label>6</label><figDesc>Comparison of Reward Shaping, Knowledge-guided Exploration, and RePO</figDesc><table><row><cell>Category</cell><cell cols="2">Reward Shaping</cell><cell>Knowledge-guided Ex-</cell><cell>RePO</cell></row><row><cell></cell><cell></cell><cell></cell><cell>ploration</cell></row><row><cell cols="3">Guidance Mechanism Utilizes environmental</cell><cell>Integrates professional</cell><cell>Employs demonstration</cell></row><row><cell></cell><cell cols="2">signals or LLM knowl-</cell><cell>tools (e.g., chemistry</cell><cell>molecules, offering end-</cell></row><row><cell></cell><cell cols="2">edge to guide the policy</cell><cell>toolkits (M. Bran et al.,</cell><cell>to-end supervision that</cell></row><row><cell></cell><cell>model.</cell><cell></cell><cell>2024), databases (Wang</cell><cell>promotes free-form in-</cell></row><row><cell></cell><cell></cell><cell></cell><cell>et al., 2025a)) to inject</cell><cell>termediate reasoning.</cell></row><row><cell></cell><cell></cell><cell></cell><cell>expert priors into work-</cell></row><row><cell></cell><cell></cell><cell></cell><cell>flows.</cell></row><row><cell cols="3">Signal &amp; Supervision Introduces dense inter-</cell><cell>Injects expert guidance</cell><cell>Avoids intermediate re-</cell></row><row><cell></cell><cell cols="2">mediate signals with</cell><cell>into the agent's work-</cell><cell>wards, eliminating the</cell></row><row><cell></cell><cell>manually</cell><cell>designed</cell><cell>flow through domain-</cell><cell>need for manually de-</cell></row><row><cell></cell><cell cols="2">heuristics (Xie et al.,</cell><cell>specific signals.</cell><cell>signed heuristics.</cell></row><row><cell></cell><cell cols="2">2024; Chan et al.,</cell><cell></cell></row><row><cell></cell><cell>2024).</cell><cell></cell><cell></cell></row><row><cell cols="3">Application Domain Commonly used in set-</cell><cell>Focused on solving</cell><cell>Designed for enhancing</cell></row><row><cell></cell><cell cols="2">tings with sparse re-</cell><cell>domain-specific prob-</cell><cell>reasoning performance</cell></row><row><cell></cell><cell cols="2">wards, such as robotics</cell><cell>lems by leveraging</cell><cell>in chemical tasks by nar-</cell></row><row><cell></cell><cell>and games.</cell><cell></cell><cell>external expert sources</cell><cell>rowing the search space.</cell></row><row><cell></cell><cell></cell><cell></cell><cell>with tool integration.</cell></row><row><cell>Overall Role</cell><cell cols="2">Complements demon-</cell><cell>Serves as an additional</cell><cell>Acts as a complemen-</cell></row><row><cell></cell><cell cols="2">stration guidance by</cell><cell>strategy that can work in</cell><cell>tary strategy by directly</cell></row><row><cell></cell><cell cols="2">providing additional in-</cell><cell>tandem with demonstra-</cell><cell>guiding LLM reasoning</cell></row><row><cell></cell><cell cols="2">termediate cues.</cell><cell>tion guidance, offering</cell><cell>with demonstrative ex-</cell></row><row><cell></cell><cell></cell><cell></cell><cell>expert insights.</cell><cell>amples.</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_10"><head>Table 7 :</head><label>7</label><figDesc>Comparison of molecular optimization baselines and larger models on TOMG-Bench tasks (SR, Sim, SR×Sim).</figDesc><table><row><cell>Models</cell><cell cols="6">LogP SR Sim. SR×Sim. SR Sim. SR×Sim. SR Sim. SR×Sim. MR QED</cell></row><row><cell>Graph GA</cell><cell>0.509 0.125</cell><cell>0.064</cell><cell>0.509 0.122</cell><cell>0.062</cell><cell>0.493 0.140</cell><cell>0.064</cell></row><row><cell>REINVENT</cell><cell>0.465 0.125</cell><cell>0.058</cell><cell>0.595 0.116</cell><cell>0.069</cell><cell>0.558 0.115</cell><cell>0.058</cell></row><row><cell>MOLLEO</cell><cell>0.510 0.103</cell><cell>0.053</cell><cell>0.509 0.127</cell><cell>0.065</cell><cell>0.496 0.122</cell><cell>0.061</cell></row><row><cell>GPT-4o-mini</cell><cell>0.499 0.706</cell><cell>0.352</cell><cell>0.409 0.771</cell><cell>0.315</cell><cell>0.231 0.752</cell><cell>0.174</cell></row><row><cell>Mol-T5-large</cell><cell>0.424 0.102</cell><cell>0.043</cell><cell>0.450 0.107</cell><cell>0.048</cell><cell>0.465 0.119</cell><cell>0.055</cell></row><row><cell>Bio-T5-base</cell><cell>0.516 0.153</cell><cell>0.079</cell><cell>0.506 0.160</cell><cell>0.081</cell><cell>0.507 0.158</cell><cell>0.080</cell></row><row><cell cols="2">Baseline (Qwen 2.5-3B Instruct) 0.268 0.627</cell><cell>0.168</cell><cell>0.252 0.685</cell><cell>0.173</cell><cell>0.188 0.693</cell><cell>0.130</cell></row><row><cell>SFT</cell><cell>0.298 0.692</cell><cell>0.206</cell><cell>0.359 0.663</cell><cell>0.238</cell><cell>0.297 0.697</cell><cell>0.207</cell></row><row><cell>GRPO</cell><cell>0.379 0.806</cell><cell>0.305</cell><cell>0.214 0.880</cell><cell>0.188</cell><cell>0.138 0.889</cell><cell>0.123</cell></row><row><cell>GRPO (SFT-Init)</cell><cell>0.212 0.863</cell><cell>0.183</cell><cell>0.265 0.850</cell><cell>0.225</cell><cell>0.223 0.863</cell><cell>0.193</cell></row><row><cell>RePO (Ours)</cell><cell>0.415 0.715</cell><cell>0.297</cell><cell>0.399 0.736</cell><cell>0.293</cell><cell>0.312 0.756</cell><cell>0.236</cell></row><row><cell></cell><cell cols="2">RePO ΔProp</cell><cell cols="3">RePO SuccessRate</cell><cell></cell></row><row><cell></cell><cell cols="2">GRPO ΔProp</cell><cell cols="3">GRPO SuccessRate</cell><cell></cell></row><row><cell cols="7">Figure 18: Training reward dynamics of GRPO and RePO on the property optimization task.</cell></row><row><cell cols="7">values. This supports the claim that answer-level guidance improves exploration efficiency in</cell></row><row><cell>constrained chemical search.</cell><cell></cell><cell></cell><cell></cell><cell></cell><cell></cell><cell></cell></row><row><cell cols="3">G.4 DEMONSTRATION-QUALITY ABLATION</cell><cell></cell><cell></cell><cell></cell><cell></cell></row><row><cell cols="7">To directly test sensitivity to demonstration quality, we randomly drop the guidance loss for a subset</cell></row><row><cell cols="7">of training examples and keep only 40% of demonstration supervision. Results in Tab. 8 show that</cell></row><row><cell cols="7">this degraded setting remains clearly stronger than the baseline, while full RePO provides the best</cell></row><row><cell>overall performance.</cell><cell></cell><cell></cell><cell></cell><cell></cell><cell></cell><cell></cell></row><row><cell cols="6">G.5 FURTHER DISCUSSION ON THE REPO'S DEMONSTRATION TERM</cell><cell></cell></row><row><cell cols="7">Methodologically, as shown in Eqn. 4, this guidance is applied only to the final answer tokens, while</cell></row><row><cell cols="7">gradient masking preserves the model's freedom to explore diverse intermediate reasoning paths.</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_11"><head>Table 8 :</head><label>8</label><figDesc>Ablation on demonstration-quality robustness in TOMG-Bench property optimization (reported in SR×Sim).</figDesc><table><row><cell cols="4">Objective Baseline 40% demo guidance RePO</cell></row><row><cell>QED</cell><cell>0.130</cell><cell>0.215</cell><cell>0.236</cell></row><row><cell>LogP</cell><cell>0.168</cell><cell>0.312</cell><cell>0.297</cell></row><row><cell>MR</cell><cell>0.173</cell><cell>0.297</cell><cell>0.294</cell></row><row><cell cols="4">results demonstrate that RePO introduces guidance without sacrificing exploration, leading to more</cell></row><row><cell>innovative solutions.</cell><cell></cell><cell></cell><cell></cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_12"><head>Table 10 :</head><label>10</label><figDesc>TOMG-Bench property optimization over multiple random seeds. We report mean ± std for SR and Sim, and SR×Sim for overall quality.</figDesc><table><row><cell cols="2">Objective Metric</cell><cell>Baseline</cell><cell>Distill-SFT</cell><cell>SFT</cell><cell>GRPO</cell><cell>GRPO (SFT init)</cell><cell>RePO</cell></row><row><cell></cell><cell>SR</cell><cell cols="6">0.269 ± 0.022 0.246 ± 0.011 0.323 ± 0.026 0.179 ± 0.174 0.183 ± 0.026 0.381 ± 0.029</cell></row><row><cell>LogP</cell><cell>Sim</cell><cell cols="6">0.628 ± 0.016 0.553 ± 0.023 0.700 ± 0.008 0.817 ± 0.025 0.897 ± 0.030 0.734 ± 0.016</cell></row><row><cell></cell><cell>SR×Sim</cell><cell>0.169</cell><cell>0.136</cell><cell>0.226</cell><cell>0.146</cell><cell>0.164</cell><cell>0.280</cell></row><row><cell></cell><cell>SR</cell><cell cols="6">0.196 ± 0.025 0.220 ± 0.010 0.317 ± 0.023 0.087 ± 0.044 0.169 ± 0.048 0.264 ± 0.042</cell></row><row><cell>QED</cell><cell>Sim</cell><cell cols="6">0.666 ± 0.039 0.585 ± 0.012 0.701 ± 0.004 0.905 ± 0.015 0.893 ± 0.026 0.797 ± 0.035</cell></row><row><cell></cell><cell>SR×Sim</cell><cell>0.131</cell><cell>0.129</cell><cell>0.222</cell><cell>0.079</cell><cell>0.151</cell><cell>0.210</cell></row><row><cell></cell><cell>SR</cell><cell cols="6">0.244 ± 0.007 0.225 ± 0.016 0.391 ± 0.023 0.098 ± 0.012 0.158 ± 0.005 0.384 ± 0.008</cell></row><row><cell>MR</cell><cell>Sim</cell><cell cols="6">0.687 ± 0.004 0.590 ± 0.026 0.679 ± 0.008 0.880 ± 0.016 0.902 ± 0.004 0.776 ± 0.005</cell></row><row><cell></cell><cell>SR×Sim</cell><cell>0.167</cell><cell>0.132</cell><cell>0.266</cell><cell>0.086</cell><cell>0.142</cell><cell>0.298</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_13"><head>Table 11 :</head><label>11</label><figDesc>Comparison of different methods on TOMG-Bench target on structural and property optimization. The best results for each task are bolded, and the second-best is underlined.</figDesc><table><row><cell>Task type</cell><cell cols="7">Objective (↑) BioT5-base MolT5-large Baseline SFT GRPO GRPO (SFT init) RePO</cell></row><row><cell>Structure-</cell><cell>AddComponent</cell><cell>0.054</cell><cell>0.031</cell><cell>0.065</cell><cell>0.147 0.005</cell><cell>0.156</cell><cell>0.239</cell></row><row><cell>based</cell><cell>DelComponent</cell><cell>0.027</cell><cell>0.027</cell><cell>0.092</cell><cell>0.154 0.008</cell><cell>0.176</cell><cell>0.140</cell></row><row><cell>optimization</cell><cell>SubComponent</cell><cell>0.011</cell><cell>0.016</cell><cell>0.047</cell><cell>0.264 0.052</cell><cell>0.300</cell><cell>0.344</cell></row><row><cell>Property optimization</cell><cell>QED LogP MR</cell><cell>0.080 0.079 0.081</cell><cell>0.055 0.043 0.048</cell><cell>0.130 0.168 0.173</cell><cell>0.207 0.123 0.206 0.305 0.238 0.188</cell><cell>0.193 0.183 0.225</cell><cell>0.236 0.297 0.294</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_14"><head></head><label></label><figDesc>To solve the problem of modifying the molecule C1cc(S(=O)(=O)NCC(O)(c2ccoc2)c2cccs2)Cc into has a lower QEd rage here, we Hungrily need to understand and where knowledge on the . Noodle Qedes are continuously based aren't interesting, ), push away here.Open thinking about here: marketing process HereSTANCE: Take ornaments that thinkout in more coffeesynopsis. LogP value, a viable strategy is to explore possible structural modifications that reduce, or at least control, the hydrophobic interactions and/or hydrogen bonding capacity. Here are a few potential strategies: ### 1. Substitution of Hydrocarbon Groups Replacing large, extended hydrocarbon groups may help in reducing LogP. These groups are more likely to be hydrophobic, contributing to high LogP scores. Let's replace a large portion with small groups. &lt;think&gt;Let's replace the largest tetrahedral hydrocarbon framework (Ccccc) with small substituent groups, for example, alkyl (C1H2) or methylene groups (CH2). &lt;/think&gt; The optimized structure would look like this: C1CCCC1[ SiH to CH &lt;answer&gt;C1CCCC1[SiH to CH1CCC(c2ccc(OC(=O)c3ccc(Cl)cc3)cc2)CC1 to molecule optimization fails here might be. Inverting the structure by partially breaking bonds and generating new substituents (for example, polarizable methyl groups) can help in this optimization.&lt;/answer&gt; Think about the problem in light of juxtaposition elements and how change can reduce electrostatic force and stronger manifold interactions. The adjust operation also requires considering position-binary differentiability. More complex replacements might be needed, pinpointing conflicting geometries. In view this consideration is specific application context highlighted strategies, below concrete substitution instantiated row &lt;c1&gt; basin release predicts diverse increment solutions. enhancement.benzene ring, which is then attached to a nitrogen atom, and connected to a bromine atom. The presence of the bromine group can introduce steric hindrance and create a polarizable environment, which could impact the MR value. To decrease the MR value, we might consider removing any bulky or electronegative substituents, which would reduce the steric hindrance and permit more efficient interactions or resonance structures contributing to higher MR.&lt;/think&gt; One straightforward approach to do this is to modify the bromine atom to a more flexible or less electronegative substituent, such as hydrogen (H) or another non-polar atom or a less electronegative halogen like chlorine (Cl). However, since chlorine is known to be more electronegative and might increase MR, we might want to opt for a less electronegative and flexible substituent. &lt;answer&gt; Cc1ccc(NC(=O)C(C)(C)C(=O)N2CCCC2)cc1Cl &lt;/answer&gt; Here, chlorine is substituted for the bromine, reducing the steric hindrance and potentially lowering the MR value by changing the electronegativity and flexibility of the molecule. However, for more definitive optimization, computational methods (like molecular dynamics simulations, quantum chemical calculations, or a more extensive computational search) would be necessary. This modification shows a reasonable effect based on the goal of lowering MR value.</figDesc><table><row><cell>Case study of GRPO. Case study of RePO.</cell><cell></cell></row><row><cell cols="2">Prompt: Modify the molecule Cn1cc(S(=O)(=O)NCC(O)(c2ccoc2)c2cccs2)cn1 to have a lower Prompt: Modify the molecule Cc1ccc(NC(=O)C(C)(C)C(=O)N2CCCC2)cc1Br to have a lower MR.</cell></row><row><cell>QED value. LLM Output:</cell><cell></cell></row><row><cell cols="2">LLM Output: To determine how to modify the molecule Cc1ccc(NC(=O)C(C)(C)C(=O)N2CCCC2)cc1Br to achieve</cell></row><row><cell cols="2">a lower Magnetization Transfer Ratio (MTR) value, we need to understand the impact of different</cell></row><row><cell>chemical modifications on the MR value.</cell><cell></cell></row><row><cell cols="2">MTR is responsible for the transfer of magnetization between molecules, and such transfer can be</cell></row><row><cell cols="2">influenced by several aspects of the molecule's structure, including steric hindrance, electronegativity,</cell></row><row><cell>and polarizability.</cell><cell></cell></row><row><cell>First, we need to consider the structure of the molecule:</cell><cell></cell></row><row><cell cols="2">&lt;think&gt; Cc1ccc(NC(=O)C(C)(C)C(=O)N2CCCC2)cc1Br can be broken down into a carbonyl group Case study of GRPO. Prompt: Optimize the molecule C=CCCC[SiH]1CCC(c2ccc(OC(=O)c3ccc(Cl)cc3)cc2)CC1 to have a lower LogP value. LLM Output: To optimize the molecule C=CCCC[SiH]1CCC(c2ccc(OC(=O)c3ccc(Cl)cc3)cc2)CC1 to have a lower attached to a Case study of RePO.</cell></row><row><cell cols="2">Prompt: Modify the molecule Cn1cc(S(=O)(=O)NCC(O)(c2ccoc2)c2cccs2)cn1 to have a lower</cell></row><row><cell>QED value.</cell><cell>&lt;/div&gt;</cell></row><row><cell cols="2">div¿ containing obstacles symmetrical divisionive representative adhering. applications control. itative LLM Output:</cell></row><row><cell cols="2">adjustment will be the&lt;br&gt; &lt;think&gt; To modify the molecule Cn1cc(S(=O)(=O)NCC(O)(c2ccoc2)c2cccs2)cn1 to have a lower</cell></row><row><cell cols="2">focus of optimizing the LogP : substitution procedure,&lt;/div&gt; to avert or alleviate indicators deferent</cell></row><row><cell>capabilities rhythm alternations.&lt;/div&gt;</cell><cell></cell></row><row><cell cols="2">list generated estimated row traversal applied-&lt;/div&gt; elements undoubtedly symbolical engagement</cell></row><row><cell cols="2">acting&lt;/div&gt; .Audit limited &lt;br&gt; proximity rationale to produce snapshots evaluate&lt;/div&gt; struc-</cell></row><row><cell>tural findings amalgamation.</cell><cell></cell></row></table></figure>
+		</body>
+		<back>
+
+			<div type="acknowledgement">
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>ACKNOWLEDGEMENT XL, ZKZ, ZZL, and BH were supported by Guangdong Basic and Applied Basic Research Foundation Nos. 2024A1515012399, NSFC General Program No. 62376235, and HKBU CSD Departmental Incentive Scheme. JCY was supported by National Natural Science Foundation of China (No. 62306178) and STCSM (No. 22DZ2229005).</p></div>
+			</div>
+
+			<div type="annex">
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>K CASE STUDY</head><p>In this section, we provide case studies of different approaches to both single-objective and multiobjective optimization tasks.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>K.1 CASE STUDIES ON SINGLE-OBJECTIVE OPTIMIZATION</head><p>In this part, we present the case studies of different approaches to single-objective optimization tasks. In general, for the single-objective optimization task, the baseline model lacks detailed domain knowledge. SFT and GRPO (SFT init) offer simple modifications without elucidating the underlying chemical rationale, potentially sacrificing optimization opportunities for directness. GRPO, when unguided, is prone to errors in chemical understanding and reasoning.</p><p>Case study of Baseline model (Qwen-2.5-3B-Instruct). Prompt: Modify the molecule Cc1ccc(NC(=O)C(C)(C)C(=O)N2CCCC2)cc1Br to have a lower MR. LLM Output: I'm sorry, but it seems there might be some confusion in your request. "MR" can refer to different things depending on the context (e.g., molecular formula, molar ratio, mass-to-charge ratio, etc.). To modify a chemical structure, such as the given propane sulfonate derivative, we typically perform chemical modifications that aim to modify the functionality, functional groups, or introduce new ones. However, without more specific instructions or the chemical context, it's challenging to propose a clear and direct modification that would result in a lower MR (assuming it refers to the Molecular Formula or molar mass of the compound). If you could provide more details or specify what "lower MR" means in your case, I would be better able to assist you with a specific modification. The original molecule has a heterocyclic ring with a nitrogen atom (N) and a carbonyl group (C=O). The structure can be represented as follows: "' --CC[N+]/CC "' The MR or Magic Angle Spinning value is determined by the molecular structure and the presence of functional groups in the molecule. To lower the MR value, we can remove the nitrogen atom (N) from the heterocyclic ring, as the absence of the nitrogen atom can lead to a lower MR value. The modified structure with the nitrogen atom removed can be represented as follows: "' --CC[red]/CC "' The removal of the nitrogen atom can lead to a significant decrease in the MR value, making the modified molecule more suitable for certain applications. In summary, to lower the MR value of the molecule, we can remove the nitrogen atom from the heterocyclic ring.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Published as a conference paper at ICLR 2026</head><p>Case study of SFT. Prompt: Your task is to modify the given molecule to adjust specific molecular properties while keeping structural changes as minimal as possible. Your response should only contain a valid SMILES representation of the modified molecule enclosed with &lt;SMILES&gt; &lt;/SMILES&gt; tag.</p><p>Adjust: increase BBB permeability, increase DRD2 inhibition and increase Penalized octanol-water partition coefficient (penalized logP) LLM Output: without increasing liver toxicity.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Case study of GRPO (SFT init).</head><p>Prompt: Your task is to modify the given molecule to adjust specific molecular properties while keeping structural changes as minimal as possible. Your response should only contain a valid SMILES representation of the modified molecule enclosed with &lt;SMILES&gt; &lt;/SMILES&gt; tag.</p><p>Adjust: increase BBB permeability, increase DRD2 inhibition and increase Penalized octanol-water partition coefficient (penalized logP) LLM Output:</p><p>SFT generates multiple candidates without clear selection criteria or reasoning for multiobjective tasks. The SFT model outputs a list of different SMILES strings, such as CCOc1cc([C@H]2 NC(=O)NC(C)=C2C(=O)OC)ccc1OC[C@H](O)N/C1CCN(C)CC1 and others involving substitutions like N1CCN(Cc2ccccc2)CC1. It prefaces its output with "without increasing liver toxicity," which was not part of the original prompt, suggesting potential misalignment or hallucination. Notably, the SFT model does not provide any reasoning for how the modifications address the objectives of increasing BBB permeability, DRD2 inhibition, and penalized logP.</p><p>GRPO (SFT init) provides a single modification but lacks a detailed rationale for multiobjective trade-offs. The GRPO (SFT init) model suggests substituting a part of the molecule to ...N/N=C/c1ccc(Br)cc1. While it offers a single, concrete modification, the output is repetitive and lacks the step-by-step reasoning required to understand how this change is intended to concurrently satisfy the three diverse optimization goals.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Published as a conference paper at ICLR 2026</head><p>Case study of GRPO. Prompt: Your task is to modify the given molecule to adjust specific molecular properties while keeping structural changes as minimal as possible. Your response should only contain a valid SMILES representation of the modified molecule enclosed with &lt;SMILES&gt; &lt;/SMILES&gt; tag. Input : &lt;SMILES&gt; CCOc1cc([C@H]2NC(=O)NC(C)=C2C(=O)OC)ccc1OC[C@H](O)N/N=C/c1ccc (OC)c(C)c1 &lt;/SMILES&gt; Adjust: increase BBB permeability, increase DRD2 inhibition and increase Penalized octanol-water partition coefficient (penalized logP) LLM Output: without changing the molecular structure significantly.</p><p>(O)N/N=C/c1ccc(OC)c(C)c1&lt;/SMILES&gt; &lt;/SMILES&gt; &lt;/SMILES&gt; Note: For the given properties and constraints, no SMILES alteration will change the molecule significantly without altering its structure. Thus, the SMILES structure remains the same. However, for illustration, 4 SMILES structures have been presented.</p><p>Case study of RePO. Prompt: Your task is to modify the given molecule to adjust specific molecular properties while keeping structural changes as minimal as possible. Your response should only contain a valid SMILES representation of the modified molecule enclosed with &lt;SMILES&gt; &lt;/SMILES&gt; tag. Input : &lt;SMILES&gt; CCOc1cc([C@H]2NC(=O)NC(C)=C2C(=O)OC)ccc1OC[C@H](O)N/N=C/c1ccc (OC)c(C)c1 &lt;/SMILES&gt; Adjust: increase BBB permeability, increase DRD2 inhibition and increase Penalized octanol-water partition coefficient (penalized logP) LLM Output: without increasing lipophilicity (logP) Adjusted SMILES:</p><p>-Penalized LogP Increase: The removal of the hydroxyl (-O-) group from one of the amide nitrogens (from CCCO to CCCN) increases the octanol-water partition coefficient, which is beneficial for BBB permeability and penalized logP. The change to an alkyl side chain (CCCNC1CCOc2ccc(Cl)c(Cl)c2) can also contribute to this effect. -DRD2 Inhibition: No specific alterations are made to the scaffold that directly affect DRD2 inhibition.</p><p>-Lipophilicity (logP) Stability: The removal of the hydroxyl group does not increase logP significantly, which maintains lipophilicity while improving the desired properties.</p><p>GRPO fails to generate meaningful modifications in the multi-objective setting. When presented with this task, GRPO repeatedly outputs the original molecule, stating: "For the given properties and constraints, no SMILES alteration will change the molecule significantly without altering its structure. Thus, the SMILES structure remains the same." This behavior indicates that GRPO is unable to effectively engage with the optimization objective, likely due to limitations in its reward structure or an excessive preference for minimal structural changes. As highlighted in Observation 3.1, GRPO</p></div>			</div>
+			<div type="references">
+
+				<listBibl>
+
+<biblStruct xml:id="b0">
+	<analytic>
+		<title level="a" type="main">Why is tanimoto index an appropriate choice for fingerprint-based similarity calculations?</title>
+		<author>
+			<persName><forename type="first">Dávid</forename><surname>Bajusz</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Anita</forename><surname>Rácz</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Károly</forename><surname>Héberger</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of cheminformatics</title>
+		<imprint>
+			<biblScope unit="volume">7</biblScope>
+			<biblScope unit="page" from="1" to="13" />
+			<date type="published" when="2015">2015</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b1">
+	<monogr>
+		<title level="m" type="main">Trajectory balance with asynchrony: Decoupling exploration and learning for fast, scalable llm post-training</title>
+		<author>
+			<persName><forename type="first">Brian</forename><surname>Bartoldson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Siddarth</forename><surname>Venkatraman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">James</forename><surname>Diffenderfer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Moksh</forename><surname>Jain</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tal</forename><surname>Ben-Nun</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Seanie</forename><surname>Lee</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Minsu</forename><surname>Kim</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Johan</forename><surname>Obando-Ceron</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yoshua</forename><surname>Bengio</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bhavya</forename><surname>Kailkhura</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2503.18929</idno>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b2">
+	<analytic>
+		<title level="a" type="main">Flow network based generative models for non-iterative diverse candidate generation</title>
+		<author>
+			<persName><forename type="first">Emmanuel</forename><surname>Bengio</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Moksh</forename><surname>Jain</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Maksym</forename><surname>Korablyov</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Doina</forename><surname>Precup</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yoshua</forename><surname>Bengio</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">NeurIPS</title>
+				<imprint>
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b3">
+	<analytic>
+		<title level="a" type="main">Quantifying the chemical beauty of drugs</title>
+		<author>
+			<persName><surname>Richard Bickerton</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">V</forename><surname>Gaia</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jérémy</forename><surname>Paolini</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Besnard</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Andrew</forename><forename type="middle">L</forename><surname>Sorel Muresan</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Hopkins</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nature chemistry</title>
+		<imprint>
+			<biblScope unit="volume">4</biblScope>
+			<biblScope unit="issue">2</biblScope>
+			<biblScope unit="page" from="90" to="98" />
+			<date type="published" when="2012">2012</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b4">
+	<monogr>
+		<title level="m" type="main">Chemcrow: Augmenting large-language models with chemistry tools</title>
+		<author>
+			<persName><forename type="first">Sam</forename><surname>Andres M Bran</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Oliver</forename><surname>Cox</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Carlo</forename><surname>Schilter</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Andrew</forename><forename type="middle">D</forename><surname>Baldassari</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Philippe</forename><surname>White</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Schwaller</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2304.05376</idno>
+		<imprint>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b5">
+	<monogr>
+		<title level="m" type="main">Envisioning outlier exposure by large language models for out-of-distribution detection</title>
+		<author>
+			<persName><forename type="first">Chentao</forename><surname>Cao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhun</forename><surname>Zhong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhanke</forename><surname>Zhou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yang</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tongliang</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bo</forename><surname>Han</surname></persName>
+		</author>
+		<imprint>
+			<date type="published" when="2024">2024</date>
+			<publisher>ICML</publisher>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b6">
+	<analytic>
+		<title level="a" type="main">Noisy test-time adaptation in vision-language models</title>
+		<author>
+			<persName><forename type="first">Chentao</forename><surname>Cao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhun</forename><surname>Zhong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhanke</forename><surname>Zhou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tongliang</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yang</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Kun</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bo</forename><surname>Han</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">ICLR</title>
+				<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b7">
+	<analytic>
+		<title level="a" type="main">Dense reward for free in reinforcement learning from human feedback</title>
+		<author>
+			<persName><forename type="first">Alex</forename><forename type="middle">J</forename><surname>Chan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Hao</forename><surname>Sun</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Samuel</forename><surname>Holt</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mihaela</forename><surname>Van Der</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Schaar</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">ICML</title>
+				<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b8">
+	<analytic>
+		<title level="a" type="main">A survey on evaluation of large language models</title>
+		<author>
+			<persName><forename type="first">Yupeng</forename><surname>Chang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xu</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jindong</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yuan</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Linyi</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Kaijie</forename><surname>Zhu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Hao</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xiaoyuan</forename><surname>Yi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Cunxiang</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yidong</forename><surname>Wang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">ACM transactions on intelligent systems and technology</title>
+		<imprint>
+			<biblScope unit="volume">15</biblScope>
+			<biblScope unit="issue">3</biblScope>
+			<biblScope unit="page" from="1" to="45" />
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b9">
+	<monogr>
+		<title level="m" type="main">Eepo: Exploration-enhanced policy optimization via sample-then-forget</title>
+		<author>
+			<persName><forename type="first">Liang</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xueting</forename><surname>Han</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Qizhou</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bo</forename><surname>Han</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jing</forename><surname>Bai</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Hinrich</forename><surname>Schutze</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Kam-Fai</forename><surname>Wong</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2510.05837</idno>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b10">
+	<analytic>
+		<title level="a" type="main">Gellm3o: Generalizing large language models for multi-property molecule optimization</title>
+		<author>
+			<persName><forename type="first">Vishal</forename><surname>Dey</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xiao</forename><surname>Hu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xia</forename><surname>Ning</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">ACL</title>
+				<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b11">
+	<analytic>
+		<title level="a" type="main">Can compressed llms truly act? an empirical evaluation of agentic capabilities in llm compression</title>
+		<author>
+			<persName><forename type="first">Peijie</forename><surname>Dong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhenheng</forename><surname>Tang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xiang</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Lujun</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xiaowen</forename><surname>Chu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bo</forename><surname>Li</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">ICML</title>
+				<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b12">
+	<analytic>
+		<title level="a" type="main">Translation between molecules and natural language</title>
+		<author>
+			<persName><forename type="first">Carl</forename><surname>Edwards</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tuan</forename><surname>Lai</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Kevin</forename><surname>Ros</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Garrett</forename><surname>Honke</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Kyunghyun</forename><surname>Cho</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Heng</forename><surname>Ji</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">EMNLP</title>
+				<imprint>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b13">
+	<analytic>
+		<title level="a" type="main">Haloperidol bound d2 dopamine receptor structure inspired the discovery of subtype selective ligands</title>
+		<author>
+			<persName><forename type="first">Luyu</forename><surname>Fan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Liang</forename><surname>Tan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhangcheng</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jianzhong</forename><surname>Qi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Fen</forename><surname>Nie</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhipu</forename><surname>Luo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jianjun</forename><surname>Cheng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sheng</forename><surname>Wang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nature communications</title>
+		<imprint>
+			<biblScope unit="volume">11</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page">1074</biblScope>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b14">
+	<analytic>
+		<title level="a" type="main">Reinforced genetic algorithm for structurebased drug design</title>
+		<author>
+			<persName><forename type="first">Tianfan</forename><surname>Fu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Wenhao</forename><surname>Gao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Connor</forename><surname>Coley</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jimeng</forename><surname>Sun</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">NeurIPS</title>
+				<imprint>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b15">
+	<analytic>
+		<title level="a" type="main">Cognitive behaviors that enable self-improving reasoners, or, four habits of highly effective stars</title>
+		<author>
+			<persName><forename type="first">Kanishk</forename><surname>Gandhi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ayush</forename><surname>Chakravarthy</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Anikait</forename><surname>Singh</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Nathan</forename><surname>Lile</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Noah</forename><forename type="middle">D</forename><surname>Goodman</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">COLM</title>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b16">
+	<analytic>
+		<title level="a" type="main">Deepseek-r1 incentivizes reasoning in llms through reinforcement learning</title>
+		<author>
+			<persName><forename type="first">Daya</forename><surname>Guo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dejian</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Haowei</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Junxiao</forename><surname>Song</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Peiyi</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Qihao</forename><surname>Zhu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Runxin</forename><surname>Xu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ruoyu</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shirong</forename><surname>Ma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xiao</forename><surname>Bi</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nature</title>
+		<imprint>
+			<biblScope unit="volume">645</biblScope>
+			<biblScope unit="page" from="633" to="638" />
+			<date type="published" when="2025">8081. 2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b17">
+	<analytic>
+		<title level="a" type="main">What can large language models do in chemistry? a comprehensive benchmark on eight tasks</title>
+		<author>
+			<persName><forename type="first">Taicheng</forename><surname>Guo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bozhao</forename><surname>Nan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhenwen</forename><surname>Liang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhichun</forename><surname>Guo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Nitesh</forename><surname>Chawla</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Olaf</forename><surname>Wiest</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xiangliang</forename><surname>Zhang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">NeurIPS</title>
+				<imprint>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b18">
+	<analytic>
+		<title level="a" type="main">Trustworthy machine learning: From data to models</title>
+		<author>
+			<persName><forename type="first">Bo</forename><surname>Han</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jiangchao</forename><surname>Yao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tongliang</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bo</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sanmi</forename><surname>Koyejo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Feng</forename><surname>Liu</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Foundations and Trends® in Privacy and Security</title>
+		<imprint>
+			<biblScope unit="volume">7</biblScope>
+			<biblScope unit="issue">2-3</biblScope>
+			<biblScope unit="page" from="74" to="246" />
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b19">
+	<monogr>
+		<title level="m" type="main">Equivariant diffusion for molecule generation in 3d</title>
+		<author>
+			<persName><forename type="first">Emiel</forename><surname>Hoogeboom</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Garcia</forename><surname>Vıctor</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Clément</forename><surname>Satorras</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Max</forename><surname>Vignac</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Welling</surname></persName>
+		</author>
+		<imprint>
+			<date type="published" when="2022">2022</date>
+			<publisher>ICML</publisher>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b20">
+	<analytic>
+		<title level="a" type="main">Therapeutics data commons: Machine learning datasets and tasks for drug discovery and development</title>
+		<author>
+			<persName><forename type="first">Kexin</forename><surname>Huang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tianfan</forename><surname>Fu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Wenhao</forename><surname>Gao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yue</forename><surname>Zhao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yusuf</forename><surname>Roohani</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jure</forename><surname>Leskovec</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Connor</forename><forename type="middle">W</forename><surname>Coley</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Cao</forename><surname>Xiao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jimeng</forename><surname>Sun</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Marinka</forename><surname>Zitnik</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">NeurIPS</title>
+				<imprint>
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b21">
+	<analytic>
+		<title level="a" type="main">A graph-based genetic algorithm and generative model/monte carlo tree search for the exploration of chemical space</title>
+		<author>
+			<persName><forename type="first">Jan</forename><forename type="middle">H</forename><surname>Jensen</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Chemical science</title>
+		<imprint>
+			<biblScope unit="volume">10</biblScope>
+			<biblScope unit="issue">12</biblScope>
+			<biblScope unit="page" from="3567" to="3572" />
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b22">
+	<analytic>
+		<title level="a" type="main">Pubchem 2019 update: improved access to chemical data</title>
+		<author>
+			<persName><forename type="first">Sunghwan</forename><surname>Kim</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jie</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tiejun</forename><surname>Cheng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Asta</forename><surname>Gindulyte</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jia</forename><surname>He</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Siqian</forename><surname>He</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Qingliang</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Benjamin</forename><forename type="middle">A</forename><surname>Shoemaker</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Paul</forename><forename type="middle">A</forename><surname>Thiessen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bo</forename><surname>Yu</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nucleic acids research</title>
+		<imprint>
+			<biblScope unit="volume">47</biblScope>
+			<biblScope unit="issue">D1</biblScope>
+			<biblScope unit="page" from="D1102" to="D1109" />
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b23">
+	<analytic>
+		<title level="a" type="main">Drugbank 6.0: the drugbank knowledgebase for 2024</title>
+		<author>
+			<persName><forename type="first">Craig</forename><surname>Knox</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mike</forename><surname>Wilson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Christen</forename><forename type="middle">M</forename><surname>Klinger</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mark</forename><surname>Franklin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Eponine</forename><surname>Oler</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Alex</forename><surname>Wilson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Allison</forename><surname>Pon</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jordan</forename><surname>Cox</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Na</forename><forename type="middle">Eun</forename><surname>Chin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Seth</forename><forename type="middle">A</forename><surname>Strawbridge</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nucleic acids research</title>
+		<imprint>
+			<biblScope unit="volume">52</biblScope>
+			<biblScope unit="issue">D1</biblScope>
+			<biblScope unit="page" from="D1265" to="D1275" />
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b24">
+	<analytic>
+		<title level="a" type="main">Large language models are zero-shot reasoners</title>
+		<author>
+			<persName><forename type="first">Takeshi</forename><surname>Kojima</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shane</forename><surname>Shixiang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Machel</forename><surname>Gu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yutaka</forename><surname>Reid</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yusuke</forename><surname>Matsuo</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Iwasawa</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">NeurIPS</title>
+				<imprint>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b25">
+	<analytic>
+		<title level="a" type="main">Efficient memory management for large language model serving with pagedattention</title>
+		<author>
+			<persName><forename type="first">Woosuk</forename><surname>Kwon</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhuohan</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Siyuan</forename><surname>Zhuang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ying</forename><surname>Sheng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Lianmin</forename><surname>Zheng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Cody</forename><forename type="middle">Hao</forename><surname>Yu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Joseph</forename><forename type="middle">E</forename><surname>Gonzalez</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Hao</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ion</forename><surname>Stoica</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the ACM SIGOPS 29th Symposium on Operating Systems Principles</title>
+				<meeting>the ACM SIGOPS 29th Symposium on Operating Systems Principles</meeting>
+		<imprint>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b26">
+	<analytic>
+		<title level="a" type="main">Molecular refractivity and polarizability</title>
+		<author>
+			<persName><forename type="first">W Le</forename><surname>Jo</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Fevre</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Advances in Physical Organic Chemistry</title>
+		<imprint>
+			<biblScope unit="volume">3</biblScope>
+			<biblScope unit="page" from="1" to="90" />
+			<date type="published" when="1965">1965</date>
+			<publisher>Elsevier</publisher>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b27">
+	<monogr>
+		<title level="m" type="main">Tomg-bench: Evaluating llms on text-based open molecule generation</title>
+		<author>
+			<persName><forename type="first">Jiatong</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Junxian</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yunqing</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dongzhan</forename><surname>Zhou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Qing</forename><surname>Li</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2412.14642</idno>
+		<imprint>
+			<biblScope unit="page">2024</biblScope>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b28">
+	<monogr>
+		<title level="m" type="main">Molreflect: Towards in-context fine-grained alignments between molecules and texts</title>
+		<author>
+			<persName><forename type="first">Jiatong</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yunqing</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Wei</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jingdi</forename><surname>Le</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Di</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Wenqi</forename><surname>Fan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dongzhan</forename><surname>Zhou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yuqiang</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Qing</forename><surname>Li</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2411.14721</idno>
+		<imprint>
+			<biblScope unit="page">2024</biblScope>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b29">
+	<monogr>
+		<title level="m" type="main">Deepinception: Hypnotize large language model to be jailbreaker</title>
+		<author>
+			<persName><forename type="first">Xuan</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhanke</forename><surname>Zhou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jianing</forename><surname>Zhu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jiangchao</forename><surname>Yao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tongliang</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bo</forename><surname>Han</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2311.03191</idno>
+		<imprint>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b30">
+	<analytic>
+		<title level="a" type="main">Neural atoms: Propagating long-range interaction in molecular graphs through efficient communication channel</title>
+		<author>
+			<persName><forename type="first">Xuan</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhanke</forename><surname>Zhou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jiangchao</forename><surname>Yao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yu</forename><surname>Rong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Lu</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bo</forename><surname>Han</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">ICLR</title>
+		<imprint>
+			<date type="published" when="2024">2024c</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b31">
+	<monogr>
+		<title level="m" type="main">From words to molecules: A survey of large language models in chemistry</title>
+		<author>
+			<persName><forename type="first">Chang</forename><surname>Liao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yemin</forename><surname>Yu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yu</forename><surname>Mei</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ying</forename><surname>Wei</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2402.01439</idno>
+		<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b32">
+	<analytic>
+		<title level="a" type="main">Navigating chemical space for biology and medicine</title>
+		<author>
+			<persName><forename type="first">Christopher</forename><surname>Lipinski</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Andrew</forename><surname>Hopkins</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nature</title>
+		<imprint>
+			<biblScope unit="volume">432</biblScope>
+			<biblScope unit="page" from="855" to="861" />
+			<date type="published" when="2004">7019. 2004</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b33">
+	<analytic>
+		<title level="a" type="main">Experimental and computational approaches to estimate solubility and permeability in drug discovery and development settings</title>
+		<author>
+			<persName><forename type="first">Franco</forename><surname>Christopher A Lipinski</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Beryl</forename><forename type="middle">W</forename><surname>Lombardo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Paul</forename><forename type="middle">J</forename><surname>Dominy</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Feeney</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Advanced drug delivery reviews</title>
+		<imprint>
+			<biblScope unit="volume">23</biblScope>
+			<biblScope unit="issue">1-3</biblScope>
+			<biblScope unit="page" from="3" to="25" />
+			<date type="published" when="1997">1997</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b34">
+	<analytic>
+		<title level="a" type="main">On the impact of fine-tuning on chain-ofthought reasoning</title>
+		<author>
+			<persName><forename type="first">Elita</forename><surname>Lobo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Chirag</forename><surname>Agarwal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Himabindu</forename><surname>Lakkaraju</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">NAACL</title>
+				<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b35">
+	<analytic>
+		<title level="a" type="main">Molecular similarity: Theory, applications, and perspectives</title>
+		<author>
+			<persName><forename type="first">Kenneth</forename><surname>López-Pérez</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Juan</forename><forename type="middle">F</forename><surname>Avellaneda-Tamayo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Lexin</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Edgar</forename><surname>López-López</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Eurídice</forename><surname>Juárez-Mercado</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">José</forename><forename type="middle">L</forename><surname>Medina-Franco</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ramón</forename></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Alain</forename><surname>Miranda-Quintana</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Artificial Intelligence Chemistry</title>
+		<imprint>
+			<biblScope unit="volume">2</biblScope>
+			<biblScope unit="issue">2</biblScope>
+			<biblScope unit="page">100077</biblScope>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b36">
+	<analytic>
+		<title level="a" type="main">Augmenting large language models with chemistry tools</title>
+		<author>
+			<persName><forename type="first">Andres</forename><forename type="middle">M</forename><surname>Bran</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sam</forename><surname>Cox</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Oliver</forename><surname>Schilter</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Carlo</forename><surname>Baldassari</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Andrew</forename><forename type="middle">D</forename><surname>White</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Philippe</forename><surname>Schwaller</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nature Machine Intelligence</title>
+		<imprint>
+			<biblScope unit="volume">6</biblScope>
+			<biblScope unit="issue">5</biblScope>
+			<biblScope unit="page" from="525" to="535" />
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b37">
+	<analytic>
+		<title level="a" type="main">Are large language models superhuman chemists?</title>
+		<author>
+			<persName><forename type="first">Adrian</forename><surname>Mirza</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Nawaf</forename><surname>Alampara</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sreekanth</forename><surname>Kunchapu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Martiño</forename><surname>Ríos-García</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Benedict</forename><surname>Emoekabu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Aswanth</forename><surname>Krishnan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tanya</forename><surname>Gupta</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mara</forename><surname>Schilling-Wilhelmi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Macjonathan</forename><surname>Okereke</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Anagha</forename><surname>Aneesh</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nature Chemistry</title>
+		<imprint>
+			<biblScope unit="volume">17</biblScope>
+			<biblScope unit="issue">7</biblScope>
+			<biblScope unit="page" from="984" to="985" />
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b38">
+	<analytic>
+		<title level="a" type="main">s1: Simple test-time scaling</title>
+		<author>
+			<persName><forename type="first">Niklas</forename><surname>Muennighoff</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zitong</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Weijia</forename><surname>Shi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xiang</forename></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Lisa</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Li</forename><surname>Fei-Fei</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Hannaneh</forename><surname>Hajishirzi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Luke</forename><surname>Zettlemoyer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Percy</forename><surname>Liang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Emmanuel</forename><surname>Candès</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tatsunori</forename><surname>Hashimoto</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">EMNLP</title>
+				<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b39">
+	<analytic>
+		<title level="a" type="main">Lico: Large language models for in-context molecular optimization</title>
+		<author>
+			<persName><forename type="first">Tung</forename><surname>Nguyen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Aditya</forename><surname>Grover</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">ICLR</title>
+				<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b40">
+	<analytic>
+		<title level="a" type="main">Parallel tempered genetic algorithm guided by deep neural networks for inverse molecular design</title>
+		<author>
+			<persName><forename type="first">Akshatkumar</forename><surname>Nigam</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Robert</forename><surname>Pollice</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Alán</forename><surname>Aspuru-Guzik</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Marcus</forename><surname>Olivecrona</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Thomas</forename><surname>Blaschke</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ola</forename><surname>Engkvist</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Hongming</forename><surname>Chen</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of cheminformatics</title>
+		<imprint>
+			<biblScope unit="volume">1</biblScope>
+			<biblScope unit="issue">4</biblScope>
+			<biblScope unit="page" from="1" to="14" />
+			<date type="published" when="2017">2022. 2017</date>
+		</imprint>
+	</monogr>
+	<note>Digital Discovery</note>
+</biblStruct>
+
+<biblStruct xml:id="b41">
+	<analytic>
+		<title level="a" type="main">Biot5: Enriching cross-modal integration in biology with chemical knowledge and natural language associations</title>
+		<author>
+			<persName><forename type="first">Qizhi</forename><surname>Pei</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Wei</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jinhua</forename><surname>Zhu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Kehan</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Kaiyuan</forename><surname>Gao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Lijun</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yingce</forename><surname>Xia</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Rui</forename><surname>Yan</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">EMNLP</title>
+				<imprint>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b42">
+	<monogr>
+		<author>
+			<persName><forename type="first">Baosong</forename><surname>Yang Qwen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Beichen</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Binyuan</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bo</forename><surname>Hui</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bowen</forename><surname>Zheng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Chengpeng</forename><surname>Yu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dayiheng</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Fei</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Haoran</forename><surname>Huang</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Wei</surname></persName>
+		</author>
+		<title level="m">Qwen2. 5 technical report</title>
+				<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b43">
+	<monogr>
+		<title level="m" type="main">Approximating kl divergence</title>
+		<author>
+			<persName><forename type="first">John</forename><surname>Schulman</surname></persName>
+		</author>
+		<ptr target="http://joschu.net/blog/kl-approx.html" />
+		<imprint>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b44">
+	<monogr>
+		<title level="m" type="main">Proximal policy optimization algorithms</title>
+		<author>
+			<persName><forename type="first">John</forename><surname>Schulman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Filip</forename><surname>Wolski</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Prafulla</forename><surname>Dhariwal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Alec</forename><surname>Radford</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Oleg</forename><surname>Klimov</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1707.06347</idno>
+		<imprint>
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b45">
+	<monogr>
+		<title level="m" type="main">On the wings of imagination: Conflicting script-based multi-role framework for humor caption generation</title>
+		<author>
+			<persName><forename type="first">Wenbo</forename><surname>Shang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yuxi</forename><surname>Sun</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jing</forename><surname>Ma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xin</forename><surname>Huang</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2602.06423</idno>
+		<imprint>
+			<date type="published" when="2026">2026</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b46">
+	<monogr>
+		<title level="m" type="main">Deepseekmath: Pushing the limits of mathematical reasoning in open language models</title>
+		<author>
+			<persName><forename type="first">Zhihong</forename><surname>Shao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Peiyi</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Qihao</forename><surname>Zhu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Runxin</forename><surname>Xu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Junxiao</forename><surname>Song</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xiao</forename><surname>Bi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Haowei</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mingchuan</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yang</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Wu</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2402.03300</idno>
+		<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b47">
+	<analytic>
+		<title level="a" type="main">Zinc 15-ligand discovery for everyone</title>
+		<author>
+			<persName><forename type="first">Teague</forename><surname>Sterling</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">John</forename><forename type="middle">J</forename><surname>Irwin</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of chemical information and modeling</title>
+		<imprint>
+			<biblScope unit="volume">55</biblScope>
+			<biblScope unit="issue">11</biblScope>
+			<biblScope unit="page" from="2324" to="2337" />
+			<date type="published" when="2015">2015</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b48">
+	<analytic>
+		<title level="a" type="main">Mutagenicity testing: Regulatory guidelines and current needs</title>
+		<author>
+			<persName><forename type="first">Rajesh</forename><surname>Sundar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Darshan</forename><surname>Mukul R Jain</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Valani</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Mutagenicity: assays and applications</title>
+				<imprint>
+			<publisher>Elsevier</publisher>
+			<date type="published" when="2018">2018</date>
+			<biblScope unit="page" from="191" to="228" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b49">
+	<analytic>
+		<title level="a" type="main">Askcos: open-source, data-driven synthesis planning</title>
+		<author>
+			<persName><forename type="first">Zhengkai</forename><surname>Tu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Sourabh</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mun</forename><surname>Choure</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jihye</forename><surname>Hong Fong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Itai</forename><surname>Roh</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Kevin</forename><surname>Levin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Joonyoung</forename><forename type="middle">F</forename><surname>Yu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Nathan</forename><surname>Joung</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shih-Cheng</forename><surname>Morgan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xiaoqi</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Sun</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Accounts of chemical research</title>
+		<imprint>
+			<biblScope unit="volume">58</biblScope>
+			<biblScope unit="issue">11</biblScope>
+			<biblScope unit="page" from="1764" to="1775" />
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b50">
+	<monogr>
+		<author>
+			<persName><forename type="first">Younes</forename><surname>Leandro Von Werra</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Lewis</forename><surname>Belkada</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Edward</forename><surname>Tunstall</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tristan</forename><surname>Beeching</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Nathan</forename><surname>Thrush</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shengyi</forename><surname>Lambert</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Kashif</forename><surname>Huang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Quentin</forename><surname>Rasul</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Gallouédec</surname></persName>
+		</author>
+		<ptr target="https://github.com/huggingface/trl" />
+		<title level="m">Trl: Transformer reinforcement learning</title>
+				<imprint>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b51">
+	<analytic>
+		<title level="a" type="main">Knowledge-guided large language model for material science</title>
+		<author>
+			<persName><forename type="first">Guanjie</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jingjing</forename><surname>Hu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jian</forename><surname>Zhou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sen</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Qingjiang</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhimei</forename><surname>Sun</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Review of Materials Research</title>
+		<imprint>
+			<biblScope unit="page">2025</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b52">
+	<analytic>
+		<title level="a" type="main">Efficient evolutionary search over chemical space with large language models</title>
+		<author>
+			<persName><forename type="first">Haorui</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Marta</forename><surname>Skreta</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Cher-Tian</forename><surname>Ser</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Wenhao</forename><surname>Gao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Lingkai</forename><surname>Kong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Felix</forename><surname>Strieth-Kalthoff</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Chenru</forename><surname>Duan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yuchen</forename><surname>Zhuang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yue</forename><surname>Yu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yanqiao</forename><surname>Zhu</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">ICLR</title>
+		<imprint>
+			<biblScope unit="page">2025</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b53">
+	<monogr>
+		<title level="m" type="main">Diffusion models for molecules: A survey of methods and tasks</title>
+		<author>
+			<persName><forename type="first">Liang</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Chao</forename><surname>Song</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhiyuan</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yu</forename><surname>Rong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Qiang</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shu</forename><surname>Wu</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2502.09511</idno>
+		<imprint>
+			<biblScope unit="page">2025</biblScope>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b54">
+	<monogr>
+		<title level="m" type="main">Scibench: Evaluating college-level scientific problem-solving abilities of large language models</title>
+		<author>
+			<persName><forename type="first">Xiaoxuan</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ziniu</forename><surname>Hu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Pan</forename><surname>Lu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yanqiao</forename><surname>Zhu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jieyu</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Satyen</forename><surname>Subramaniam</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shichang</forename><surname>Arjun R Loomba</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yizhou</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Wei</forename><surname>Sun</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Wang</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2307.10635</idno>
+		<imprint>
+			<biblScope unit="page">2023</biblScope>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b55">
+	<analytic>
+		<title level="a" type="main">Self-consistency improves chain of thought reasoning in language models</title>
+		<author>
+			<persName><forename type="first">Xuezhi</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jason</forename><surname>Wei</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dale</forename><surname>Schuurmans</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ed</forename><forename type="middle">H</forename><surname>Quoc V Le</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sharan</forename><surname>Chi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Aakanksha</forename><surname>Narang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Denny</forename><surname>Chowdhery</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Zhou</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">ICLR</title>
+		<imprint>
+			<date type="published" when="2023">2023b</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b56">
+	<analytic>
+		<title level="a" type="main">Chain of thought prompting elicits reasoning in large language models</title>
+		<author>
+			<persName><forename type="first">Jason</forename><surname>Wei</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xuezhi</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dale</forename><surname>Schuurmans</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Maarten</forename><surname>Bosma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Fei</forename><surname>Xia</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ed</forename><forename type="middle">H</forename><surname>Chi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Denny</forename><surname>Quoc V Le</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Zhou</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">NeurIPS</title>
+				<imprint>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b57">
+	<analytic>
+		<title level="a" type="main">Smiles, a chemical language and information system. 1. introduction to methodology and encoding rules</title>
+		<author>
+			<persName><forename type="first">David</forename><surname>Weininger</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of chemical information and computer sciences</title>
+		<imprint>
+			<biblScope unit="volume">28</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page" from="31" to="36" />
+			<date type="published" when="1988">1988</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b58">
+	<analytic>
+		<title level="a" type="main">The blood-brain barrier: Structure, regulation and drug delivery</title>
+		<author>
+			<persName><forename type="first">Di</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Qi</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xiaojie</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Feng</forename><surname>Han</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhong</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yi</forename><surname>Wang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Signal transduction and targeted therapy</title>
+		<imprint>
+			<biblScope unit="volume">8</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page">217</biblScope>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b59">
+	<analytic>
+		<title level="a" type="main">Text2reward: Reward shaping with language models for reinforcement learning</title>
+		<author>
+			<persName><forename type="first">Tianbao</forename><surname>Xie</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Siheng</forename><surname>Zhao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Chen</forename><forename type="middle">Henry</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yitao</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Qian</forename><surname>Luo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Victor</forename><surname>Zhong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yanchao</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tao</forename><surname>Yu</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">ICLR</title>
+				<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b60">
+	<analytic>
+		<title level="a" type="main">Analyzing learned molecular representations for property prediction</title>
+		<author>
+			<persName><forename type="first">Kevin</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Kyle</forename><surname>Swanson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Wengong</forename><surname>Jin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Connor</forename><surname>Coley</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Philipp</forename><surname>Eiden</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Hua</forename><surname>Gao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Angel</forename><surname>Guzman-Perez</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Timothy</forename><surname>Hopper</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Brian</forename><surname>Kelley</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Miriam</forename><surname>Mathea</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of chemical information and modeling</title>
+		<imprint>
+			<biblScope unit="volume">59</biblScope>
+			<biblScope unit="issue">8</biblScope>
+			<biblScope unit="page" from="3370" to="3388" />
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b61">
+	<analytic>
+		<title level="a" type="main">Tree of thoughts: Deliberate problem solving with large language models</title>
+		<author>
+			<persName><forename type="first">Shunyu</forename><surname>Yao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dian</forename><surname>Yu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jeffrey</forename><surname>Zhao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Izhak</forename><surname>Shafran</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Thomas</forename><forename type="middle">L</forename><surname>Griffiths</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yuan</forename><surname>Cao</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Karthik R Narasimhan</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">NeurIPS</title>
+				<imprint>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b62">
+	<monogr>
+		<title level="m" type="main">Does reinforcement learning really incentivize reasoning capacity in llms beyond the base model?</title>
+		<author>
+			<persName><forename type="first">Yang</forename><surname>Yue</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhiqi</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Rui</forename><surname>Lu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Andrew</forename><surname>Zhao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhaokai</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shiji</forename><surname>Song</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Gao</forename><surname>Huang</surname></persName>
+		</author>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+			<publisher>NeurIPS</publisher>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b63">
+	<monogr>
+		<title level="m" type="main">Star: Bootstrapping reasoning with reasoning</title>
+		<author>
+			<persName><forename type="first">Eric</forename><surname>Zelikman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yuhuai</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jesse</forename><surname>Mu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Noah</forename><surname>Goodman</surname></persName>
+		</author>
+		<imprint>
+			<date type="published" when="2022">2022</date>
+			<publisher>NeurIPS</publisher>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b64">
+	<analytic>
+		<title level="a" type="main">Fast and accurate blind flexible docking</title>
+		<author>
+			<persName><forename type="first">Zizhuo</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Lijun</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Kaiyuan</forename><surname>Gao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jiangchao</forename><surname>Yao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tao</forename><surname>Qin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bo</forename><surname>Han</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">ICLR</title>
+		<imprint>
+			<date type="published" when="2025">2025a</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b65">
+	<monogr>
+		<title level="m" type="main">Co-rewarding: Stable self-supervised rl for eliciting reasoning in large language models</title>
+		<author>
+			<persName><forename type="first">Zizhuo</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jianing</forename><surname>Zhu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xinmu</forename><surname>Ge</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zihua</forename><surname>Zhao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhanke</forename><surname>Zhou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xuan</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xiao</forename><surname>Feng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jiangchao</forename><surname>Yao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bo</forename><surname>Han</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2508.00410</idno>
+		<imprint>
+			<biblScope unit="page">2025</biblScope>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b66">
+	<analytic>
+		<title level="a" type="main">Can language models perform robust reasoning in chain-of-thought prompting with noisy rationales? In NeurIPS</title>
+		<author>
+			<persName><forename type="first">Yaowei</forename><surname>Zheng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Richong</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Junhao</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yanhan</forename><surname>Ye</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zheyan</forename><surname>Luo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhangchi</forename><surname>Feng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yongqiang</forename><surname>Ma ; Zhanke</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Rong</forename><surname>Zhou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jianing</forename><surname>Tao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yiwen</forename><surname>Zhu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zengmao</forename><surname>Luo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bo</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Han</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">ACL</title>
+				<imprint>
+			<date type="published" when="2024">2024. 2024</date>
+			<biblScope unit="page">23</biblScope>
+		</imprint>
+	</monogr>
+	<note>Llamafactory: Unified efficient fine-tuning of 100+ language models</note>
+</biblStruct>
+
+<biblStruct xml:id="b67">
+	<analytic>
+		<title/>
+	</analytic>
+	<monogr>
+		<title level="j">J.2 Molecular Optimization Performance</title>
+		<imprint>
+			<biblScope unit="page">23</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b68">
+	<monogr>
+		<title level="m" type="main">3 GRPO with SFT Initialization cannot Generate Readable Outputs</title>
+		<author>
+			<persName><forename type="first">J</forename></persName>
+		</author>
+		<imprint>
+			<biblScope unit="page">25</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b69">
+	<analytic>
+		<title level="a" type="main">4 Comparison with Domain-Specific LMs</title>
+		<author>
+			<persName><forename type="first">J</forename></persName>
+		</author>
+		<ptr target="J.5" />
+	</analytic>
+	<monogr>
+		<title level="m">The demonstration data generation process</title>
+				<imprint>
+			<biblScope unit="page">25</biblScope>
+		</imprint>
+	</monogr>
+	<note>design of the reward functions</note>
+</biblStruct>
+
+<biblStruct xml:id="b70">
+	<analytic>
+		<title/>
+	</analytic>
+	<monogr>
+		<title level="j">K Case Study</title>
+		<imprint>
+			<biblScope unit="volume">26</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b71">
+	<monogr>
+		<title/>
+		<author>
+			<persName><forename type="first">K</forename></persName>
+		</author>
+		<imprint/>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b72">
+	<analytic>
+		<title/>
+	</analytic>
+	<monogr>
+		<title level="j">Case Studies on Single-Objective Optimization</title>
+		<imprint>
+			<biblScope unit="page">26</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b73">
+	<monogr>
+		<title level="m" type="main">2 Case Study on Multi-Objective Optimization</title>
+		<author>
+			<persName><forename type="first">K</forename></persName>
+		</author>
+		<imprint>
+			<biblScope unit="page">29</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+				</listBibl>
+			</div>
+		</back>
+	</text>
+</TEI>

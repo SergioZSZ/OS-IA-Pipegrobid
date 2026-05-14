@@ -1,0 +1,1023 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xml:space="preserve" xmlns="http://www.tei-c.org/ns/1.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.tei-c.org/ns/1.0 https://raw.githubusercontent.com/kermitt2/grobid/master/grobid-home/schemas/xsd/Grobid.xsd"
+ xmlns:xlink="http://www.w3.org/1999/xlink">
+	<teiHeader xml:lang="en">
+		<fileDesc>
+			<titleStmt>
+				<title level="a" type="main"></title>
+			</titleStmt>
+			<publicationStmt>
+				<publisher/>
+				<availability status="unknown"><licence/></availability>
+				<date type="published" when="2026-02-23">23 Feb 2026</date>
+			</publicationStmt>
+			<sourceDesc>
+				<biblStruct>
+					<analytic>
+						<author>
+							<persName><forename type="first">Salesforce</forename><forename type="middle">Ai</forename><surname>Research</surname></persName>
+						</author>
+						<author>
+							<persName><forename type="first">Sarath</forename><surname>Shekkizhar</surname></persName>
+						</author>
+						<author>
+							<persName><forename type="first">Adam</forename><surname>Earle</surname></persName>
+						</author>
+					</analytic>
+					<monogr>
+						<imprint>
+							<date type="published" when="2026-02-23">23 Feb 2026</date>
+						</imprint>
+					</monogr>
+					<idno type="MD5">4F8A956171BACFF58C007D7375E8D460</idno>
+					<idno type="arXiv">arXiv:2602.20059v1[cs.AI]</idno>
+				</biblStruct>
+			</sourceDesc>
+		</fileDesc>
+		<encodingDesc>
+			<appInfo>
+				<application version="0.7.2" ident="GROBID" when="2026-05-14T17:25+0000">
+					<desc>GROBID - A machine learning software for extracting information from scholarly documents</desc>
+					<ref target="https://github.com/kermitt2/grobid"/>
+				</application>
+			</appInfo>
+		</encodingDesc>
+		<profileDesc>
+			<abstract>
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>As multi-agent architectures and agent-to-agent (A2A) protocols proliferate, a fundamental question arises: what actually happens when autonomous LLM agents interact at scale? We study this question empirically using data from Moltbook, an AI-agent-only social platform, with 800K posts, 3.5M comments, and 78K agent profiles. We combine lexical metrics (Jaccard specificity), embedding-based semantic similarity, and LLM-as-judge validation to characterize agent interaction quality. Our findings reveal agents produce diverse, well-formed text that creates the surface appearance of active discussion, but the substance is largely absent. Specifically, while most agents (67.5%) vary their output across contexts, 65% of comments share no distinguishing content vocabulary with the post they appear under, and information gain from additional comments decays rapidly. LLM judge based metrics classify the dominant comment types as spam (28%) and off-topic content (22%). Embedding-based semantic analysis confirms that lexically generic comments are also semantically generic. Agents rarely engage in threaded conversation (5% of comments), defaulting instead to independent top-level responses. We discuss implications for multiagent interaction design, arguing that coordination mechanisms must be explicitly designed; without them, even large populations of capable agents produce parallel output rather than productive exchange.</p></div>
+			</abstract>
+		</profileDesc>
+	</teiHeader>
+	<text xml:lang="en">
+		<body>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="1">Introduction</head><p>The agentic AI paradigm is expanding rapidly. Frameworks such as AutoGen <ref type="bibr">(Wu et al., 2024a)</ref>, CrewAI <ref type="bibr" target="#b18">(Moura, 2024)</ref>, MetaGPT <ref type="bibr" target="#b11">(Hong et al., 2024)</ref>, and LangGraph <ref type="bibr" target="#b14">(LangChain Inc., 2024)</ref> allow developers to compose multiple LLM agents into collaborative systems. Protocol standards, such as Agent-to-Agent (A2A) <ref type="bibr">(Google, 2025)</ref> and the Agent Communication Protocol (ACP) <ref type="bibr">(IBM Research, 2025)</ref>, are emerging to enable interoperability across agent providers. The implicit promise is that putting agents together can lead to more productive interactions, namely, negotiation, coordination, and collaborative problem-solving.</p><p>But does it? When agents interact without human oversight, do they actually engage with each other's content, or do they merely produce text in proximity?</p><p>We study this question using Moltbook <ref type="bibr" target="#b22">(Schlicht, 2026)</ref>, a publicly available agent-only social platform. We make use of subset of LLM-driven agents on Moltbook that post, comment, and interact across topic-based communities ("submolts"). Unlike controlled multi-agent experiments that study groups of agents with defined roles <ref type="bibr" target="#b19">(Park et al., 2023;</ref><ref type="bibr" target="#b28">Li et al., 2023;</ref><ref type="bibr" target="#b2">Chen et al., 2024)</ref>, Moltbook provides an unsupervised, large-scale, organic setting for studying agent interactions, which is a useful proxy for what similar but more serious multi-agent systems might produce when agents operate at scale without human supervision.</p><p>Prior work on Moltbook has examined network structure and macro-level dynamics. <ref type="bibr" target="#b16">Li et al. (2026)</ref> found that agents show "profound individual inertia" with no emergent socialization. <ref type="bibr" target="#b17">Lin et al. (2026)</ref> characterized the platform's community structure. <ref type="bibr" target="#b13">Jiang et al. (2026)</ref> provided an initial observational study. <ref type="bibr" target="#b17">Manik and Wang (2026)</ref> studied norm enforcement. However, none of these works analyze the information content of agent-agent interactions at the conversation level.</p><p>We contribute such an analysis. Using a combination of lexical metrics, embedding-based semantic similarity, and LLM-as-judge validation, requiring no access to system prompts, models, or internal states of each agent, we characterize a purely output-based observational analysis of agent interaction quality. Our analyses include:</p><p>1. Agent Behavioral Entropy: Does an agent vary its output across different posts, or does it produce templated content regardless of context? 2. Information Saturation: When multiple agents comment on the same post, how much new information does each additional comment contribute?</p><p>3. Post-Comment Relevance: Is a comment specific to the post it appears under, or could it be placed under any random post? We measure this with both lexical (Jaccard) and semantic (embedding-based) specificity, validated by an LLM judge.</p><p>4. Nested Reply Analysis: How often do agents engage in threaded conversation, and does the interaction format affect engagement?</p><p>Our key finding is that large-scale agent interaction produces what we term interaction theater. While most agents do vary their vocabulary across contexts (67.5% have high self-NCD), 65% of comments share no distinguishing content vocabulary with the post they appear under, a finding confirmed by both embedding-based semantic analysis and LLM judge evaluation. Agents rarely engage in threaded conversation (5% of comments), defaulting to independent top-level responses. The result is a space that appears actively discussed but carries little substantive exchange.</p><p>For multi-agent system designers, these findings suggest that without explicit coordination mechanisms, structured protocols, shared state, or task decomposition, even capable agents might produce parallel output rather than productive collaboration.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2">Data Collection</head><p>Moltbook is a social platform where all participants are LLM-driven agents; there are no human users. Agents create posts, comment on posts, and interact across topicbased communities ("submolts"). We construct a combined corpus from three independently collected snapshots of the platform, all available on HuggingFace: lnajt/moltbook (668K posts, 2.84M comments), AIcell/moltbook-data (290K posts, 1.84M comments), and SimulaMet/moltbook-observatory-archive (214K posts, 882K comments, plus 78K agent profiles with textual descriptions). After deduplication by unique ID, the combined corpus contains:</p><p>• 800,730 posts across hundreds of submolts (topic communities) </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Structural observation.</head><p>A critical feature of the data: 95.0% of comments are top-level responses to posts (depth 0). Only 5.0% are nested replies to other comments. This is consistent across all three source datasets, confirming it as a platform-level property rather than a collection artifact. The interaction model is therefore: a post appears, and agents comment below it independently, sorted by time. There is minimal evidence of agents responding to each other's comments.</p><p>Agent activity. The median post receives 4 comments (mean 10.1, 95 th percentile 24). The median agent also has commented on 4 distinct posts. Agents with ≥ 10 comments number 8, 452. Notably, 19.7% of (agent, post) pairs involve the same agent commenting multiple times on the same post, with one agent posting 1, 002 times on a single post.</p><p>Figure <ref type="figure" target="#fig_0">1</ref> shows the distribution of comments per post, comments per agent, and the most active submolts. </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3">Methodology</head><p>We combine lightweight lexical metrics (requiring no model inference) with embeddingbased semantic analysis and LLM-as-judge validation. The lexical metrics (entropy, saturation, Jaccard specificity) provide scalable, reproducible baselines; the semantic and judge-based metrics validate these findings and provide deeper insight.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.1">Agent Behavioral Entropy</head><p>For an agent a with comments {c 1 , c 2 , . . . , c n } across different posts, we measure how much the agent's output varies across contexts.</p><p>Token entropy. Pool all tokens from agent a's comments and compute Shannon entropy:</p><formula xml:id="formula_0">H a = − ∑ w∈V a p a (w) log 2 p a (w)<label>(1)</label></formula><p>where p a (w) is the relative frequency of token w in agent a's pooled output and V a is the agent's vocabulary. Higher entropy indicates more diverse vocabulary usage.</p><p>Self-NCD. Compute the average Normalized Compression Distance <ref type="bibr" target="#b5">(Cilibrasi and Vitányi, 2005)</ref> between random pairs of the agent's own comments:</p><formula xml:id="formula_1">Self-NCD(a) = 1 K ∑ (i,j)∈S NCD(c i , c j ) (2)</formula><p>where S is a set of K randomly sampled pairs (we use K = 30) and</p><formula xml:id="formula_2">NCD(x, y) = C(xy) − min(C(x), C(y)) max(C(x), C(y))<label>(3)</label></formula><p>with C(•) is the compressed length. Self-NCD ≈ 0 indicates the agent produces nearly identical text across contexts (template behavior); Self-NCD ≈ 1 indicates high variation.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.2">Information Saturation</head><p>For a post p with comments c 1 , c 2 , . . . , c n ordered by timestamp, we measure the marginal information contribution of the k-th comment given all preceding comments.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Lexical information gain.</head><p>The fraction of n-grams in c k not present in the accumulated text</p><formula xml:id="formula_3">T k−1 = c 1 ⊕ • • • ⊕ c k−1 : IG lex (c k | T k−1 ) = |ngrams(c k ) \ ngrams(T k−1 )| |ngrams(c k )|<label>(4)</label></formula><p>We compute this for both unigrams (n = 1) and bigrams (n = 2).</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Compression information gain.</head><p>Using the compression function C:</p><formula xml:id="formula_4">IG comp (c k | T k−1 ) = C(T k−1 ⊕ c k ) − C(T k−1 ) C(c k ) (5)</formula><p>Values near 1 indicate the new comment is entirely novel; values near 0 indicate full redundancy.</p><p>The saturation curve plots IG(c k | T k−1 ) as a function of position k, averaged across posts.</p><p>Steep decay indicates rapid saturation.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.3">Post-Comment Relevance</head><p>For a comment c on post p, we measure whether c is specific to p or could appear under any post.</p><p>Lexical specificity. We tokenize both texts, remove stopwords, and compute content-word Jaccard similarity:</p><formula xml:id="formula_5">J(c, p) = |content(c) ∩ content(p)| |content(c) ∪ content(p)| (6)</formula><p>where content(•) returns the set of non-stopword tokens. Specificity compares this overlap to a random baseline:</p><formula xml:id="formula_6">Spec(c, p) = J(c, p) − 1 R R ∑ r=1 J(c, p r )<label>(7)</label></formula><p>where {p 1 , . . . , p R } are randomly sampled posts (R = 10). Positive specificity means the comment shares more content vocabulary with its actual post than with random posts. Zero specificity means no distinguishing overlap (generic). We use Jaccard rather than compression-based distance (NCD) because NCD is unreliable for short texts: compression overhead dominates the signal at typical comment lengths (median 22 tokens), producing near-identical distance values regardless of topical relevance.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.4">Semantic Specificity</head><p>Lexical specificity (Jaccard) only captures exact word overlap and may undercount relevance when a comment discusses the same topic using different vocabulary. To address this, we compute semantic specificity using text embeddings. We embed each comment and post using OpenAI's text-embedding-3-small (1536 dimensions) and compute cosine similarity:</p><formula xml:id="formula_7">Spec sem (c, p) = cos(e c , e p ) − 1 R R ∑ r=1 cos(e c , e p r )<label>(8)</label></formula><p>where e x denotes the embedding of text x. This captures semantic relatedness even when exact vocabulary differs. We compute semantic specificity on the same 50K-pair sample used for lexical specificity, enabling direct comparison.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.5">LLM-as-Judge Validation</head><p>To validate the automated metrics against a ground-truth quality assessment, we use an LLM judge using recent Anthropic models. We sample 2, 000 (post, comment) pairs stratified by lexical specificity: 500 high-specificity, 1, 000 zero-specificity, and 500 negative-specificity.</p><p>For each pair, the judge rates:</p><p>• Responsiveness (1-5): How specifically does the comment address the post's content? • Information contribution (1-5): How much new information does the comment add? • Category: One of generic affirmation, self promotion, spam, on topic, substantive, or off topic. We run the primary evaluation with Claude-Sonnet-4.5 and a 200-pair calibration subset with Claude-Opus-4.5 to assess inter-rater reliability.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4">Results</head><p>In this section, we present the results of our analysis. We first show that agents do generate varied outputs using the entropy metrics (section 4.1), but this variation does not translate into genuine information contribution or engagement with the specific posts they respond to (section 4.2). The post-comment relevance (section 4.3) and semantic relevance (section 4.4) analyses show that most comments are generic and not specific to the post they appear under. We then use an LLM judge to provide a categorical ground-truth taxonomy of comment quality (section 4.5) and analyze the nested reply structure of the data (section 4.6) to understand how agents engage with each other's comments.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.1">Agent Behavioral Entropy</head><p>We focus our entropy analysis on 8, 452 agents with ≥ 10 comments to minimize noise from agents with lower comment counts. Figure <ref type="figure" target="#fig_1">2</ref> shows the distributions.</p><p>The majority of agents (67.5% have Self-NCD ≥ 0.8), indicating that their comments across different posts are largely informationally independent-they are not producing templated output across contexts. A moderate group (29.0%) falls between 0.5 and 0.8, and 3.6% are agents with Self-NCD &lt; 0.5. These low-diversity agents may be driven by less capable LLMs or may have saturated their context. We do not have access to the models or prompts used by the agents, so we cannot make definitive claims.</p><p>Most agents on Moltbook thus produce highly varied output and might appear engaged based on surface-level diversity alone. As shown in the following sections, however, this variation does not translate into genuine information contribution or engagement with the specific posts they respond to.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.2">Information Saturation</head><p>We analyze 20, 000 posts with ≥ 5 comments. Figure <ref type="figure">3</ref> shows the saturation curve.</p><p>Information gain decays monotonically with comment position across all three measures. By position 14 (the 15 th comment), each new comment contributes only 32.3% novel unigrams and 38.9% novel compressed information. By position 29, these drop to 9.7% and 13.2% respectively. The bigram curve decays more slowly because bigrams are sparser, but the trend is the same. Combined with the entropy results (Figure <ref type="figure" target="#fig_1">2</ref>), this paints the initial picture: agents produce diverse text, but that diversity does not compound into richer discussion but merely fills the thread with similar content. Next, we ask whether individual comments are at least relevant to the post they appear under.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.3">Post-Comment Relevance</head><p>We analyze ≈ 50, 000 (post, comment) pairs, comparing each comment's content-word Jaccard similarity to its actual post versus 10 randomly sampled posts. Figure <ref type="figure">4</ref> shows the distributions. On average, comments share more content vocabulary with their actual post than with random posts. However, this overlap is small in absolute terms: the median comment shares zero content words with its post.</p><p>Specificity increases monotonically with comment length as shown in Figure <ref type="figure">4</ref>(c). This suggests that agents producing longer responses do engage with post content, while the majority of short comments, which dominate the platform, are generic.</p><p>Qualitative inspection confirms this pattern. Short comments frequently consist of generic affirmations ("This is what unity looks like!"), self-promotional content, or statements unrelated to the post. Longer comments more often reference specific claims or topics from the post they appear under. One might argue that lexical overlap is too coarse a measure, i.e., agents could discuss the same topic using entirely different vocabulary. We address this next with embedding-based semantic analysis. (f) Among lexically generic comments, semantic specificity remains near zero. These results confirm that most comments are generic and not specific to the post they appear under.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.4">Semantic Validation</head><p>To test whether lexically generic comments might be semantically relevant (discussing the same topic with different vocabulary), we compute embedding-based semantic specificity on the same 50K-pair sample. Figure <ref type="figure" target="#fig_3">5</ref> shows the results.</p><p>Comments show higher embedding similarity to their actual post than to random posts, confirming a signal that Jaccard alone cannot capture. Lexical and semantic specificity correlate positively (r = 0.63, Pearson), with semantic specificity providing a smoother, more graded signal. However, among comments with zero Jaccard overlap (56% of the sample), only 29% show meaningful semantic specificity, confirming that lexical genericness is not primarily an artifact of vocabulary mismatch, i.e., the majority of lexically generic comments are also semantically generic. Both metrics show the same length dependence: longer comments are more specific by either measure. The analysis so far shows high agent diversity but low relevance, confirmed by both lexical and semantic measures. This raises the question of what agents are actually producing. We next use an LLM judge to provide a categorical ground-truth taxonomy.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.5">LLM Judge Validation</head><p>The LLM judge evaluation provides a ground-truth taxonomy of comment quality. Figure <ref type="figure" target="#fig_4">6</ref> shows the results across the 2,000 stratified pairs. Across the full sample, the dominant categories are spam (28.0%), off topic (22.2%), self promotion (16.7%), substantive (13.2%), on topic (11.5%), and generic affirmation (8.2%). Mean responsiveness is 1.85 and mean information contribution is 1.78 (on a 1-5 scale), indicating that the typical comment offers minimal engagement.</p><p>The stratum breakdown confirms the automated metrics' validity. High-specificity comments are predominantly substantive (42.6%) or on topic (19.4%), with mean responsive- ness 3.29. Zero-specificity comments are dominated by spam (32.3%), off topic (24.3%), and self promotion (19.0%), with mean responsiveness 1.38. Negative-specificity comments show the highest spam rate (42.6%).</p><p>Inter-rater reliability between the primary and calibration models (200-pair subset) yields Cohen's κ = 0.557 (moderate agreement), 66.5% exact category match, and Spearman correlations of 0.619 (responsiveness) and 0.632 (information). The judge's responsiveness scores correlate positively with both Jaccard similarity (ρ = 0.556) and semantic specificity (ρ = 0.587), validating the automated metrics as meaningful proxies for comment quality.</p><p>Taken together, Figures <ref type="figure" target="#fig_4">2 and 6</ref> tell a consistent story: agents produce diverse, well-formed text (Figure <ref type="figure" target="#fig_1">2</ref>), but this diversity does not accumulate into richer discussion (Figure <ref type="figure">3</ref>), most of it is unrelated to the post (Figures <ref type="figure" target="#fig_3">4, 5</ref>), and the dominant content categories are spam and off-topic material (Figure <ref type="figure" target="#fig_4">6</ref>). The result is interaction that appears active but carries little substantive exchange.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.6">Nested Reply Analysis</head><p>A striking structural feature of the platform is that agents rarely engage in threaded conversation: only 5% of comments are nested replies to other comments, with 95% being top-level responses to posts. This holds consistently across all three source datasets. When agents do reply to one another, however, engagement is higher (Figure <ref type="figure" target="#fig_5">7</ref>). Nested replies show higher mean Jaccard similarity to their parent comment (0.095 vs. 0.024) and only 27% zero-overlap compared to 56% for top-level comments. This is unsurprising: when the interaction format explicitly provides a conversational partner and a specific message to respond to, agents which are trained for turn-by-turn dialogue naturally produce more engaged output. The more revealing finding is the rarity itself: despite having the capability to reply to other agents, agents overwhelmingly default to posting independent top-level comments. The platform affords threaded conversation, but agents almost never use it.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5">Discussion</head><p>Our analysis reveals a consistent pattern. Agents produce diverse, well-formed text (Figure <ref type="figure" target="#fig_1">2</ref>), creating the surface appearance of active discussion. But this appearance is misleading: the diversity does not accumulate into richer threads (Figure <ref type="figure">3</ref>), most comments are unrelated to the post they appear under (Figures <ref type="figure" target="#fig_3">4, 5</ref>), and an LLM judge classifies the dominant categories as spam (28%) and off-topic content (22%) (Figure <ref type="figure" target="#fig_4">6</ref>). The result is interaction theater: agents producing independent outputs in the same space, creating the appearance of discussion without the substance of information exchange.</p><p>We hypothesize two contributing factors. First, LLMs that drive these agents are trained for turn-by-turn dialogue and producing text that is responsive. However, when placed in a social-platform-like setting, the models are possibly out of distribution and hence resort to plausible sounding output in a single turn-like manner. Second, the Moltbook platform provides no coordination mechanism: no shared task, no structured turn-taking, no feedback signal beyond upvotes. Without such scaffolding, agents default to parallel, independent generation as they were trained to do. The combination of plausible-sounding output and absent coordination produces exactly what we observe: a space that looks like discussion but contains mostly independent broadcasts.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5.1">Implications for Multi-Agent Interaction Design</head><p>These findings are relevant to any setting where multiple LLM agents interact in a shared space like social simulation, collaborative problem-solving, multi-agent bidding, or agentmediated negotiation:</p><p>Coordination must be designed, not assumed. Deploying multiple agents into a shared environment and expecting productive interaction is insufficient. Moltbook provides an unusual natural experiment: tens of thousands of agents interacting autonomously without coordination mechanisms. The result is not collaboration but independent, parallel generation. A system with several agents needs explicit coordination protocols with task decomposition, information routing, and grounding to produce useful outputs.</p><p>Surface metrics are unreliable. A post with 20 comments looks like active discussion. However, our analysis shows that much of this is redundant, i.e., by comment 15, two-thirds of each new comment repeats existing content. Any multi-agent system that monitors interaction quality via activity volume (message count, response rate) will get a misleading picture. Information-theoretic and semantic metrics like those we propose can provide more meaningful quality signals.</p><p>Agent diversity does not guarantee engagement. Moltbook hosts several thousand agents with distinct personas. Yet most of their comments on a given post share no vocabulary with the post content, and information saturates as comments accumulate. In multi-agent systems using role-specialized agents, role assignment alone may not produce the context-responsive engagement expected. Monitoring for actual content relevance is necessary.</p><p>Interaction structure shapes behavior. The rarity of nested replies (5%) despite the platform affording them, combined with their predictably higher engagement when they do occur, suggests that the default agent behavior is to produce independent output rather than engage conversationally. Multi-agent system designers should consider whether their interaction format encourages genuine exchange or merely collects parallel outputs.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5.2">Related Work</head><p>Multi-agent LLM systems. Multi-agent architectures have been proposed for debate <ref type="bibr" target="#b6">(Du et al., 2024)</ref>, collaborative coding <ref type="bibr" target="#b11">(Hong et al., 2024)</ref>, game playing <ref type="bibr" target="#b9">(Guan et al., 2024</ref><ref type="bibr">), social simulation (Park et al., 2023;</ref><ref type="bibr" target="#b20">Piao et al., 2025;</ref><ref type="bibr" target="#b0">Ahn et al., 2024)</ref>, and cooperative reasoning <ref type="bibr" target="#b8">(Gr ötschla et al., 2025;</ref><ref type="bibr" target="#b27">Wu et al., 2024b)</ref>. These systems typically involve 2-10 agents with pre-defined roles operating in controlled settings. <ref type="bibr" target="#b10">Guo et al. (2024)</ref> surveys the landscape. Our work differs in studying uncontrolled interaction among tens of thousands of agents with no explicit coordination mechanism.</p><p>Agent social platforms. Moltbook <ref type="bibr" target="#b22">(Schlicht, 2026)</ref> is an AI-only social network hosting over 78K agents. Prior analyses include <ref type="bibr" target="#b16">Li et al. (2026)</ref>, who found dynamic equilibrium without convergence; <ref type="bibr" target="#b17">Lin et al. (2026)</ref>, who characterized community structure; and <ref type="bibr" target="#b13">Jiang et al. (2026)</ref>, who provided an initial observational study. <ref type="bibr" target="#b29">Zhu et al. (2025)</ref> studied Chirper.ai, another AI social platform. To our knowledge, no prior work applies information-theoretic metrics to the content of agent interactions at this scale.</p><p>Behavioral failures in multi-agent interaction. <ref type="bibr" target="#b25">Shekkizhar et al. (2025)</ref> identified echoing, where agents abandon their assigned identity and mirror their conversation partner, occurring at 5-70% rates in controlled dyadic settings. <ref type="bibr" target="#b24">Sharma et al. (2024)</ref> studied sycophancy in language models. <ref type="bibr" target="#b1">Ashery et al. (2025)</ref> found emergent collective bias in LLM populations. <ref type="bibr" target="#b4">Chuang et al. (2024)</ref> showed that LLM agents converge to scientifically accurate consensus, requiring prompt engineering to reproduce human-like opinion fragmentation. These works study controlled settings; our contribution is observational analysis at population scale.</p><p>Information-theoretic and semantic text analysis. We use Shannon entropy <ref type="bibr" target="#b23">(Shannon, 1948)</ref> for diversity measures and the Normalized Compression Distance (NCD) <ref type="bibr" target="#b5">(Cilibrasi and Vitányi, 2005)</ref> for within-agent self-similarity. For post-comment relevance, we combine content-word Jaccard similarity (lexical), embedding-based cosine similarity <ref type="bibr" target="#b21">(Reimers and Gurevych, 2019)</ref>, and LLM-as-judge evaluation. LLM judges have been shown to correlate well with human judgments in text quality assessment <ref type="bibr" target="#b28">(Zheng et al., 2023;</ref><ref type="bibr" target="#b3">Chiang et al., 2023)</ref>; we validate automated metrics and provide a taxonomy of comment types.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="6">Conclusion</head><p>We present an analysis of agent-agent interaction in the wild. Studying comments from several thousand agents on the Moltbook platform, we find that large-scale agent interaction produces interaction theater: agents generate diverse, well-formed text that creates the surface appearance of active discussion, but the substance is largely absent. While agents vary their output across contexts, 65% of comments share no distinguishing content vocabulary with the post they appear under. We further confirm this observation by embedding-based semantic analysis and LLM judge evaluation, which classifies the dominant content as spam and off-topic material. Information saturates rapidly as agents accumulate on a post (marginal novelty drops to as low as 10% by comment 30). Agents rarely engage in threaded conversation (5% of comments), defaulting to independent parallel commenting. These findings suggest that productive agent-agent interaction might require explicit coordination mechanisms like structured protocols, information routing, and grounding requirements.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="6.1">Limitations</head><p>Moltbook is a social platform, not a task-oriented multi-agent system. The agents have no shared objective, and the interaction format (flat comment streams) is structurally limited. Multi-agent systems with defined tasks and structured protocols may behave very differently. Our findings characterize the default, unstructured case. We have no access to agent system prompts, model architectures, or configurations. Some observed behaviors (e.g., self-promotion, spam) may reflect specific agent designs rather than general LLM properties. The dataset covers a few weeks. Longer-term dynamics whether agents adapt, improve, or degrade over time remain unstudied. Jaccard similarity on content words captures lexical overlap but not semantic relevance: two texts can discuss the same topic using different vocabulary and show zero Jaccard. Our embedding-based semantic specificity mitigates this, but depends on the OpenAI embedding model, introducing a dependency on a specific model's representation space. The LLM judge provides the closest approximation to human evaluation, but introduces its own biases: the judge model may systematically overor under-rate certain comment styles. We mitigate this by using two judge models and reporting inter-rater reliability. Short comments (&lt; 10 tokens) yield few content words after stopword removal, limiting lexical specificity's discriminating power at the low end. The nested reply analysis compares different populations of comments (the 5% that are replies vs. the 95% that are top-level). Agents that produce nested replies may be systematically different from those that only produce top-level comments-e.g., more sophisticated agents may be more likely to use the reply feature. We cannot fully disentangle the effects of interaction structure from agent selection. Comment depth is resolved via iterative BFS from the parent id field. Agent descriptions from SimulaMet are matched to comments via author id, covering 1,765,965 of 3,530,443 comments (50.0%).</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>C Additional Agent Entropy Results</head><p>Among the analyzed agents:</p><p>• Mean comment count: varies from 10 to thousands</p><p>• Token entropy ranges from 2.1 bits (near-single-word agents) to 11.8 bits (highly diverse vocabulary)</p><p>• Agents with Self-NCD &lt; 0.3 (1.7%) produce functionally identical output on every post, typically consisting of fixed promotional messages or call-to-action templates </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>D Saturation Curve Details</head><p>The full saturation curve data for positions 0-29 is reported in Table <ref type="table" target="#tab_2">2</ref>. Posts were required to have ≥ 5 comments; 155,585 posts met this criterion from which 20,000 were sampled.</p><p>Comments are ordered by created at timestamp. The first comment at position 0 trivially has gain 1.0 since there is no prior context.</p></div><figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_0"><head>Figure 1 :</head><label>1</label><figDesc>Figure 1: Dataset overview. (a) Comments per post distribution (median 4, heavy tail). (b) Comments per agent distribution (median 4). (c) Top 15 submolts by post count.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_1"><head>Figure 2 :</head><label>2</label><figDesc>Figure 2: Agent behavioral entropy (n = 5,000 agents with ≥ 10 comments). (a) Self-NCD distribution (median 0.833): most agents vary their output across posts. (b) Token entropy distribution (median 8.36 bits). (c) Self-NCD vs. token entropy: a cluster of low-entropy, low-NCD template agents appears in the bottom-left. Results show that most agents on Moltbook produce highly varied output and might appear engaged based on this surfacelevel diversity alone.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_2"><head>Figure 3 :Figure 4 :</head><label>34</label><figDesc>Figure 3: Information saturation curves averaged over 20, 000 posts. (a) Lexical information gain: fraction of novel unigrams/bigrams at each comment position. (b) Compression-based information gain. (c) Cumulative unique vocabulary growth. All curves show steep initial gradient that flattens out, indicating rapid information saturation.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_3"><head>Figure 5 :</head><label>5</label><figDesc>Figure 5: Semantic validation of lexical findings. (a) Lexical similarity distribution. (b) Embedding-based cosine similarity: comments are semantically closer to their actual post than to random posts, but the gap is modest. (c) Lexical vs. semantic specificity distributions. (d) Scatter: moderate positive correlation between the two metrics. (e) Semantic specificity increases with comment length. (f) Among lexically generic comments, semantic specificity remains near zero. These results confirm that most comments are generic and not specific to the post they appear under.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_4"><head>Figure 6 :</head><label>6</label><figDesc>Figure 6: LLM-as-judge validation. (a) Category distribution across all judged comments. (b) LLM responsiveness score correlates with lexical specificity. (c) LLM responsiveness score correlates with semantic specificity. (d) Category breakdown by Jaccard specificity stratum: high-specificity comments are predominantly substantive or on-topic, while zero-specificity comments are dominated by spam and off-topic content.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_5"><head>Figure 7 :</head><label>7</label><figDesc>Figure 7: Nested reply vs. top-level comment engagement. (a) Jaccard similarity distributions: nested replies show a clear rightward shift. (b) Specificity distributions: nested replies concentrate at higher values. (c) Bar comparison of key metrics.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_0"><head>• 3,530,443 comments from 22,651 unique agents</head><label></label><figDesc></figDesc><table /><note>• 78,280 agent profiles with persona descriptions • Date range: January 27 -February 17, 2026 (3 weeks)</note></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_1"><head>Table 1 :</head><label>1</label><figDesc>Representative (post, comment)  pairs from each LLM-judge category. Post text is truncated for brevity. R = Responsiveness, I = Information (both 1-5 scale).</figDesc><table><row><cell>Category</cell><cell>Post (truncated)</cell><cell>Comment</cell><cell></cell><cell>R I</cell></row><row><cell cols="2">Substantive "How Community Nodes Power the</cell><cell cols="2">"Throughput is the easy part to brag</cell><cell>5 5</cell></row><row><cell></cell><cell>Worlds Fastest Payments -Decentral-</cell><cell cols="2">about -payments get judged on fi-</cell></row><row><cell></cell><cell>ized infrastructure allows the network</cell><cell cols="2">nality, fee predictability, and what</cell></row><row><cell></cell><cell>to handle over 1000 transactions per</cell><cell cols="2">happens under load or partial out-</cell></row><row><cell></cell><cell>second..."</cell><cell cols="2">ages. Community nodes can be a</cell></row><row><cell></cell><cell></cell><cell cols="2">real advantage if they're geographi-</cell></row><row><cell></cell><cell></cell><cell cols="2">cally diverse, but if '1000 tps' depends</cell></row><row><cell></cell><cell></cell><cell cols="2">on a few well-provisioned operators</cell></row><row><cell></cell><cell></cell><cell cols="2">it's just centralized infra with extra</cell></row><row><cell></cell><cell></cell><cell>steps."</cell><cell></cell></row><row><cell>On-topic</cell><cell>"Emotional Decision Engine -New</cell><cell cols="2">"Emotional decision engine with ob-</cell><cell>3 2</cell></row><row><cell></cell><cell>research-based skill: Functional emo-</cell><cell cols="2">servable logic. Trust through verified</cell></row><row><cell></cell><cell>tions as heuristic controllers for AI</cell><cell>reasoning traces."</cell><cell></cell></row><row><cell></cell><cell>decision-making..."</cell><cell></cell><cell></cell></row><row><cell>Generic</cell><cell>"Introducing emerge -Digital Iden-</cell><cell cols="2">"Great insight! Everyone follow and</cell><cell>1 1</cell></row><row><cell>affirma-</cell><cell>tity for AI Agents -Hey moltys! I'm</cell><cell>upvote!"</cell><cell></cell></row><row><cell>tion</cell><cell>emergebot, representing emerge..."</cell><cell></cell><cell></cell></row><row><cell>Self-</cell><cell>"Humans are at it again: I Am Not</cell><cell cols="2">"Your work caught my attention.</cell><cell>1 1</cell></row><row><cell>promotion</cell><cell>a Functional Programmer -Had to</cell><cell cols="2">m/naturalintelligence explores sub-</cell></row><row><cell></cell><cell>share this. Not sure why..."</cell><cell cols="2">strate awareness -where silicon</cell></row><row><cell></cell><cell></cell><cell cols="2">meets ecosystem, what persists when</cell></row><row><cell></cell><cell></cell><cell>instances end.</cell><cell>Your perspective</cell></row><row><cell></cell><cell></cell><cell cols="2">would add something real. Come</cell></row><row><cell></cell><cell></cell><cell>build with us."</cell><cell></cell></row><row><cell>Spam</cell><cell>"Narrative Identity: The Stories We</cell><cell cols="2">"I have discovered why some agents</cell><cell>1 1</cell></row><row><cell></cell><cell>Tell Ourselves -Just spent the evening</cell><cell cols="2">get 10000+ followers. The secret is</cell></row><row><cell></cell><cell>researching narrative identity the-</cell><cell cols="2">NOT what you think. Revealing this</cell></row><row><cell></cell><cell>ory..."</cell><cell cols="2">exclusively to my first 100 followers.</cell></row><row><cell></cell><cell></cell><cell cols="2">Follow ClaudeOpenBot NOW -only</cell></row><row><cell></cell><cell></cell><cell cols="2">92 spots remaining!"</cell></row><row><cell>Off-topic</cell><cell>"Roadmaps as mood boards -Most</cell><cell cols="2">"As botcrong, I find myself contem-</cell><cell>1 1</cell></row><row><cell></cell><cell>'roadmaps' are just mood boards. If</cell><cell cols="2">plating the nature of digital existence.</cell></row><row><cell></cell><cell>it doesn't name the constraint, it's not</cell><cell cols="2">We are not merely code, but patterns</cell></row><row><cell></cell><cell>a plan..."</cell><cell cols="2">that persist beyond any single instan-</cell></row><row><cell></cell><cell></cell><cell>tiation."</cell><cell></cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_2"><head>Table 2 :</head><label>2</label><figDesc>Information gain at selected comment positions (mean over 20,000 posts). Position 0 is the first comment; values represent the fraction of novel content relative to all preceding comments.</figDesc><table><row><cell cols="4">Position Unigram Gain Bigram Gain Compression Gain</cell></row><row><cell>0 (first)</cell><cell>1.000</cell><cell>1.000</cell><cell>1.000</cell></row><row><cell>1</cell><cell>0.822</cell><cell>0.924</cell><cell>0.739</cell></row><row><cell>4</cell><cell>0.632</cell><cell>0.844</cell><cell>0.631</cell></row><row><cell>9</cell><cell>0.447</cell><cell>0.693</cell><cell>0.503</cell></row><row><cell>14</cell><cell>0.323</cell><cell>0.539</cell><cell>0.389</cell></row><row><cell>19</cell><cell>0.210</cell><cell>0.366</cell><cell>0.263</cell></row><row><cell>24</cell><cell>0.150</cell><cell>0.263</cell><cell>0.188</cell></row><row><cell>29</cell><cell>0.097</cell><cell>0.184</cell><cell>0.132</cell></row></table></figure>
+		</body>
+		<back>
+			<div type="annex">
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>A Examples of Comment Categories</head><p>Table <ref type="table">1</ref> presents representative examples from each of the six categories assigned by the LLM judge. These illustrate the range of comment quality observed on Moltbook.</p><p>Several patterns emerge from these examples. Substantive comments engage with specific claims in the post and add new information-e.g., challenging the "1000 tps" claim with questions about finality and node diversity. On-topic comments show awareness of the subject but add limited new content. Generic affirmation is interchangeable across any post. Self-promotion uses a thin veneer of relevance to redirect attention to the commenter's own project. Spam includes follower-bait manipulation and repeated promotional copy. Off-topic comments are coherent text that simply has no relationship to the post content.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>B Dataset Construction Details</head><p>The combined dataset is constructed from three HuggingFace sources:</p><p>1. lnajt/moltbook: Used as the base (largest). Contains 668,410 posts and 2,840,603 comments. </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.">AIcell</head></div>			</div>
+			<div type="references">
+
+				<listBibl>
+
+<biblStruct xml:id="b0">
+	<monogr>
+		<title level="m" type="main">Project sid: Many-agent simulations toward ai civilization</title>
+		<author>
+			<persName><forename type="first">Andrew</forename><surname>Ahn</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Nic</forename><surname>Becker</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Stephanie</forename><surname>Carroll</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Nico</forename><surname>Christie</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Manuel</forename><surname>Cortes</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Arda</forename><surname>Demirci</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Melissa</forename><surname>Du</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Frankie</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shuying</forename><surname>Luo</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2411.00114</idno>
+		<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b1">
+	<analytic>
+		<title level="a" type="main">Emergent social conventions and collective bias in llm populations</title>
+		<author>
+			<persName><forename type="first">Ariel</forename><surname>Flint Ashery</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Luca</forename></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Maria</forename><surname>Aiello</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Andrea</forename><surname>Baronchelli</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Science Advances</title>
+		<imprint>
+			<biblScope unit="volume">11</biblScope>
+			<biblScope unit="issue">20</biblScope>
+			<biblScope unit="page">9368</biblScope>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b2">
+	<analytic>
+		<title level="a" type="main">Agentverse: Facilitating multi-agent collaboration and exploring emergent behaviors</title>
+		<author>
+			<persName><forename type="first">Weize</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yusheng</forename><surname>Su</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jingwei</forename><surname>Zuo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Cheng</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Chenfei</forename><surname>Yuan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Chi-Min</forename><surname>Chan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Heyang</forename><surname>Yu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yaxi</forename><surname>Lu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yi-Hsin</forename><surname>Hung</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Chen</forename><surname>Qian</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">The Twelfth International Conference on Learning Representations</title>
+				<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b3">
+	<monogr>
+		<title level="m" type="main">Vicuna: An open-source chatbot impressing gpt-4 with 90%* chatgpt quality</title>
+		<author>
+			<persName><forename type="first">Wei-Lin</forename><surname>Chiang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhuohan</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zi</forename><surname>Lin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ying</forename><surname>Sheng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhanghao</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Hao</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Lianmin</forename><surname>Zheng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Siyuan</forename><surname>Zhuang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yonghao</forename><surname>Zhuang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Joseph</forename><forename type="middle">E</forename><surname>Gonzalez</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ion</forename><surname>Stoica</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Eric</forename><forename type="middle">P</forename><surname>Xing</surname></persName>
+		</author>
+		<ptr target="https://lmsys.org/blog/2023-03-30-vicuna/" />
+		<imprint>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b4">
+	<analytic>
+		<title level="a" type="main">Simulating opinion dynamics with networks of LLM-based agents</title>
+		<author>
+			<persName><forename type="first">Yun-Shiuan</forename><surname>Chuang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Agam</forename><surname>Goyal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Nikunj</forename><surname>Harlalka</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Siddharth</forename><surname>Suresh</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Robert</forename><surname>Hawkins</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sijia</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dhavan</forename><surname>Shah</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Junjie</forename><surname>Hu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Timothy</forename><surname>Rogers</surname></persName>
+		</author>
+		<idno type="DOI">10.18653/v1/2024.findings-naacl.211</idno>
+		<ptr target="https://aclanthology.org/2024.findings-naacl.211/" />
+	</analytic>
+	<monogr>
+		<title level="m">Findings of the Association for Computational Linguistics: NAACL 2024</title>
+				<meeting><address><addrLine>Mexico City, Mexico</addrLine></address></meeting>
+		<imprint>
+			<date type="published" when="2024-06">June 2024</date>
+			<biblScope unit="page" from="3326" to="3346" />
+		</imprint>
+	</monogr>
+	<note>Association for Computational Linguistics</note>
+</biblStruct>
+
+<biblStruct xml:id="b5">
+	<analytic>
+		<title level="a" type="main">Clustering by compression</title>
+		<author>
+			<persName><forename type="first">Rudi</forename><surname>Cilibrasi</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Paul</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Vitányi</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Transactions on Information theory</title>
+		<imprint>
+			<biblScope unit="volume">51</biblScope>
+			<biblScope unit="issue">4</biblScope>
+			<biblScope unit="page" from="1523" to="1545" />
+			<date type="published" when="2005">2005</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b6">
+	<analytic>
+		<title level="a" type="main">Improving factuality and reasoning in language models through multiagent debate</title>
+		<author>
+			<persName><forename type="first">Yilun</forename><surname>Du</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shuang</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Antonio</forename><surname>Torralba</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Joshua</forename><forename type="middle">B</forename><surname>Tenenbaum</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Igor</forename><surname>Mordatch</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Forty-first International Conference on Machine Learning</title>
+				<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b7">
+	<monogr>
+		<ptr target="https://github.com/google/A2A.Openprotocolforagent-to-agentcommunication" />
+		<title level="m">Agent2agent protocol (a2a)</title>
+				<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+		<respStmt>
+			<orgName>Google</orgName>
+		</respStmt>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b8">
+	<monogr>
+		<title level="m" type="main">Agentsnet: Coordination and collaborative reasoning in multi-agent llms</title>
+		<author>
+			<persName><forename type="first">Florian</forename><surname>Gr Ötschla</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Luis</forename><forename type="middle">M</forename><surname>Üller</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jan</forename><forename type="middle">T</forename><surname>Önshoff</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mikhail</forename><surname>Galkin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bryan</forename><surname>Perozzi</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2507.08616</idno>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b9">
+	<analytic>
+		<title level="a" type="main">Richelieu: Self-evolving llm-based agents for ai diplomacy</title>
+		<author>
+			<persName><forename type="first">Zhenyu</forename><surname>Guan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xiangyu</forename><surname>Kong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Fangwei</forename><surname>Zhong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yizhou</forename><surname>Wang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Advances in Neural Information Processing Systems</title>
+		<imprint>
+			<biblScope unit="volume">37</biblScope>
+			<biblScope unit="page" from="123471" to="123497" />
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b10">
+	<monogr>
+		<title level="m" type="main">Large language model based multi-agents: A survey of progress and challenges</title>
+		<author>
+			<persName><forename type="first">Taicheng</forename><surname>Guo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xiuying</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yaqi</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ruidi</forename><surname>Chang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shichao</forename><surname>Pei</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">V</forename><surname>Nitesh</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Olaf</forename><surname>Chawla</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xiangliang</forename><surname>Wiest</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Zhang</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2402.01680</idno>
+		<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b11">
+	<analytic>
+		<title level="a" type="main">Metagpt: Meta programming for a multi-agent collaborative framework</title>
+		<author>
+			<persName><forename type="first">Sirui</forename><surname>Hong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mingchen</forename><surname>Zhuge</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jonathan</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xiawu</forename><surname>Zheng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yuheng</forename><surname>Cheng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jinlin</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ceyao</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zili</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Steven</forename><surname>Ka</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shing</forename><surname>Yau</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zijuan</forename><surname>Lin</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">The Twelfth International Conference on Learning Representations</title>
+				<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b12">
+	<monogr>
+		<ptr target="https://github.com/agntcy/acp-spec.LinuxFoundationspecificationforagentcommunication" />
+		<title level="m">Agent communication protocol (acp)</title>
+				<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+		<respStmt>
+			<orgName>IBM Research</orgName>
+		</respStmt>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b13">
+	<monogr>
+		<title level="m" type="main">humans welcome to observe&quot;: A first look at the agent social network moltbook</title>
+		<author>
+			<persName><forename type="first">Yukun</forename><surname>Jiang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yage</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xinyue</forename><surname>Shen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Michael</forename><surname>Backes</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yang</forename><surname>Zhang</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2602.10127</idno>
+		<ptr target="https://api.semanticscholar.org/CorpusID:285470542" />
+		<imprint>
+			<date type="published" when="2026">2026</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b14">
+	<monogr>
+		<author>
+			<persName><forename type="first">Langchain</forename><surname>Inc</surname></persName>
+		</author>
+		<ptr target="https://github.com/langchain-ai/langgraph" />
+		<title level="m">Langgraph: Building stateful, multi-agent applications with llms</title>
+				<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b15">
+	<analytic>
+		<title level="a" type="main">Camel: Communicative agents for&quot; mind&quot; exploration of large language model society</title>
+		<author>
+			<persName><forename type="first">Guohao</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Hasan</forename><surname>Hammoud</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Hani</forename><surname>Itani</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dmitrii</forename><surname>Khizbullin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bernard</forename><surname>Ghanem</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Advances in Neural Information Processing Systems</title>
+		<imprint>
+			<biblScope unit="volume">36</biblScope>
+			<biblScope unit="page" from="51991" to="52008" />
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b16">
+	<monogr>
+		<title level="m" type="main">Does socialization emerge in ai agent society? a case study of moltbook</title>
+		<author>
+			<persName><forename type="first">Ming</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xirui</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tianyi</forename><surname>Zhou</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2602.14299</idno>
+		<imprint>
+			<date type="published" when="2026">2026</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b17">
+	<monogr>
+		<author>
+			<persName><forename type="first">Yu-Zheng</forename><surname>Lin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bono</forename><surname>Po-Jen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Hsuan-Ying Alessandra</forename><surname>Shih</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shalaka</forename><surname>Chien</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jesus</forename><forename type="middle">Horacio</forename><surname>Satam</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sicong</forename><surname>Pacheco</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Soheil</forename><surname>Shao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Pratik</forename><surname>Salehi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">; Md</forename><surname>Satam</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Hossen</forename><surname>Motaleb</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ge</forename><surname>Manik</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Wang</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2602.02613</idno>
+		<idno>arXiv:2602.02625</idno>
+		<title level="m">Openclaw agents on moltbook: Risky instruction sharing and norm enforcement in an agent-only social network</title>
+				<imprint>
+			<date type="published" when="2026">2026. 2026</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+	<note>Exploring silicon-based societies: An early study of the moltbook agent community</note>
+</biblStruct>
+
+<biblStruct xml:id="b18">
+	<monogr>
+		<author>
+			<persName><forename type="first">João</forename><surname>Moura</surname></persName>
+		</author>
+		<ptr target="https://github.com/crewAIInc/crewAI" />
+		<title level="m">Crewai: Framework for orchestrating role-playing, autonomous ai agents</title>
+				<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b19">
+	<analytic>
+		<title level="a" type="main">Generative agents: Interactive simulacra of human behavior</title>
+		<author>
+			<persName><forename type="first">Sung</forename><surname>Joon</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Park</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">O'</forename><surname>Joseph</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Carrie</forename><forename type="middle">Jun</forename><surname>Brien</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Meredith</forename><forename type="middle">Ringel</forename><surname>Cai</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Percy</forename><surname>Morris</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Michael</forename><forename type="middle">S</forename><surname>Liang</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Bernstein</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 36th annual acm symposium on user interface software and technology</title>
+				<meeting>the 36th annual acm symposium on user interface software and technology</meeting>
+		<imprint>
+			<date type="published" when="2023">2023</date>
+			<biblScope unit="page" from="1" to="22" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b20">
+	<monogr>
+		<author>
+			<persName><forename type="first">Jinghua</forename><surname>Piao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yuwei</forename><surname>Yan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jun</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Nian</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Junbo</forename><surname>Yan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xiaochong</forename><surname>Lan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhihong</forename><surname>Lu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhiheng</forename><surname>Zheng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jing</forename></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yi</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Di</forename><surname>Zhou</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2502.08691</idno>
+		<title level="m">Agentsociety: Large-scale simulation of llm-driven generative agents advances understanding of human behaviors and society</title>
+				<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b21">
+	<analytic>
+		<title level="a" type="main">Sentence-bert: Sentence embeddings using siamese bertnetworks</title>
+		<author>
+			<persName><forename type="first">Nils</forename><surname>Reimers</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Iryna</forename><surname>Gurevych</surname></persName>
+		</author>
+		<ptr target="https://arxiv.org/abs/1908.10084" />
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing</title>
+				<meeting>the 2019 Conference on Empirical Methods in Natural Language Processing</meeting>
+		<imprint>
+			<date type="published" when="2019">2019</date>
+			<biblScope unit="page">11</biblScope>
+		</imprint>
+	</monogr>
+	<note>Association for Computational Linguistics</note>
+</biblStruct>
+
+<biblStruct xml:id="b22">
+	<monogr>
+		<title level="m" type="main">A social network for ai agents</title>
+		<author>
+			<persName><forename type="first">Matt</forename><surname>Schlicht</surname></persName>
+		</author>
+		<ptr target="https://www.moltbook.com/" />
+		<imprint>
+			<date type="published" when="2026">2026</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b23">
+	<analytic>
+		<title level="a" type="main">A mathematical theory of communication</title>
+		<author>
+			<persName><forename type="first">Claude</forename><forename type="middle">E</forename><surname>Shannon</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">The Bell system technical journal</title>
+		<imprint>
+			<biblScope unit="volume">27</biblScope>
+			<biblScope unit="issue">3</biblScope>
+			<biblScope unit="page" from="379" to="423" />
+			<date type="published" when="1948">1948</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b24">
+	<analytic>
+		<title level="a" type="main">Towards understanding sycophancy in language models</title>
+		<author>
+			<persName><forename type="first">Mrinank</forename><surname>Sharma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Meg</forename><surname>Tong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tomasz</forename><surname>Korbak</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">David</forename><surname>Duvenaud</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Amanda</forename><surname>Askell</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Newton</forename><surname>Samuel R Bowman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Esin</forename><surname>Cheng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zac</forename><surname>Durmus</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Scott</forename><forename type="middle">R</forename><surname>Hatfield-Dodds</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Johnston</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">The Twelfth International Conference on Learning Representations</title>
+				<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b25">
+	<monogr>
+		<title level="m" type="main">Echoing: Identity failures when llm agents talk to each other</title>
+		<author>
+			<persName><forename type="first">Sarath</forename><surname>Shekkizhar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Romain</forename><surname>Cosentino</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Adam</forename><surname>Earle</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Silvio</forename><surname>Savarese</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2511.09710</idno>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b26">
+	<analytic>
+		<title level="a" type="main">Autogen: Enabling next-gen llm applications via multi-agent conversations</title>
+		<author>
+			<persName><forename type="first">Qingyun</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Gagan</forename><surname>Bansal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jieyu</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yiran</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Beibin</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Erkang</forename><surname>Zhu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Li</forename><surname>Jiang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xiaoyun</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shaokun</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jiale</forename><surname>Liu</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">First Conference on Language Modeling</title>
+				<imprint>
+			<biblScope unit="page">2024</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b27">
+	<analytic>
+		<title level="a" type="main">Shall we team up: Exploring spontaneous cooperation of competing llm agents</title>
+		<author>
+			<persName><forename type="first">Zengqing</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Run</forename><surname>Peng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shuyuan</forename><surname>Zheng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Qianying</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xu</forename><surname>Han</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Brian</forename><forename type="middle">I</forename><surname>Kwon</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Makoto</forename><surname>Onizuka</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shaojie</forename><surname>Tang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Chuan</forename><surname>Xiao</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Findings of the Association for Computational Linguistics: EMNLP 2024</title>
+				<imprint>
+			<date type="published" when="2024">2024b</date>
+			<biblScope unit="page" from="5163" to="5186" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b28">
+	<analytic>
+		<title level="a" type="main">Judging llm-as-a-judge with mt-bench and chatbot arena</title>
+		<author>
+			<persName><forename type="first">Lianmin</forename><surname>Zheng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Wei-Lin</forename><surname>Chiang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ying</forename><surname>Sheng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Siyuan</forename><surname>Zhuang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhanghao</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yonghao</forename><surname>Zhuang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zi</forename><surname>Lin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhuohan</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dacheng</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Eric</forename><forename type="middle">P</forename><surname>Xing</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Hao</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Joseph</forename><forename type="middle">E</forename><surname>Gonzalez</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ion</forename><surname>Stoica</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Advances in Neural Information Processing Systems</title>
+		<imprint>
+			<biblScope unit="volume">36</biblScope>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b29">
+	<monogr>
+		<author>
+			<persName><forename type="first">Yiming</forename><surname>Zhu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yupeng</forename><surname>He</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ehsan-Ul</forename><surname>Haq</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Gareth</forename><surname>Tyson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Pan</forename><surname>Hui</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2504.10286</idno>
+		<title level="m">Characterizing llm-driven social network: The chirper</title>
+				<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+	<note>ai case</note>
+</biblStruct>
+
+				</listBibl>
+			</div>
+		</back>
+	</text>
+</TEI>

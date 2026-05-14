@@ -1,0 +1,1334 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xml:space="preserve" xmlns="http://www.tei-c.org/ns/1.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.tei-c.org/ns/1.0 https://raw.githubusercontent.com/kermitt2/grobid/master/grobid-home/schemas/xsd/Grobid.xsd"
+ xmlns:xlink="http://www.w3.org/1999/xlink">
+	<teiHeader xml:lang="en">
+		<fileDesc>
+			<titleStmt>
+				<title level="a" type="main">Structural barriers of the discrete Hasimoto map applied to protein backbone geometry</title>
+			</titleStmt>
+			<publicationStmt>
+				<publisher/>
+				<availability status="unknown"><licence/></availability>
+				<date type="published" when="2026-02-16">February 16, 2026</date>
+			</publicationStmt>
+			<sourceDesc>
+				<biblStruct>
+					<analytic>
+						<author>
+							<persName><forename type="first">Yiquan</forename><surname>Wang</surname></persName>
+							<affiliation key="aff0">
+								<orgName type="department">College of Mathematics and System Science</orgName>
+								<orgName type="laboratory">Xinjiang Key Laboratory of Biological Resources and Genetic Engineering</orgName>
+								<orgName type="institution">Xinjiang University</orgName>
+								<address>
+									<settlement>Urumqi, Xinjiang</settlement>
+									<country key="CN">China</country>
+								</address>
+							</affiliation>
+							<affiliation key="aff1">
+								<orgName type="department">College of Life Science and Technology</orgName>
+								<orgName type="institution">Xinjiang University</orgName>
+								<address>
+									<settlement>Urumqi, Xinjiang</settlement>
+									<country key="CN">China</country>
+								</address>
+							</affiliation>
+							<affiliation key="aff2">
+								<orgName type="institution">Shenzhen X-Institute</orgName>
+								<address>
+									<settlement>Shenzhen</settlement>
+									<country key="CN">China</country>
+								</address>
+							</affiliation>
+						</author>
+						<title level="a" type="main">Structural barriers of the discrete Hasimoto map applied to protein backbone geometry</title>
+					</analytic>
+					<monogr>
+						<imprint>
+							<date type="published" when="2026-02-16">February 16, 2026</date>
+						</imprint>
+					</monogr>
+					<idno type="MD5">F9257806CE03E9C9B889EB781882D540</idno>
+					<idno type="arXiv">arXiv:2602.13160v1[q-bio.BM]</idno>
+				</biblStruct>
+			</sourceDesc>
+		</fileDesc>
+		<encodingDesc>
+			<appInfo>
+				<application version="0.7.2" ident="GROBID" when="2026-05-14T17:26+0000">
+					<desc>GROBID - A machine learning software for extracting information from scholarly documents</desc>
+					<ref target="https://github.com/kermitt2/grobid"/>
+				</application>
+			</appInfo>
+		</encodingDesc>
+		<profileDesc>
+			<abstract>
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>Determining the three-dimensional structure of a protein from its amino-acid sequence remains a fundamental problem in biophysics. The discrete Frenet geometry of the C α backbone can be mapped, via a Hasimoto-type transform, onto a complex scalar field ψ = κ e i ∑ τ satisfying a discrete nonlinear Schrödinger equation (DNLS), whose soliton solutions reproduce observed secondary-structure motifs. Whether this mapping, which provides an elegant geometric description of folded states, can be extended to a predictive framework for protein folding remains an open question. We derive an exact closed-form decomposition of the DNLS effective potential V eff = V re + iV im in terms of curvature ratios and torsion angles, validating the result to machine precision across 856 non-redundant proteins. Our analysis identifies three structural barriers to forward prediction: (i) V im encodes chirality via the odd symmetry of sin τ, accounting for ∼31% of the total information and implying a 2 N degeneracy if neglected; (ii) V re is determined primarily (∼95%) by local geometry, rendering it effectively sequence-agnostic; and (iii) self-consistent field iterations fail to recover native structures (mean RMSD = 13.1 Å) even with hydrogen-bond terms, yielding torsion correlations indistinguishable from zero. Constructively, we demonstrate that the residual of the DNLS dispersion relation serves as a geometric order parameter for α-helices (ROC AUC = 0.72), defining them as regions of maximal integrability. These findings establish that the Hasimoto map functions as a kinematic identity rather than a dynamical governing equation, presenting fundamental obstacles to its use as a predictive framework for protein folding.</p></div>
+			</abstract>
+		</profileDesc>
+	</teiHeader>
+	<text xml:lang="en">
+		<body>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>I. INTRODUCTION</head><p>The relationship between amino-acid sequence and threedimensional structure is a central problem in molecular biophysics. A protein's native fold is encoded in its sequence <ref type="bibr" target="#b0">[1]</ref>, yet the physical principles that govern the mapping from onedimensional chemical information to three-dimensional geometry remain incompletely understood. Among the many theoretical frameworks proposed to address this problem, a geometric approach based on the differential geometry of space curves has attracted sustained interest. In this approach the protein backbone is treated as a discrete curve in R 3 , and its local shape is characterized by two scalar fields: the bond angle κ[n] and the torsion angle τ[n] at each C α vertex. These two fields constitute geometric order parameters that fully determine the backbone conformation up to rigid-body motion.</p><p>The idea of using curvature and torsion as dynamical variables for space curves originates in fluid mechanics. Hasimoto <ref type="bibr" target="#b1">[2]</ref> showed that the local induction approximation for a vortex filament can be exactly transformed, via the complex scalar field ψ = κ e i τ ds , into the cubic nonlinear Schrödinger equation (NLS). Because the NLS is completely integrable, this transformation converts the geometric evolution of a three-dimensional curve into a one-dimensional soliton problem with exact analytical solutions. The success of the Hasimoto map in vortex dynamics naturally raises the question of whether an analogous construction can be applied to other physical filaments whose geometry is described by curvature and torsion.</p><p>Niemi and collaborators pursued this analogy systemat- * ethan@stu.xju.edu.cn ically for protein backbones, developing a geometric program rooted in gauge field theory and nonlinear dynamics <ref type="bibr" target="#b2">[3]</ref><ref type="bibr" target="#b3">[4]</ref><ref type="bibr" target="#b4">[5]</ref><ref type="bibr" target="#b5">[6]</ref>. Working with the discrete Frenet frame of the C α chain, they constructed a generalized discrete nonlinear Schrödinger equation (DNLS) whose dark-soliton solutions reproduce the characteristic (κ, τ) profiles of α-helices and β -strands. Molkenthin, Hu, and Niemi <ref type="bibr" target="#b6">[7]</ref> showed that a two-soliton configuration reproduces the villin headpiece HP35 with RMSD = 0.72 Å, and that each constituent soliton describes over 7 000 supersecondary structures in the Protein Data Bank (PDB). Krokhotin, Niemi, and Peng <ref type="bibr" target="#b7">[8]</ref> constructed a library of 200 soliton parameter sets covering over 90% of PDB loop structures at sub-ångström accuracy. More recently, the framework has been extended to thermal dynamics and structural stability modeling: Begun et al. <ref type="bibr" target="#b8">[9]</ref> simulated the folding and unfolding of the slipknotted protein AFV3-109 using multi-soliton ansätze, and Begun et al. <ref type="bibr" target="#b9">[10]</ref> introduced Arnold's perestroikas to characterize topological phase transitions in myoglobin. Complementing this topological perspective, Liubimov et al. <ref type="bibr" target="#b10">[11]</ref> applied the underlying lattice Abelian Higgs model to the same myoglobin structure, demonstrating that native conformations can be stabilized by introducing heterogeneous external fields to mimic environmental interactions. These studies collectively demonstrate that the DNLS and Abelian Higgs frameworks provide a compact and accurate geometric language for characterizing known protein conformations. However, a fundamental distinction must be drawn between descriptive capacity and predictive power. A critical unresolved issue is whether this formalism allows for the determination of the native structure strictly from the energy function, without reliance on a priori structural targets. Concretely, if the DNLS effective potential V eff [n] could be determined from the amino-acid sequence alone, one could in principle solve the DNLS forward to obtain the native (κ, τ) profile and reconstruct the three-dimensional structure. This leads to a fundamental theoretical question: does the Hasimoto map constitute a dynamical governing equation that drives folding, or is it merely a kinematic identity that describes the final state?</p><p>To address this, we must situate the Hasimoto framework within the broader landscape of theoretical biophysics, where predictive success has invariably relied on capturing non-local information that the nearest-neighbor structure of the DNLS cannot inherently represent. Energy landscape theory <ref type="bibr" target="#b11">[12]</ref> and coarse-grained models like AWSEM <ref type="bibr" target="#b12">[13]</ref> achieve accuracy by incorporating explicit non-local contact potentials that bias the free-energy surface. Similarly, from a geometric perspective, tube models <ref type="bibr" target="#b13">[14,</ref><ref type="bibr" target="#b14">15]</ref> rely on non-local excluded-volume interactions to select secondary structures, while direct coupling analysis (DCA) <ref type="bibr" target="#b15">[16,</ref><ref type="bibr" target="#b16">17]</ref> extracts long-range contacts from evolutionary covariance. Topological complexities such as knots <ref type="bibr" target="#b17">[18,</ref><ref type="bibr" target="#b18">19]</ref> further imply global constraints that exceed local curvature descriptions.</p><p>This distinction is sharpened by recent advances in deep learning. AlphaFold 2 <ref type="bibr" target="#b19">[20]</ref> and AlphaFold 3 <ref type="bibr" target="#b20">[21]</ref> solve the prediction problem by predicting a full rigid-body frame (rotation and translation) for every residue, effectively retaining all orientational degrees of freedom. Even single-sequence methods like ESMFold <ref type="bibr" target="#b21">[22,</ref><ref type="bibr" target="#b22">23]</ref>, driven by protein language models, achieve competitive accuracy by mapping the sequence into a high-dimensional embedding space that captures nonlocal structural and dynamic context <ref type="bibr" target="#b23">[24]</ref> implicitly. By integrating evolutionary covariance or contextual embeddings, these methods explicitly reconstruct the global information defining the native fold. In contrast, the Hasimoto transform projects the backbone geometry onto a single complex scalar field ψ, compressing the full coordinate frame into local curvature and torsion. The critical unresolved issue is whether this scalar projection retains sufficient information to determine the three-dimensional structure, or whether the reduction to a local effective potential fundamentally strips away the non-local and chiral information required for folding.</p><p>In this work, we investigate the applicability limits of the discrete Hasimoto map, positing that the widespread success of non-local and frame-based approaches suggests a structural barrier for purely local scalar theories. To demonstrate this, we derive an exact closed-form decomposition of the DNLS effective potential V eff = V re + iV im into explicit functions of the curvature ratios r ± = κ[n±1]/κ[n] and torsion angles τ[n], and verify this decomposition to machine precision (&lt; 10 −14 ) on 856 non-redundant proteins spanning all four SCOP structural classes. The decomposition reveals three independent structural barriers to forward prediction. First, the imaginary part V im encodes the sign of the torsion angle through the odd symmetry of sin τ, carrying approximately 31% of the total potential information; discarding it introduces a 2 N chiral degeneracy that grows exponentially with chain length. Second, the real part V re is 95% determined by local backbone geometry rather than by the amino-acid sequence, leaving the potential nearly devoid of the chemical information needed for prediction. Third, self-consistent field iterations driven by hydrophobic and elastic potentials, with and without hydrogen-bond terms, fail uniformly on all 856 proteins (mean RMSD = 13.1 Å, torsion correlation indistinguishable from zero), and the two settings produce statistically identical outcomes.</p><p>These barriers are structural rather than algorithmic: they arise from the mathematical content of the Hasimoto map itself and are unlikely to be circumvented by parameter tuning or improved optimization alone. At the same time, the decomposition yields a constructive result. We show that the residual of the DNLS dispersion relation serves as a purely geometric helix detector with ROC AUC = 0.72 across all SCOP classes, identifying α-helical segments as the backbone regions where the DNLS most closely approximates an integrable system. This suggests a geometric criterion for secondary-structure identification that does not require hydrogen-bond information.</p><p>The remainder of this paper is organized as follows. Section II introduces the discrete Frenet frame and the DNLS formulation. Section III presents the exact decomposition and its statistical validation. Section IV analyzes piecewise integrability and its connection to secondary structure. Section V reports the self-consistent field tests. Section VI discusses the physical origin of the barriers and the constructive applications of the framework.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>II. DISCRETE FRENET FRAME AND DNLS FORMULATION</head><p>A. Discrete Frenet geometry of the C α backbone</p><p>We represent the protein backbone as a polygonal chain of C α positions {r[n]} N n=1 in R 3 , where N is the number of residues. The bond vectors are defined as</p><formula xml:id="formula_0">t[n] = r[n + 1] − r[n], n = 1, . . . , N − 1.<label>(1)</label></formula><p>For a C α trace the bond lengths |t[n]| are approximately 3.8 Å <ref type="bibr" target="#b24">[25,</ref><ref type="bibr" target="#b25">26]</ref>, corresponding to the virtual-bond distance between consecutive α-carbons. We work with the unit tangent vectors t</p><formula xml:id="formula_1">[n] = t[n]/|t[n]|. The discrete Frenet frame at vertex n is constructed from three successive C α positions. The bond angle κ[n] is defined through cos κ[n] = t[n] • t[n − 1], n = 2, . . . , N − 1,<label>(2)</label></formula><p>so that κ[n] ∈ [0, π] measures the bending of the chain at vertex n. The torsion angle τ[n] requires four successive C α positions and is defined as the dihedral angle</p><formula xml:id="formula_2">τ[n] = atan2 ( t[n − 1] × t[n]) × ( t[n] × t[n + 1]) • t[n], ( t[n − 1] × t[n]) • ( t[n] × t[n + 1]) ,<label>(3)</label></formula><p>with τ[n] ∈ (−π, π], defined for n = 2, . . . , N − 2. The sign of τ encodes the local handedness of the backbone: positive values correspond to right-handed twisting and negative values to left-handed twisting.</p><p>The pair (κ[n], τ[n]) constitutes a complete set of internal coordinates for the discrete curve. Given an initial position r <ref type="bibr" target="#b0">[1]</ref>, an initial tangent t <ref type="bibr" target="#b0">[1]</ref>, and an initial normal direction, the full three-dimensional backbone can be reconstructed from {κ[n], τ[n]} by sequential application of discrete Frenet rotations. This reconstruction is unique up to a global rigid-body transformation (three translations and three rotations), so that κ and τ encode all shape information of the backbone.</p><p>The discrete normal and binormal vectors are defined as </p><formula xml:id="formula_3">n[n] = t[n] − cos κ[n] t[n − 1] sin κ[n] , b[n] = t[n − 1] × n[n],<label>(4)</label></formula></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>B. Hasimoto transform and complex scalar field</head><p>Following the construction introduced by Hasimoto for continuous curves and adapted to the discrete setting by Niemi and collaborators, we define a complex scalar field on the backbone through</p><formula xml:id="formula_4">ψ[n] = κ[n] exp i n ∑ k=2 τ[k] , n = 2, . . . , N − 2.</formula><p>(</p><p>The modulus |ψ[n]| = κ[n] records the local bending, while the phase arg ψ[n] = ∑ n k=2 τ[k] accumulates the torsion along the chain. This transform maps the two real geometric fields (κ, τ) into a single complex field ψ, reducing the description of backbone geometry to a one-component problem at the cost of entangling curvature and torsion in the amplitude and phase of ψ.</p><p>The inverse transform recovers the geometric variables as</p><formula xml:id="formula_6">κ[n] = |ψ[n]|, τ[n] = arg ψ[n] − arg ψ[n − 1].<label>(6)</label></formula><p>Given ψ[n] for all interior vertices, the backbone can therefore be reconstructed by extracting (κ, τ) via Eq. ( <ref type="formula" target="#formula_6">6</ref>) and applying the discrete Frenet reconstruction.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>C. Discrete nonlinear Schrödinger equation</head><p>The DNLS equation for the backbone field ψ[n] takes the form of a discrete eigenvalue problem</p><formula xml:id="formula_7">β + [n] ψ[n+1]−ψ[n] −β − [n] ψ[n]−ψ[n−1] = V eff [n] ψ[n],<label>(7)</label></formula><p>where β + [n] and β − [n] are site-dependent coupling parameters and V eff <ref type="bibr">[n]</ref> is the effective potential. The left-hand side is a discrete second difference of ψ with nonuniform coefficients, analogous to a lattice Laplacian.</p><p>The coupling parameters β ± [n] encode the local mechanical properties of the peptide chain. In the simplest formulation they depend on the virtual-bond lengths as</p><formula xml:id="formula_8">β + [n] = 1 |t[n]| , β − [n] = 1 |t[n − 1]| . (<label>8</label></formula><formula xml:id="formula_9">)</formula><p>Because the C α -C α virtual-bond length varies only weakly along the chain (standard deviation ∼0.1 Å around the mean of 3.8 Å), the coupling parameters are nearly uniform. This near-uniformity will play a central role in the analysis of Sec. III, where we show that the sequence dependence of β ± contributes less than 5% of the variance of V re .</p><p>The effective potential is obtained by rearranging Eq. ( <ref type="formula" target="#formula_7">7</ref>):</p><formula xml:id="formula_10">V eff [n] = β + [n] ψ[n + 1] − ψ[n] − β − [n] ψ[n] − ψ[n − 1] ψ[n] .</formula><p>(9) This expression is well defined wherever ψ[n] ̸ = 0, i.e., wherever the bond angle κ[n] ̸ = 0. For physical protein backbones κ[n] is strictly positive at all interior vertices, so V eff is defined throughout the chain.</p><p>Because ψ is complex, V eff is in general complex:</p><formula xml:id="formula_11">V eff [n] = V re [n] + iV im [n].<label>(10)</label></formula><p>The real and imaginary parts carry distinct geometric content, as we will demonstrate through the exact decomposition in Sec. III. Two features of Eq. ( <ref type="formula">9</ref>) merit emphasis. First, the equation is an algebraic identity: for any discrete curve with κ[n] &gt; 0, one can always compute ψ via Eq. ( <ref type="formula" target="#formula_5">5</ref>) and then define V eff via Eq. <ref type="bibr" target="#b8">(9)</ref>. No physical assumption enters this construction. The potential V eff is not postulated; it is read off from the known geometry. Second, the equation becomes a dynamical equation only when V eff is specified independently of the geometry, for example through a physical energy functional. In the vortex-filament context, the local induction approximation provides exactly such a specification, and the Hasimoto transform converts the geometric evolution into the integrable NLS. For proteins, the question is whether an analogous physical specification of V eff exists. The analysis of the following sections indicates that the answer is negative: the mathematical structure of V eff on protein backbones presents fundamental obstacles to its determination from sequence information alone.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>D. Connection to the continuum Hasimoto transform</head><p>In the continuum limit where the lattice spacing ∆s → 0 and the coupling becomes uniform (β ± → 1/∆s), the discrete second difference in Eq. ( <ref type="formula" target="#formula_7">7</ref>) reduces to ∂ 2 ψ/∂ s 2 , and the DNLS recovers the structure of the cubic NLS</p><formula xml:id="formula_12">i ∂ ψ ∂t = ∂ 2 ψ ∂ s 2 + 1 2 |ψ| 2 ψ.<label>(11)</label></formula><p>The soliton solutions of Eq. ( <ref type="formula" target="#formula_12">11</ref>) describe localized bending excitations that propagate without dispersion along the filament. In the protein context, the discrete soliton solutions of Eq. ( <ref type="formula" target="#formula_7">7</ref>) have been shown to reproduce the (κ, τ) profiles of α-helices (dark solitons with κ ≈ 1.5 rad, τ ≈ 1.0 rad) and β -strands (bright solitons with larger κ and τ ≈ ±π). The key distinction is that for vortex filaments Eq. ( <ref type="formula" target="#formula_12">11</ref>) is both kinematic (relating ψ to geometry) and dynamic (governing time evolution), whereas for proteins only the kinematic content survives. Establishing this distinction quantitatively is the purpose of the remainder of this paper.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>III. EXACT DISCRETE DECOMPOSITION</head><p>The effective potential V eff [n] defined by Eq. ( <ref type="formula" target="#formula_7">7</ref>) encodes the full geometric content of the backbone in a single complexvalued sequence. In this section we derive a closed-form decomposition of V eff into real and imaginary parts, each expressed entirely in terms of the local curvature ratios and torsion angles. The decomposition is an algebraic identity: it holds for any discrete space curve, independent of any physical model or approximation.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>A. Decomposition identity</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Proposition (Decomposition identity).</head><p>Let</p><formula xml:id="formula_13">ψ[n] = κ[n] exp i ∑ n k=1 τ[k]</formula><p>be the Hasimoto field constructed from the discrete Frenet curvature κ[n] &gt; 0 and torsion τ[n], and let V eff [n] be defined through the discrete Schrödinger equation</p><formula xml:id="formula_14">β + n ψ[n + 1] − ψ[n] − β − n ψ[n] − ψ[n − 1] = V eff [n] ψ[n] ,<label>(12)</label></formula><p>where β ± n are the (possibly sequence-dependent) bond stiffness parameters. Then</p><formula xml:id="formula_15">V eff [n] = V re [n] + iV im [n] with V re [n] = β + n r + [n] cos τ[n + 1] + β − n r − [n] cos τ[n] − β + n + β − n ,<label>(13)</label></formula><formula xml:id="formula_16">V im [n] = β + n r + [n] sin τ[n + 1] − β − n r − [n] sin τ[n] ,<label>(14)</label></formula><p>where the curvature ratios are</p><formula xml:id="formula_17">r + [n] ≡ κ[n + 1] κ[n] , r − [n] ≡ κ[n − 1] κ[n] .<label>(15)</label></formula><p>Proof. We substitute the Hasimoto ansatz into Eq. ( <ref type="formula" target="#formula_14">12</ref>) and divide both sides by ψ[n] ̸ = 0. The left-hand side becomes</p><formula xml:id="formula_18">V eff [n] ψ[n] ψ[n] = β + n ψ[n + 1] ψ[n] − 1 − β − n 1 − ψ[n − 1] ψ[n] .<label>(16)</label></formula><p>The ratio of adjacent Hasimoto fields is</p><formula xml:id="formula_19">ψ[n + 1] ψ[n] = κ[n + 1] κ[n] exp i τ[n + 1] = r + [n] e iτ[n+1] ,<label>(17)</label></formula><p>and similarly</p><formula xml:id="formula_20">ψ[n − 1] ψ[n] = κ[n − 1] κ[n] exp −i τ[n] = r − [n] e −iτ[n] .<label>(18)</label></formula><p>Collecting terms,</p><formula xml:id="formula_21">V eff [n] = β + n r + [n] e iτ[n+1] −1 −β − n 1−r − [n] e −iτ[n] . (<label>19</label></formula><formula xml:id="formula_22">)</formula><p>Separating real and imaginary parts via Euler's formula yields Eqs. ( <ref type="formula" target="#formula_15">13</ref>)-( <ref type="formula" target="#formula_16">14</ref>) directly. □ The derivation is algebraically direct; the value of stating it explicitly lies in disentangling the roles of r ± and τ that are obscured in the complex field ψ, and in enabling the systematic tests of Secs. III-V.</p><p>Several features of this decomposition merit emphasis. First, the result is exact: no continuum limit, Taylor expansion, or slowly varying envelope approximation has been invoked. Second, the decomposition holds for arbitrary bond parameters β ± n and for any discrete curve with κ[n] &gt; 0; it is a kinematic identity rather than a dynamical equation. Third, the structure of Eqs. ( <ref type="formula" target="#formula_15">13</ref>)-( <ref type="formula" target="#formula_16">14</ref>) makes transparent the distinct roles of the curvature ratios r ± and the torsion angles τ, which are entangled in the original complex field ψ[n].</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>B. Numerical verification</head><p>We verify the decomposition on eight representative proteins spanning the four SCOP <ref type="bibr" target="#b26">[27,</ref><ref type="bibr" target="#b27">28]</ref> structural classes (Table I). For each protein, we compute V eff [n] in two independent ways: (i) directly from the definition Eq. ( <ref type="formula" target="#formula_14">12</ref>) using the Hasimoto field ψ[n], and (ii) from the analytic expressions Eqs. ( <ref type="formula" target="#formula_15">13</ref>)-( <ref type="formula" target="#formula_16">14</ref>) using κ[n] and τ[n]. The maximum absolute difference over all residues is reported in the column labeled ε in Table <ref type="table">I</ref>.</p><p>In all eight cases the error ε is of order 10 −15 to 10 −14 , consistent with IEEE 754 double-precision arithmetic. This confirms that Eqs. ( <ref type="formula" target="#formula_15">13</ref>)-( <ref type="formula" target="#formula_16">14</ref>) reproduce V eff to machine precision and contain no hidden approximation. The remaining columns of Table <ref type="table">I</ref> preview the three structural barriers analyzed in the following subsections and in Sec. IV; we defer their full statistical treatment to the 856-protein dataset.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>C. Barrier I: imaginary potential and torsion-sign ambiguity</head><p>The imaginary part V im [Eq. ( <ref type="formula" target="#formula_16">14</ref>)] depends on τ exclusively through the sine function. Because sin(τ) is odd, V im changes sign under τ → −τ while V re [Eq. ( <ref type="formula" target="#formula_15">13</ref>)], which depends on cos(τ), remains invariant. This has a direct consequence for the inverse problem.</p><p>Corollary 1 (Torsion-sign degeneracy). Given only V re [n] for n = 1, . . . , L, the torsion angles τ[n] are determined only up to independent sign flips τ[n] → −τ[n] at each site. The number of degenerate backbone configurations compatible with a given V re profile is therefore 2 L . This degeneracy has significant physical implications. The sign of τ encodes the local chirality of the backbone; consequently, enantiomeric transformations at each residue leave V re invariant while generating distinct three-dimensional topologies. Reconstruction of the backbone from V re alone therefore confronts a 2 L -fold ambiguity, representing an exponential loss of chiral information with chain length.</p><p>We quantify the information content of V im across the full dataset of N = 856 non-redundant proteins. Figure <ref type="figure" target="#fig_1">1(a)</ref> shows the distribution of the ratio ⟨|V im |/|V re |⟩ per protein. The mean ratio is 0.31, indicating that the imaginary component carries TABLE <ref type="table">I</ref>. Numerical verification of the exact decomposition on eight representative proteins (two per SCOP class). N: number of Cα atoms; ε: maximum absolute error between the two independent computations of V eff ; ⟨|V im |/|V re |⟩: mean ratio of imaginary to real potential magnitude; ρ geom : Spearman correlation between V re computed with physical β (s) and with uniform β = 1; δ H , δ E , δ C : dispersion-relation RMSE (in degrees) for helix, strand, and coil residues respectively; RMSD: backbone RMSD ( Å) of the structure reconstructed from V re only (setting V im = 0). A dash indicates that the corresponding secondary-structure type is absent.</p><formula xml:id="formula_23">PDB Class N ε ⟨|V im |/|V re |⟩ ρ geom δ H δ E δ C RMSD 1PA7</formula><p>all-α 130 4.9 × 10  roughly one-third of the total potential magnitude. The distribution is largely independent of SCOP class, with all-α proteins showing a slightly broader tail toward higher values.</p><p>To demonstrate the practical consequence of discarding V im , we reconstruct the backbone of each protein using V re only (setting V im = 0 and choosing sign(τ) uniformly positive). Figure <ref type="figure" target="#fig_1">1</ref>(b) plots the resulting Cα RMSD against chain length. The RMSD grows approximately linearly, reaching 40-120 Å for chains of 200-300 residues. This linear growth reflects the cumulative nature of torsion-sign errors: each incorrectly assigned sign produces a local angular deviation that propagates along the chain. In information-theoretic terms, each residue contributes one bit of unresolved chiral information, for a total of L bits per chain. The V re -only reconstruction therefore yields structures that deviate substantially from the native fold for all but the shortest peptides.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>D. Barrier II: geometric dominance of V re</head><p>The decomposition [Eq. ( <ref type="formula" target="#formula_15">13</ref>)] shows that V re depends on the bond parameters β ± n only as multiplicative prefactors of the geometric terms r ± cos τ. A natural question is whether the sequence dependence encoded in β (s) contributes significantly to the spatial profile of V re , or whether the geometric factors dominate.</p><p>We test this by computing, for each of the 856 proteins, two versions of V re : one with the physical, amino-acid-dependent bond parameters β ± n (s), and one with uniform β + = β − = 1. The Spearman rank correlation ρ geom between the two profiles measures the fraction of the V re pattern that is determined by geometry alone.</p><p>Corollary 2 (Geometric dominance). Across 856 nonredundant proteins, the Spearman correlation between V re (β (s)) and V re (β = 1) has mean ρgeom = 0.951 and minimum 0.88 (Fig. <ref type="figure">2</ref>). The residual variance attributable to sequence-dependent β (s) is less than 1 − ρ2 ≈ 0.05, i.e., below 5% on average. This finding indicates a decoupling of sequence information from the effective potential. Although the bond parameters β ± n depend on amino-acid identity, their contribution to the variance of V re is negligible. The potential is dominated by the geometric terms r ± cos τ, the fluctuations of which exceed those induced by sequence-dependent stiffness by an order of magnitude (Fig. <ref type="figure">4</ref>). All four SCOP classes overlap in the ρ geom distribution (Fig. <ref type="figure">2</ref>), confirming that this pattern is universal across fold types. An important caveat is in order: the geometric terms r ± and τ are themselves determined by the amino-acid sequence through the folding process. The Spearman test does not show that V re is independent of sequence in an absolute sense; rather, it establishes that the only explicit pathway from sequence to V re within the decomposition [Eqs. ( <ref type="formula" target="#formula_15">13</ref>)-( <ref type="formula" target="#formula_16">14</ref>)], namely the bond stiffnesses β ± n , is too narrow to carry significant information. The sequence dependence of V re is almost entirely implicit, mediated by the threedimensional structure (κ, τ) that the folding process produces.</p><p>To test this interpretation directly, we compared V re profiles between protein pairs that share the same SCOP superfamily but have low sequence identity. From the 856 non-redundant FIG. <ref type="figure">2</ref>. Geometric dominance of the real effective potential. Distribution of Spearman rank correlation between V re computed with the physical, sequence-dependent bond parameters β (s) and V re computed with uniform β = 1, evaluated over 856 non-redundant proteins. Colors denote SCOP structural classes: all-α (170), all-β (212), α/β (233), and α+β (241). The distribution is sharply peaked near unity (mean = 0.951), indicating that the explicit sequence dependence carried by β (s) accounts for less than 5% of the variance of V re on average. The dominant contribution comes from the geometric terms r ± cos τ, which depend on the backbone structure (κ, τ) rather than directly on amino-acid identity. All four SCOP classes overlap, confirming that this pattern is universal across protein folds.</p><p>proteins (culled by the PISCES <ref type="bibr" target="#b28">[29]</ref> server with resolution ≤ 2.0 Å, R-factor ≤ 0.2, chain length 40-300 residues, sequence identity ≤ 25%, X-ray entries only, excluding chains with breaks or disorder), we identified 1 729 pairs belonging to the same SCOP superfamily. As a control, we constructed 4 800 pairs drawn from different SCOP folds with chain-length differences ≤ 20 residues. For each pair, TMalign was used to obtain a residue-level structural alignment; the Pearson correlation ρ V was then computed between the V re values at structurally aligned positions.</p><p>Figure <ref type="figure" target="#fig_2">3</ref> summarizes the results. Same-superfamily pairs exhibit a mean ρ V = 0.290 ± 0.266, significantly higher than the different-fold background of ρ V = 0.099 ± 0.230 (Mann-Whitney U test, p &lt; 10 −134 ). The scatter plot [Fig. <ref type="figure" target="#fig_2">3(a)</ref>] shows that ρ V increases with TM-score: among the 1 729 same-superfamily pairs, 79% have TM-score &gt; 0.5 and cluster in the upper-right quadrant, while different-fold pairs remain near zero. The remaining 21% of same-superfamily pairs fall below TM-score = 0.5; these are distant homologs for which the superfamily-level classification permits substantial structural divergence. Even within this subgroup, ρ V correlates positively with TM-score, indicating that the relationship between structural similarity and V re similarity is continuous rather than threshold-dependent. The mean sequence identity within the same-superfamily group is only 13.9% (range 1.4-27.9%), confirming that the elevated ρ V is driven by structural similarity rather than sequence similarity. This provides direct evidence that V re tracks the three-dimensional fold: proteins with unrelated sequences but similar structures produce similar V re profiles, whereas proteins with comparable chain lengths but different folds do not.</p><p>The implication for the forward prediction problem is as follows. The decomposition [Eq. ( <ref type="formula" target="#formula_15">13</ref>)] shows that V re is deter- ). The mean sequence identity within the same-superfamily group is 13.9%, confirming that the elevated correlation is driven by structural similarity, not sequence similarity.</p><p>mined by two types of inputs: the geometric terms r ± cos τ, which depend on the three-dimensional structure, and the bond stiffnesses β ± n , which depend directly on the amino-acid sequence. The Spearman test establishes that the latter contribute less than 5% of the variance, and the superfamily analysis (Fig. <ref type="figure" target="#fig_2">3</ref>) confirms that V re covaries with fold rather than with sequence. This creates a circularity for forward prediction: V re is overwhelmingly determined by the backbone geometry (κ, τ), which is the very quantity one seeks to predict, and the only direct pathway from sequence to V re through β ± n is too weak to carry the structural information needed to determine the native fold.</p><p>The circularity exposed by Barrier II can be contrasted with physical models that have achieved predictive success precisely by incorporating non-local, sequence-dependent information through channels absent from the Hasimoto decomposition. Coarse-grained force fields such as AWSEM <ref type="bibr" target="#b12">[13]</ref> supplement local backbone terms with explicit contact potentials that couple residue pairs separated by tens to hundreds of positions along the sequence, and with associative-memory terms that bias the energy landscape toward known structural motifs. The tube model of Banavar and Maritan <ref type="bibr" target="#b13">[14,</ref><ref type="bibr" target="#b14">15]</ref> derives secondary-structure selection from a three-body excludedvolume interaction that is non-local by construction. Statistical approaches based on direct coupling analysis <ref type="bibr" target="#b15">[16,</ref><ref type="bibr" target="#b16">17]</ref> extract residue-residue contact maps from evolutionary covariance using the maximum-entropy principle, providing nonlocal structural constraints derived entirely from sequence data. In each case, the predictive power arises from terms that couple residues at positions |m − n| ≫ 1, which constitutes precisely the type of information that the DNLS effective potential, constructed from nearest-neighbor ratios r ± [n] and local torsion angles τ[n], cannot encode. The geometric dominance of V re is therefore not merely a quantitative observation but reflects a structural mismatch between the local, kinematic content of the Hasimoto map and the non-local, thermodynamic content required for folding.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>E. Summary of structural barriers</head><p>The exact decomposition has revealed two independent, static barriers to forward structure prediction: the 2 L -fold torsion-sign degeneracy encoded in V im (Barrier I) and the geometric dominance of V re that leaves less than 5% of its variance attributable to amino-acid identity (Barrier II). Both barriers follow from the algebraic structure of the Hasimoto transform. Whether the DNLS can nevertheless function as a dynamical equation that drives folding through a physically motivated effective potential is tested in Sec. V.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>IV. PIECEWISE INTEGRABILITY AND SECONDARY STRUCTURE</head><p>The exact decomposition of Sec. III holds for arbitrary discrete curves. In this section we examine the special case of backbone segments where the curvature varies slowly, so that r ± [n] ≈ 1. Under this condition the full decomposition simplifies to a scalar dispersion relation that connects V re directly to the torsion angle. We show that this dispersion relation is satisfied almost exclusively within α-helical segments, providing a purely geometric criterion for secondary-structure identification.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>A. Uniform-segment dispersion relation</head><p>When the curvature ratios satisfy r + [n] ≈ r − [n] ≈ 1 and the bond parameters are approximately uniform (β + n ≈ β − n ≈ β ), the real part of the effective potential [Eq. ( <ref type="formula" target="#formula_15">13</ref>)] reduces to</p><formula xml:id="formula_24">V re [n] ≈ β cos τ[n + 1] + cos τ[n] − 2β . (<label>20</label></formula><formula xml:id="formula_25">)</formula><p>If the torsion angle is also locally constant (τ[n + 1] ≈ τ[n] ≈ τ), this further simplifies to the dispersion relation</p><formula xml:id="formula_26">cos τ = 1 + V re 2β .<label>(21)</label></formula><p>Eq. ( <ref type="formula" target="#formula_26">21</ref>) is the discrete analogue of the continuum NLS dispersion relation ω = k 2 , expressed in terms of the backbone torsion angle. It provides a one-to-one mapping between V re and |τ| within any segment where κ and τ are approximately uniform. Note that the cosine function renders Eq. ( <ref type="formula" target="#formula_26">21</ref>) insensitive to the sign of τ, consistent with the torsion-sign degeneracy identified in Sec. III C. The conditions under which Eq. ( <ref type="formula" target="#formula_26">21</ref>) holds are precisely the conditions that define an integrable segment of the DNLS: uniform curvature (r ± ≈ 1), uniform torsion, and uniform coupling. Deviations from these conditions break integrability and cause the full decomposition [Eqs. ( <ref type="formula" target="#formula_15">13</ref>)-( <ref type="formula" target="#formula_16">14</ref>)] to differ from the dispersion relation. The magnitude of this deviation therefore serves as a local measure of integrability.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>B. Integrability error as a structural probe</head><p>We define the integrability error at each residue as</p><formula xml:id="formula_27">E[n] = cos τ[n] − 1 + V re [n] 2β ,<label>(22)</label></formula><p>where β = ⟨β ± n ⟩ is the chain-averaged coupling parameter. By construction, E[n] = 0 when the backbone at residue n satisfies the uniform-segment dispersion relation exactly, and E[n] &gt; 0 when the local curvature or torsion varies too rapidly for the integrable approximation to hold.</p><p>Figure <ref type="figure">4</ref> illustrates the behavior of V eff [n] along the backbone for eight representative proteins (two per SCOP class), analyzing the effective potential as a site-dependent profile analogous to spectral signal representations of protein sequences <ref type="bibr" target="#b29">[30]</ref>. Within helical segments (pink background shading), V re forms near-constant negative plateaus (typically −0.5 to −1.5 Å−2 ), consistent with Eq. ( <ref type="formula" target="#formula_26">21</ref>) evaluated at the canonical helix torsion τ helix ≈ 1.0 rad. The amplitude of V im is reduced relative to loop and strand regions but remains finite. In β -strand and coil regions, both V re and V im fluctuate strongly (amplitudes reaching 3-6 Å−2 ), reflecting rapid residue-to-residue variation of r ± and τ. Sharp negative spikes in V re mark transitions between secondary-structure elements. These patterns are local rather than class-dependent: helical segments in the nominally all-β protein 1AYO display the same plateau behavior as those in the all-α proteins.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>C. Statistical validation on 856 proteins</head><p>We evaluate the dispersion-relation RMSE separately for helix (H), strand (E), and coil (C) residues across the full dataset of 856 non-redundant proteins. For each protein, residues are grouped by their DSSP secondary-structure assignment <ref type="bibr" target="#b30">[31]</ref>, and the RMSE of Eq. ( <ref type="formula" target="#formula_26">21</ref>) is computed per group:</p><formula xml:id="formula_28">δ X = 1 N X ∑ n∈X cos τ[n] − 1 + V re [n] 2β 2 ,<label>(23)</label></formula><p>where X ∈ {H, E,C} and N X is the number of residues in class X.</p><p>Figure <ref type="figure">5</ref> shows the distribution of δ X as box plots, faceted by SCOP class. Across all four classes, helical segments exhibit systematically lower RMSE (median ∼21 • ) than strand (∼37 • ) or coil (∼36 • ) segments. This separation is classindependent: even in all-β proteins where helices are scarce, the few helical residues still satisfy the dispersion relation with comparable accuracy. The result reflects the local uniformity of (κ, τ) within helices (r ± ≈ 1), which is the condition under which the exact decomposition reduces to Eq. <ref type="bibr" target="#b20">(21)</ref>.</p><p>The data in Table <ref type="table">I</ref> illustrate this pattern at the level of individual proteins. The pure all-α protein 1PA7 has δ H = 20.4 • and no strand residues, while the pure all-β protein 5SV5 has δ E = 41.7 • and no helix residues. In mixed-class proteins, the helix and strand RMSE values coexist within the same chain:</p><p>FIG. <ref type="figure">4</ref>. Effective potential V eff [n] along the C α backbone for eight representative proteins (two per SCOP class; columns from left to right: allα, all-β , α/β , α+β ). Black: V re ; red: V im . Background shading marks DSSP secondary-structure assignment (pink: helix; cyan: strand; gray: coil). Within helical segments V re forms near-constant negative plateaus consistent with the dispersion relation Eq. ( <ref type="formula" target="#formula_26">21</ref>), while strand and coil regions exhibit large-amplitude fluctuations in both components. Sharp negative spikes in V re mark transitions between secondary-structure elements. These patterns are local rather than class-dependent: helical segments in the all-β protein 1AYO display the same plateau behavior as those in the all-α proteins. FIG. <ref type="figure">5</ref>. Dispersion-relation RMSE by secondary-structure type, faceted by SCOP class (856 non-redundant proteins). For each protein, residues are grouped by DSSP assignment into helix (H), strand (E), and coil (C), and the RMSE of the uniform-segment approximation cos τ = 1 + V re /2β is computed per group. Helical segments exhibit systematically lower RMSE (median ∼21 • ) than strand (∼37 • ) or coil (∼36 • ) segments across all four SCOP classes. This separation is class-independent: even in all-β proteins where helices are scarce, the few helical residues satisfy the dispersion relation with comparable accuracy.</p><p>1AYO (all-β by SCOP classification) contains a small number of helical residues with δ H = 20.1 • , comparable to the values observed in all-α proteins. This confirms that the applicability of the dispersion relation is determined by the local curvature uniformity at each residue, not by the global fold classification.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>D. Helix detection by integrability error</head><p>The systematic separation of δ H from δ E and δ C suggests that the integrability error E[n] [Eq. <ref type="bibr" target="#b21">(22)</ref>] can serve as a binary classifier for helical residues. To quantify this, we construct a receiver operating characteristic (ROC) curve by varying a threshold E th and classifying residue n as helical if E[n] &lt; E th and as non-helical otherwise. The ground truth is provided by DSSP assignment.</p><p>Figure <ref type="figure" target="#fig_3">6</ref> shows the ROC curves for each SCOP class and for the full dataset (856 proteins, 143 202 residues). The global area under the curve (AUC) is 0.720, significantly above the random baseline of 0.5. The class dependence is weak: AUC ranges from 0.667 (all-β ) to 0.739 (all-α), with α/β and α+β at 0.713 and 0.714 respectively. Even in all-β proteins, where helical residues constitute only 15% of the total (4 741 out of 30 980), the AUC remains well above chance. This confirms that the integrability error operates at the residue level, detecting local geometric regularity rather than relying on the overall fold type.</p><p>The AUC of 0.72 quantifies the overlap between DNLS integrability and helical geometry as defined by DSSP. The condition E[n] &lt; E th tests whether the backbone at residue n preserves discrete helical symmetry, i.e., whether the local curvature and torsion are sufficiently uniform that a single screw motion r[n + 1] = M r[n] approximately generates the chain segment. When κ[n] and τ[n] are exactly constant, the curvature ratios satisfy r ± = 1, the exact decomposition [Eq. ( <ref type="formula" target="#formula_15">13</ref>)] reduces to the dispersion relation [Eq. ( <ref type="formula" target="#formula_26">21</ref>)], and E[n] ≡ 0; the geometric origin of this vanishing is analyzed in Sec. IV F, where we show that E[n] is an order parameter for discrete helical symmetry breaking. An AUC of 0.72 indicates a substantial but incomplete correspondence between the scalar symmetry condition and the helix/non-helix distinction as defined by DSSP. The gap from unity likely reflects contributions from hydrogen bonds, nonlocal contacts, and torsion-sign information that lie outside the dispersion relation. In this sense, α-helices are the backbone regions where the DNLS most closely approximates an integrable system, and E[n] measures the degree to which this integrability is locally broken.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>E. The protein backbone as a piecewise integrable system</head><p>The results of this section lead to a unified geometric picture of protein backbone structure in the DNLS framework. The backbone can be viewed as a piecewise integrable system: α-helical segments are regions of approximate integrability where the curvature and torsion are locally uniform, the dispersion relation [Eq. ( <ref type="formula" target="#formula_26">21</ref>)] holds, and the DNLS admits soliton-like solutions. β -strand and coil regions, by contrast, are regions of broken integrability where r ± deviates significantly from unity, the dispersion relation fails, and the full decomposition [Eqs. ( <ref type="formula" target="#formula_15">13</ref>)-( <ref type="formula" target="#formula_16">14</ref>)] is required.</p><p>This picture provides a geometric definition of secondary structure that is independent of hydrogen-bond criteria. An α-helix is a contiguous segment where the DNLS integrability error E[n] remains below a threshold; a non-helical region is one where E[n] exceeds this threshold. The definition is purely kinematic: it depends only on the C α coordinates and requires no energy function or force field.</p><p>Helical segments exhibit the smallest dispersion-relation error among all secondary-structure types (Fig. <ref type="figure">5</ref>), but they are not the sole regions of approximate integrability. Short segments within β -strands or loops may also satisfy r ± ≈ 1 locally, contributing to the imperfect separation in the ROC analysis (Fig. <ref type="figure" target="#fig_3">6</ref>). The gap between AUC = 0.72 and unity reflects both these local exceptions and the information carried by V im (torsion-angle signs) and nonlocal interactions (hydrogen bonds, tertiary contacts) that lie outside the scalar dispersion relation.</p><p>Two limitations of the dispersion relation as a structural probe should be noted. First, Eq. ( <ref type="formula" target="#formula_26">21</ref>) determines only |τ|, not sign(τ). The torsion-sign ambiguity identified in Sec. III C therefore persists even within integrable segments. Second, the dispersion relation provides no information about the spatial arrangement of secondary-structure elements relative to one another. It is a local diagnostic that characterizes individual residues but cannot address the global fold topology. These limitations reinforce the conclusion that the Hasimoto map is a geometric analysis tool rather than a predictive framework.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>F. Geometric interpretation of the integrability error</head><p>The integrability error E[n] defined in Eq. ( <ref type="formula" target="#formula_27">22</ref>) admits a direct geometric interpretation as a measure of broken discrete helical symmetry. We make this connection explicit.</p><p>A discrete curve {r[n]} possesses discrete helical symmetry if there exists a rigid screw motion M (a rotation about a fixed axis composed with a translation along that axis) such that r[n + 1] = M r[n] for all n. This condition requires that the discrete Frenet curvature and torsion be site-independent:</p><formula xml:id="formula_29">κ[n] = κ 0 , τ[n] = τ 0 , ∀ n. (<label>24</label></formula><formula xml:id="formula_30">)</formula><p>Substituting Eq. ( <ref type="formula" target="#formula_29">24</ref>) into the exact decomposition [Eq. ( <ref type="formula" target="#formula_15">13</ref>)] with uniform coupling β</p><formula xml:id="formula_31">+ n = β − n = β gives r ± [n] = 1 and τ[n + 1] = τ[n] = τ 0 , so that V re = β cos τ 0 + β cos τ 0 − 2β = 2β (cos τ 0 − 1), (<label>25</label></formula><formula xml:id="formula_32">)</formula><p>which is precisely the dispersion relation [Eq. ( <ref type="formula" target="#formula_26">21</ref>)]. The integrability error therefore vanishes identically:</p><formula xml:id="formula_33">E[n] = cos τ 0 − 1 + 2β (cos τ 0 − 1) 2β = 0. (<label>26</label></formula><formula xml:id="formula_34">)</formula><p>In the continuum limit, the classical theorem of Lancret <ref type="bibr" target="#b31">[32,</ref><ref type="bibr" target="#b32">33]</ref> states that a space curve is a generalized helix if and only if the ratio κ/τ is constant along the curve. For discrete curves the analogous condition is stronger: both κ and τ must be individually constant, because the discrete Frenet frame does not admit a continuous reparameterization that could absorb correlated variations of κ and τ into a constant ratio. The condition E[n] = 0 is therefore the discrete counterpart of the Lancret condition, specialized to the DNLS framework.</p><p>This identification gives E[n] a geometric interpretation beyond that of a fitting residual: it serves as a local measure of discrete helical symmetry breaking. At each residue, E[n] quantifies the degree to which the local backbone geometry deviates from a perfect discrete helix, i.e., from a fixed point of the screw-motion group. In this picture, helical segments correspond to near-symmetric regions (E[n] ≈ 0), while loops and strands correspond to regions of broken symmetry (E[n] ≫ 0).</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>V. SELF-CONSISTENT FIELD TEST</head><p>The two barriers identified in Sec. III are static: they concern the information content of V eff extracted from known structures and follow from the algebraic structure of the Hasimoto decomposition [Eqs. ( <ref type="formula" target="#formula_15">13</ref>)-( <ref type="formula" target="#formula_16">14</ref>)], independently of any energy function or dynamical scheme. This point is demonstrated directly by what we term an oracle test: in Fig. <ref type="figure" target="#fig_1">1(b)</ref> we supply the exact V re [n] computed from the native structure, which constitutes the best possible real potential that any energy function could produce, and attempt backbone reconstruction with V im = 0. The resulting RMSD of 20-120 Å (mean ∼50 Å) shows that even perfect knowledge of V re is insufficient, because the 2 N torsion-sign degeneracy is intrinsic to the decomposition and cannot be resolved by any choice of energy function.</p><p>A separate question is whether the DNLS can be used as a dynamical equation to drive an initially unfolded chain toward the native state, given a physically motivated effective potential. This possibility has been suggested in the context of modulation instability of the DNLS, where small perturbations of a uniform solution grow exponentially and may seed the formation of soliton-like secondary-structure elements. In this section we test this dynamical scenario directly by performing self-consistent field (SCF) iterations on all 856 proteins in our dataset, using two independent settings: one with hydrophobic and elastic potentials only, and one with an additional hydrogen-bond term. The SCF test provides a third, dynamical barrier that is independent of Barriers I and II and serves as an additional confirmation of the representational limitation.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>A. SCF formulation</head><p>We initialize the complex field as a nearly uniform state</p><formula xml:id="formula_35">ψ 0 [n] = κ 0 + δ ψ[n]</formula><p>, where κ 0 = 0.1 rad represents a nearly straight chain and δ ψ[n] is a small random perturbation with |δ ψ| &lt; 0.01. The field is evolved under damped dynamics</p><formula xml:id="formula_36">dψ[n] dt = −(1 + iγ) δ H[ψ] δ ψ * [n] ,<label>(27)</label></formula><p>where γ = 0.5 is a dissipation parameter that drives the system toward a local energy minimum rather than conserving the Hamiltonian. The functional H[ψ] consists of a kinetic (elastic) term and an interaction term:</p><formula xml:id="formula_37">H[ψ] = ∑ n β |ψ[n + 1] − ψ[n]| 2 + ∑ n V int [n] |ψ[n]| 2 . (<label>28</label></formula><formula xml:id="formula_38">)</formula><p>The interaction potential V int is constructed from two contributions. The elastic term V elastic [n] = λ (κ[n] − κ target ) 2 penalizes deviations of the local curvature from a target value κ target = ⟨κ⟩ native computed from the known structure. The hydrophobic term V hydro [n] is a nonlocal potential that assigns a favorable energy to contacts between hydrophobic residues:</p><formula xml:id="formula_39">V hydro [n] = − ∑ m, |m−n|&gt;4 h[n] h[m] f |r[n] − r[m]| ,<label>(29)</label></formula><p>where h[n] ∈ {0, 1} is the hydrophobicity index of residue n (assigned according to the Kyte-Doolittle <ref type="bibr" target="#b33">[34]</ref> scale with a binary cutoff) and f (r) is a contact function that equals unity for r &lt; 8 Å and decays smoothly to zero beyond this distance.</p><p>The backbone coordinates r[n] are reconstructed from ψ[n] at each SCF step via the inverse Hasimoto transform [Eq. ( <ref type="formula" target="#formula_6">6</ref>)] and discrete Frenet reconstruction.</p><p>In the second setting we add a hydrogen-bond potential</p><formula xml:id="formula_40">V hb [n] = −ε hb n+5 ∑ m=n+3 g κ[n], κ[m] f |r[n] − r[m]| ,<label>(30)</label></formula><p>where ε hb is a coupling strength and g(κ[n], κ[m]) is a geometric filter that favors the curvature values characteristic of helical hydrogen bonds. This term is designed to mimic the i → i + 4 backbone hydrogen bond that stabilizes α-helices, expressed entirely in terms of the ψ field variables.</p><p>The SCF iteration proceeds as follows. Starting from ψ 0 , we (i) reconstruct the backbone coordinates, (ii) evaluate V int (and V hb in the second setting), (iii) update ψ according to Eq. ( <ref type="formula" target="#formula_36">27</ref>) with a discrete time step ∆t = 0.01, and (iv) repeat for 5000 steps. At each step we record the mean curvature</p><formula xml:id="formula_41">⟨κ⟩ = N −1 ∑ n |ψ[n]</formula><p>| and the C α RMSD between the reconstructed backbone and the native structure (after optimal superposition). The best RMSD achieved over the trajectory is reported as the outcome for each protein.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>B. Results without hydrogen bonds</head><p>Figure <ref type="figure" target="#fig_4">7</ref>(a) shows the final mean curvature ⟨κ⟩ SCF plotted against the native target ⟨κ⟩ target for all 856 proteins, colored by SCOP class. The dashed diagonal marks perfect agreement. The SCF systematically overestimates the mean curvature: the dataset-wide mean of ⟨κ⟩ SCF is 1.776 rad compared to a target of 1.298 rad, an overestimation of approximately 37%. No SCOP class approaches the diagonal. The overestimation reflects the tendency of the damped DNLS dynamics to produce excessive bending: the hydrophobic potential drives chain compaction, which in the ψ representation manifests as increased |ψ| = κ, but without the directional constraints of hydrogen bonds there is no mechanism to regulate the curvature to its native value.</p><p>Figure <ref type="figure" target="#fig_4">7</ref>(b) displays the distribution of best-achieved RMSD across the 856 proteins. The mean RMSD is 13.1 Å with a range of 6.8 to 24.0 Å. No protein achieves RMSD below 5 Å, a threshold commonly used to indicate a successful fold prediction. The distribution shows no significant separation among the four SCOP classes: all-α, all-β , α/β , and α+β proteins are interleaved throughout the histogram. This uniformity confirms that the SCF failure is not specific to any particular fold topology.</p><p>Figure <ref type="figure" target="#fig_4">7</ref>(c) shows the Pearson correlation ρ(τ SCF , τ native ) between the torsion-angle profile produced by the SCF and the native torsion-angle profile, computed for each protein. The distribution is centered on zero (mean ρ = 0.001, median ρ = 0.000) and extends symmetrically over the range [−0.4, 0.4]. This indicates that the SCF-generated torsion angles bear no systematic relationship to the native structure. The torsionangle sequence produced by the DNLS dynamics shows no detectable correlation with the native values.</p><p>The absence of correlation between predicted and native torsion angles constitutes a definitive failure of the predictive scheme. While the SCF dynamics may induce chain compaction-reflected in the curvature profile-the torsion angles τ[n], which govern the global fold topology, remain effectively stochastic. A correct curvature distribution coupled with uncorrelated torsion angles results in a compact globule devoid of native structural fidelity. The SCF dynamics, driven by the isotropic hydrophobic potential, generates chain compaction (increased κ) but cannot select the specific torsion-angle sequence that defines the native fold. This is consistent with the general understanding that hydrophobic collapse alone produces a compact but non-native ensemble. The selection of specific secondary and tertiary structure elements involves directional hydrogen bonds, whose geometric constraints are difficult to represent within the scalar DNLS framework.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>C. Results with hydrogen bonds</head><p>The bottom row of Fig. <ref type="figure" target="#fig_4">7</ref> shows the same three diagnostics for the SCF with the hydrogen-bond potential [Eq. <ref type="bibr" target="#b29">(30)</ref>] included. The results are statistically indistinguishable from the setting without hydrogen bonds. The mean curvature increases slightly to ⟨κ⟩ SCF = 1.790 rad (compared to 1.776 without the hydrogen-bond term), moving further from the target rather than closer. The RMSD distribution is virtually identical: mean 13.1 Å, range 6.7 to 26.4 Å, with no protein reaching RMSD &lt; 5 Å. The torsion correlation shifts negligibly from ρ = 0.001 to ρ = −0.005, remaining consistent with zero.</p><p>The inability of the hydrogen-bond term to improve the SCF outcome is significant. It suggests that the barrier to folding within the DNLS framework is not simply the absence of a particular interaction, but rather a representational limitation: the single complex scalar field ψ</p><formula xml:id="formula_42">[n] = κ[n] exp(i ∑ τ[k])</formula><p>entangles curvature and torsion in its amplitude and phase. A physical hydrogen bond imposes simultaneous constraints on the distance and relative orientation of donor and acceptor groups, requiring independent control of both κ and τ at specific residue pairs. The Hamiltonian evolution of ψ couples |ψ| and arg(ψ) through the nonlinear dynamics, so that any potential term that attempts to correct the curvature simultaneously perturbs the accumulated torsion phase, and vice versa. The hydrogen-bond potential [Eq. ( <ref type="formula" target="#formula_40">30</ref>)], expressed in terms of ψ, cannot enforce the directional constraints that the physical interaction requires.</p><p>A natural question is whether replacing the interaction potential V int with a more refined functional, for instance a C α -level effective potential obtained by systematic coarsegraining of an all-atom force field such as AMBER <ref type="bibr" target="#b34">[35,</ref><ref type="bibr" target="#b35">36]</ref> or CHARMM <ref type="bibr" target="#b36">[37,</ref><ref type="bibr" target="#b37">38]</ref>, would alter this conclusion. Three independent lines of evidence indicate that it would not. First, the oracle test [Fig. <ref type="figure" target="#fig_1">1(b)</ref>] already supplies the exact native V re [n], which represents the theoretical optimum for the real part of the potential; the resulting RMSD of 20-120 Å demonstrates that the 2 N torsion-sign degeneracy (Barrier I) persists irrespective of energy-function quality. Second, the geometric dominance result (Barrier II, ρ geom = 0.951) establishes that V re is 95% determined by backbone geometry rather than by amino-acid identity, so that even an exact force-field projection would produce a V re profile nearly indistinguishable from the geometry-only version. Third, the representational bottleneck is structural rather than parametric: the Hasimoto field ψ encodes two real degrees of freedom (κ and τ) in a single complex number whose amplitude and phase are coupled under any Hamiltonian evolution. This coupling prevents the independent enforcement of the distance and angular constraints that directional interactions (hydrogen bonds, backbone dihedrals) impose on specific residue pairs, regardless of how accurately those interactions are parameterized.</p><p>The SCF test with its deliberately minimal energy function therefore probes the representational ceiling of the ψ framework, not the quality of a particular force field.</p><p>This conclusion extends to state-of-the-art machinelearning force fields (MLFFs) such as AI2BMD <ref type="bibr" target="#b38">[39]</ref>, MACE <ref type="bibr" target="#b39">[40]</ref>, and ViSNet <ref type="bibr" target="#b40">[41]</ref>.</p><p>While these architectures achieve near-quantum accuracy by operating on explicit Cartesian coordinates, they cannot rescue the Hasimoto framework. The bottleneck is strictly representational, not energetic. As demonstrated by the oracle test [Fig. <ref type="figure" target="#fig_1">1(b)</ref>], even supplying the mathematically exact V re [n] derived from the native structure fails to recover the fold (RMSD 20-120 Å) due to the 2 N chiral degeneracy inherent in the scalar projection (Barrier I). Furthermore, since V re is determined ∼95% by geometry rather than sequence (Barrier II), the high-fidelity chemical information provided by MLFFs is largely filtered out when projected onto the DNLS potential. The scalar field ψ effectively acts as a lossy compression channel that discards the geometric degrees of freedom needed to distinguish the native state, a structural deficit that no improvement in force-field accuracy can overcome.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>D. Summary of the dynamical barrier</head><p>The SCF experiments establish a third, dynamical barrier to using the Hasimoto map for protein structure prediction. The barrier can be stated concisely: the DNLS Hamiltonian dynamics, even supplemented with physically motivated interaction terms, cannot drive an unfolded chain to the native state because the single complex scalar field ψ lacks the representational capacity to encode the independent curvature and torsion constraints imposed by directional hydrogen bonds. Three quantitative findings support this conclusion across all 856 proteins and both SCF settings. First, the mean curvature is systematically overestimated by approximately 37%, indicating that the dynamics produces excessive bending without the regulatory effect of hydrogen-bond geometry. Second, no protein achieves RMSD below 5 Å, and the RMSD distribution shows no dependence on SCOP class, confirming that the failure is universal rather than fold-specific. Third, the torsion correlation with the native structure is indistinguishable from zero (ρ ≈ 0), demonstrating that the SCF dynamics generates effectively random torsion-angle sequences. The comparison between the two SCF settings is particularly informative. The addition of a hydrogen-bond potential within the DNLS framework produces no measurable improvement in any of the three diagnostics. This rules out the interpretation that the SCF failure is due to an incomplete energy function. The failure is instead structural: it originates in the entanglement of κ and τ within the complex field ψ, which prevents the independent enforcement of the geometric constraints that hydrogen bonds impose on the backbone. The relationship between this dynamical barrier and the two static barriers of Sec. III is discussed in Sec. VI. The Hasimoto transform was originally constructed for vortex filaments evolving under the local induction approximation (LIA). In that setting the transform is both kinematic and dynamic: it converts the geometric evolution of the filament into the integrable cubic NLS, whose soliton solutions describe physical excitations that propagate without dispersion. The success of this construction rests on four properties of the vortex system that proteins do not share: locality of interactions, homogeneity of the medium, Hamiltonian (nondissipative) dynamics, and a physically determined effective potential. Protein folding violates all four. Hydrophobic contacts and electrostatic forces are nonlocal; the backbone comprises 20 chemically distinct amino acids; folding is a dissipative free-energy minimization in aqueous solvent; and, as shown in Sec. III, the effective potential V eff on proteins is an algebraic consequence of the backbone geometry rather than an independently specified physical quantity. Table <ref type="table" target="#tab_1">II</ref> summarizes these distinctions.</p><p>The geometric formalism established by Niemi and collaborators provides a rigorous basis for the structural characterization of protein backbones. The identification of discrete soliton solutions with secondary-structure motifs offers a fundamental insight into geometric regularity, while multi-soliton ansätze yield compact parameterizations of folded states with sub-ångström accuracy <ref type="bibr" target="#b6">[7,</ref><ref type="bibr" target="#b7">8]</ref>. Recent extensions have successfully applied this basis to simulate thermal unfolding <ref type="bibr" target="#b8">[9]</ref> and characterize topological phase transitions <ref type="bibr" target="#b9">[10]</ref>. These studies constitute a comprehensive treatment of the inverse problem: given a known topology, the DNLS soliton basis affords an efficient representation and a robust framework for analyzing fluctuations around the native state.</p><p>The topological aspects of this program connect to a broader body of work on protein topology. Approximately 6% of known protein structures form knots, slipknots, or links whose folding requires the backbone to cross topological barriers <ref type="bibr" target="#b17">[18,</ref><ref type="bibr" target="#b18">19]</ref>. These entangled proteins highlight a fundamental limitation of any local geometric description: the topological invariants that distinguish a knotted from an unknotted fold are inherently global properties that cannot be fully determined from the local fields (κ[n], τ[n]) at any finite number of sites. Consequently, soliton-based studies typically determine parameters by fitting to a known crystallographic structure, whether through Metropolis minimization of RMSD <ref type="bibr" target="#b6">[7]</ref> or direct fitting to native coordinates <ref type="bibr" target="#b8">[9]</ref>.</p><p>In contrast, the present work interrogates the complemen-tary forward problem: determining whether the DNLS framework permits ab initio prediction of the native structure solely from the amino-acid sequence. Our analysis indicates that fundamental barriers impede this predictive pathway. The exact decomposition (Sec. III) reveals that the effective potential V eff is determined predominantly by the target geometry rather than the sequence, creating an informational circularity that cannot be resolved by sequence-based potentials. Furthermore, the SCF experiments (Sec. V) demonstrate that physically motivated interactions fail to lift the 2 N torsion-sign degeneracy or overcome the representational limitations of the scalar field. These findings establish that the distinction between the inverse and forward problems is structural: the capacity to efficiently describe known folds does not imply the feasibility of predicting unknown conformations. The suggestion that modulation instability of the DNLS may provide a dynamical mechanism for the emergence of secondary structure from an initially straight chain is directly tested by our SCF experiments. The instability does produce curvature growth from a nearly uniform initial state, consistent with the expected behavior. However, the resulting structures bear no resemblance to native folds: the torsion angles are uncorrelated with the native profile (ρ ≈ 0), and the RMSD remains above 5 Å for all 856 proteins in both SCF settings. Modulation instability generates generic bending but cannot select the specific (κ, τ) sequence that defines a particular protein fold.</p><p>Although the Hasimoto map cannot serve as a predictive tool, the exact decomposition and the analyses built upon it yield three constructive results. First, the integrability error E[n] [Eq. <ref type="bibr" target="#b21">(22)</ref>] serves as a geometric probe of secondary structure. The ROC analysis (Fig. <ref type="figure" target="#fig_3">6</ref>, AUC = 0.72) demonstrates that 72% of the helix/non-helix distinction defined by DSSP is captured by a scalar test of discrete helical symmetry applied to C α coordinates alone, without reference to hydrogenbond energies or side-chain identities. Whether this geometric criterion can provide useful secondary-structure annotation in data-limited settings, such as low-resolution density maps or coarse-grained trajectories, remains to be tested on independent benchmarks; the present AUC establishes the conceptual correspondence between DNLS integrability and helical geometry but does not by itself validate a practical tool. The gap between AUC = 0.72 and unity quantifies the structural information that hydrogen bonds and nonlocal interactions contribute beyond local geometric regularity. Second, the effective potential V eff [n] provides a structural fingerprint that is invariant under rigid-body transformations. Because V re is 95% determined by geometry (Sec. III D), homologous proteins with low sequence identity but similar folds produce similar V re [n] profiles, offering a one-dimensional scalar representation of backbone shape for structure comparison without spatial superposition. Third, the information-theoretic lower bound on chiral information loss is exact and modelindependent: each residue contributes one bit of torsion-sign information encoded in V im but absent from V re , producing a 2 L -fold degeneracy that any predictive scheme based on the Hasimoto map would need to resolve.</p><p>The structural barriers identified here can be placed in sharper relief by comparison with the data-driven methods that have solved the prediction problem in practice. Al-phaFold 2 <ref type="bibr" target="#b19">[20]</ref> and ESMFold <ref type="bibr" target="#b22">[23]</ref> both predict the full SE(3) rigid-body frame, comprising a rotation matrix and a translation vector, for every residue. This approach retains the complete orientational degrees of freedom of the discrete Frenet frame without projecting them onto a scalar field. The theoretical foundations of this representational choice are clarified by the geometric deep learning framework <ref type="bibr" target="#b41">[42,</ref><ref type="bibr" target="#b42">43]</ref>, which demonstrates that neural architectures respecting the symmetry group of the data domain (specifically, SE(3) equivariance for molecular geometry) achieve systematic gains in sample efficiency and generalization by building physical invariances directly into the network structure rather than learning them from data. The Hasimoto transform performs precisely the projection that these architectures avoid: it compresses the two independent geometric fields (κ, τ) into a single complex scalar ψ = κ e i ∑ τ , and our Barrier I shows that this compression discards the torsion sign, introducing a 2 N chiral degeneracy that the full-frame representation avoids entirely. Barrier II reveals a second contrast: the DNLS effective potential is 95% determined by local backbone geometry, whereas AlphaFold's attention mechanism and ESM-Fold's language-model embeddings encode long-range coevolutionary and contextual information that couples distant residues-information that statistical physics methods such as direct coupling analysis <ref type="bibr" target="#b15">[16,</ref><ref type="bibr" target="#b16">17]</ref> have shown to be extractable from evolutionary data via the maximum-entropy principle.</p><p>The DNLS framework, operating on nearest-neighbor differences of ψ, has no analogous channel for nonlocal sequence information. While these comparisons do not diminish the value of the geometric approach, as data-driven models provide predictions rather than physical explanations, they nevertheless delineate the specific representational deficits that any future analytical theory must overcome: it must preserve the full SE(3) frame at each residue and incorporate nonlocal, sequence-dependent interactions that go beyond the scalar Hasimoto field. The three barriers identified in this work point to specific physical ingredients that a geometric theory of protein folding would need to incorporate. Hydrogen bonds impose simultaneous constraints on the distance and relative orientation of donor and acceptor groups, coupling κ and τ at specific residue pairs in a manner that cannot be captured by a poten-tial acting on the single complex field ψ. A geometric energy functional treating κ[n] and τ[n] as independent fields, rather than combining them into a single complex scalar, would be a natural starting point. The hydrophobic effect, an entropic force mediated by solvent reorganization, is inherently nonlocal and temperature-dependent, with no natural representation in the DNLS Hamiltonian. The SCF experiments confirm that a contact-based hydrophobic potential produces chain compaction but cannot select secondary structure, consistent with the known distinction between hydrophobic collapse and folding. Finally, the geometric dominance of V re means that sequence-dependent terms going beyond the weak modulation of virtual-bond lengths in β ± n would need to enter any predictive geometric framework explicitly.</p><p>In summary, we have derived an exact closed-form decomposition of the DNLS effective potential on protein backbones and used it to identify three structural barriers to forward structure prediction: the torsion-sign degeneracy encoded in V im , the geometric dominance of V re , and the universal failure of self-consistent field dynamics across 856 non-redundant proteins. These barriers are mathematical in nature and are unlikely to be resolved by parameter adjustment or algorithmic improvement within the DNLS framework alone. The Hasimoto map applied to proteins functions primarily as a kinematic identity rather than a dynamical equation: it provides a useful geometric language for describing folded states, a purely geometric helix detector, and a rotation-invariant structural fingerprint, but within the scope of our analysis it does not provide a viable pathway to ab initio protein structure prediction. The contrast with data-driven approaches such as AlphaFold <ref type="bibr" target="#b19">[20,</ref><ref type="bibr" target="#b20">21]</ref> and ESMFold <ref type="bibr" target="#b21">[22,</ref><ref type="bibr" target="#b22">23]</ref>, which succeed by retaining the full SE(3) frame and incorporating nonlocal sequence context, underscores that a future analytical theory of folding must go beyond the scalar Hasimoto field to preserve the geometric and chemical degrees of freedom that the folding process requires. data, IEEE Signal Processing <ref type="bibr">Magazine 34, 18 (2017)</ref>.</p></div><figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_0"><head></head><label></label><figDesc>forming an orthonormal triad { t[n − 1], n[n], b[n]} at each interior vertex. The torsion angle τ[n] then governs the rotation of the normal plane from vertex n to vertex n + 1 about the tangent direction.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_1"><head>FIG. 1 .</head><label>1</label><figDesc>FIG. 1. Information cost of discarding the imaginary potential. (a) Distribution of the ratio ⟨|V im |/|V re |⟩ across 856 non-redundant proteins, colored by SCOP class. The mean ratio is 0.31, indicating that the imaginary component, which encodes the sign of the torsion angle through the odd symmetry of sin(τ), carries roughly one-third of the total potential information. The distribution is largely classindependent, with all-α proteins showing a slightly broader tail toward higher values. (b) Backbone RMSD of structures reconstructed using V re only (setting V im = 0) versus chain length. RMSD grows roughly linearly with chain length, reaching 40-120 Å for chains of 200-300 residues. This reflects the cumulative effect of torsion-sign errors: each residue contributes 1 bit of unresolved chiral ambiguity, and the resulting 2 N degeneracy makes V re -only reconstruction physically meaningless beyond short peptides.</figDesc><graphic coords="5,54.00,246.48,245.08,103.64" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_2"><head>FIG. 3 .</head><label>3</label><figDesc>FIG. 3. V re tracks fold rather than sequence. (a) Pearson correlation ρ V of structurally aligned V re profiles versus TM-score for 1 729 same-superfamily pairs (red) and 4 800 different-fold pairs (gray). Among the same-superfamily pairs, 79% have TM-score &gt; 0.5 and cluster in the upper-right quadrant; the remaining 21% are distant homologs with greater structural divergence, yet ρ V still correlates positively with TM-score within this subgroup. (b) Distribution of ρ V for the two groups. Same-superfamily: µ = 0.29 ± 0.27; differentfold: µ = 0.10 ± 0.23 (Mann-Whitney U, p &lt; 10 −134). The mean sequence identity within the same-superfamily group is 13.9%, confirming that the elevated correlation is driven by structural similarity, not sequence similarity.</figDesc><graphic coords="6,317.01,52.07,245.08,103.24" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_3"><head>FIG. 6 .</head><label>6</label><figDesc>FIG. 6. ROC curve for helix detection using the integrability error E[n] = | cos τ[n] − (1 + V re [n]/2β )| as a binary classifier (helix vs. non-helix by DSSP). Curves are shown for each SCOP class and for the full dataset (N = 856 proteins, 143 202 residues). Parentheses indicate the number of helix residues over total residues in each class. The global AUC = 0.720 quantifies the overlap between DNLS integrability and helical geometry: 72% of the helix/non-helix distinction (by DSSP) is captured by the scalar symmetry condition E[n] &lt; E th , which tests whether the backbone locally preserves discrete helical symmetry. The class dependence is weak (AUC range 0.667-0.739), confirming that the integrability-helicity correspondence operates at the residue level rather than depending on global fold type. The gap between AUC = 0.72 and unity quantifies the structural information carried by hydrogen bonds, nonlocal contacts, and torsion-sign degrees of freedom that lie outside the scalar dispersion relation.</figDesc><graphic coords="9,54.00,52.07,245.08,240.04" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_4"><head>FIG. 7 .</head><label>7</label><figDesc>FIG. 7. Self-consistent field (SCF) test of DNLS-driven folding on 856 non-redundant proteins, without (top row) and with (bottom row) a hydrogen-bond potential. Points and histograms are colored by SCOP class: all-α (170, red), all-β (212, blue), α/β (233, green), α+β (241, orange). (a, d) Mean bond curvature ⟨κ⟩ SCF vs. native target ⟨κ⟩ target ; the dashed line marks perfect agreement. In both settings ⟨κ⟩ SCF is systematically overestimated (mean 1.776 and 1.790 vs. target 1.298), with no SCOP class approaching the diagonal. (b, e) Distribution of best-achieved RMSD. The two histograms are statistically indistinguishable (mean 13.1 Å; range 6.8-24.0 Å without hydrogen bonds, 6.7-26.4 Å with hydrogen bonds), and no protein in either setting reaches RMSD &lt; 5 Å. (c, f) Pearson correlation ρ(τ SCF , τ native ) between the SCF-predicted and native torsion-angle profiles. Both distributions are centered on zero (mean 0.001 vs. −0.005), indicating that the SCF torsion angles are uncorrelated with the native structure. The near-identical results across the two rows demonstrate that the folding failure is not due to missing hydrogen-bond physics but to the representational limitation of the single complex scalar field ψ: it cannot independently encode the curvature and torsion constraints required for structure determination.</figDesc><graphic coords="12,104.81,52.08,406.48,236.01" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0"><head></head><label></label><figDesc></figDesc><graphic coords="8,54.00,52.07,508.10,192.49" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0"><head></head><label></label><figDesc></figDesc><graphic coords="8,104.81,333.18,406.49,160.30" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_1"><head>TABLE II .</head><label>II</label><figDesc>Comparison of the Hasimoto map applied to vortex filaments and to protein backbones. The four properties listed are necessary for the map to function as a predictive dynamical framework.</figDesc><table><row><cell>Property</cell><cell>Vortex filament</cell><cell>Protein backbone</cell></row><row><cell>Interactions</cell><cell>Local (LIA)</cell><cell>Nonlocal</cell></row><row><cell>Medium</cell><cell>Homogeneous</cell><cell>Heterogeneous (20 AA)</cell></row><row><cell>Dynamics</cell><cell>Hamiltonian</cell><cell>Dissipative</cell></row><row><cell>V eff</cell><cell>Physical potential</cell><cell>Kinematic identity</cell></row><row><cell cols="3">VI. DISCUSSION AND CONCLUSION</cell></row></table></figure>
+		</body>
+		<back>
+
+			<div type="acknowledgement">
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>ACKNOWLEDGMENTS</head><p>We thank Prof. Yan-Hong Qin (Xinjiang University) for inspiration and foundational guidance that motivated this work.</p></div>
+			</div>
+
+			<div type="references">
+
+				<listBibl>
+
+<biblStruct xml:id="b0">
+	<analytic>
+		<title level="a" type="main">Principles that govern the folding of protein chains</title>
+		<author>
+			<persName><forename type="first">C</forename><forename type="middle">B</forename><surname>Anfinsen</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Science</title>
+		<imprint>
+			<biblScope unit="volume">181</biblScope>
+			<biblScope unit="page">223</biblScope>
+			<date type="published" when="1973">1973</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b1">
+	<analytic>
+		<title level="a" type="main">A soliton on a vortex filament</title>
+		<author>
+			<persName><forename type="first">H</forename><surname>Hasimoto</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of Fluid Mechanics</title>
+		<imprint>
+			<biblScope unit="volume">51</biblScope>
+			<biblScope unit="page">477</biblScope>
+			<date type="published" when="1972">1972</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b2">
+	<analytic>
+		<title level="a" type="main">Gauge field theory of chirally folded homopolymers with applications to folded proteins</title>
+		<author>
+			<persName><forename type="first">U</forename><forename type="middle">H</forename><surname>Danielsson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Lundgren</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">J</forename><surname>Niemi</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Physical Review E-Statistical, Nonlinear, and Soft Matter Physics</title>
+		<imprint>
+			<biblScope unit="volume">82</biblScope>
+			<biblScope unit="page">21910</biblScope>
+			<date type="published" when="2010">2010</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b3">
+	<analytic>
+		<title level="a" type="main">Topological solitons and folded proteins</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Chernodub</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Hu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">J</forename><surname>Niemi</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Physical Review E-Statistical, Nonlinear, and Soft Matter Physics</title>
+		<imprint>
+			<biblScope unit="volume">82</biblScope>
+			<biblScope unit="page">11916</biblScope>
+			<date type="published" when="2010">2010</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b4">
+	<analytic>
+		<title level="a" type="main">Gauge symmetries and structure of proteins</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Molochkov</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Begun</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Niemi</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">EPJ Web of Conferences</title>
+		<imprint>
+			<biblScope unit="volume">137</biblScope>
+			<biblScope unit="page">4004</biblScope>
+			<date type="published" when="2017">2017</date>
+			<publisher>EDP Sciences</publisher>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b5">
+	<analytic>
+		<title level="a" type="main">Chern-simons-higgs model as a theory of protein molecules</title>
+		<author>
+			<persName><forename type="first">D</forename><surname>Melnikov</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">B</forename><surname>Neves</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of Applied Physics</title>
+		<imprint>
+			<biblScope unit="volume">126</biblScope>
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b6">
+	<analytic>
+		<title level="a" type="main">Discrete nonlinear schrödinger equation and polygonal solitons with applications to collapsed proteins</title>
+		<author>
+			<persName><forename type="first">N</forename><surname>Molkenthin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Hu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">J</forename><surname>Niemi</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Physical Review Letters</title>
+		<imprint>
+			<biblScope unit="volume">106</biblScope>
+			<biblScope unit="page">78102</biblScope>
+			<date type="published" when="2011">2011</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b7">
+	<analytic>
+		<title level="a" type="main">Soliton concepts and protein structure</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Krokhotin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">J</forename><surname>Niemi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Peng</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Physical Review E-Statistical, Nonlinear, and Soft Matter Physics</title>
+		<imprint>
+			<biblScope unit="volume">85</biblScope>
+			<biblScope unit="page">31906</biblScope>
+			<date type="published" when="2012">2012</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b8">
+	<analytic>
+		<title level="a" type="main">On topology and knotty entanglement in protein folding</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Begun</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Liubimov</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Molochkov</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">J</forename><surname>Niemi</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">PLoS One</title>
+		<imprint>
+			<biblScope unit="volume">16</biblScope>
+			<biblScope unit="page">e0244547</biblScope>
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b9">
+	<analytic>
+		<title level="a" type="main">Local topology and perestroikas in protein structure and folding dynamics</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Begun</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">N</forename><surname>Chernodub</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Molochkov</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">J</forename><surname>Niemi</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Physical Review E</title>
+		<imprint>
+			<biblScope unit="volume">111</biblScope>
+			<biblScope unit="page">24406</biblScope>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b10">
+	<analytic>
+		<title level="a" type="main">Modeling the structure of myoglobin within the abelian higgs model</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Liubimov</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Gerasimeniuk</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Korneev</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Molochkov</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Supplement Series A: Membrane and Cell Biology</title>
+		<imprint>
+			<biblScope unit="volume">19</biblScope>
+			<biblScope unit="page">449</biblScope>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note>Biochemistry (Moscow)</note>
+</biblStruct>
+
+<biblStruct xml:id="b11">
+	<analytic>
+		<title level="a" type="main">The protein-folding problem, 50 years on</title>
+		<author>
+			<persName><forename type="first">K</forename><forename type="middle">A</forename><surname>Dill</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">L</forename><surname>Maccallum</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">science</title>
+		<imprint>
+			<biblScope unit="volume">338</biblScope>
+			<biblScope unit="page">1042</biblScope>
+			<date type="published" when="2012">2012</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b12">
+	<analytic>
+		<title level="a" type="main">Awsem-md: protein structure prediction using coarse-grained physical potentials and bioinformatically based local structure biasing</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Davtyan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><forename type="middle">P</forename><surname>Schafer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><surname>Zheng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Clementi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><forename type="middle">G</forename><surname>Wolynes</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><forename type="middle">A</forename><surname>Papoian</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">The Journal of Physical Chemistry B</title>
+		<imprint>
+			<biblScope unit="volume">116</biblScope>
+			<biblScope unit="page">8494</biblScope>
+			<date type="published" when="2012">2012</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b13">
+	<analytic>
+		<title level="a" type="main">Physics of proteins</title>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">R</forename><surname>Banavar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Maritan</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Annu. Rev. Biophys. Biomol. Struct</title>
+		<imprint>
+			<biblScope unit="volume">36</biblScope>
+			<biblScope unit="page">261</biblScope>
+			<date type="published" when="2007">2007</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b14">
+	<analytic>
+		<title level="a" type="main">Geometry and physics of proteins</title>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">R</forename><surname>Banavar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Maritan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Micheletti</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Trovato</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Proteins: Structure, Function, and Bioinformatics</title>
+		<imprint>
+			<biblScope unit="volume">47</biblScope>
+			<biblScope unit="page">315</biblScope>
+			<date type="published" when="2002">2002</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b15">
+	<analytic>
+		<title level="a" type="main">Direct-coupling analysis of residue coevolution captures native contacts across many protein families</title>
+		<author>
+			<persName><forename type="first">F</forename><surname>Morcos</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Pagnani</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Lunt</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Bertolino</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">S</forename><surname>Marks</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Sander</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Zecchina</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">N</forename><surname>Onuchic</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Hwa</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Weigt</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Proceedings of the National Academy of Sciences</title>
+		<imprint>
+			<biblScope unit="volume">108</biblScope>
+			<biblScope unit="page">E1293</biblScope>
+			<date type="published" when="2011">2011</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b16">
+	<analytic>
+		<title level="a" type="main">From principal component to direct coupling analysis of coevolution in proteins: loweigenvalue modes are needed for structure prediction</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Cocco</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Monasson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Weigt</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">PLoS computational biology</title>
+		<imprint>
+			<biblScope unit="volume">9</biblScope>
+			<biblScope unit="page">e1003176</biblScope>
+			<date type="published" when="2013">2013</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b17">
+	<analytic>
+		<title level="a" type="main">On folding of entangled proteins: knots, lassos, links and θ -curves</title>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">I</forename><surname>Sulkowska</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Current opinion in structural biology</title>
+		<imprint>
+			<biblScope unit="volume">60</biblScope>
+			<biblScope unit="page">131</biblScope>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b18">
+	<analytic>
+		<title level="a" type="main">Topological knots and links in proteins</title>
+		<author>
+			<persName><forename type="first">P</forename><surname>Dabrowski-Tumanski</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">I</forename><surname>Sulkowska</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Proceedings of the National Academy of Sciences</title>
+		<imprint>
+			<biblScope unit="volume">114</biblScope>
+			<biblScope unit="page">3415</biblScope>
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b19">
+	<analytic>
+		<title level="a" type="main">Highly accurate protein structure prediction with alphafold</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Jumper</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Evans</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Pritzel</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Green</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Figurnov</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">O</forename><surname>Ronneberger</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Tunyasuvunakool</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Bates</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Žídek</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Potapenko</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">nature</title>
+		<imprint>
+			<biblScope unit="volume">596</biblScope>
+			<biblScope unit="page">583</biblScope>
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b20">
+	<analytic>
+		<title level="a" type="main">Accurate structure prediction of biomolecular interactions with alphafold 3</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Abramson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Adler</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Dunger</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Evans</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Green</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Pritzel</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">O</forename><surname>Ronneberger</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Willmore</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">J</forename><surname>Ballard</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Bambrick</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nature</title>
+		<imprint>
+			<biblScope unit="volume">630</biblScope>
+			<biblScope unit="page">493</biblScope>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b21">
+	<analytic>
+		<title level="a" type="main">Biological structure and function emerge from scaling unsupervised learning to 250 million protein sequences</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Rives</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Meier</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Sercu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Goyal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Lin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Guo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Ott</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><forename type="middle">L</forename><surname>Zitnick</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Ma</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Proceedings of the National Academy of Sciences</title>
+		<imprint>
+			<biblScope unit="volume">118</biblScope>
+			<biblScope unit="page">e2016239118</biblScope>
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b22">
+	<analytic>
+		<title level="a" type="main">Evolutionary-scale prediction of atomic-level protein structure with a language model</title>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Lin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Akin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Rao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Hie</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Zhu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><surname>Lu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Smetanin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Verkuil</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">O</forename><surname>Kabeli</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Shmueli</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Science</title>
+		<imprint>
+			<biblScope unit="volume">379</biblScope>
+			<biblScope unit="page">1123</biblScope>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b23">
+	<analytic>
+		<title level="a" type="main">Sequence-context-aware decoding enables robust reconstruction of protein dynamics from crystallographic b-factors</title>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Cai</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Ma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Wei</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">bioRxiv</title>
+		<imprint>
+			<date type="published" when="2025">2025. 2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b24">
+	<analytic>
+		<title level="a" type="main">Accurate bond and angle parameters for x-ray protein structure refinement</title>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">A</forename><surname>Engh</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Huber</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Foundations of Crystallography</title>
+		<imprint>
+			<biblScope unit="volume">47</biblScope>
+			<biblScope unit="page">392</biblScope>
+			<date type="published" when="1991">1991</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b25">
+	<analytic>
+		<title level="a" type="main">Structure validation by cα geometry: φ , ψ and cβ deviation</title>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">C</forename><surname>Lovell</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">I</forename><forename type="middle">W</forename><surname>Davis</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><forename type="middle">B</forename><surname>Arendall</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Iii</forename></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><forename type="middle">I</forename><surname>De Bakker</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">M</forename><surname>Word</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">G</forename><surname>Prisant</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">S</forename><surname>Richardson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">C</forename><surname>Richardson</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Proteins: Structure, Function, and Bioinformatics</title>
+		<imprint>
+			<biblScope unit="volume">50</biblScope>
+			<biblScope unit="page">437</biblScope>
+			<date type="published" when="2003">2003</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b26">
+	<analytic>
+		<title level="a" type="main">Scop: a structural classification of proteins database for the investigation of sequences and structures</title>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">G</forename><surname>Murzin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">E</forename><surname>Brenner</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Hubbard</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Chothia</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of molecular biology</title>
+		<imprint>
+			<biblScope unit="volume">247</biblScope>
+			<biblScope unit="page">536</biblScope>
+			<date type="published" when="1995">1995</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b27">
+	<analytic>
+		<title level="a" type="main">The scop database in 2020: expanded classification of representative family and superfamily domains of known protein structures</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Andreeva</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Kulesha</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Gough</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">G</forename><surname>Murzin</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nucleic acids research</title>
+		<imprint>
+			<biblScope unit="volume">48</biblScope>
+			<biblScope unit="page">D376</biblScope>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b28">
+	<analytic>
+		<title level="a" type="main">Pisces: a protein sequence culling server</title>
+		<author>
+			<persName><forename type="first">G</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">L</forename><surname>Dunbrack</surname><genName>Jr</genName></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Bioinformatics</title>
+		<imprint>
+			<biblScope unit="volume">19</biblScope>
+			<biblScope unit="page">1589</biblScope>
+			<date type="published" when="2003">2003</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b29">
+	<analytic>
+		<title level="a" type="main">From signal to symphony: Exploring 2d sequence representations for protein function prediction</title>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Cai</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Dong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Ma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Wei</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of Chemical Information and Modeling</title>
+		<imprint>
+			<biblScope unit="volume">65</biblScope>
+			<biblScope unit="page">12723</biblScope>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b30">
+	<analytic>
+		<title level="a" type="main">Dictionary of protein secondary structure: pattern recognition of hydrogen-bonded and geometrical features</title>
+		<author>
+			<persName><forename type="first">W</forename><surname>Kabsch</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Sander</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Biopolymers: Original Research on Biomolecules</title>
+		<imprint>
+			<biblScope unit="volume">22</biblScope>
+			<biblScope unit="page">2577</biblScope>
+			<date type="published" when="1983">1983</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b31">
+	<analytic>
+		<title level="a" type="main">Mémoire sur les courbes à double courbure</title>
+		<author>
+			<persName><forename type="first">M.-A</forename><surname>Lancret</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Memoires presentes alInstitut</title>
+		<imprint>
+			<biblScope unit="volume">1</biblScope>
+			<biblScope unit="page">416</biblScope>
+			<date type="published" when="1806">1806</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b32">
+	<monogr>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">P</forename><surname>Carmo</surname></persName>
+		</author>
+		<title level="m">Differential geometry of curves andsurfaces</title>
+				<meeting><address><addrLine>Englewood Cliffs; New Jersey</addrLine></address></meeting>
+		<imprint>
+			<date type="published" when="1976">1976</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b33">
+	<analytic>
+		<title level="a" type="main">A simple method for displaying the hydropathic character of a protein</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Kyte</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">F</forename><surname>Doolittle</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of molecular biology</title>
+		<imprint>
+			<biblScope unit="volume">157</biblScope>
+			<biblScope unit="page">105</biblScope>
+			<date type="published" when="1982">1982</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b34">
+	<analytic>
+		<title level="a" type="main">A second generation force field for the simulation of proteins, nucleic acids, and organic molecules</title>
+		<author>
+			<persName><forename type="first">W</forename><forename type="middle">D</forename><surname>Cornell</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Cieplak</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><forename type="middle">I</forename><surname>Bayly</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">I</forename><forename type="middle">R</forename><surname>Gould</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><forename type="middle">M</forename><surname>Merz</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">M</forename><surname>Ferguson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">C</forename><surname>Spellmeyer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Fox</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">W</forename><surname>Caldwell</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><forename type="middle">A</forename><surname>Kollman</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of the American Chemical Society</title>
+		<imprint>
+			<biblScope unit="volume">117</biblScope>
+			<biblScope unit="page">5179</biblScope>
+			<date type="published" when="1995">1995</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b35">
+	<analytic>
+		<title level="a" type="main">The amber biomolecular simulation programs</title>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">A</forename><surname>Case</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><forename type="middle">E</forename><surname>Cheatham</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Iii</forename></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Darden</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Gohlke</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Luo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><forename type="middle">M</forename><surname>Merz</surname><genName>Jr</genName></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Onufriev</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Simmerling</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">J</forename><surname>Woods</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of computational chemistry</title>
+		<imprint>
+			<biblScope unit="volume">26</biblScope>
+			<biblScope unit="page">1668</biblScope>
+			<date type="published" when="2005">2005</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b36">
+	<analytic>
+		<title level="a" type="main">Charmm: a program for macromolecular energy, minimization, and dynamics calculations</title>
+		<author>
+			<persName><forename type="first">B</forename><forename type="middle">R</forename><surname>Brooks</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">E</forename><surname>Bruccoleri</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><forename type="middle">D</forename><surname>Olafson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">J</forename><surname>States</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">A</forename><surname>Swaminathan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Karplus</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of computational chemistry</title>
+		<imprint>
+			<biblScope unit="volume">4</biblScope>
+			<biblScope unit="page">187</biblScope>
+			<date type="published" when="1983">1983</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b37">
+	<analytic>
+		<title level="a" type="main">Charmm: the biomolecular simulation program</title>
+		<author>
+			<persName><forename type="first">B</forename><forename type="middle">R</forename><surname>Brooks</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><forename type="middle">L</forename><surname>Brooks</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Iii</forename></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">D</forename><surname>Mackerell</surname><genName>Jr</genName></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Nilsson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">J</forename><surname>Petrella</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Roux</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Won</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Archontis</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Bartels</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Boresch</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of computational chemistry</title>
+		<imprint>
+			<biblScope unit="volume">30</biblScope>
+			<biblScope unit="page">1545</biblScope>
+			<date type="published" when="2009">2009</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b38">
+	<analytic>
+		<title level="a" type="main">Ab initio characterization of protein molecular dynamics with ai2bmd</title>
+		<author>
+			<persName><forename type="first">T</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>He</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Bi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Cheng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Shen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Meng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Zhang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nature</title>
+		<imprint>
+			<biblScope unit="volume">635</biblScope>
+			<biblScope unit="page">1019</biblScope>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b39">
+	<analytic>
+		<title level="a" type="main">Higher order equivariant message passing neural networks for fast and accurate force fields</title>
+		<author>
+			<persName><forename type="first">I</forename><surname>Batatia</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">P</forename><surname>Kovacs</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Simm</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Ortner</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Csányi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mace</forename></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Advances in neural information processing systems</title>
+		<imprint>
+			<biblScope unit="volume">35</biblScope>
+			<biblScope unit="page">11423</biblScope>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b40">
+	<analytic>
+		<title level="a" type="main">Enhancing geometric representations for molecules with equivariant vector-scalar interactive message passing</title>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>He</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Zheng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Shao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T.-Y</forename><surname>Liu</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nature Communications</title>
+		<imprint>
+			<biblScope unit="volume">15</biblScope>
+			<biblScope unit="page">313</biblScope>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b41">
+	<monogr>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">M</forename><surname>Bronstein</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Bruna</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Cohen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Veličković</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2104.13478</idno>
+		<title level="m">Geometric deep learning: Grids, groups, graphs, geodesics, and gauges</title>
+				<imprint>
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b42">
+	<monogr>
+		<title level="m" type="main">Geometric deep learning: going beyond euclidean</title>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">M</forename><surname>Bronstein</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Bruna</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Lecun</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Szlam</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Vandergheynst</surname></persName>
+		</author>
+		<imprint/>
+	</monogr>
+</biblStruct>
+
+				</listBibl>
+			</div>
+		</back>
+	</text>
+</TEI>

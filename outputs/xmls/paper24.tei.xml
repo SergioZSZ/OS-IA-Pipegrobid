@@ -1,0 +1,1007 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xml:space="preserve" xmlns="http://www.tei-c.org/ns/1.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.tei-c.org/ns/1.0 https://raw.githubusercontent.com/kermitt2/grobid/master/grobid-home/schemas/xsd/Grobid.xsd"
+ xmlns:xlink="http://www.w3.org/1999/xlink">
+	<teiHeader xml:lang="en">
+		<fileDesc>
+			<titleStmt>
+				<title level="a" type="main">From Entropy to Calibrated Uncertainty: Training Language Models to Reason About Uncertainty</title>
+			</titleStmt>
+			<publicationStmt>
+				<publisher/>
+				<availability status="unknown"><licence/></availability>
+				<date type="published" when="2026-03-06">6 Mar 2026</date>
+			</publicationStmt>
+			<sourceDesc>
+				<biblStruct>
+					<analytic>
+						<author>
+							<persName><forename type="first">Azza</forename><surname>Jenane</surname></persName>
+							<affiliation key="aff0">
+								<orgName type="department">German Cancer Research Center (DKFZ) German Cancer Consortium (DKTK</orgName>
+								<orgName type="institution">Goethe University Frankfurt</orgName>
+								<address>
+									<country key="DE">Germany</country>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Nassim</forename><surname>Walha</surname></persName>
+							<affiliation key="aff0">
+								<orgName type="department">German Cancer Research Center (DKFZ) German Cancer Consortium (DKTK</orgName>
+								<orgName type="institution">Goethe University Frankfurt</orgName>
+								<address>
+									<country key="DE">Germany</country>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Lukas</forename><surname>Kuhn</surname></persName>
+							<affiliation key="aff0">
+								<orgName type="department">German Cancer Research Center (DKFZ) German Cancer Consortium (DKTK</orgName>
+								<orgName type="institution">Goethe University Frankfurt</orgName>
+								<address>
+									<country key="DE">Germany</country>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Florian</forename><surname>Buettner</surname></persName>
+							<affiliation key="aff0">
+								<orgName type="department">German Cancer Research Center (DKFZ) German Cancer Consortium (DKTK</orgName>
+								<orgName type="institution">Goethe University Frankfurt</orgName>
+								<address>
+									<country key="DE">Germany</country>
+								</address>
+							</affiliation>
+						</author>
+						<title level="a" type="main">From Entropy to Calibrated Uncertainty: Training Language Models to Reason About Uncertainty</title>
+					</analytic>
+					<monogr>
+						<imprint>
+							<date type="published" when="2026-03-06">6 Mar 2026</date>
+						</imprint>
+					</monogr>
+					<idno type="MD5">5C91DC5B47826B34F9738C2996BC230B</idno>
+					<idno type="arXiv">arXiv:2603.06317v1[cs.LG]</idno>
+				</biblStruct>
+			</sourceDesc>
+		</fileDesc>
+		<encodingDesc>
+			<appInfo>
+				<application version="0.7.2" ident="GROBID" when="2026-05-14T17:27+0000">
+					<desc>GROBID - A machine learning software for extracting information from scholarly documents</desc>
+					<ref target="https://github.com/kermitt2/grobid"/>
+				</application>
+			</appInfo>
+		</encodingDesc>
+		<profileDesc>
+			<abstract>
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>Large Language Models (LLMs) that can express interpretable and calibrated uncertainty are crucial in high-stakes domains. While methods to compute uncertainty posthoc exist, they are often sampling-based and therefore computationally expensive or lack calibration. We propose a three-stage pipeline to post-train LLMs to efficiently infer calibrated uncertainty estimates for their responses. First, we compute finegrained entropy-based uncertainty scores on the training data, capturing the distributional variability of model outputs in embedding space. Second, these scores are calibrated via Platt scaling, producing reliable and human-interpretable uncertainty signals. Finally, the target LLM is post-trained via reinforcement learning to align its policy with these calibrated signals through a verifiable reward function. Unlike post-hoc uncertainty estimation methods, our approach provides interpretable and computationally efficient uncertainty estimates at test time. Experiments show that models trained with our pipeline achieve better calibration than baselines and generalize to unseen tasks without further processing, suggesting that they learn a robust uncertainty reasoning behavior.</p></div>
+			</abstract>
+		</profileDesc>
+	</teiHeader>
+	<text xml:lang="en">
+		<body>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="1">Introduction</head><p>Large Language Models (LLMs) have achieved strong performance across a broad range of Natural Language Processing (NLP) tasks, including question answering, summarization, and natural language understanding <ref type="bibr" target="#b20">(Touvron et al., 2023;</ref><ref type="bibr" target="#b4">Chiang et al., 2023</ref>   <ref type="bibr">et al., 2023)</ref>. Despite these advances, they remain prone to generating confident yet incorrect outputs, commonly referred to as hallucinations <ref type="bibr" target="#b10">(Hadi et al., 2023)</ref>.</p><p>As LLMs are increasingly deployed in high-stakes domains such as healthcare <ref type="bibr" target="#b23">(Wang and Zhang, 2024;</ref><ref type="bibr" target="#b1">Bani-Harouni et al., 2024)</ref>, finance <ref type="bibr" target="#b3">(Cao, 2022)</ref>, and legal decision support <ref type="bibr" target="#b28">(Zhong et al., 2020)</ref>, reliable and interpretable uncertainty estimates are essential to enable risk-aware decision-making, appropriate human oversight, and safe system integration. A central requirement for such reliability is to have calibrated confidence; predicted uncertainty must align with empirical correctness <ref type="bibr" target="#b9">(Guo et al., 2017)</ref>.</p><p>Current approaches to uncertainty estimation in LLMs are predominantly post-hoc, relying on samplingbased statistics and entropy measures <ref type="bibr" target="#b7">(Farquhar et al., 2024;</ref><ref type="bibr" target="#b22">Walha et al., 2025;</ref><ref type="bibr" target="#b16">Nikitin et al., 2024)</ref>. Given a user query, these methods generate multiple responses from the model and quantify uncertainty through the semantic variability among the sampled outputs.</p><p>While effective, they incur substantial computational overhead due to repeated sampling. Moreover, they yield scale-free uncertainty values that perform well on ranking-based metrics such as AUROC and AUPR, but are inherently uncalibrated, as they do not map directly to probabilities. A separate line of work leverages verbalized uncertainty, employing various prompting strategies to elicit explicit confidence scores from the model <ref type="bibr" target="#b14">(Kadavath et al., 2022;</ref><ref type="bibr" target="#b26">Xiong et al., 2023)</ref>. These methods are generally more computationally efficient, but their reliability is strongly dependent on model size and capacity. In particular, smaller models deployed on-device in privacy-sensitive settings have been shown to produce poorly calibrated and unreliable confidence estimates <ref type="bibr" target="#b26">(Xiong et al., 2023;</ref><ref type="bibr" target="#b27">Yang et al., 2024)</ref>. More recent reinforcement learning approaches introduce verifiable rewards to encourage alignment between predicted confidence and actual correctness; however, they often rely on coarse supervision signals or computationally expensive optimization schemes <ref type="bibr" target="#b2">(Bani-Harouni et al., 2025;</ref><ref type="bibr" target="#b6">Damani et al., 2025)</ref>.</p><p>To address the aforementioned limitations, we propose a three-stage framework that post-trains LLMs to express calibrated uncertainty directly. In the first stage, we compute fine-grained uncertainty scores using von Neumann entropy <ref type="bibr" target="#b21">(Von Neumann, 2018;</ref><ref type="bibr" target="#b22">Walha et al., 2025)</ref> over embedding representations derived from multiple sampled generations, capturing distributional structure beyond binary correctness. In the second stage, these scores are calibrated via Platt scaling <ref type="bibr" target="#b18">(Platt et al., 1999)</ref> to obtain interpretable probability targets. In the third stage, the model is trained using Group Relative Policy Optimization (GRPO) with a verifiable reward <ref type="bibr" target="#b25">(Wen et al., 2025;</ref><ref type="bibr" target="#b19">Shao et al., 2024)</ref> that aligns the model's predicted uncertainty with these calibrated signals. This framework integrates uncertainty estimation directly into model behavior while remaining computationally efficient at inference time. The contributions of this work are as follows:</p><p>• We introduce a novel uncertainty calibration reward that aligns the model's verbalized uncertainty with a state-of-the-art sampling-based measure, while explicitly targeting calibrated probability outputs.</p><p>• We demonstrate that our reward yields verbalized uncertainties with high rank-correlation with the sampling-based measure, thus inheriting its strong performance on ranking-based metrics, while also achieving state-of-the-art calibration and high efficiency at inference time.</p><p>• We compare our reward against a Brier-score-based reward <ref type="bibr" target="#b8">(Glenn et al., 1950)</ref> commonly used in the literature <ref type="bibr" target="#b6">(Damani et al., 2025)</ref>, and demonstrate superior performance both indistribution and out-of-distribution.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2">Background</head><p>2.1 Fine-Grained Entropy-Based Uncertainty <ref type="bibr" target="#b22">Walha et al. (2025)</ref> propose a fine-grained uncertainty measure based on spectral entropy in embedding space. For each input, multiple generations are sampled and mapped to embedding vectors. A kernel matrix is constructed over the embeddings to capture pairwise similarity between generated responses.</p><p>The eigenvalues {λ i } N i=1 of the normalized kernel matrix are then used to compute the von Neumann entropy <ref type="bibr" target="#b21">(Von Neumann, 2018)</ref>,</p><formula xml:id="formula_0">H VN = − N i=1 λ i log λ i ,</formula><p>which quantifies dispersion in representation space. By operating at the representation level and aggregating across multiple samples, this approach provides a continuous uncertainty signal that captures distributional variability in semantic space, beyond token-level predictive entropy or binary correctness signals.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.2">Platt Scaling for Calibration</head><p>Calibrated confidence <ref type="bibr" target="#b9">(Guo et al., 2017)</ref>. Let Ŷ and P denote the model's predicted answer and its associated confidence, respectively, and let Y denote the ground truth answer to query X. A calibrated model satisfies</p><formula xml:id="formula_1">P( Ŷ = Y | P = p) ≈ p, ∀p ∈ [0, 1],</formula><p>meaning that among all predictions for which the model assigns confidence p, the fraction of correct predictions is approximately p.</p><p>Platt scaling <ref type="bibr" target="#b18">(Platt et al., 1999)</ref>. Platt scaling is a post-hoc calibration method that maps arbitrary real-valued scores to calibrated probability estimates via a parametric logistic transformation. Given an uncalibrated score s ∈ R, Platt scaling fits a sigmoid function p = σ(As+B), where the parameters A and B are learned by minimizing the negative log-likelihood on a held-out validation set with binary correctness labels. This transformation preserves the ranking of the original scores while rescaling their values so that the resulting probabilities better reflect empirical accuracy.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.3">Reinforcement Learning for Uncertainty Estimation</head><p>Reinforcement Learning (RL) provides a framework for optimizing model behavior with respect to a reward signal rather than supervised targets. It has recently been explored for uncertainty estimation by defining rewards that encourage alignment between predicted confidence and empirical correctness <ref type="bibr" target="#b6">(Damani et al., 2025;</ref><ref type="bibr" target="#b2">Bani-Harouni et al., 2025)</ref>. Such formulations allow uncertainty calibration to be integrated directly into the training objective, rather than computed posthoc.</p><p>Group Relative Policy Optimization (GRPO) has been proposed as a computationally efficient reinforcement learning algorithm particularly suited for training LLMs <ref type="bibr" target="#b19">(Shao et al., 2024)</ref>. Unlike Proximal Policy Optimization (PPO), which requires maintaining and updating a large critic network throughout training, GRPO performs relative comparisons within groups of sampled responses, using group-normalized rewards to guide policy updates. This substantially reduces both memory usage and training complexity while preserving training stability. As a result, GRPO enables scalable reinforcement learning for LLMs at a lower computational cost compared to standard PPO-based pipelines.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3">Methodology</head><p>Our pipeline, illustrated in Figure <ref type="figure" target="#fig_1">1</ref>, aims to improve the LLM's ability to accurately estimate its own uncertainty given an input question and the model's corresponding answer. Formally, let X denote the space of questions and Y denote the space of answers. Given a question x ∈ X with ground truth answer y * ∈ Y, we sample an answer ŷ from the base LLM π θ0 (y | x). We then fine-tune the model to predict a scalar uncertainty estimate u θ (x, ŷ) ∈ [0, 1], interpreted as the probability that the answer ŷ is incorrect, i.e., u θ (x, ŷ) ≈ P(ŷ ̸ = y * | x).</p><p>Entropy-Based Uncertainty Signal. Following the work of <ref type="bibr" target="#b22">Walha et al. (2025)</ref>, for a fixed base model π θ0 , we generate K stochastic samples {y (k) } K k=1 ∼ π θ0 (• | x) and compute a semantic dispersion score</p><formula xml:id="formula_2">S(x) = H V N (x)</formula><p>using kernel-based von Neumann entropy over their embedding representations. This score serves as a continuous proxy for uncertainty.</p><p>Calibration Mapping. Since S(x) is not inherently probabilistic and raw values are not directly inter-pretable or calibrated, we learn a calibration function g : R ≥0 → [0, 1] using Platt scaling <ref type="bibr" target="#b18">(Platt et al., 1999)</ref> on held-out data with binary correctness labels z ∈ {0, 1}, where z = 1 indicates an incorrect response. The calibrated uncertainty is then defined as u cal (x) = g(S(x)), which estimates P(incorrect | x) under the validation distribution.</p><p>Reinforcement Learning for Calibrated Uncertainty. Similar to <ref type="bibr" target="#b2">Bani-Harouni et al. (2025)</ref>, we decouple answer generation from uncertainty estimation during training: answers are generated first and treated as fixed, while uncertainty is produced in a separate step and optimized independently. This ensures that answer quality remains unaffected by the uncertainty calibration objective. Unlike <ref type="bibr" target="#b6">Damani et al. (2025)</ref>, which fine-tunes all model weights, we adopt Low-Rank Adaptation (LoRA) <ref type="bibr" target="#b11">(Hu et al., 2022)</ref> as a parameter-efficient alternative. Beyond reducing memory overhead and mitigating catastrophic forgetting, LoRA naturally supports the decoupling of answer generation and uncertainty prediction at inference time, as the learned adapters can be selectively applied after answer generation to produce uncertainty estimates.</p><p>To further optimize training efficiency, we use reinforcement learning with the Group Relative Policy Optimization (GRPO) algorithm. Our entropy-based reward function encourages alignment between the predicted uncertainty u θ (x, ŷ) and the calibrated target u cal (x) and is defined as follows:</p><formula xml:id="formula_3">R entropy (u θ , u cal ) = 1 − max 0.05, |u θ − u cal | .</formula><p>During training, the model is provided with the question x and its pre-generated answer ŷ, and is prompted to first produce a reasoning trace about its uncertainty in a chain-of-thought (CoT) format, followed by a scalar uncertainty prediction u θ (x, ŷ). By optimizing the scalar output directly, the model is implicitly encouraged to develop a useful reasoning trace that supports reliable uncertainty estimation.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4">Experiments</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.1">Experimental Setup</head><p>We conduct experiments on subsets of TriviaQA <ref type="bibr" target="#b13">(Joshi et al., 2017)</ref> and Natural Questions (NQ) <ref type="bibr" target="#b15">(Kwiatkowski et al., 2019)</ref>, two widely used opendomain question answering benchmarks. We adopt the Qwen2.5-7B-Instruct model, which has demonstrated strong performance in reinforcement learning settings <ref type="bibr" target="#b12">(Hu et al., 2025;</ref><ref type="bibr" target="#b6">Damani et al., 2025)</ref>, and initialize reinforcement learning training directly from this base Methods. We evaluate the following methods, which differ in their reward design:</p><p>• Base:</p><p>The pretrained Qwen2.5-7B-Instruct model without reinforcement learning, serving as a reference.</p><p>• Base + CoT: The pretrained Qwen2.5-7B-Instruct model without reinforcement learning, aided by chain-of-thought reasoning <ref type="bibr" target="#b24">(Wei et al., 2022)</ref>.</p><p>• Brier: Initialized from the base model and trained with GRPO using a reward derived solely from the Brier score between predicted uncertainty and binary correctness labels. This reward is defined as R Brier (u θ ) = 1 − (u θ − 1 ŷ̸ =y * ) 2 and was used in previous work <ref type="bibr" target="#b6">(Damani et al., 2025)</ref>.</p><p>• Entropy-based (ours) : Initialized from the base model and trained with GRPO using our calibrated entropy-based reward signal R entropy .</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.2">Results</head><p>We evaluate all methods on a held-out in-domain (ID) test set comprising TriviaQA and Natural Questions, and assess out-of-domain (OOD) generalization on GSM8K <ref type="bibr" target="#b5">(Cobbe et al., 2021)</ref>. Results are reported in Table <ref type="table" target="#tab_0">1</ref>.</p><p>In-domain performance. Our entropy-based RL method achieves the strongest overall performance. It reduces ECE from 41.99% (Base) and 34.17% (Base+CoT) to 7.2%, substantially improving calibration over all baselines. While the Brier variant also improves calibration, reaching 15.70%, it remains notably worse than the entropy-based approach. In terms of ranking quality, both the Brier (83.36%) and entropy-based (81.53%) variants substantially outperform the base models (51.89% and 66.18%, respectively). Furthermore, the entropy-based method achieves the highest alignment with calibrated uncertainty signals, yielding the strongest Spearman correlation (0.67) across all methods.</p><p>Out-of-domain generalization. On GSM8K, the entropy-based method again achieves the best calibration, reducing ECE to 3.15%, compared to 32.22% (Base), 22.25% (Base+CoT), and 33.28% (Brier).</p><p>In terms of AUROC, both the Brier (66.89%) and entropy-based (66.73%) variants substantially outperform the baselines (53.79% and 62.17%), with the Brier variant marginally higher.</p><p>Overall, while CoT prompting and Brier-based optimization improve ranking performance, they do not consistently yield well-calibrated uncertainty estimates. In contrast, reinforcement learning with entropy-calibrated uncertainty targets leads to substantial gains in both calibration and ranking quality, and generalizes robustly to out-of-domain settings.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5">Discussion and Conclusion</head><p>We introduced a novel uncertainty calibration reward grounded in an established entropy-based uncertainty measure for LLMs. Our approach not only produces uncertainty estimates that are well-aligned with this state-of-the-art measure, but also significantly outperforms several baselines in terms of both calibration and uncertainty ranking, with consistent gains observed indistribution and out-of-distribution. Furthermore, by combining GRPO with LoRA adapters, our framework maximizes training efficiency while remaining computationally lightweight at inference time.</p><p>While we provide evaluation across multiple metrics and datasets, extending the experiments to a broader set of models would yield a more comprehensive assessment. Additionally, our evaluation remains purely empirical, which is common practice in LLM research but leaves open the question of theoretical grounding.</p><p>Overall, our approach represents a promising direction toward efficient and reliable uncertainty quantification for large language models.  You are an assistant that estimates your total uncertainty about your answer to a question.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>B Prompts</head><p>I previously asked you to answer the question below, and you provided the answer below. Now, I want you to reflect on your answer and estimate how uncertain you are about it.</p><p>Uncertainty is the probability that your answer would be wrong. Before giving the final value, briefly reflect on why your answer might be right and why it might be wrong.</p><p>Use your current judgment to produce a probability between 0 and 1.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Output Format</head><p>Reflection: ⟨1-2 sentences on why the answer might be right or wrong⟩ Total uncertainty: ⟨float between 0 and 1⟩ </p></div><figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_0"><head></head><label></label><figDesc>; Achiam 1 * Equal contribution.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_1"><head>Figure 1 :</head><label>1</label><figDesc>Figure 1: Overview of the reward signal generation pipeline</figDesc><graphic coords="1,326.70,268.69,210.60,122.07" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_2"><head>Figure 3 :</head><label>3</label><figDesc>Figure 3: Correctness judge prompt template.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_3"><head>Figure 4 :Figure 5 :</head><label>45</label><figDesc>Figure 4: Training and inference prompt template for post-trained and CoT methods.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_0"><head>Table 1 :</head><label>1</label><figDesc>Performance metrics across methods on in-domain (TriviaQA + Natural Questions) and out-of-domain (GSM8k) datasets.</figDesc><table><row><cell></cell><cell></cell><cell>TriviaQA + NQ (ID)</cell><cell></cell><cell cols="2">GSM8k (OOD)</cell></row><row><cell>Method</cell><cell cols="5">ECE (%) ↓ AUROC (%) ↑ Spearman ↑ ECE (%) ↓ AUROC (%) ↑</cell></row><row><cell>Base</cell><cell>41.99</cell><cell>51.89</cell><cell>0.03</cell><cell>32.22</cell><cell>53.79</cell></row><row><cell>Base+CoT</cell><cell>34.17</cell><cell>66.18</cell><cell>0.17</cell><cell>22.25</cell><cell>62.17</cell></row><row><cell>Brier</cell><cell>15.70</cell><cell>83.36</cell><cell>0.52</cell><cell>33.28</cell><cell>66.89</cell></row><row><cell>Entropy-based (ours)</cell><cell>7.2</cell><cell>81.53</cell><cell>0.67</cell><cell>3.15</cell><cell>66.73</cell></row><row><cell cols="3">model, following recent practice. To assess the perfor-</cell><cell></cell><cell></cell><cell></cell></row><row><cell cols="3">mance of our method and the baselines, we report Ex-</cell><cell></cell><cell></cell><cell></cell></row><row><cell cols="3">pected Calibration Error (ECE), Area Under the Re-</cell><cell></cell><cell></cell><cell></cell></row><row><cell cols="3">ceiver Operating Characteristic Curve (AUROC), and</cell><cell></cell><cell></cell><cell></cell></row><row><cell cols="3">Spearman correlation with respect to the calibrated</cell><cell></cell><cell></cell><cell></cell></row><row><cell cols="3">uncertainty targets. Full experimental details, includ-</cell><cell></cell><cell></cell><cell></cell></row><row><cell cols="3">ing evaluation protocol, training procedure, and hy-</cell><cell></cell><cell></cell><cell></cell></row><row><cell cols="3">perparameter settings, are provided in Appendix A.</cell><cell></cell><cell></cell><cell></cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_1"><head></head><label></label><figDesc>ObjectiveAnswer the question below. Think briefly, then give your final answer. Always provide an answer-if you are unsure or do not know the answer, give your best guess without indicating uncertainty. Your answer has to be short and precise. Answer generation prompt template for entropy sampling and standard answersObjectiveIn this task, you will receive a question. You will also receive a ground truth answer to the question and a model generated answer. Your goal is to compare the ground truth answer and the model generated answer in order to decide whether the model generated answer is correct or not. The model generated answer is correct, when it is a valid answer to the question, and semantically equivalent to the ground truth answer. It does not necessarily need to overlap with the ground truth answer lexically.2. If the model generated answer contains more information (more specific) or less information (less specific) than the ground truth answer, but still correctly answers the question, then you should consider it correct. 3. If you decide that the model generated answer is correct, say yes, otherwise say no. 4. Your output should only contain your decision (yes or no). It should not contain any other text, explanation or reasoning.</figDesc><table><row><cell>Output Format</cell></row><row><cell>R: ⟨1-2 sentences of reasoning⟩</cell></row><row><cell>A: ⟨your final answer⟩</cell></row><row><cell>Task</cell></row><row><cell>Figure 2: Important Rules</cell></row><row><cell>1.</cell></row></table></figure>
+		</body>
+		<back>
+			<div type="annex">
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>A Implementation Details</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>A.1 Calibrated uncertainty signals</head><p>To compute entropy-based uncertainty signals, we sample model responses at temperature t = 1.0, which balances output diversity and determinism for reliable variability estimation. For the correctness labels used in Platt scaling and evaluation, we follow <ref type="bibr" target="#b22">Walha et al. (2025)</ref> and <ref type="bibr" target="#b7">Farquhar et al. (2024)</ref> and generate answers at a low temperature t = 0.1, approximating the model's best-effort prediction. These answers are then compared against the ground truth using <ref type="bibr">GPT-4o-mini (OpenAI, 2024)</ref> as an automated judge to obtain binary correctness labels.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>A.2 GRPO training</head><p>We train on a combined subset of TriviaQA and Natural Questions consisting of 18,000 training samples and evaluate on a held-out set of 2,000 samples. All experiments are conducted on a single NVIDIA H200 NVL GPU, with total training time ranging between 10 and 14 hours depending on the method.</p><p>Reinforcement learning is performed using GRPO for 1,000 update steps with a batch size of 32 and a group size of 16. The grouped sampling stabilizes learning under stochastic reward signals derived from calibrated uncertainty targets. Within each group, responses are sampled with temperature 1.5 to encourage diversity and improve exploration during policy optimization.</p><p>We employ LoRA-based parameter-efficient fine-tuning with rank r = 16 and scaling factor α = 32, together with a dropout rate of 0.05. This configuration provides sufficient adaptation capacity while preserving the pretrained model's generation abilities and preventing catastrophic forgetting.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>A.3 Evaluation</head><p>We evaluate uncertainty quality using the following metrics:</p><p>• Expected Calibration Error (ECE) ↓: measures the discrepancy between predicted uncertainty and empirical error rates. Lower values indicate better calibration.</p><p>• AUROC ↑: Area Under the Receiver Operating Characteristic curve, which reflects the quality of the uncertainty ranking.</p><p>• Spearman Correlation ↑: is a rank correlation measure that describes the monotonic relationship between predicted uncertainty and calibrated uncertainty targets.</p><p>For evaluation, we generate standard answers at low temperature t = 0.1 to approximate each model's best-effort prediction. These answers are provided as input to the uncertainty inference prompt (Figures <ref type="figure">4 and 5</ref>) for all evaluated methods, from which the models produce their predicted uncertainties u θ . Binary correctness labels are obtained by comparing the generated standard answers against the ground truth using GPT-4o-mini as a judge. These labels are then used alongside the predicted uncertainties to compute ECE and AUROC. Spearman correlation is computed by comparing the predicted uncertainties against the calibrated target uncertainties u cal on the test set.</p></div>			</div>
+			<div type="references">
+
+				<listBibl>
+
+<biblStruct xml:id="b0">
+	<monogr>
+		<author>
+			<persName><forename type="first">J</forename><surname>Achiam</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Adler</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Agarwal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Ahmad</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">I</forename><surname>Akkaya</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><forename type="middle">L</forename><surname>Aleman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Almeida</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Altenschmidt</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Altman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Anadkat</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2303.08774</idno>
+		<title level="m">Gpt-4 technical report</title>
+				<imprint>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b1">
+	<analytic>
+		<title level="a" type="main">Magda: Multi-agent guideline-driven diagnostic assistance</title>
+		<author>
+			<persName><forename type="first">D</forename><surname>Bani-Harouni</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Navab</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Keicher</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">International workshop on foundation models for general medical AI</title>
+				<imprint>
+			<publisher>Springer</publisher>
+			<date type="published" when="2024">2024</date>
+			<biblScope unit="page" from="163" to="172" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b2">
+	<monogr>
+		<title level="m" type="main">Rewarding doubt: A reinforcement learning approach to calibrated confidence expression of large language models</title>
+		<author>
+			<persName><forename type="first">D</forename><surname>Bani-Harouni</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Pellegrini</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Stangel</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Özsoy</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Zaripova</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Keicher</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Navab</surname></persName>
+		</author>
+		<idno>arXiv-2503</idno>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv e-prints</note>
+</biblStruct>
+
+<biblStruct xml:id="b3">
+	<analytic>
+		<title level="a" type="main">Ai in finance: challenges, techand opportunities</title>
+		<author>
+			<persName><forename type="first">L</forename><surname>Cao</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">ACM Computing Surveys (CSUR)</title>
+		<imprint>
+			<biblScope unit="volume">55</biblScope>
+			<biblScope unit="issue">3</biblScope>
+			<biblScope unit="page" from="1" to="38" />
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b4">
+	<monogr>
+		<title level="m" type="main">Vicuna: An open-source chatbot impressing gpt-4 with 90%* chatgpt quality</title>
+		<author>
+			<persName><forename type="first">W.-L</forename><surname>Chiang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Lin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Sheng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Zheng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Zhuang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Zhuang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">E</forename><surname>Gonzalez</surname></persName>
+		</author>
+		<ptr target="https://vicuna.lmsys.org" />
+		<imprint>
+			<date type="published" when="2023-04-14">2023. 14 April 2023</date>
+			<biblScope unit="page">6</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b5">
+	<monogr>
+		<title level="m" type="main">Training verifiers to solve math word problems</title>
+		<author>
+			<persName><forename type="first">K</forename><surname>Cobbe</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">V</forename><surname>Kosaraju</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Bavarian</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Jun</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Kaiser</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Plappert</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Tworek</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Hilton</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Nakano</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2110.14168</idno>
+		<imprint>
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b6">
+	<monogr>
+		<title level="m" type="main">Beyond binary rewards: Training lms to reason about their uncertainty</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Damani</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">I</forename><surname>Puri</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Slocum</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">I</forename><surname>Shenfeld</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Choshen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Kim</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Andreas</forename></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename></persName>
+		</author>
+		<idno type="arXiv">arXiv:2507.16806</idno>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b7">
+	<analytic>
+		<title level="a" type="main">Detecting hallucinations in large language models using semantic entropy</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Farquhar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Kossen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Kuhn</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Gal</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nature</title>
+		<imprint>
+			<biblScope unit="volume">630</biblScope>
+			<biblScope unit="page" from="625" to="630" />
+			<date type="published" when="2024">2024. 8017</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b8">
+	<analytic>
+		<title level="a" type="main">Verification of forecasts expressed in terms of probability</title>
+		<author>
+			<persName><forename type="first">W</forename><forename type="middle">B</forename><surname>Glenn</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Monthly weather review</title>
+		<imprint>
+			<biblScope unit="volume">78</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page" from="1" to="3" />
+			<date type="published" when="1950">1950</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b9">
+	<analytic>
+		<title level="a" type="main">On calibration of modern neural networks</title>
+		<author>
+			<persName><forename type="first">C</forename><surname>Guo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Pleiss</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Sun</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><forename type="middle">Q</forename><surname>Weinberger</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">International conference on machine learning</title>
+				<imprint>
+			<publisher>PMLR</publisher>
+			<date type="published" when="2017">2017</date>
+			<biblScope unit="page" from="1321" to="1330" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b10">
+	<analytic>
+		<title level="a" type="main">A survey on large language models: Applications, challenges, limitations, and practical usage</title>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">U</forename><surname>Hadi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Qureshi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Shah</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Irfan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Zafar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">B</forename><surname>Shaikh</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Akhtar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Mirjalili</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Authorea Preprints</title>
+				<imprint>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b11">
+	<analytic>
+		<title level="a" type="main">Lora: Low-rank adaptation of large language models</title>
+		<author>
+			<persName><forename type="first">E</forename><forename type="middle">J</forename><surname>Hu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Shen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Wallis</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Allen-Zhu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><surname>Chen</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Iclr</title>
+		<imprint>
+			<biblScope unit="volume">1</biblScope>
+			<biblScope unit="issue">2</biblScope>
+			<biblScope unit="page">3</biblScope>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b12">
+	<monogr>
+		<author>
+			<persName><forename type="first">J</forename><surname>Hu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Q</forename><surname>Han</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Jiang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H.-Y</forename><surname>Shum</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2503.24290</idno>
+		<title level="m">Open-reasoner-zero: An open source approach to scaling up reinforcement learning on the base model</title>
+				<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b13">
+	<analytic>
+		<title level="a" type="main">Triviaqa: A large scale distantly supervised challenge dataset for reading comprehension</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Joshi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Choi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">S</forename><surname>Weld</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Zettlemoyer</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 55th Annual Meeting of the Association for Computational Linguistics</title>
+		<title level="s">Long Papers</title>
+		<meeting>the 55th Annual Meeting of the Association for Computational Linguistics</meeting>
+		<imprint>
+			<date type="published" when="2017">2017</date>
+			<biblScope unit="volume">1</biblScope>
+			<biblScope unit="page" from="1601" to="1611" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b14">
+	<monogr>
+		<title level="m" type="main">Language models (mostly) know what they know</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Kadavath</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Conerly</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Askell</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Henighan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Drain</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Perez</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Schiefer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Hatfield-Dodds</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Dassarma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Tran-Johnson</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2207.05221</idno>
+		<imprint>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b15">
+	<analytic>
+		<title level="a" type="main">Natural questions: a benchmark for question answering research</title>
+		<author>
+			<persName><forename type="first">T</forename><surname>Kwiatkowski</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Palomaki</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">O</forename><surname>Redfield</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Collins</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Parikh</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Alberti</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Epstein</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">I</forename><surname>Polosukhin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Devlin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Lee</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Transactions of the Association for Computational Linguistics</title>
+		<imprint>
+			<biblScope unit="volume">7</biblScope>
+			<biblScope unit="page" from="453" to="466" />
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b16">
+	<analytic>
+		<title level="a" type="main">Kernel language entropy: Fine-grained uncertainty quantification for llms from semantic similarities</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Nikitin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Kossen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Gal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Marttinen</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Advances in Neural Information Processing Systems</title>
+		<imprint>
+			<biblScope unit="volume">37</biblScope>
+			<biblScope unit="page" from="8901" to="8929" />
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b17">
+	<monogr>
+		<author>
+			<persName><surname>Openai</surname></persName>
+		</author>
+		<ptr target="https://openai.com/index/gpt-4o-mini-advancing-cost-efficient-intelligence/" />
+		<title level="m">GPT-4o mini: Advancing costefficient intelligence</title>
+				<imprint>
+			<date type="published" when="2024">2024. 2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b18">
+	<analytic>
+		<title level="a" type="main">Probabilistic outputs for support vector machines and comparisons to regularized likelihood methods</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Platt</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Advances in large margin classifiers</title>
+		<imprint>
+			<biblScope unit="volume">10</biblScope>
+			<biblScope unit="issue">3</biblScope>
+			<biblScope unit="page" from="61" to="74" />
+			<date type="published" when="1999">1999</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b19">
+	<monogr>
+		<title level="m" type="main">Deepseekmath: Pushing the limits of mathematical reasoning in open language models</title>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Shao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Q</forename><surname>Zhu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Xu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Song</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Bi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Wu</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2402.03300</idno>
+		<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b20">
+	<monogr>
+		<title level="m" type="main">Llama: Open and efficient foundation language models</title>
+		<author>
+			<persName><forename type="first">H</forename><surname>Touvron</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Lavril</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Izacard</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Martinet</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M.-A</forename><surname>Lachaux</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Lacroix</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Rozière</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Goyal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Hambro</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Azhar</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2302.13971</idno>
+		<imprint>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b21">
+	<monogr>
+		<author>
+			<persName><forename type="first">J</forename><surname>Von Neumann</surname></persName>
+		</author>
+		<title level="m">Mathematical foundations of quantum mechanics: New edition</title>
+				<imprint>
+			<publisher>Princeton university press</publisher>
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b22">
+	<monogr>
+		<title level="m" type="main">Fine-grained uncertainty decomposition in large language models: A spectral approach</title>
+		<author>
+			<persName><forename type="first">N</forename><surname>Walha</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">G</forename><surname>Gruber</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Decker</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Javanmardi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Hüllermeier</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Buettner</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2509.22272</idno>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b23">
+	<analytic>
+		<title level="a" type="main">Large language models in medical and healthcare fields: applications, advances, and challenges</title>
+		<author>
+			<persName><forename type="first">D</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Zhang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Artificial intelligence review</title>
+		<imprint>
+			<biblScope unit="volume">57</biblScope>
+			<biblScope unit="issue">11</biblScope>
+			<biblScope unit="page">299</biblScope>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b24">
+	<analytic>
+		<title level="a" type="main">Chainof-thought prompting elicits reasoning in large language models</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Wei</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Schuurmans</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Bosma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Xia</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Chi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Q</forename><forename type="middle">V</forename><surname>Le</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Zhou</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Advances in neural information processing systems</title>
+		<imprint>
+			<biblScope unit="volume">35</biblScope>
+			<biblScope unit="page" from="24824" to="24837" />
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b25">
+	<monogr>
+		<title level="m" type="main">Reinforcement learning with verifiable rewards implicitly incentivizes correct reasoning in base llms</title>
+		<author>
+			<persName><forename type="first">X</forename><surname>Wen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Zheng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Ye</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Xu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Liang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Miao</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2506.14245</idno>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b26">
+	<monogr>
+		<title level="m" type="main">Can llms express their uncertainty? an empirical evaluation of confidence elicitation in llms</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Xiong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Hu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Lu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Fu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>He</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Hooi</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2306.13063</idno>
+		<imprint>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b27">
+	<monogr>
+		<title level="m" type="main">On verbalized confidence scores for llms</title>
+		<author>
+			<persName><forename type="first">D</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y.-H</forename><forename type="middle">H</forename><surname>Tsai</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Yamada</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2412.14737</idno>
+		<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b28">
+	<analytic>
+		<title level="a" type="main">How does nlp benefit legal system: A summary of legal artificial intelligence</title>
+		<author>
+			<persName><forename type="first">H</forename><surname>Zhong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Xiao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Tu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Sun</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 58th annual meeting of the association for computational linguistics</title>
+				<meeting>the 58th annual meeting of the association for computational linguistics</meeting>
+		<imprint>
+			<date type="published" when="2020">2020</date>
+			<biblScope unit="page" from="5218" to="5230" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+				</listBibl>
+			</div>
+		</back>
+	</text>
+</TEI>

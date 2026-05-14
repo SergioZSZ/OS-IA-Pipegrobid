@@ -1,0 +1,920 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xml:space="preserve" xmlns="http://www.tei-c.org/ns/1.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.tei-c.org/ns/1.0 https://raw.githubusercontent.com/kermitt2/grobid/master/grobid-home/schemas/xsd/Grobid.xsd"
+ xmlns:xlink="http://www.w3.org/1999/xlink">
+	<teiHeader xml:lang="en">
+		<fileDesc>
+			<titleStmt>
+				<title level="a" type="main">INFECTION MODELS ON DENSE DYNAMIC RANDOM GRAPHS</title>
+			</titleStmt>
+			<publicationStmt>
+				<publisher/>
+				<availability status="unknown"><licence/></availability>
+				<date type="published" when="2026-02-16">16 Feb 2026</date>
+			</publicationStmt>
+			<sourceDesc>
+				<biblStruct>
+					<analytic>
+						<author>
+							<persName><forename type="first">Simone</forename><surname>Baldassarri</surname></persName>
+						</author>
+						<author>
+							<persName><roleName>FRANK DEN HOLLANDER</roleName><forename type="first">Peter</forename><surname>Braunsteins</surname></persName>
+						</author>
+						<author>
+							<persName><forename type="first">Michel</forename><surname>Mandjes</surname></persName>
+						</author>
+						<title level="a" type="main">INFECTION MODELS ON DENSE DYNAMIC RANDOM GRAPHS</title>
+					</analytic>
+					<monogr>
+						<imprint>
+							<date type="published" when="2026-02-16">16 Feb 2026</date>
+						</imprint>
+					</monogr>
+					<idno type="MD5">E2B3CCA05BCE27F4B11F01B8DDF6551C</idno>
+					<idno type="arXiv">arXiv:2602.14562v1[math.PR]</idno>
+				</biblStruct>
+			</sourceDesc>
+		</fileDesc>
+		<encodingDesc>
+			<appInfo>
+				<application version="0.7.2" ident="GROBID" when="2026-05-14T17:26+0000">
+					<desc>GROBID - A machine learning software for extracting information from scholarly documents</desc>
+					<ref target="https://github.com/kermitt2/grobid"/>
+				</application>
+			</appInfo>
+		</encodingDesc>
+		<profileDesc>
+			<textClass>
+				<keywords>
+					<term>MSC 2020 subject classifications. 60F17</term>
+					<term>60K35</term>
+					<term>60K37 SIR dynamics</term>
+					<term>graph dynamics</term>
+					<term>co-evolution</term>
+				</keywords>
+			</textClass>
+			<abstract>
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>We consider Susceptible-Infected-Recovered (SIR) models on dense dynamic random graphs, in which the joint dynamics of vertices and edges are co-evolutionary, i.e., they influence each other bidirectionally. In particular, edges appear and disappear over time depending on the states of the two connected vertices, on how long they have been infected, and on the total density of susceptible and infected vertices. Our main results establish functional laws of large numbers for the densities of susceptible, infected, and recovered vertices, jointly with the underlying evolving random graphs in the graphon space. Our results are supported by simulations, which characterize the limiting size of the epidemics, i.e., the limiting density of susceptible vertices, and how the peak of the epidemics depends on the rate of the evolution of the underlying graph.</p><p>The proofs of our main results rely on the careful construction of a mimicking process, obtained by approximating the two-way feedback interaction between vertex and edge dynamics with a mean-field type interaction, acting only as one-way feedback, that remains sufficiently close to the original co-evolutionary process. To treat the more general setting in which edge dynamics are affected by the proportions of susceptible and infected individuals, we introduce a methodological extension of existing techniques. We thus show that our model exhibits multiple epidemic peaks -a phenomenon observed in real-world epidemics -which can emerge in models that incorporate mutual feedback between vertex and edge dynamics.</p></div>
+			</abstract>
+		</profileDesc>
+	</teiHeader>
+	<text xml:lang="en">
+		<body>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="1.">Introduction</head><p>Mathematical models play a crucial role in understanding and managing the spread of infectious diseases. These models offer insight into how various parameters influence the dynamics of an epidemic, which can be instrumental in forecasting outbreaks and designing effective control and mitigation strategies.</p><p>The base epidemic model is the Susceptible-Infected-Recovered (SIR) compartmental model. The deterministic version of this model is characterized by a system of differential equations that captures the evolution of the proportion of susceptible, infected, and recovered individuals in the population over time. The same differential equations also appear in the stochastic version of the model, as a large population limit established through a functional law of large numbers (FLLN). In the present paper, we establish such a FLLN for a considerably more general version of the base SIR model.</p><p>The basic version of the SIR model relies on simplifying assumptions that are typically not satisfied in practice. One key assumption is homogeneous mixing, which implies that every individual in the population is equally likely to come into contact with every other individual. If we represent each individual in the population as a vertex in a graph and each social connection through which the epidemic can spread as an edge, then the assumption of homogeneous mixing is equivalent to assuming that every edge is present in the graph. However, this assumption overlooks several crucial aspects of real-world social networks during a pandemic. In reality, the network is heterogeneous, reflecting that some individuals have more social connections than others. It is also dynamic, as connections can appear and disappear over time. Moreover, these dynamics are co-evolutionary: the individual epidemiological states (i.e., susceptible, infected, or recovered) are influenced by the structure of the network (since the epidemic spreads through existing connections) and the network itself evolves in response to the epidemic, as individuals may choose to alter their connections to prevent further spread of the disease.</p><p>At a more precise level, a realistic model should incorporate two types of co-evolution:</p><p>(a) First, the dependence of the network on the individual epidemiological states can be local.</p><p>For example, susceptible individuals may choose to break ties with other individuals they suspect to be infected. (b) Second, there can be global feedback mechanisms. For instance, quarantine measures may be introduced once the proportion of infected individuals exceeds a certain threshold.</p><p>Ideally, we would work with a model in which the underlying graph is heterogeneous (i.e., not complete), is dynamic (i.e., evolves over time), and exhibits co-evolution (i.e., the network influences the epidemic dynamics and is, in turn, shaped by them -both at local and global scales).</p><p>In this paper we introduce a stochastic SIR model that explicitly captures the realistic network features discussed above. We analyze this model in the dense regime in which the number of edges scales roughly as n 2 , with n denoting the number of individuals. Our first goal is to establish a FLLN for the proportion of susceptible, infected, and recovered individuals over time. While our model is inherently more complex, this result is in a similar spirit as the FLLN for the base SIR model. In view of the general co-evolutionary dynamics incorporated in the model, we are also interested in how the network evolves during the pandemic. Our second objective is therefore to establish a FLLN for the dynamic network. The proposed model is capable of reproducing complex real-world phenomena, such as the emergence of multiple infection peaks -patterns that cannot be captured in SIR models without incorporating the co-evolutionary feedback between individual states and network structure. We use our results to gain insight into the evolution of the epidemic and the state of the network as the epidemic evolves.</p><p>Our results should be viewed within the context of SIR models on random graphs. We begin by providing a brief overview of this subarea. Broadly, the literature can be categorized into four main groups:</p><p>˝A FLLN for the SIR model on a sparse static configuration model was proposed in <ref type="bibr" target="#b36">[37]</ref>. This result was subsequently rigorously established in <ref type="bibr" target="#b7">[8]</ref>, <ref type="bibr" target="#b9">[10]</ref>, <ref type="bibr" target="#b18">[19]</ref>, and <ref type="bibr" target="#b25">[26]</ref> under progressively weaker assumptions on the distribution of the vertex degrees in the configuration model. A similar result for an SIR model on a sparse static stochastic block model appeared more recently in <ref type="bibr" target="#b12">[13]</ref>.</p><p>˝FLLNs for SIR models on dense static random graphs have been considered in <ref type="bibr" target="#b19">[20,</ref><ref type="bibr" target="#b27">28,</ref><ref type="bibr" target="#b33">34]</ref>. In these papers, the random graph through which the epidemic spreads is constructed by sampling from a reference graphon. The results in <ref type="bibr" target="#b33">[34]</ref> apply when the process exhibits non-Markovian dynamics but hold only when then number of edges scale as n 2 , whereas the results in <ref type="bibr" target="#b19">[20,</ref><ref type="bibr" target="#b27">28]</ref> consider Markovian dynamics but also hold when the number of edges scale as n 1`a for a P p0, 1s.</p><p>˝FLLNs for the SIR model on sparse dynamic random graphs with co-evolutionary feedback are established in <ref type="bibr" target="#b4">[5,</ref><ref type="bibr" target="#b5">6,</ref><ref type="bibr" target="#b15">16,</ref><ref type="bibr" target="#b26">27]</ref> (see also <ref type="bibr" target="#b20">[21]</ref> for the SI model). In these papers, susceptible individuals can break edges with infected neighbors, potentially rewiring the edge to another individual. A primary focus of these papers is to establish a discontinuity in the final proportion of susceptible individuals at the critical value of the contact rate. In these papers, the co-evolutionary dynamics are local, in the sense that susceptible individuals break the connection with their infected neighbors in a manner that does not depend on the overall state of the epidemic (i.e., the total number of infected individuals).</p><p>˝A FLLN for the SIR model on dense dynamic random graphs is established in <ref type="bibr" target="#b23">[24]</ref>. In this paper the underlying graph is a dynamic stochastic block model that allows for graph degrees that scale at least as log n (so at least n log n edges). However, there is no co-evolutionary feedback in the graph dynamics considered, i.e., the state of the graph evolves independently of the epidemic states of the individuals.</p><p>Currently, the literature lacks a FLLN for an SIR model on a dense dynamic random graph that incorporates both local and global co-evolutionary feedback. Moreover, no efforts have been made to establish such a law for the evolution of the network itself (i.e., jointly with the proportion of susceptible, infected, and recovered individuals). The present paper aims to fill these gaps. More broadly, our contributions belong to the growing literature for related models on dynamic random graphs. See for instance <ref type="bibr" target="#b1">[2,</ref><ref type="bibr" target="#b8">9,</ref><ref type="bibr" target="#b17">18,</ref><ref type="bibr" target="#b22">23,</ref><ref type="bibr" target="#b24">25,</ref><ref type="bibr" target="#b28">29,</ref><ref type="bibr" target="#b32">33,</ref><ref type="bibr" target="#b35">36]</ref> and references therein.</p><p>Methodologically, our paper builds on two earlier works <ref type="bibr" target="#b14">[15,</ref><ref type="bibr" target="#b2">3]</ref> concerning graph-valued stochastic processes. A central element of these papers is the concept of a graphon (developed in <ref type="bibr" target="#b10">[11,</ref><ref type="bibr" target="#b11">12,</ref><ref type="bibr" target="#b29">30,</ref><ref type="bibr" target="#b30">31,</ref><ref type="bibr" target="#b31">32]</ref>), which is used to describe the limit of the network. Graphons have been extensively used to characterize the limit of other dense graph-valued processes; see for instance <ref type="bibr" target="#b0">[1,</ref><ref type="bibr" target="#b3">4,</ref><ref type="bibr" target="#b13">14,</ref><ref type="bibr" target="#b16">17,</ref><ref type="bibr" target="#b21">22,</ref><ref type="bibr" target="#b34">35]</ref>. However, to the best of our knowledge, the present paper is the first to establish a limit in the space of graphons for a co-evolutionary model with a global feedback mechanism.</p><p>In <ref type="bibr" target="#b14">[15]</ref> limits are established for a graph-valued processes with one-way dependence (i.e., not co-evolutionary), in the setting where the edge dynamics can depend on the collective states of all vertices across the network (i.e., global dependence). On the other hand, in <ref type="bibr" target="#b2">[3]</ref> limits are established for graph-valued processes that are co-evolutionary, but where the co-evolutionary feedback is local only (i.e., no global feedback). In the present paper, we use the mechanism in <ref type="bibr" target="#b14">[15]</ref> to allow the edge dynamics to depend, for example, on the total number of infected individuals (i.e., global feedback), and we adapt the proof technique in <ref type="bibr" target="#b2">[3]</ref> to establish our results in this more general setting. This technique builds on the notion of a mimicking process introduced in <ref type="bibr" target="#b2">[3]</ref>, which approximates the bidirectional interaction between vertex and edge dynamics by a mean-field-type, single-directional interaction that remains sufficiently close to the original co-evolutionary process. Our analysis suggests that incorporating global feedback mechanisms can be achieved with surprising ease within the framework established in <ref type="bibr" target="#b2">[3]</ref>. We expect that this approach is applicable more broadly to other dense co-evolutionary processes.</p><p>The paper is organized as follows. In Section 2 we detail the system dynamics, present our main theoretical findings, and provide some discussion, concluding remarks and outlook. The simulations reported in Section 3 reveal that our theory is capable of reproducing patterns observed in practice, most notably trajectories with multiple peaks. A road map of the proof is provided in Section 4, while the actual proofs are provided in Section 5.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.">Model and main results</head><p>In this section we first define the stochastic dynamics underlying our SIR model on a dense dynamic random graph. This description specifies the way that we incorporate both local and global co-evolutionary feedback. We then state and briefly discuss our main results.</p><p>2.1. Model definition. In this paper we analyze an SIR model on a dynamic random graph. Given a time horizon T ą 0, we denote by pG n ptqq tPr0,T s an evolving random graph with vertex set rns :" t1, 2, ..., nu. For i, j P rns, we let e ij ptq " 1 if edge ij is active at time t and 0 otherwise. The graph G n ptq is undirected, so e ij ptq " e ji ptq, and contains no self-loops, so e ii ptq " 0. Let x i ptq P tS, I, Ru be the state of vertex i P rns at time t P r0, T s, where 'S' means that it is susceptible, 'I' means that it is infected, and 'R' means that it is recovered.</p><p>Initialization. At time t " 0 we initialize the graph as an Erdős-Rényi random graph with connection probability p 0 P p0, 1q. Each vertex is infected with probability q 0 P p0, 1q and susceptible with probability 1 ´q0 , independently of the states of the other vertices and of the initial random graph. Thus, no vertex is in the recovered state at t " 0.</p><p>Definition of vertex types. For any infected vertex i P rns, we define its infection time as t I i :" infts P r0, T s : x i psq " Iu. We define type of vertex i at time t as</p><formula xml:id="formula_0">y i ptq :" $ ' ' &amp; ' ' % ´1 if x i ptq " S, t ´tI i if x i ptq " I, T `1 if x i ptq " R,<label>(2.1)</label></formula><p>where t ´tI i is the length of time that vertex i has been infected for. We then define the empirical type process, pF n pt; ¨qq tPr0,T s , through and e ij ptq transitions from 1 to 0 (i.e., from active to inactive) at the same rate with γ π s p¨q replaced by γ p1 ´πs p¨qq, with s P tSS, SI, IIu. When x i ptq transitions from I to R we suppose that vertex i resamples adjacent edges with the initial probability p 0 , after which point these edges are static (i.e., they no longer turn on and off).</p><formula xml:id="formula_1">F</formula><p>Note that in our setup the functions π s p¨q can depend on F n pt; ¨q, and therefore on the proportion of susceptible, infected and recovered vertices, and also on the distribution of the times which infected vertices have been infected for. We impose a Lipschitz continuity condition on the functions π II p¨q. Specifically, we suppose that there exists L II ă 8 such that</p><formula xml:id="formula_2">|π II pa 1 , b 1 , F 1 q ´πII pa 2 , b 2 , F 2 q| ď L II r|a 1 ´a2 | `|b 1 ´b2 | `dL pF 1 , F 2 qs</formula><p>for all a 1 , a 2 , b 1 , b 2 ą 0 and all distribution functions F 1 and F 2 , where d L is the Lévy metric defined in (A.4). We also impose analogous Lipschitz continuity assumptions on π SS and π SI .</p><p>Graphons. For any t P r0, T s, let h Gnptq be a function from r0, 1s 2 to r0, 1s which is characterized by h Gnptq px, yq :" e rnxs,rnys ptq.</p><p>(2.</p><p>3)</p><p>The function h Gnptq is referred to as empirical graphon associated with G n ptq and encodes the adjacency matrix of G n ptq (see Figure <ref type="figure">2</ref>.1). 3</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Graph Adjacency matrix</head><p>Graphon, h black: hpx, yq " 1 white: hpx, yq " 0.</p><p>0 0 1 0 1 0 0 0 1 1 1 0 0 0 1 0 1 0 0 0 1 1 1 0 0 0  Empirical graphons belong to the space of graphons W , containing all functions h : r0, 1s 2 Þ Ñ r0, 1s such that hpx, yq " hpy, xq for all px, yq P r0, 1s 2 . We endow W with the cut distance:</p><note type="other">1 5 2 5 3 5 4 5 1 0</note><formula xml:id="formula_3">d ˝ph 1 , h 2 q :" sup S,T Ďr0,1s ˇˇˇż SˆT dx dy rh 1 px, yq ´h2 px, yqs ˇˇˇ, h 1 , h 2 P W .</formula><p>The space W is used to establish limiting results for random graphs; we establish our main result in the space of W -valued paths.</p><p>We need to carefully choose how to label the vertices, since d ˝ph 1 , h 2 q can depend on the labeling convention. For example, in Figure <ref type="figure">2</ref>.2 the left and center empirical graphons represent the same graph up to a relabeling of vertices, but only the center graphon is close to the right limiting graphon in the cut distance. Throughout this paper we choose to label the vertices such that y 1 ptq ď y 2 ptq ď ¨¨¨ď y n ptq, for all t P r0, T s, with ties broken arbitrarily. This means that susceptible vertices have a lower label than infected vertices, infected vertices have a lower label than recovered vertices, and infected vertices that have been infected for a short time have a lower label than those that have been infected for a long time. This also implies that the labels of the vertices change over time.</p><p>Candidate limit. In FLLNs, the limiting object can be informally understood as capturing the system's dynamics in the limit of large system size. This deterministic limit, often referred to as the fluid limit, is typically characterized by a system of differential equations. Below, we outline the procedure for identifying this candidate limit in the context of our system. We let pF pt; ¨qq tPr0,T s be a time-varying distribution function which can be thought of as a candidate limit of pF n pt; ¨qq tPr0,T s as n Ñ 8. For any t P r0, T s, F pt; yq is absolutely continuous on y P r0, tq and has point masses at ´1, t, and T `1, with no probability mass elsewhere. We characterize F through differential equations; however, in order to write them in a compact form we require additional notation. First, let f I pt; yq :" d dy F pt; yq for y P r0, tq, which can be interpreted as the limiting density of the amount of time that infected individuals have been infected for at time t, and</p><formula xml:id="formula_4">p S ptq :" F pt; ´1q ´lim sÒ´1 F pt; sq, p I ptq :" q 0 e ´t `ż t0 dy f I pt; yq, p R ptq :" F pt; T `1q ´lim sÒT `1 F pt; sq,<label>(2.4)</label></formula><p>which can be interpreted as the limiting proportion of susceptible, infected, and recovered individuals at time t.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Next, let H be an edge connection probability function, defined by</head><p>Hpt; u, v, pF ps; ¨qq sPr0,ts q :" Ppe ij ptq " 1 | y i ptq " u, y j ptq " v, pF n ps; ¨qq sPr0,ts " pF ps; ¨qq sPr0,ts q;</p><p>we remark that this probability is defined more rigorously as an integral of the objects π SS , π SI , and π II that we introduced in Equation (4.2). Finally let J ptq :" Ipt; F pt; ¨qq :"</p><formula xml:id="formula_5">ż t 0 dF pt; uq Hpt; ´1, u, F pt; ¨qq I puq,<label>(2.5)</label></formula><p>where λJ ptq can be interpreted as the limiting rate (as n Ñ 8) at which susceptible individuals become infected at time t. The function F is characterized by the initial conditions</p><formula xml:id="formula_6">p S p0q " 1 ´q0 , p I p0q " q 0 ,<label>(2.6)</label></formula><p>with the initial infection-age distribution concentrated at u " 0 (that is, f I p0; uq " q 0 δ 0 puq), while the updating equations are</p><formula xml:id="formula_7">B Bt p S ptq " ´λJ ptq p S ptq, B Bt f I pt; uq `B Bu f I pt; uq " ´fI pt; uq, u ą 0,<label>(2.7)</label></formula><formula xml:id="formula_8">f I pt; 0q " λJ ptq p S ptq, B Bt p R ptq " p I ptq,</formula><p>where f I pt; uq denotes the density of infected individuals with infection age u at time t, and p I ptq " ş 8 0 f I pt; uq du. Due to the initially infected individuals, there is a probability mass at type t for all t P r0, T s, and hence f I pt; uq does not exist when u " t. This technical issue can be resolved in a standard way by introducing the measure-valued notation F I pt; duq and treating the point mass at t separately. Since this modification is entirely straightforward and does not affect any of the subsequent arguments, we suppress it in the notation to streamline the presentation.</p><p>Note that (2.7) can be written (in a more involved form) in terms of F and the model parameters defined above, i.e., p 0 , q 0 , λ, γ, I p¨q, π SS p¨q, π SI p¨, ¨q, and π II p¨, ¨, ¨q. Moreover, F can be recovered from the solution to (2.7) by letting, for t P r0, T s, (2.8)</p><formula xml:id="formula_9">F pt; yq " $ ' ' ' ' ' ' ' &amp; ' ' ' ' ' ' ' % 0, y ă ´1, p S ptq</formula><p>We also need to construct a candidate limit for the graphon valued process ph Gnptq q tPr0,T s as n Ñ 8. To this end, we let F denote the generalized inverse of F , which is formally defined as F pt; xq :" inftu : F pt; uq ą xu.</p><p>For t P r0, T s, let the candidate limit g rF s pt; ¨q P W be given via g rF s pt; x, yq :" Hpt; F pt; xq, F pt; yq, pF pt; ¨qtPr0,Ts qq.</p><p>(2.9) 2.2. Main results. First we establish that the candidate limit pF pt; ¨qq tPr0,T s is well-defined. Note that, given (2.9), this also implies that pg rF s pt; ¨qq tPr0,T s is well-defined.</p><p>Theorem 2.1. There is a unique solution pF pt; ¨qq tPr0,T s to the system of differential equations characterized by (2.7) with initial condition (2.6). In particular, for all t P r0, T s, F pt; ¨q in (2.8) follows from (i) p S ptq " p1 ´q0 q exp ˆ´λ ż t 0 ds J psq ȧnd (ii) f I pt; uq, with u P r0, tq, being the unique solution of the fixed-point equation f I pt; uq " e ´tf I p0; u ´tq `λ ż t 0 ds e ´pt´sq J psq p S psq.</p><p>Next we establish convergence of the random processes pF n pt; ¨qq tPr0,T s and ph Gnptq q tPr0,T s to their respective candidate limits pF pt; ¨qq tPr0,T s and pg rF s pt; ¨, ¨qq tPr0,T s , as n Ñ 8. To state this result, we let pM, d L q denote the space of probability distributions equipped with the Lévy metric (which induces the weak topology; see (A.4)). In the sequel, denote by DppM, d L q, r0, T sq (resp. DppW , d ˝q, r0, T sq) the Skorokhod space of M-valued (resp. W -valued) paths on r0, T s.</p><p>Here and in the sequel, 'ñ' denotes convergence in distribution.</p><p>Theorem 2.2. As n Ñ 8, on DppM, d L q, r0, T sq, pF n pt; ¨qq tPr0,T s ñ pF pt; ¨qq tPr0,T s and, on DppW , d ˝q, r0, T sq, ph Gnptq p¨, ¨qq tPr0,T s ñ pg rF s pt; ¨, ¨qq tPr0,T s .</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.">Illustrations</head><p>In this section, we illustrate our findings. In the first subsection, we focus on the case with only local feedback, presenting expressions for the basic reproduction number R 0 and the final fraction of susceptible individuals, and discussing the epidemic peak. The second subsection presents a model with global feedback, which shows that multiple infection peaks can arise.</p><p>3.1. Dynamics without global feedback. In this subsection, we consider a simpler setting in which global feedback is absent. More specifically, we make the assumption that π SS p¨q " p 0 , and π SI pu, F q " π SI puq.</p><p>(</p><p>Note that π SS p¨q " p 0 implies that susceptible individuals are connected with probability p 0 at any time t, and π SI pu, F q " π SI puq entails that there is no global co-evolutionary feedback mechanism. Under these assumptions, we can follow standard intuitive calculations to derive compact expressions for the basic reproduction number R 0 and the final proportion of susceptible individuals p S p8q as n becomes large (cf. [8, Section 1]).</p><p>Note that, under (3.1), an individual who was infected u time units ago is connected to any susceptible individual with probability p SI puq :" p 0 e ´γu `ż u 0 ds γe ´γs π SI pu ´sq.</p><p>The probability that the infected individual infects any susceptible individual throughout their lifetime is then pSI,n puq :"</p><formula xml:id="formula_11">ż 8 0 du p SI puq λ n I puq e ´u.</formula><p>Considering " e ´R0 p1´p S p8qq , which implies that p S p8q is the unique solution in r0, 1s of the fixed-point equation p S p8q " p1 ´q0 q e ´R0 p1´p S p8qq .</p><formula xml:id="formula_12">(3.3)</formula><p>Let p S,n ptq denote the proportion of susceptible individuals at time t in a system with n individuals. As a consequence of Theorem 2.2, it holds that if p S p8q " lim tÑ8 lim nÑ8 p S,n ptq, then p S p8q satisfies (3.3). It should be noted, however, that the limiting proportion of susceptible individuals is most naturally expressed as p S p8q " lim nÑ8 lim tÑ8 p S,n ptq. The required interchange of limits is generally justified by dominating the epidemic process with a subcritical branching process after some large time t (see, for instance, <ref type="bibr" target="#b12">[13,</ref><ref type="bibr">Section 6.3]</ref>). Here, we encounter two challenges: (1) the vertex types are continuous, which would likely require working with a dominating branching process with a continuous type space, and (2) the dynamic nature of the edges complicates the construction of such a dominating branching process. Addressing these technical challenges is beyond the scope of the present work.</p><p>We are also interested in the peak of the epidemic, defined as i max :" max tě0 p I ptq.</p><p>A classical result for the conventional SIR model is that</p><formula xml:id="formula_13">i max " 1 ´R´1 0 `R´1 0 log R ´1 0 .<label>(3.4)</label></formula><p>In our setting, deriving an analogous formula is challenging (see also <ref type="bibr" target="#b23">[24,</ref><ref type="bibr">Section 3.2]</ref> for a related analysis). Nevertheless, the findings below illustrate how γ, which defines the timescale of the edge dynamics, influences i max .</p><p>To this end, we first analyze the effect of γ on the basic reproduction number R 0 " R 0 pγq, assuming I p¨q " 1. From (3.2), by direct computations we find Note that C ă 8 because π SI p¨q was assumed to be Lipschitz continuous. It thus follows that</p><formula xml:id="formula_14">R 0 pγq " λ γ `1p 0 `λγ</formula><formula xml:id="formula_15">R 0 pγq " λpp 0 `γCq γ `1 ,</formula><p>and as a consequence R 1 0 pγq " λpC ´p0 q pγ `1q 2 . We therefore conclude that R 0 is increasing in γ if and only if C ą p 0 . Note that through Equation (3.3) we see that p S p8q is monotonically increasing in R 0 , and hence p S p8q is monotonically increasing in γ if and only if C ą p 0 . The condition C ą p 0 is simplest to understand when π SI p¨q is constant (say π SI ), where it reduces to π SI ą p 0 . In this case, once an individual becomes infected, the probability that they are connected to a susceptible individual, p SI puq, increases with the time since infection u. If the edge re-sampling rate γ increases, then the increase in p SI puq is sped up, leading to an increase in R 0 (see <ref type="bibr">(3.2)</ref>). Equivalent reasoning also explains why R 0 is decreasing in γ when C " π SI ă p 0 .</p><p>We now turn to the peak of the epidemic, i max . First observe that if the classical result (3.4) were to hold for our model, then i max would be increasing in R 0 . Second, since the number of infected individuals at any given time cannot exceed the total fraction that will eventually be infected, we obtain the upper bound i max ď 1 ´pS p8q, where the right-hand side is likewise increasing in R 0 . Taken together with the preceding discussion, these observations suggest that i max is monotonically increasing in γ if and only if C ą p 0 . As we are unable to derive a counterpart of (3.4) for the present model, we cannot establish this claim rigorously. Nevertheless, the conclusion is strongly supported by the numerical results shown in Figure <ref type="figure">3</ref>.1.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>3.2.</head><p>Multiple peaks with global feedback. In this subsection, we present an example that illustrates how global feedback between the epidemic state and network connectivity can produce multiple infection peaks. To capture this behavior, we consider a model in which network connectivity evolves in response to the overall infection level. For a ą 0, we define ϕptq :" ż a 0 ds f I pt; sq, which can be equivalently written as ϕptq " F n pt; aq´F n pt; 0q. Here, ϕptq denotes the proportion of individuals who were infected at most a time units ago and who are still infectious at time t. It may be interpreted as the population's perceived overall 'threat level'. Since ϕptq depends on infections that occurred in the past (namely, within the preceding a time units), the perceived threat level generally lags behind the actual threat level. The latter is most naturally quantified by the current rate of infection (see <ref type="bibr">(2.5)</ref> for the limiting rate as n Ñ 8). For 0 ă ϕ 1 ă ϕ 2 ă 8, define the piecewise linear function</p><formula xml:id="formula_16">dpϕq " $ ' ' ' &amp; ' ' ' % 0.1 if ϕ ď ϕ 1 , 0.1 `0.8 ϕ ´ϕ1 ϕ 2 ´ϕ1 if ϕ 1 ă ϕ ă ϕ 2 , 0.9 if ϕ ě ϕ 2 ,</formula><p>which is a behavioral control function, representing how strongly the population is distancing: dpϕq « 0.9 (resp. dpϕq « 0.1) means that the system is in 'distancing mode' (resp. 'normal mode'). We then put π SS pϕq :" p1 ´dpϕqq p norm SS `dpϕq p dist SS , π SI pϕq :" p1 ´dpϕqq p norm SI `dpϕq p dist SI , In the numerical illustration in Figures 3.2 and 3.3, we have chosen the parameters: p 0 " 0.1, q 0 " 0.05, ϕ 1 " 0.24, ϕ 2 " 0.28, γ " 20, λ " 10, p norm SS " 0.9, p dist SS " 0.3, p norm SI " 0.6, p dist SI " 0.01, π II " 0.3, a " 1.</p><p>These figures display the functional law of large numbers for the epidemic states and network that was established in Theorem 2.2, and simulations with finite n. The explanation below focuses on the large population limit, and describes how to interpret the figures. The following phases can be distinguished: ˝Initial rise: In the top row of Figure <ref type="figure">3</ref>.2 we observe that the proportion of infected individuals is increasing for t P r0, 0.69s. As displayed in Figure <ref type="figure">3</ref>.3, the process is in normal mode for the vast majority of this time interval. Consequently, there is a high proportion of active SI edges through which the epidemic can spread, and still a relatively high proportion of susceptible individuals which can be infected. Indeed, The solid blue curves are the numerical solution of the system of PDEs with the same parameters.</p><p>Observe that the 'cloud' of simulated trajectories shrinks with n, reflecting the convergence to the deterministic limiting path. The second row displays the empirical graphons corresponding to the black trajectory (n " 200) when t " 0.69 (first peak), t " 1.4 (valley between the first two peaks) and t " 1.71 (second peak); a dot represents an edge. The labels of the vertices are updated dynamically so that they are ordered lexicographically, i.e., the vertices with state S have lower labels than the vertices with state I, which in turn have lower labels than the vertices with state R, and then by increasing type. The third row displays the corresponding FLLN. The bottom row displays F200 pt; xq (dashed line) corresponding to the black trajectory and F pt; xq (solid line) when t " 0.69, 1.4, 1.71 for x P r0, 1s. the initial proportion of susceptible individuals is 1 ´p0 " 0.9 and, by observing the bottom left plot of Figure <ref type="figure">3</ref>.2, we see that at t " 0.69 the proportion of susceptible individuals is just over 0.4 (i.e., the proportion of type ´1 vertices). ˝First peak: Just before t " 0.69 the process enters distancing mode, and after t " 0.69 the proportion of infected individuals starts to decline. In distancing mode, when resampled, the edge probability between SI individuals is π SI pϕq " 0.069, compared to π SI pϕq " 0.541 in normal mode (see Equation (3.5)). The adjustment to distancing mode is not instantaneous, however, since edges are resampled at the finite rate γ " 20.</p><p>Consequently, in the left middle two panels in Figure <ref type="figure">3</ref>.2, where we observe the empirical graphon and limiting graphon at t " 0.69, the graph is losing SI edges rapidly. From the bottom left plot of Figure <ref type="figure">3</ref>.2, we see that the proportions of susceptible and infected individuals are approximately 0.43 and 0.4 " 0.83 ´0.43 respectively (refer to x-axis); hence these SI edges correspond to px, yq P r0, 0.43sˆr0.43, 0.83s Y r0.43, 0.83sˆr0, 0.43s in the left second and third row of Figure <ref type="figure">3</ref>.2. ˝Decline from first peak and first dip: Figure <ref type="figure">3</ref>.3 demonstrates that even once the proportion of infected individuals starts to decline, the perceived danger level ϕptq is increasing (i.e., for t P r0.69, 1s). This is because ϕptq is calculated using past infections, and hence the perceived danger level lags behind the actual threat level, i.e., the current rate of infection. This can also be observed after the first dip (t " 1.4), where the perceived danger level continues to decline even though the proportion of infected individuals is increasing, and after the second peak, where the perceived threat level continues to increase even though the proportion of infected individuals is declining. It is these delayed dynamics that lead to the two infection peaks that we observe in the top row of Figure <ref type="figure">3</ref>.2. ˝Second peak: At t " 1.71, the proportion of infected individuals reaches its second peak.</p><p>In the bottom right of Figure <ref type="figure">3</ref>.2, for x P r0.23, 0.56s, we can observe the types (i.e., the time since infection) of the currently infected individuals. Here we see that there have been two waves of infection: of those currently infected, a proportion of approximately 0.1 " 0.33 ´0.23 (refer to x-axis) of the total population were infected in the second wave which occurred between 0 and 0.31 time units ago (refer to y-axis), approximately 0.04 were infected during the dip which occurred between 0.31 and 1.02 time units ago, and the remaining 0.19 " 0.56 ´0.37 were infected during the first wave which occurred between 1.02 and 1.71 time units ago. ˝Final decline: After t " 1.71 the proportion of infected individuals declines monotonically. This is because there are now very few susceptible individuals left to infect. Indeed, the bottom right of Figure <ref type="figure">3</ref>.2 shows that the proportion of susceptible individuals is just over 0.2 at t " 1.71. Moreover, at t " 1.71, the proportion of infected individuals is no longer increasing despite the relatively high proportion of active SI edges in comparison to t " 0.69 and t " 1.4, which can be observed by comparing the plots in the third row of Figure <ref type="figure">3</ref>.2. The continued decline in the proportion of infected individuals after t " 1.71 is therefore because the density of SI edges is never high enough to compensate for the low number of susceptible individuals to infect.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.">Road map</head><p>In this section, we outline a four-step procedure leading to the proof of our main results. Each step is presented systematically, as this approach may also serve as a useful framework for analyzing related co-evolutionary systems.</p><p>The main idea is that we construct a process, referred to as the mimicking process, that exhibits one-way dependence: the edge dynamics depend on the states of the vertices, but not vice versa. This structural simplification makes the mimicking process significantly more tractable than the original co-evolutionary model, which features two-way dependence. In the first three steps of the procedure outlined below we prove our FLLN claims for the mimicking process. In the fourth step we show that the two processes remain 'sufficiently close', allowing the FLLN that we establish for the mimicking process to carry over to the co-evolutionary process.</p><p>Step 1: Define the mimicking process, and establish convergence of its empirical type process. A key role in our proofs is played by the mimicking process, a process with one-way dependence that shares the same edge dynamics as the co-evolutionary model but differs in its vertex dynamics. It is expressed via the evolving random graph process pG nptqq tPr0,T s that corresponds to the empirical type process pF n pt; ¨qq tPr0,T s . For this process, we define the generalized type analogously to the original model, now denoted by X i ptq " px i ptq, y i ptqq. In the mimicking process at any time t P r0, T s, x i ptq transitions from state S to state I at rate λ J ptq, as given in <ref type="bibr">(2.5)</ref>. The infected and recovered vertices behave as in the original model. We define the mimicking process in full detail in Section 5.2.</p><p>We then focus on establishing the convergence of the empirical type process of the mimicking process, pF n pt; ¨qq tPr0,T s as n Ñ 8. The following property plays a key role.</p><p>Property 4.1. The empirical type process satisfies a stochastic-process limit: F n ñ F as n Ñ 8 on DpMpr0, T s Y tT `1uq, r0, T sq.</p><p>To establish this property in our setting, we characterize F via the generator of the process px i ptq, y i ptqq tPr0,T s . It takes the form</p><formula xml:id="formula_18">pL t f qpx, yq " `λJ ptq 1 tx"Su `1tx"Iu ˘rf px 1 , yq ´f px, yqs `bpx, yq B By f px, yq,<label>(4.1)</label></formula><p>where x 1 is the state of the selected vertex after changing its state x at time t. Here bpx, yq is characterized as follows: (i) bpx, yq " 0 for x P tS, Ru, because the type of a susceptible or recovered vertex does not change in time if its state does not, and (ii) bpI, yq " 1. Indeed, if vertex i has state I during the entire time interval pt, t `dtq, then y i pt `dtq " y i p0q `t `dt ´tI i " y i ptq `dt, so that the time derivative of y i ptq equals 1. This gives rise to the Kolmogorov forward equations in (2.7) that characterizes F , and that verify Property 4.1 above.</p><p>Step 2: Express the edge-connection probability, corresponding to the mimicking process, in terms of the types. The goal is develop expressions (i) for the probability that in the mimicking process there is an active edge at time t, in terms of the types of vertices i and j, and (ii) for the path of the empirical distribution pF n ps; ¨qq sPr0,ts up to time t. In this context, the key property is the following. Property 4.2. At any time t, edge ij is active with probability Hpt; y i ptq, y j ptq, pF n ps; ¨qq sPr0,ts q, conditionally independently of all the other edges given py i psq, y j psq, F n ps; ¨qq sPr0,ts .</p><p>Given the paths of x i p¨q and x j p¨q, the probability that edge ij is active at time t is p ij ptq " e ´γt p 0 `γ ż t 0 ds e ´γs π x i pt´sq,x j pt´sq p¨q " e ´γt p 0 `γ ż t 0 ds e ´γpt´sq π x i psq,x j psq p¨q.</p><p>To verify Property 4.2, we need to show that this probability can be expressed only in terms of the types of vertices i and j at time t (i.e., x i ptq and x j ptq " S) and pF n ps; ¨qq sPr0,ts . To this end, we first observe that if x i ptq " x j ptq " S, then p ij ptq " e ´γt p 0 `γ ż t 0 ds e ´γpt´sq π SS pF n ps; ¨qq.</p><p>Denote y ij,_ ptq :" y i ptq _ y j ptq and y ij,^p tq :" y i ptq ^yj ptq. If x i ptq " x j ptq " I, then, using the identities t I i ^tI j " t ´yi j,_ ptq and t I i _ t I j " t ´yi j,^p tq, we can write ds e ´γpt´sq π SI ps ´pt ´yi ptqq, F n ps; ¨qq.</p><formula xml:id="formula_19">p ij ptq "</formula><p>The case x i ptq " S and x j ptq " I is fully analogous. Finally, if x i ptq " R or x j ptq " R, then evidently p ij ptq " p 0 .</p><p>In view of the above computations, we can write the probability p ij ptq, in terms of y i ptq, y j ptq and pF n ps; ¨qq sPr0,ts only: Step 3: Establish convergence of the graphon-valued process that corresponds to the mimicking process. If F is the limit described in Property 4.1, then the induced reference graphon process (see (2.9)) is our candidate limit for the graph-valued process G nptq in the space of graphons. To show this, we use the continuous mapping theorem, for which we need the following property.</p><formula xml:id="formula_20">p ij ptq " 1ty ij,_ ptq " T `1up 0 `1ty ij,_ ptq ‰ T `</formula><p>Property 4.3. The map F Þ Ñ g rF s from DpMpr0, T s Y tT `1u, r0, T sq to DppW, d ˝q, r0, T sq is continuous, where W and d ˝are defined in Appendix A.</p><p>Step 4: Extend to the original co-evolutionary model. We apply the framework above to the mimicking process, and couple the mimicking process with the co-evolutionary process in such a way that discrepancies during the time interval r0, T s have a sufficiently small probability. This will imply that h Gnptq p¨, ¨q ùñ g rF s pt; ¨, ¨q as n Ñ 8 in the space DppW , d ˝q, r0, T sq 5. Proofs 5.1. Proof of Theorem 2.1. The expression for p S ptq directly follows from the integration of the first equation in <ref type="bibr">(2.7)</ref>. We just need to prove that, for any t P r0, T s and u P r´1, T `1s, there exists a unique solution f I pt, uq of the second equation in <ref type="bibr">(2.7)</ref>. To this end, we first derive the fixed-point equation f I pt, uq must satisfy by using the method of characteristics, and then we use the Banach fixed-point theorem to prove existence and uniqueness of the solution.</p><p>Method of characteristics. The characteristics satisfy du{dt " 1, meaning that uptq " up0q `t. Along this curve the PDE becomes an ODE for the profile F ptq " f I pt, uptqq, which reads as Note that the solution is not explicit, but it depends on solving a coupled system along all the characteristics. Indeed, the term J psq depends on the function f I ps, ¨q itself.</p><formula xml:id="formula_21">F 1 ptq `F ptq " λ J ptq p S ptq</formula><p>Contraction property. Define the space X " Cpr0, T s ˆr´1, T `1s, Rq with the norm }f } 8 :" sup tPr0,T s, uPr´1,T `1s</p><p>|f pt, uq|, f P X.</p><p>Define now the operator T : X Ñ X as pT f qpt, uq :" e ´tf p0, u ´tq `λ ż t 0 ds e ´pt´sq J f psq p S psq, where J f psq :" ş s 0 dF f ps; uq Hps; ´1, u, F f ps; ¨qq I puq, with F f defined as in (2.8) after replacing f I by f (note that also p I ptq is obtained after this replacement in (2.4)). A solution f I of the starting PDE corresponds then to a fixed point of f " T f . Letting f, g P X, we find, by using that J p¨q is Lipschitz continuous with Lipschitz constant L, }pT f qpt, uq ´pT gqpt, uq} 8 " sup with KpT q :" 1 2 λLT 2 , showing that T is a contraction for small enough T . Local existence and uniqueness. First, note that KpT q ą 0. Moreover, if KpT q ă 1, then T is a contraction for any t P r0, T s, therefore leading to global existence and uniqueness by the Banach fixed-point theorem. Otherwise, by the same theorem we deduce that there exists a unique solution on r0, T 0 s ˆr´1, T `1s, with T 0 the unique positive value such that KpT 0 q " 1.</p><p>Global existence. After obtaining the solution on r0, T 0 s, we use the value at t " T 0 as new initial data and repeat the same argument. Since T ă 8 and the norm of the solution can be bounded uniformly in t and u as |f I p0, uq| `λKpT q ă 8, we can iterate finitely many times to cover all t P r0, T s. This yields global existence and uniqueness for pt, uq in the whole rectangle r0, T s ˆr´1, T `1s.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>5.2.</head><p>Coupling. To prove convergence of the process in the space of graphons, we construct a mimicking process following Steps 1-3 in Section 4 and that is close to the original process in L 1 (Step 4).</p><p>Mimicking process. Suppose that the process pG nptqq tPr0,T s is characterised by the following dynamics:</p><p>‚ G np0q is an ERRG with connection probability p 0 . ‚ Each vertex i being susceptible (resp. infected) is equipped with an independent rate-λJ ˚ptq (resp. rate-1) Poisson clock, with J ˚ptq :" Ipt; f I pt, ¨q, pF ˚pt, ¨qq tPr0,T s q, where f I pt, ¨q " PpX i ptq P pI, ¨qq and pF ˚pt, ¨qq tPr0,T s is the associated limiting empirical type process. When the clock associated to vertex i rings, the following happens:</p><p>if x i ptq " S, then vertex i gets infected; if x i ptq " I, then vertex i recovers and all the adjacent edges to vertex i are resampled according to the initial edge probability p 0 . ‚ Each edge (not involving any vertex having state R) is equipped with an independent rate-γ Poisson clock. When the clock associated to edge ij rings, then the edge is active with a probability that depends on the state of the connecting vertices. This probability is defined as follows:</p><p>π SS pF ˚pt, ¨qq if both adjacent vertices are susceptible in G nptq; π SI py i ptq, F ˚pt, ¨qq (resp. π SI py j ptq, F ˚pt, ¨qq) if vertex i (resp. vertex j) is infected and vertex j (resp. vertex i) is susceptible, where y i ptq denotes the type of vertex i in G nptq for any i P rns; π II py i ptq, y j ptq, F ˚pt, ¨qq if both adjacent vertices are infected in G nptq.</p><p>Lemma 5.1. The process tG nptqq tě0 u nPN satisfies the assumptions of [15, Theorem 3.10], and therefore h G n ñ g rF ˚s as n Ñ 8 in the space DppW, d ˝q, r0, T sq. Proof. To prove the claim, it suffices to verify that [15, Assumptions 3.1, 3.6-3.7, 3.9] hold. The dynamics of each vertex in the mimicking process are independent of those of the other vertices. Consequently, the first three properties discussed in Section 4 are satisfied. We may therefore follow the same reasoning as in [3, Section 2.4.1] to establish a FLLN for the empirical type process as n Ñ 8. □ Lemma 5.2. There exists a coupling of tpG n ptqq tPr0,T s u nPN and tpG nptqq tPr0,T s u nPN such that, for any δ ą 0, lim nÑ8 1 n log P ´|| hGnptq ´h G n ptq || L 1 ą δ for some t P r0, T s ¯" 0.</p><p>(5.1)</p><p>Proof. The claim is proved in three steps. In Step I, we construct a coupling between the original and the mimicking processes. The key idea is to associate susceptible vertices with Poisson clocks whose rates differ between the two processes, and to couple these clocks by simulating a Poisson process of intensity λ up to time t and retaining each point in G n ptq and G nptq with appropriately chosen probabilities, specified below. The first retained point determines the infection time of the vertex in the corresponding process; if no point is retained up to time t, the vertex remains susceptible. The same construction applies to the edge dynamics. A difference arises when a vertex (resp. an edge) is infected (resp. active) in one process but susceptible (resp. inactive) in the other.</p><p>Step II characterizes the probability of such differences, and</p><p>Step III provides precise estimates.</p><p>Step I: description of the coupling. Suppose that pG n ptqq tě0 and pG nptqq tě0 are generated in the following manner. Recall that N I i ptq is the set of infected neighbors of vertex i at time t. -When x i ptq " x j ptq " S, if U ď π SS pF n pt, ¨qq, then edge ij is active, otherwise it is inactive, in G n ptq. -When either x i ptq " S and x j ptq " I, or x i ptq " I and x j ptq " S, if U ď π SI py j ptq, F n pt, ¨qq or U ď π SI py i ptq, F n pt, ¨qq, respectively, then edge ij is active, otherwise it is inactive, in G n ptq. -When x i ptq " x j ptq " I, if U ď π II py i ptq, y j ptq, F n pt, ¨qq, then edge ij is active, otherwise it is inactive, in G n ptq. -When x i ptq " x j ptq " S, if U ď π SS pF ˚pt, ¨qq, then edge ij is active, otherwise it is inactive, in G nptq.</p><p>-When either x i ptq " S and x j ptq " I, or x i ptq " I and x j ptq " S, if U ď π SI py j ptq, F ˚pt, ¨qq or U ď π SI py i ptq, F ˚pt, ¨qq, respectively, then edge ij is active, otherwise it is inactive, in G nptq. -When x i ptq " x j ptq " I, if U ď π II py i ptq, y j ptq, F ˚pt, ¨qq, then edge ij is active, otherwise it is inactive, in G nptq.</p><p>Step II: majorization of the L 1 distance. If vertex i is susceptible in both models and the clock associated with vertex i rings, then a difference is formed when vertex i is susceptible in one process and infected in the other. This happens with probability ˇˇˇˇÿ jPN I i ptq I py j q n ´J ˚ptq</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>ˇˇˇˇ.</head><p>If edge ij has the same state (active or inactive) in both models and the clock associated with edge ij rings, then a difference is formed with probability depending on the generalised types X i ptq, X j ptq, X i ptq, X j ptq, and on F n pt, ¨q, F ˚pt, ¨q. For instance, if x i ptq " x i ptq " S and x j ptq " x j ptq " I, this probability is equal to |π SI py j ptq, F n pt, ¨qq ´πSI py j ptq, F ˚pt, ¨qq|.</p><p>Step III: bounding the dominating process. Our approach is to show that, over a small time window rt, t `∆q with ∆ ą 0, the number of differences is stochastically dominated by a random variable with suitable properties. Let ‚ t ∆ " rt, t `∆q be the time window, ‚ N E " Binp `n 2 ˘, 1 ´e´γ∆ q be the total number of edge clocks that ring in t ∆ , ‚ N V " BinpN S ptq, 1 ´e´λ∆ q be the total number of clocks associated with susceptible vertices in both processes at time t that ring in t ∆ , where N S ptq is the number of susceptible vertices at time t, ‚ d E ptq be the total number of differences in the edges between G n ptq and G nptq, ‚ d V ptq be the total number of differences in vertex states between F n pt; ¨q and F n pt; ¨q, where F n is defined in (2.2) and F n is defined analogously using the graph G nptq. Here, by F n pt; ¨q and F n pt; ¨q we mean the complete information on vertex types and states.</p><p>Given Ω " pN E , N V , d E ptq, d V ptq, F n pt; ¨q, F n pt; ¨qq, we want to bound the probability Π n p∆q that, when an edge clock (of an edge chosen uniformly at random) rings, a difference is formed during any time s P t ∆ . Note that if the clock of a vertex pair ij rings, then a difference can only be formed when either x i psq ‰ x i psq or x j psq ‰ x j psq, or there is a difference in the types or in the empirical type distributions F n ps; ¨q and F ˚ps; ¨q. At any time t, we can then partition the set of all the vertex pairs as those connecting at least one vertex with a difference of state between the two models, and those which connect both vertices having the same state in the two models, which we refer to as E 1 ptq and E 2 ptq, respectively. Since each vertex i is part of n vertex pairs, note that |E 1 ptq| ď n pd V ptq `NV q.</p><p>Observing that d V ptq " ř n i"1 1tx i ptq ‰ x i ptqu, considering the worst case scenario that every time a vertex clock rings during t ∆ a new difference is formed, and observing that the type of two infected vertices can differ of at most ∆ during t ∆ , we have the following upper bound: Given Ω, we next want to bound the probability that, when a vertex clock (of a susceptible vertex in both processes at time t, chosen uniformly at random, that is) rings, a difference is formed during any time s P t ∆ . In other words, we wish to establish an upper bound on </p><formula xml:id="formula_22">Π n p∆q</formula></div><figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_1"><head>1 Figure 2 . 1 :</head><label>121</label><figDesc>Figure 2.1: Illustration of the relation between graph, adjacency matrix, and graphon.</figDesc><graphic coords="7,245.39,213.17,153.03,114.77" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_2"><head>Figure 2 . 2 :</head><label>22</label><figDesc>Figure 2.2: Two graphons with different labellings (left and middle panels), plus the limiting graphon when the labelling of the middle panel has been used (right panel).</figDesc><graphic coords="7,88.46,213.17,153.03,114.77" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_3"><head>8 0 ds e ´γs ˆż 8 0 8 0 1 ,Figure 3 . 1 : 8 0</head><label>8881318</label><figDesc>Figure 3.1: Each solid curve represents the numerical solution of the system of PDEs for π SS " p 0 ,λ " 4, q 0 " 0.1, and varying p 0 , π SI , γ.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_4"><head>Figure 3 . 2 :</head><label>32</label><figDesc>Figure 3.2: The grey trajectories in the top row, from left to right, correspond to simulations of 100 stochastic SIR trajectories of the fraction of infected individuals for n " 200, 500, 1000, respectively.The solid blue curves are the numerical solution of the system of PDEs with the same parameters. Observe that the 'cloud' of simulated trajectories shrinks with n, reflecting the convergence to the deterministic limiting path. The second row displays the empirical graphons corresponding to the black trajectory (n " 200) when t " 0.69 (first peak), t " 1.4 (valley between the first two peaks) and t " 1.71 (second peak); a dot represents an edge. The labels of the vertices are updated dynamically so that they are ordered lexicographically, i.e., the vertices with state S have lower labels than the vertices with state I, which in turn have lower labels than the vertices with state R, and then by increasing type. The third row displays the corresponding FLLN. The bottom row displays F200 pt; xq (dashed line) corresponding to the black trajectory and F pt; xq (solid line) when t " 0.69, 1.4, 1.71 for x P r0, 1s.</figDesc><graphic coords="14,108.36,364.25,144.56,108.42" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_5"><head>Figure 3 . 3 :</head><label>33</label><figDesc>Figure 3.3: An illustration of ϕptq for t P r0, 5s: the black and the blue lines correspond to the empirical black trajectory and the smooth blue curve, respectively, of the top left panel in Figure 3.2.</figDesc><graphic coords="15,180.18,36.00,283.46,212.60" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_6"><head>tPr0,T s ˇˇˇλ ż t 0 "</head><label>0</label><figDesc>ds e ´pt´sq p S psq pJ f psq ´Jg psqq ˇˇď λL}f ´g} 8 sup KpT q}f ´g} 8 ,</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_7"><head></head><label></label><figDesc>|f I pt, uq| ď sup uPr´1,T `1s</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_0"><head></head><label></label><figDesc>SI py i ptq, F n pt; ¨qq, if x i ptq " I, x j ptq " S, γ π SI py j ptq, F n pt; ¨qq, if x i ptq " S, x j ptq " I, γ π II py i ptq, y j ptq, F n pt; ¨qq, if x i ptq " x j ptq " I,</figDesc><table><row><cell>n pt; yq :"</cell><cell cols="2">1 n</cell><cell>n ÿ i"1</cell><cell cols="2">1ty i ptq ď yu, y P R.</cell><cell>(2.2)</cell></row><row><cell cols="6">Vertex and edge dynamics. For each infected vertex i, we denote by I p¨q its infectivity, where</cell></row><row><cell cols="6">I : r0, 8q Ñ r0, 1s is a continuous deterministic function.</cell></row><row><cell cols="6">˝Vertex dynamics. Let N I i ptq be the set of infected neighbors of vertex i at time t. At</cell></row><row><cell cols="6">any time t P r0, T s, x i ptq transitions from S to I at rate</cell></row><row><cell cols="2">λ n</cell><cell cols="3">jPN I i ptq ÿ</cell><cell>I py j ptqq,</cell></row><row><cell cols="6">and x i ptq makes a transition from I to R at a (normalised) rate of 1.</cell></row><row><cell cols="6">˝Edge dynamics. At any time t P r0, T s, e ij ptq transitions from 0 to 1 (i.e., from inactive</cell></row><row><cell>to active) at rate</cell><cell></cell><cell></cell><cell></cell><cell></cell></row><row><cell>$</cell><cell></cell><cell></cell><cell></cell><cell></cell></row><row><cell>' ' ' γ π SS pF n pt; ¨qq,</cell><cell></cell><cell></cell><cell></cell><cell></cell><cell>if x i ptq " x j ptq " S,</cell></row><row><cell>'</cell><cell></cell><cell></cell><cell></cell><cell></cell></row><row><cell>' &amp; γ π</cell><cell></cell><cell></cell><cell></cell><cell></cell></row><row><cell>'</cell><cell></cell><cell></cell><cell></cell><cell></cell></row><row><cell>'</cell><cell></cell><cell></cell><cell></cell><cell></cell></row><row><cell>'</cell><cell></cell><cell></cell><cell></cell><cell></cell></row><row><cell>'</cell><cell></cell><cell></cell><cell></cell><cell></cell></row><row><cell>'</cell><cell></cell><cell></cell><cell></cell><cell></cell></row><row><cell>%</cell><cell></cell><cell></cell><cell></cell><cell></cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_2"><head></head><label></label><figDesc>the expected number of infections caused by a single infected individual among a large number (i.e., n Ñ 8) of susceptible individuals, we then obtain the basic reproduction number</figDesc><table><row><cell>R 0 " p1 ´p SI,n puqq np1´psSp8qq ż 8 0 du p SI puq λI puq e ´u. ˆ1 ´ż 8 0 du p SI puq λ n I puq e ´u˙n p1´p S p8qq To write down a formula for the final value p Consequently p S p8q 1 ´q0 " lim nÑ8 " lim nÑ8 " lim nÑ8 ˆ1 np1 ´pS p8qq ´R0 p1 ´pS p8qq ˙np1´p S p8qq</cell><cell>(3.2)</cell></row></table><note>S p8q, note that an initially susceptible individual does not ever get infected with probability p S p8q{p1 ´q0 q, and if it remains susceptible, then it does not get infected by any of the np1 ´sp8qq individuals that get infected at some point.</note></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_4"><head></head><label></label><figDesc>e ´γt p 0 `γ ż t I SS pF n ps; ¨qq `γ ż t´y ij,^p tq t´y ij,_ ptq ds e ´γpt´sq π SI ps ´pt ´yi j,_ ptqq, F n ps; ¨qq `γ ż t t´t´y ij,^p tq ds e ´γpt´sq π II ps ´pt ´yi j,_ ptqq, s ´pt ´yi j,^p tqq, F n ps; ¨qq.</figDesc><table><row><cell></cell><cell></cell><cell></cell><cell>i</cell><cell>^tI j</cell><cell>ds e ´γpt´sq π SS pF n ps; ¨qq</cell></row><row><cell></cell><cell></cell><cell></cell><cell>0</cell></row><row><cell cols="3">`γ ż t I i _t I j i ^tI j t I</cell><cell>ds e ´γpt´sq π SI ps ´pt I i</cell><cell>^tI j q, F n ps; ¨qq</cell></row><row><cell cols="2">`γ ż t t I i _t I j</cell><cell cols="2">ds e ´γpt´sq π II ps ´pt I i</cell><cell>^tI j q, s ´pt I i _ t I j q, F n ps; ¨qq</cell></row><row><cell>" e ´γt p 0</cell><cell cols="3">`γ ż t´y ij,_ ptq</cell><cell>ds e ´γpt´sq π</cell></row><row><cell></cell><cell></cell><cell></cell><cell>0</cell></row></table><note>Similarly, if x i ptq " I and x j ptq " S, then p ij ptq " e ´γt p 0 `γ ż t´y i ptq 0 ds e ´γpt´sq π SS pF n ps; ¨qq `γ ż t t´y i ptq</note></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_5"><head></head><label></label><figDesc>1u e ´γt p 0 1ty II ps ´pt ´yi j,_ ptqq, s ´pt ´yi j,^p tqq, F n ps; ¨qq ¸.Consequently, the probability of having an active edge between two vertices with type u and v at time t is given by, with pu, vq ´:" u ^v and pu, vq `:" u _ v, Hpt; u, v, F n pt; ¨qq " 1tpu, vq `" T `1up 0 `1tpu, vq `‰ T `1u e ´γt p 0 1tpu, ds e ´γpt´sq π SI ps ´t `pu, vq `, F n ps; ¨qq</figDesc><table><row><cell></cell><cell></cell><cell>ż t</cell></row><row><cell cols="3">vq `" ´1u γ</cell><cell>ds e ´γpt´sq π SS pF n ps; ¨qq</cell><cell>1tpu,</cell></row><row><cell></cell><cell></cell><cell>0</cell></row><row><cell></cell><cell></cell><cell></cell><cell>ż t´pu,vq 0</cell></row><row><cell cols="4">vq `q P r0, T `1qu γ</cell><cell>ds e ´γpt´sq π SS pF n ps; ¨qq</cell></row><row><cell cols="4">1tpu, vq ´" ´1u1tpu, vq `P r0, T `1qu</cell><cell>γ</cell></row><row><cell>ż t</cell><cell></cell><cell></cell></row><row><cell></cell><cell></cell><cell></cell><cell>1tpu,</cell></row><row><cell cols="2">t´pu,vq</cell><cell></cell></row><row><cell cols="4">vq ´P r0, T `1qu1tpu, vq `P r0, T `1qu</cell></row><row><cell cols="2">ˆγ˜ż t´pu,vq</cell><cell></cell></row><row><cell></cell><cell>ż t</cell><cell></cell></row><row><cell cols="2">ij,_ ptq " ´1u γ</cell><cell cols="2">ds e ´γpt´sq π SS pF n ps; ¨qq</cell><cell>1ty</cell></row><row><cell></cell><cell>0</cell><cell></cell></row><row><cell></cell><cell></cell><cell cols="2">ż t´y ij,_ ptq</cell></row><row><cell cols="3">ij,_ ptq P r0, T `1qu γ</cell><cell>ds e ´γpt´sq π SS pF n ps; ¨qq</cell><cell>1ty</cell></row><row><cell></cell><cell></cell><cell cols="2">0</cell></row><row><cell cols="4">ij,^p tq " ´1u1ty ij,_ ptq P r0, T `1qu</cell></row><row><cell>ˆγ ż t t´y ij,_ ptq</cell><cell cols="3">ds e ´γpt´sq π SI ps ´pt ´yi j,_ ptqq, F n ps; ¨qq</cell><cell>1ty</cell></row><row><cell cols="4">ij,^p tq P r0, T `1qu1ty ij,_ ptq P r0, T `1qu</cell></row><row><cell cols="2">ˆγ˜ż t´py ij,^p tqq</cell><cell></cell></row><row><cell cols="2">t´py ij,_ ptqq</cell><cell></cell></row></table><note>ds e ´γpt´sq π SI ps ´pt ´yi j,_ ptqq, F n ps; ¨qq ż t t´y ij,^p tq ds e ´γpt´sq π `t´pu,vq `ds e ´γpt´sq π SI ps ´t `pu, vq `, F n ps; ¨qq ż t t´pu,vq ´ds e ´γpt´sq π II ps ´t `pu, vq `, s ´t `pu, vq ´, F n ps; ¨qq ¸. (4.2) We have thus verified Property 4.2.</note></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_6"><head></head><label></label><figDesc>,which is equivalent to d dt `et F ptq ˘" λe t J ptq p S ptq.</figDesc><table><row><cell>This thereby leads to</cell><cell></cell><cell></cell></row><row><cell>F ptq " e ´tF p0q</cell><cell cols="2">`λ ż t</cell><cell>ds e ´pt´sq J psq p S psq,</cell></row><row><cell></cell><cell></cell><cell>0</cell></row><row><cell>which reads as</cell><cell></cell><cell></cell></row><row><cell cols="2">f I pt, uq " e ´tf I p0, u ´tq</cell><cell cols="2">`λ ż t</cell><cell>ds e ´pt´sq J psq p S psq.</cell></row><row><cell></cell><cell></cell><cell></cell><cell>0</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_7"><head>‚</head><label></label><figDesc>Each initially infected vertex i P rns is assigned the same (coupled) rate-1 Poisson clock in both processes. When the clock associated with vertex i rings, vertex i recovers and all the adjacent edges to vertex i are resampled according to the initial edge probability p 0 in both G n ptq and G nptq. ‚ Each initially susceptible vertex i P rns is assigned the same (coupled) rate-λ Poisson clock in both processes. When the clock associated to vertex i rings, generate an outcome U drawn from Unifp0, 1q distribution.-If U ď ř jPN I i ptq I py j q{n, then vertex i becomes infected, otherwise remains susceptible, in G n ptq.-If U ď J ˚ptq, then vertex i becomes infected, otherwise remains susceptible, in G nptq. ‚ Assign each edge the same (coupled) rate-γ Poisson clock in both processes. When the Poisson clock associated with edge ij rings, generate an outcome U drawn from Unifp0, 1q distribution.</figDesc><table /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_8"><head></head><label></label><figDesc>ď |E 1 ptq| `n 2 ˘`L `2∆ `dL pF n ps; ¨q, F ˚ps; ¨qq ď npd V ptq `NV q `n 2 ˘`L `2∆ `dL pF n ps; ¨q, F ˚ps; ¨qq ˘. (5.2) where we have used the Lipschitz continuity of the functions π SS , π SI , π II , with the constant L defined as maxtL SS , L SI , L II u ă 8. To control this probability, using the triangular inequality for the Lévy metric (see Appendix A), we can write d L pF n ps; ¨q, F ˚ps; ¨qq ď d L pF n ps; ¨q, F n ps; ¨qq looooooooooomooooooooooon paq `dL pF n ps; ¨q, F ˚ps; ¨qq looooooooooomooooooooooon Considering the worst case scenario as explained above, for any s P t ∆ , the term (a) can be bounded as d L pF n ps, ¨q, F n ps, ¨qq ď d V ptq `NV n , while the term (b) tends to zero as n Ñ 8 directly from the Glivenko-Cantelli theorem, because in the mimicking process vertices behave independently and therefore F n ps; ¨q converges in distribution to F ˚ps; ¨q. Thus, (5.2) becomes Because this bound is uniform in t ∆ and does not depend on N E , given Ω, and the term opnq can be ignored in the limit as n Ñ 8, we therefore have d E pt `∆q ´dE ptq</figDesc><table><row><cell>Π n p∆q ď</cell><cell cols="4">npd V ptq `NV q `n 2 ˘`L ˆ2∆</cell><cell>n `dV ptq `NV</cell><cell>`opnq</cell><cell>ď</cell></row><row><cell></cell><cell>ˆ1</cell><cell>`L 2</cell><cell cols="3">˙npd V ptq `NV q `n 2 ˘`2L∆ `opnq.</cell></row><row><cell></cell><cell></cell><cell cols="2">st ď Bin ˜NE , ˆ1</cell><cell>`L 2</cell><cell>˙npd V ptq `NV q `n 2 ˘`2L∆</cell><cell>¸,</cell></row><row><cell>where</cell><cell></cell><cell></cell><cell></cell><cell></cell></row></table><note>pbq. st ď means 'stochastically dominated by'.</note></figure>
+		</body>
+		<back>
+
+			<div type="acknowledgement">
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>Acknowledgment. The work in this paper was supported by the European Union's Horizon 2020 research and innovation programme under the Marie Skłodowska-Curie grant agreement no. 101034253, and by the NWO Gravitation project NETWORKS under grant no. 024.002.003. SB was further supported through "Gruppo Nazionale per l'Analisi Matematica, la Probabilità e le loro Applicazioni" (GNAMPA-INdAM).</p><p>Date: February 17, 2026.</p></div>
+			</div>
+
+			<div type="annex">
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>which applies for all s P t ∆ . Applying the triangular inequality, we have where N ˚I i psq (evidently) denotes the set of infected neighbours of vertex i in G npsq. We first bound (i) as follows:</p><p>I py j q ´ÿ jPN ˚I i psq I py j q ˇˇˇď 1 n 2 pd E ptq `NE q, where we used that sup uPr0,t`∆s I puq " 1.</p><p>We next bound (ii). To this end, we use the convergence of the mimicking process in the space of graphons. Let g nps; u, vq " h G n ps; u, vq denote the empirical graphon at time s. In addition, let r S`I n psq and r S`I psq denote the sum of the proportions of susceptible and infected vertices in the empirical and limiting graphon, respectively, at time s. Similarly, r S n psq and r S psq denote the corresponding quantities for susceptible vertices. Thus, we can write We can therefore write </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>ˇ25</head><p>`d˝´g nps; 0, ¨q, g rF ˚sps; 0, ¨q¯.</p><p>Note that, by the FLLN claimed in Lemma 5.1), as n Ñ 8 each of these terms tends to zero uniformly in s with high probability. Thus, we conclude that</p><p>where ϵpnq is a function that can be chosen arbitrarily small with high probability, and can therefore effectively ignored in the limit as n Ñ 8.</p><p>Our plan is now to bound the number of differences formed in the vertices and edges between the two models by considering the time intervals r0, ∆s, r∆, 2∆s, ..., rT ´∆, T s in sequence, and then use the union bound. Without loss of generality, we are tacitly assuming that T is a multiple of ∆. We use the results above which, for n large, can be summarised as follows:</p><p>The proof is then completed by following arguments analogous to those used in the proof of <ref type="bibr">[</ref> On W, called the space of graphons, there is a natural equivalence relation ". Let Σ be the space of measure-preserving bijections σ : r0, 1s Ñ r0, 1s. Then h 1 px, yq " h 2 px, yq if δ ˝ph 1 , h 2 q " 0, where δ ˝is the cut metric defined by</p><p>with h σ px, yq " hpσx, σyq. This equivalence relation yields the quotient space p Ă W, δ ˝q, which is compact.</p><p>A finite simple undirected graph G on n vertices can be represented as a graphon h G P W by setting h G px, yq :" # 1 if there is an edge between vertex rnxs and vertex rnys, 0 otherwise, (A.3) which referred to as the empirical graphon associated with G, and has a block structure.</p><p>Lévy metric. We equip the space MpR `q with the Lévy metric, so that for two distribution functions F, G we have d L pF, Gq :" inftϵ ą 0 : F px ´ϵq ´ϵ ď Gpxq ď F px `ϵq `ϵ, @ x P Ru (A.4)</p><p>An important property of the Lévy metric is that it satisfies the triangle inequality.</p><p>Lemma A. where in the first equality we used the fact that dy " f I ps, F ˚ps; yqq du. This follows from the derivative of the inverse function, which is well defined because the function F ˚ps; ¨q is right-continuous and non-decreasing. Thus, the derivative is zero only in the intervals in which the function is constant, meaning that there are no infected individuals with those types, and therefore we may think the integral not running on these values. Finally, note that the integral goes from r S psq to r S`I psq because otherwise I p¨q " 0 and therefore the integrand is zero. □ </p></div>			</div>
+			<div type="references">
+
+				<listBibl>
+
+<biblStruct xml:id="b0">
+	<monogr>
+		<title level="m" type="main">Co-evolving vertex and edge dynamics in dense graphs</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Athreya</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Hollander</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Röllin</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2504.06493</idno>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">Preprint at</note>
+</biblStruct>
+
+<biblStruct xml:id="b1">
+	<monogr>
+		<title level="m" type="main">The voter model on random regular graphs with random rewiring</title>
+		<author>
+			<persName><forename type="first">L</forename><surname>Avena</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Baldasso</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">S</forename><surname>Hazra</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Hollander</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Quattropani</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2501.08703</idno>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">Preprint at</note>
+</biblStruct>
+
+<biblStruct xml:id="b2">
+	<monogr>
+		<title level="m" type="main">Opinion dynamics on dense dynamic random graphs</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Baldassarri</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Braunsteins</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Hollander</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Mandjes</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2410.14618</idno>
+		<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">Preprint at</note>
+</biblStruct>
+
+<biblStruct xml:id="b3">
+	<monogr>
+		<title level="m" type="main">Functional central limit theorem for the subgraph count of the voter model on dynamic random graphs</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Baldassarri</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Kriukov</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2503.11541</idno>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">Preprint at</note>
+	<note>To appear in Bernoulli</note>
+</biblStruct>
+
+<biblStruct xml:id="b4">
+	<analytic>
+		<title level="a" type="main">A stochastic SIR network epidemic model with preventive dropping of edges</title>
+		<author>
+			<persName><forename type="first">F</forename><surname>Ball</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Britton</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><forename type="middle">Y</forename><surname>Leung</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Sirl</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of Mathematical Biology</title>
+		<imprint>
+			<biblScope unit="volume">78</biblScope>
+			<biblScope unit="page" from="1875" to="1951" />
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b5">
+	<analytic>
+		<title level="a" type="main">Epidemics on networks with preventive rewiring</title>
+		<author>
+			<persName><forename type="first">F</forename><surname>Ball</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Britton</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Random Structures &amp; Algorithms</title>
+		<imprint>
+			<biblScope unit="volume">61</biblScope>
+			<biblScope unit="page" from="250" to="297" />
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b6">
+	<analytic>
+		<title level="a" type="main">An epidemic in a dynamic population with importation of infectives</title>
+		<author>
+			<persName><forename type="first">F</forename><surname>Ball</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Britton</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Trapman</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">The Annals of Applied Probability</title>
+		<imprint>
+			<biblScope unit="volume">27</biblScope>
+			<biblScope unit="page" from="242" to="274" />
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b7">
+	<analytic>
+		<title level="a" type="main">Approximating the epidemic curve</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Barbour</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Reinert</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Electronic Journal of Probability</title>
+		<imprint>
+			<biblScope unit="volume">18</biblScope>
+			<biblScope unit="page" from="1" to="30" />
+			<date type="published" when="2013">2013</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b8">
+	<analytic>
+		<title level="a" type="main">Evolving voter model on dense random graphs</title>
+		<author>
+			<persName><forename type="first">R</forename><surname>Basu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Sly</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">The Annals of Applied Probability</title>
+		<imprint>
+			<biblScope unit="volume">27</biblScope>
+			<biblScope unit="page" from="1235" to="1288" />
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b9">
+	<analytic>
+		<title level="a" type="main">SIR epidemics on random graphs with a fixed degree sequence</title>
+		<author>
+			<persName><forename type="first">T</forename><surname>Bohman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Picollelli</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Random Structures &amp; Algorithms</title>
+		<imprint>
+			<biblScope unit="volume">41</biblScope>
+			<biblScope unit="page" from="179" to="214" />
+			<date type="published" when="2012">2012</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b10">
+	<analytic>
+		<title level="a" type="main">Convergent sequences of dense graphs I: Subgraph frequencies, metric properties and testing</title>
+		<author>
+			<persName><forename type="first">C</forename><surname>Borgs</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Chayes</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Lovász</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">V</forename><surname>Sós</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Vesztergombi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Advances in Mathematics</title>
+		<imprint>
+			<biblScope unit="volume">219</biblScope>
+			<biblScope unit="page" from="1801" to="1851" />
+			<date type="published" when="2008">2008</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b11">
+	<analytic>
+		<title level="a" type="main">Convergent sequences of dense graphs II: Multiway cuts and statistical physics</title>
+		<author>
+			<persName><forename type="first">C</forename><surname>Borgs</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Chayes</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Lovász</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">V</forename><surname>Sós</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Vesztergombi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Annals of Mathematics</title>
+		<imprint>
+			<biblScope unit="volume">176</biblScope>
+			<biblScope unit="page" from="151" to="219" />
+			<date type="published" when="2012">2012</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b12">
+	<monogr>
+		<title level="m" type="main">A Law of Large Numbers for SIR on the Stochastic Block Model: A Proof via Herd Immunity</title>
+		<author>
+			<persName><forename type="first">C</forename><surname>Borgs</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Huang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Ikeokwu</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2410.07097</idno>
+		<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">Preprint at</note>
+</biblStruct>
+
+<biblStruct xml:id="b13">
+	<analytic>
+		<title level="a" type="main">A sample-path large deviation principle for dynamic Erdős-Rényi random graphs</title>
+		<author>
+			<persName><forename type="first">P</forename><surname>Braunsteins</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Hollander</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Mandjes</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">The Annals of Applied Probability</title>
+		<imprint>
+			<biblScope unit="volume">33</biblScope>
+			<biblScope unit="page" from="3278" to="3320" />
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b14">
+	<monogr>
+		<title level="m" type="main">Graphon-valued processes with vertex-level fluctuations</title>
+		<author>
+			<persName><forename type="first">P</forename><surname>Braunsteins</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Hollander</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Mandjes</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2209.01544</idno>
+		<imprint>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">Preprint at</note>
+</biblStruct>
+
+<biblStruct xml:id="b15">
+	<analytic>
+		<title level="a" type="main">SIR epidemics on evolving Erdős-Rényi graphs</title>
+		<author>
+			<persName><forename type="first">W</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Hou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Yao</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">ALEA</title>
+		<imprint>
+			<biblScope unit="volume">22</biblScope>
+			<biblScope unit="page" from="245" to="282" />
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b16">
+	<analytic>
+		<title level="a" type="main">Dynamic random networks and their graph limits</title>
+		<author>
+			<persName><forename type="first">H</forename><surname>Crane</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">The Annals of Applied Probability</title>
+		<imprint>
+			<biblScope unit="volume">26</biblScope>
+			<biblScope unit="page" from="691" to="721" />
+			<date type="published" when="2016">2016</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b17">
+	<analytic>
+		<title level="a" type="main">The contact process over a dynamical d-regular graph</title>
+		<author>
+			<persName><forename type="first">G</forename><forename type="middle">L B</forename><surname>Da Silva</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Oliveira</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Valesin</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Annales de l&apos;Institut Henri Poincaré: Probababilités et Statistiques</title>
+		<imprint>
+			<biblScope unit="volume">60</biblScope>
+			<biblScope unit="page" from="2849" to="2877" />
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b18">
+	<analytic>
+		<title level="a" type="main">Large graph limit for an SIR process in random network with heterogeneous connectivity</title>
+		<author>
+			<persName><forename type="first">L</forename><surname>Decreusefond</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">S</forename><surname>Dhersin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Moyal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">V</forename><forename type="middle">C</forename><surname>Tran</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Annals of Applied Probability</title>
+		<imprint>
+			<biblScope unit="volume">22</biblScope>
+			<biblScope unit="issue">2</biblScope>
+			<biblScope unit="page" from="541" to="575" />
+			<date type="published" when="2012">2012</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b19">
+	<analytic>
+		<title level="a" type="main">Individual-based SIS models on (not so) dense large random networks</title>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">F</forename><surname>Delmas</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Frasca</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Garin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">V</forename><forename type="middle">C</forename><surname>Tran</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Velleret</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><forename type="middle">A</forename><surname>Zitt</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">ALEA</title>
+		<imprint>
+			<biblScope unit="volume">21</biblScope>
+			<biblScope unit="page" from="1375" to="1405" />
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b20">
+	<analytic>
+		<title level="a" type="main">Susceptible-infected epidemics on evolving graphs</title>
+		<author>
+			<persName><forename type="first">R</forename><surname>Durrett</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Yao</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Electronic Journal of Probability</title>
+		<imprint>
+			<biblScope unit="volume">27</biblScope>
+			<biblScope unit="page" from="1" to="66" />
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b21">
+	<analytic>
+		<title level="a" type="main">From flip processes to dynamical systems on graphons</title>
+		<author>
+			<persName><forename type="first">F</forename><surname>Garbe</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Hladký</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Sileikis</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Skerman</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Annales de l&apos;Institut Henri Poincare (B) Probabilites et statistiques</title>
+		<imprint>
+			<biblScope unit="volume">60</biblScope>
+			<biblScope unit="page" from="2878" to="2922" />
+			<date type="published" when="2022">2022. 2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b22">
+	<analytic>
+		<title level="a" type="main">Results on the contact process with dynamic edges or under renewals</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Hilário</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Ungaretti</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Valesin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">E</forename><surname>Vares</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Electronic Journal of Probability</title>
+		<imprint>
+			<biblScope unit="volume">27</biblScope>
+			<biblScope unit="page" from="1" to="31" />
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b23">
+	<monogr>
+		<title level="m" type="main">The SIR epidemic on a dynamic Erdős-Rényi random graph</title>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Huang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Rollin</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2404.12566</idno>
+		<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">Preprint at</note>
+</biblStruct>
+
+<biblStruct xml:id="b24">
+	<analytic>
+		<title level="a" type="main">The contact process on dynamical scale-free networks</title>
+		<author>
+			<persName><forename type="first">E</forename><surname>Jacob</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Linker</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Mörters</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Annales de l&apos;Institut Henri Poincaré: Probababilités et Statistiques</title>
+		<imprint>
+			<biblScope unit="volume">61</biblScope>
+			<biblScope unit="page" from="1279" to="1318" />
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b25">
+	<analytic>
+		<title level="a" type="main">Law of large numbers for the SIR epidemic on a random graph with given degrees</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Janson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Luczak</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Windridge</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Random Structures &amp; Algorithms</title>
+		<imprint>
+			<biblScope unit="volume">45</biblScope>
+			<biblScope unit="issue">4</biblScope>
+			<biblScope unit="page" from="726" to="763" />
+			<date type="published" when="2014">2014</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b26">
+	<monogr>
+		<title level="m" type="main">SIR epidemics on evolving graphs</title>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Jiang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Kassem</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>York</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Junge</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Durrett</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1901.06568</idno>
+		<imprint>
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">Preprint at</note>
+</biblStruct>
+
+<biblStruct xml:id="b27">
+	<analytic>
+		<title level="a" type="main">Local-density dependent Markov processes on graphons with epidemiological applications</title>
+		<author>
+			<persName><forename type="first">D</forename><surname>Keliger</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">I</forename><surname>Horváth</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Takács</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Stochastic Processes and their Applications</title>
+		<imprint>
+			<biblScope unit="volume">148</biblScope>
+			<biblScope unit="page" from="324" to="352" />
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b28">
+	<analytic>
+		<title level="a" type="main">Branching process approach for epidemics in dynamic partnership network</title>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">A</forename><surname>Lashari</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Trapman</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of Mathematical Biology</title>
+		<imprint>
+			<biblScope unit="volume">76</biblScope>
+			<biblScope unit="page" from="265" to="294" />
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b29">
+	<monogr>
+		<title level="m" type="main">Large Networks and Graph Limits</title>
+		<author>
+			<persName><forename type="first">L</forename><surname>Lovász</surname></persName>
+		</author>
+		<imprint>
+			<date type="published" when="2012">2012</date>
+			<publisher>American Mathematical Society</publisher>
+			<pubPlace>Providence RI, USA</pubPlace>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b30">
+	<analytic>
+		<title level="a" type="main">Limits of dense graph sequences</title>
+		<author>
+			<persName><forename type="first">L</forename><surname>Lovász</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Szegedy</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of Combinatorial Theory, Series B</title>
+		<imprint>
+			<biblScope unit="volume">96</biblScope>
+			<biblScope unit="page" from="933" to="957" />
+			<date type="published" when="2006">2006</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b31">
+	<analytic>
+		<title level="a" type="main">Szemerédi&apos;s lemma for the analyst</title>
+		<author>
+			<persName><forename type="first">L</forename><surname>Lovász</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Szegedy</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Geometric and Functional Analysis</title>
+		<imprint>
+			<biblScope unit="volume">17</biblScope>
+			<biblScope unit="page" from="252" to="270" />
+			<date type="published" when="2007">2007</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b32">
+	<monogr>
+		<title level="m" type="main">SIR on locally converging dynamic random graphs</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Milewska</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Van Der Hofstad</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Zwart</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2501.09623</idno>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">Preprint at</note>
+</biblStruct>
+
+<biblStruct xml:id="b33">
+	<monogr>
+		<title level="m" type="main">Stochastic SIR model with individual heterogeneity and infection-age dependent infectivity on large non-homogeneous random graphs</title>
+		<author>
+			<persName><forename type="first">G</forename><surname>Pang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">É</forename><surname>Pardoux</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Velleret</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2502.04225</idno>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">Preprint at</note>
+</biblStruct>
+
+<biblStruct xml:id="b34">
+	<analytic>
+		<title level="a" type="main">Time evolution of dense multigraph limits under edge-conservative preferential attachment dynamics</title>
+		<author>
+			<persName><forename type="first">B</forename><surname>Ráth</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Random Structures &amp; Algorithms</title>
+		<imprint>
+			<biblScope unit="volume">41</biblScope>
+			<biblScope unit="page" from="365" to="390" />
+			<date type="published" when="2012">2012</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b35">
+	<analytic>
+		<title level="a" type="main">The contact process on random graphs</title>
+		<author>
+			<persName><forename type="first">D</forename><surname>Valesin</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Ensaios Matemáticos</title>
+		<imprint>
+			<biblScope unit="volume">40</biblScope>
+			<biblScope unit="page" from="1" to="115" />
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b36">
+	<analytic>
+		<title level="a" type="main">SIR dynamics in random networks with heterogeneous connectivity</title>
+		<author>
+			<persName><forename type="first">E</forename><surname>Volz</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of Mathematical Biology</title>
+		<imprint>
+			<biblScope unit="volume">56</biblScope>
+			<biblScope unit="page" from="293" to="310" />
+			<date type="published" when="2008">2008</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+				</listBibl>
+			</div>
+		</back>
+	</text>
+</TEI>

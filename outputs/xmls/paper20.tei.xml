@@ -1,0 +1,2220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xml:space="preserve" xmlns="http://www.tei-c.org/ns/1.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.tei-c.org/ns/1.0 https://raw.githubusercontent.com/kermitt2/grobid/master/grobid-home/schemas/xsd/Grobid.xsd"
+ xmlns:xlink="http://www.w3.org/1999/xlink">
+	<teiHeader xml:lang="en">
+		<fileDesc>
+			<titleStmt>
+				<title level="a" type="main">Household size can explain 40% of the variance in cumulative COVID-19 incidence across Europe</title>
+			</titleStmt>
+			<publicationStmt>
+				<publisher/>
+				<availability status="unknown"><licence/></availability>
+				<date type="published" when="2026-02-17">17 Feb 2026</date>
+			</publicationStmt>
+			<sourceDesc>
+				<biblStruct>
+					<analytic>
+						<author>
+							<persName><forename type="first">Seba</forename><surname>Contreras</surname></persName>
+							<email>seba.contreras@ds.mpg.de</email>
+							<affiliation key="aff0">
+								<orgName type="department">Max Planck Institute for Dynamics and Self-Organization</orgName>
+								<address>
+									<settlement>Göttingen</settlement>
+									<country key="DE">Germany</country>
+								</address>
+							</affiliation>
+							<affiliation key="aff1">
+								<orgName type="department">Institute for the Dynamics of Complex Systems</orgName>
+								<orgName type="institution">University of Göttingen</orgName>
+								<address>
+									<settlement>Göttingen</settlement>
+									<country key="DE">Germany</country>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Philipp</forename><surname>Dönges</surname></persName>
+							<affiliation key="aff0">
+								<orgName type="department">Max Planck Institute for Dynamics and Self-Organization</orgName>
+								<address>
+									<settlement>Göttingen</settlement>
+									<country key="DE">Germany</country>
+								</address>
+							</affiliation>
+							<affiliation key="aff1">
+								<orgName type="department">Institute for the Dynamics of Complex Systems</orgName>
+								<orgName type="institution">University of Göttingen</orgName>
+								<address>
+									<settlement>Göttingen</settlement>
+									<country key="DE">Germany</country>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Maciej</forename><surname>Filinski</surname></persName>
+							<affiliation key="aff2">
+								<orgName type="institution">Wroclaw University of Science and Technology</orgName>
+								<address>
+									<country key="PL">Poland</country>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Joel</forename><surname>Wagner</surname></persName>
+							<affiliation key="aff0">
+								<orgName type="department">Max Planck Institute for Dynamics and Self-Organization</orgName>
+								<address>
+									<settlement>Göttingen</settlement>
+									<country key="DE">Germany</country>
+								</address>
+							</affiliation>
+							<affiliation key="aff1">
+								<orgName type="department">Institute for the Dynamics of Complex Systems</orgName>
+								<orgName type="institution">University of Göttingen</orgName>
+								<address>
+									<settlement>Göttingen</settlement>
+									<country key="DE">Germany</country>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Viktor</forename><surname>Bezborodov</surname></persName>
+							<affiliation key="aff2">
+								<orgName type="institution">Wroclaw University of Science and Technology</orgName>
+								<address>
+									<country key="PL">Poland</country>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Marcin</forename><surname>Bodych</surname></persName>
+							<affiliation key="aff2">
+								<orgName type="institution">Wroclaw University of Science and Technology</orgName>
+								<address>
+									<country key="PL">Poland</country>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Barbara</forename><surname>Pabjan</surname></persName>
+							<affiliation key="aff3">
+								<orgName type="department">Institute of Sociology</orgName>
+								<orgName type="institution">University of Wroclaw</orgName>
+								<address>
+									<country key="PL">Poland</country>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Franciszek</forename><surname>Rakowski</surname></persName>
+							<affiliation key="aff4">
+								<orgName type="laboratory">Interdisciplinary Centre for Mathematical and Computational Modelling</orgName>
+								<orgName type="institution">University of Warsaw</orgName>
+								<address>
+									<country key="PL">Poland</country>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Jan</forename><surname>Pablo Burgard</surname></persName>
+							<affiliation key="aff5">
+								<orgName type="institution">Trier University</orgName>
+								<address>
+									<country key="DE">Germany</country>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Tyll</forename><surname>Krueger</surname></persName>
+							<email>tyll.krueger@pwr.edu.pl</email>
+							<affiliation key="aff2">
+								<orgName type="institution">Wroclaw University of Science and Technology</orgName>
+								<address>
+									<country key="PL">Poland</country>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Viola</forename><surname>Priesemann</surname></persName>
+							<email>viola.priesemann@ds.mpg.de</email>
+							<affiliation key="aff0">
+								<orgName type="department">Max Planck Institute for Dynamics and Self-Organization</orgName>
+								<address>
+									<settlement>Göttingen</settlement>
+									<country key="DE">Germany</country>
+								</address>
+							</affiliation>
+							<affiliation key="aff1">
+								<orgName type="department">Institute for the Dynamics of Complex Systems</orgName>
+								<orgName type="institution">University of Göttingen</orgName>
+								<address>
+									<settlement>Göttingen</settlement>
+									<country key="DE">Germany</country>
+								</address>
+							</affiliation>
+						</author>
+						<title level="a" type="main">Household size can explain 40% of the variance in cumulative COVID-19 incidence across Europe</title>
+					</analytic>
+					<monogr>
+						<imprint>
+							<date type="published" when="2026-02-17">17 Feb 2026</date>
+						</imprint>
+					</monogr>
+					<idno type="MD5">A3BACDD28BD6AA13744DAFCA9E8097D0</idno>
+					<idno type="arXiv">arXiv:2602.15447v1[q-bio.PE]</idno>
+				</biblStruct>
+			</sourceDesc>
+		</fileDesc>
+		<encodingDesc>
+			<appInfo>
+				<application version="0.7.2" ident="GROBID" when="2026-05-14T17:26+0000">
+					<desc>GROBID - A machine learning software for extracting information from scholarly documents</desc>
+					<ref target="https://github.com/kermitt2/grobid"/>
+				</application>
+			</appInfo>
+		</encodingDesc>
+		<profileDesc>
+			<abstract>
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>Household size impacts the spread of respiratory infectious diseases: Larger households tend to boost transmission by acquiring external infections more frequently and subsequently transmitting them back into the community. Furthermore, mandatory interventions primarily modulate contagion between households rather than within them. We developed an approach to quantify the role of household size in epidemics by separating within-household from out-household transmission, and found that household size explains 41% of the variability in cumulative COVID-19 incidence across 34 European countries (95% confidence interval: [15%, 46%]). The contribution of households to the overall dynamics can be quantified by a boost factor that increases with the effective household size, implying that countries with larger households require more stringent interventions to achieve the same levels of containment. This suggests that households constitute a structural (dis-)advantage that must be considered when designing and evaluating mitigation strategies.</p></div>
+			</abstract>
+		</profileDesc>
+	</teiHeader>
+	<text xml:lang="en">
+		<body>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Introduction</head><p>Emerging and re-emerging respiratory infectious diseases, exemplified by the recent COVID-19 pandemic, highlight the urgent need for robust pandemic preparedness plans. This requires identifying the factors that determine how a disease spreads within the population, thereby providing a basis for the informed design of public health interventions, such as non-pharmaceutical interventions (NPIs). However, these measures typically target community transmission and have little effect in controlling transmission within households <ref type="bibr" target="#b0">[1]</ref><ref type="bibr" target="#b1">[2]</ref><ref type="bibr" target="#b2">[3]</ref>. In addition, household contacts differ from external interactions: they are prolonged and more proximal, thereby increasing the likelihood of transmission. Once a pathogen enters a household, the probability of spreading to other members is high, making households potent accelerators of disease transmission <ref type="bibr" target="#b3">[4]</ref><ref type="bibr" target="#b4">[5]</ref><ref type="bibr" target="#b5">[6]</ref>. Therefore, to implement effective NPIs, it is critical to understand how household structure (i.e., household size distribution) impacts epidemics <ref type="bibr" target="#b4">[5,</ref><ref type="bibr" target="#b6">[7]</ref><ref type="bibr" target="#b7">[8]</ref><ref type="bibr" target="#b8">[9]</ref><ref type="bibr" target="#b9">[10]</ref><ref type="bibr" target="#b10">[11]</ref><ref type="bibr" target="#b11">[12]</ref><ref type="bibr" target="#b12">[13]</ref>.</p><p>Across countries, incidence, prevalence, and excess mortality varied widely, also for the COVID-19 pandemic. Across Europe, this variation cannot exclusively be attributed to differences in how NPIs were implemented <ref type="bibr" target="#b13">[14]</ref><ref type="bibr" target="#b14">[15]</ref><ref type="bibr" target="#b15">[16]</ref><ref type="bibr" target="#b16">[17]</ref>. While differences in demographics <ref type="bibr" target="#b17">[18]</ref>, culture <ref type="bibr" target="#b18">[19,</ref><ref type="bibr" target="#b19">20]</ref>, trust in the government <ref type="bibr" target="#b20">[21]</ref>, and resources <ref type="bibr" target="#b21">[22]</ref> can explain some of the variation, all these factors covary with a country's most fine-grained functional unit: household structures. It thus remains open to determine how much of the observed variation in prevalence can be explained by household size alone.</p><p>To address this question, we first developed a mathematical framework to distinguish between withinand out-household disease spread. Broadly speaking, within-household contacts "boost" the spread of the disease, whereas out-household contacts modulate the overall reach of an outbreak. We then quantified the out-household spread for 34 European countries, allowing us to rank them according to their mitigation of out-household spread. Noting that households are also part of major socioeconomic indicators correlated with the observed prevalence, such as the Human Development Index (HDI), we finally quantified the extent to which household size contributes to this correlation by computing the semi-partial correlation, controlling for household effects. These combined analyses demonstrate that nations with larger households faced an inherent disadvantage in mitigating the impacts of the COVID-19 pandemic. This is because the larger the structural boost induced by households, the lower the effective out-household spread allowed for containment.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Results</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Separating out-from within-household transmission</head><p>By separating out-from within-household disease spread, we can quantify how much of the transmission can be modified by NPIs. Focusing on the out-household contacts first, we can study disease spread in a network of households where partially infectious households infect others through bridges of mutual contact (Fig. <ref type="figure" target="#fig_0">1A</ref>). We can then define a household reproduction number R H as the spread between households, i.e., the expected number of households that are infected by one infectious household during the outbreak. As derived in Section S1, R H can be written as the product of the out-household spread and a household-dependent "boost" factor</p><formula xml:id="formula_0">R H = R out,t B . (1)</formula><p>R out,t is the average out-household reproduction number at a given time t, defined as the expected number of individuals that a typical individual infects outside of their household, assuming that all contacts are susceptible. As R out,t does not include immunity or its loss, it can be understood as a basic reproduction number, adjusted to exclude within-household contagion. Knowing the household size distribution η of the country (i.e., the probability P (k) that a randomly selected household consists of k members) and the in-household secondary attack rate of the disease a H -which quantifies the expected fraction of the household that is infected in an outbreak-the household "boost" B to the spreading dynamics can be derived as</p><formula xml:id="formula_1">B = 1 + a H (η * − 1) , (<label>2</label></formula><formula xml:id="formula_2">)</formula><p>where η * is the effective household size, defined as the ratio between the second and first statistical moments of η, mathematically equivalent to the mean of η plus a variance-dependent correction factor (see Methods S1 for details). Intuitively, we subtract one from η * in (2), because the person who brings the infection into the household cannot be infected again. Note that B solely depends on η * , not on the full household size distribution η.</p><p>The critical value R H = 1 delimits the transition between subcritical and supercritical disease spread. Consequently, the critical out-household reproduction number is inverse to the household boost factor, R crit out = B −1 , and thus depends on the effective household size η * (Fig. <ref type="figure">S8</ref>). The implications of this relationship are far-reaching: countries or regions with larger effective household size η * reach critical disease spread at smaller values of R crit out , and thus require stronger interventions to mitigate an outbreak than countries with smaller η * (see Fig. <ref type="figure" target="#fig_0">1B</ref> for an overview of effective household size across Europe). With η * varying between 2.6 and 4.2 across Europe, and assuming a within-household secondary attack rate of a H = 0.2, the critical reproduction number R crit out differs between 0.75 and 0.61, respectively.</p><p>To calculate the Rout , defined as the average ρ i over all infectious individuals in an outbreak I, we need to know the prevalence α, which coincides with the cumulative incidence when re-infections are not common (in the time window considered). We proceeded as described in Fig. <ref type="figure" target="#fig_0">1C</ref>: we used age-specific infection fatality rates (IFRs) and country demographics to estimate country-specific infection fatality rates (CIFRs). With these CIFRs, we estimated COVID-19 deaths, including a fraction of the surplus deaths (similar to <ref type="bibr" target="#b16">[17]</ref>), and COVID-19 prevalence α for the time period from January 1st, 2020 (before COVID-19 cases or deaths were reported in Europe), until June 13th, 2021. This end date was selected because it marks a period when  infection numbers were consistently low across all considered countries <ref type="bibr" target="#b22">[23]</ref>, which is required for accurately averaging Rout over an entire wave. Combined with the household size distribution η <ref type="bibr" target="#b23">[24]</ref>, we calculate Rout . To propagate the uncertainty in the IFR estimation, we sampled from the distributions reported in <ref type="bibr" target="#b24">[25,</ref><ref type="bibr" target="#b25">26]</ref> and repeated the process 50 000 times, obtaining distributions of prevalences and Rout . Details and robustness checks are provided in the Supplementary Material, Sections S1 and S3 respectively.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Effective household size as a structural (dis-)advantage for pandemic control</head><p>We derived the impact of household size on COVID-19 spread, and thus on the prevalence α, by assuming (counterfactually) that all European countries had the same out-household reproduction number Rout,Europe . As described in the Methods section, this assumption enabled us to quantify the impact of the effective household size on α (gray crosses, Fig. <ref type="figure">2A</ref>). Differences between the expected (gray) and observed (colored) prevalence account for variations in local epidemic management, specifically the effectiveness of mitigation measures. Thus, they indicate how well the disease was mitigated in a given country, factoring out the contribution of households. Countries below the theoretical curve achieved a higher reduction in out-household contagion compared to those above it (residuals in Fig. <ref type="figure">2B</ref>). Note that this apparent success may reflect effective interventions but also differences in other factors, such as culture, compliance, resources, and weather.</p><p>As predicted from Eq. ( <ref type="formula" target="#formula_25">1</ref>), the theoretical prevalence increases with the effective household size η * . Furthermore, there is a clear correlation between the effective household size η * and the observed prevalence α (Pearson's correlation 0.69 (95% CI: [0.63, 0.75]), p-value 4.16 × 10 −6 (95% CI: [2.78 × 10 −7 , 4.76 × 10 −5 ]) Fig. <ref type="figure">2C</ref>). Quantitatively, η * explains 40.6% (95% CI: [14.7%, 46.1%]) of the variance in the data (Fig. <ref type="figure">2D</ref>).</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Comparison of out-household contagion across European countries</head><p>Quantifying out-household disease spread via Rout offers a way to assess the effectiveness of NPIs in each country, factoring out the contribution of households to the overall dynamics. Using the observed prevalence for each country, we obtained country-specific distributions for Rout (Fig. <ref type="figure" target="#fig_1">3A</ref>) and its deviation from the European mean (Fig. <ref type="figure" target="#fig_1">3B</ref>), and sorted the countries in order of increasing median. This sorting induces a ranking for the (out-household) effectiveness of NPIs. As the positions in the ranking may vary for different sets of CIFR vectors, we obtained a distribution over the ranking positions for each country (Fig. <ref type="figure" target="#fig_1">3C</ref>). As in Fig. <ref type="figure">2</ref>, the same groups of countries fall into similar ranges (Fig. <ref type="figure" target="#fig_1">3</ref>), with countries of Central and Eastern Europe displaying higher values of Rout and thus ranking lower than the Nordic and island countries. It is thus necessary to understand the cultural and sociological processes behind the household structure and size that may induce such clustering.</p><p>The structure and size of households result from long-term economic and cultural processes, hence their variation across countries. For example, in 2020, there were more single-adult households without children Position in ranking C.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Low High</head><p>Probability density/mass and single-parent households with children in Nordic countries than in Central and Eastern Europe <ref type="bibr" target="#b26">[27]</ref>. Furthermore, a higher share of extended family households was found in central-eastern Europe, particularly in Bulgaria (17.3%), Poland (11.1%), Latvia (11.1%), and Romania (10.3%), whereas in Nordic countries, extended households constitute less than 1% <ref type="bibr" target="#b27">[28,</ref><ref type="bibr" target="#b28">29]</ref>. As shown in Fig. <ref type="figure" target="#fig_1">3A</ref>, the pattern of Rout across countries appears to align with differences in income, with lower-income countries generally experiencing higher Rout .</p><p>In contrast, Scandinavian and Western European countries show the opposite trend. An exception lies in Island states; Greece and Cyprus, which have low incomes, managed to maintain relatively low Rout .</p><p>During the COVID-19 pandemic, Socio-geo-economic factors have been linked to the levels of morbidity and mortality <ref type="bibr" target="#b29">[30,</ref><ref type="bibr" target="#b30">31]</ref>, and we show that the effectiveness of interventions in reducing out-household spread also seems to follow these patterns.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Human development index, household size, and COVID-19 prevalence</head><p>As seen in the previous sections, households have a pronounced impact on COVID-19 prevalence. However, they are also a structural part of major socioeconomic indicators, such as the Human Development Index (HDI), that are strongly correlated with the observed prevalence α (median Pearson correlation coefficient between COVID-19 prevalence and HDI: r = −0.79, median p-value p = 2.15 × 10 −8 Fig. <ref type="figure" target="#fig_2">4</ref>). Here, using the method of semi-partial correlation, we show that the effective household size explains a substantial portion of the correlation observed between COVID-19 prevalence and HDI. The semi-partial correlation is particularly useful for this purpose, as it quantifies how much of the correlation remains between the residuals of a regression curve (a linear model when another approach is not available) and another variable.</p><p>The semi-partial correlation between α and the HDI after accounting for the effective household size is lower than the Pearson correlation (median r = −0.52, p = 0.0015, Fig. <ref type="figure" target="#fig_2">4</ref>), implying that a large portion of the correlation between prevalence and HDI can be attributed to the influence of the household distribution (median reduction of 34.4% (95% CI: [11.1%, 94.3%]) Fig. <ref type="figure" target="#fig_2">4A</ref>). In contrast, its value when factoring out the out-household reproduction number (median r = −0.72, p = 1.09 • 10 −6 ) does not deviate as much from the original Pearson correlation, accounting for a weaker contribution (median reduction of 8.5% (95% CI: [3.6%, 18.6%]) Fig. <ref type="figure" target="#fig_2">4B</ref>). All values and confidence intervals are available in Table <ref type="table" target="#tab_3">S2</ref>. This example illustrates the importance of controlling for households in correlation models and how our theory enables us to do so.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Discussion</head><p>Because household contacts are closer than most other social interactions, it is intuitive that they may have a substantial impact on how epidemics unfold. This work presents a conceptual and theoretical framework for quantifying the extent of this effect and provides evidence for the impact of the household size distribution on COVID-19 spread.</p><p>Our framework enables us to isolate the contribution of households to disease spread, rewriting the epidemic threshold as the product of a household-boost factor B and a critical out-household reproduction number R crit out . The boost factor increases linearly with the effective household size η * , in line with the results of previous theories <ref type="bibr" target="#b7">[8,</ref><ref type="bibr" target="#b8">9,</ref><ref type="bibr" target="#b11">12]</ref>. This means that countries with larger households face a structural disadvantage and need stronger contact reduction between households to achieve the same containment levels. The out-household reproduction number Rout factors out the contribution of households while encompassing all factors contributing to out-household disease spread, including culture, weather, overall compliance with interventions, and their effectiveness, making it a comprehensive index. We therefore propose using Rout as a new index to measure and compare out-household contagion across countries or regions.</p><p>On the evidence side, we showed that households explain 40.6% (95% CI: [14.7%, 46.1%]) of the variance in COVID-19 incidence across 34 European countries. In fact, the correlation between the effective household size and the observed prevalence is strong (Pearson's correlation 0.69 (95% CI: [0.63, 0.75]) and statistically significant (median p-value 4.2 × 10 −6 ). We identified distinct groups of countries whose observed prevalence deviates from the reference curve, forming separate clusters. Deviations from this curve provide a measure of pandemic mitigation across countries, factoring out the contribution of households.</p><p>We extensively reviewed the literature to obtain accurate parameter values for our model. Regarding the in-household secondary attack rate a H , although increasing, the overall value across 81 studies published until June 2021 was 18.1% (95% CI: [15.4%-21.3%]) <ref type="bibr" target="#b31">[32,</ref><ref type="bibr" target="#b32">33]</ref>, and showed a weak dependence on household size. Additionally, our framework can be easily extended to incorporate vaccination, age groups, and other structural levels in contact patterns (e.g., workplaces), which may be relevant for secondary transmission <ref type="bibr" target="#b33">[34]</ref>.</p><p>Our approach to estimating the country-specific COVID-19 prevalence used an estimate of COVID-19-related deaths, as seroprevalence studies at the population scale and across all regions we analyzed were unavailable, e.g., in <ref type="bibr" target="#b34">[35]</ref>. There are several studies dedicated to the estimation of worldwide COVID-19-related deaths, e.g., <ref type="bibr" target="#b16">[17,</ref><ref type="bibr" target="#b35">36]</ref>; however, there are strong discrepancies from what local teams have reported (see, e.g., <ref type="bibr" target="#b36">[37]</ref><ref type="bibr" target="#b37">[38]</ref><ref type="bibr" target="#b38">[39]</ref><ref type="bibr" target="#b39">[40]</ref>). We conducted a comprehensive analysis and parameter scanning in the Supplementary Materials to confirm that our results remain valid within the reported parameter and variable ranges. We also tested and verified the reliability of our results using alternative methodologies and provided original data to support our parameter choices.</p><p>To sum up, household structure, a cornerstone of cultural diversity worldwide, is a resilient entity that endures despite the influence of contemporary economic and political factors. Understanding the structural challenges that countries and regions face due to their household structures and their potential to accelerate epidemics is an urgent need in our efforts to enhance preparedness and effectively respond to future threats to global public health.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Methods</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>The relation between prevalence, household structure, and out-household reproduction number</head><p>We consider a network SIR (susceptible-infectious-recovered) epidemic framework with households and possible time-varying out-household contact structures. Each infected individual in the network has an unknown out-household reproduction number ρ i at the time the individual became infected, where i indexes the cumulative set of infected individuals at time t, I (for ease of notation, we will ignore the explicit time dependence). The term infected involves the currently infectious and the recovered (assumed to be immune). We also assume a household-size-independent in-household secondary attack rate a H , although the theory remains valid for household-size-dependent attack rates.</p><p>Let the population be denoted by n (n ≫ 1), H k the number of households of size k, and H = H K the total number of households. The household size distribution η is thus defined as</p><formula xml:id="formula_3">η k = H k H . Let further E (η) = k kη k be the average household size. It follows that k kH k = n = H • E and hence H = n E .</formula><p>First, we compute the probability that an individual had an infectious out-household contact, p out . Note that having an infectious out-household contact does not mean the individual was infected by that contact, as they may already have been infected earlier by an infectious in-household contact. Let α denote the prevalence in the population, which, under the assumption of perfect immunity after infection, can be expressed as</p><formula xml:id="formula_4">α def = I n .</formula><p>For n → ∞ we obtain the probability for an infectious out-household contact p out as</p><formula xml:id="formula_5">p out = 1 − i∈I 1 − ρ i n (3) ≃ 1 − exp − 1 n ρ i (4) = 1 − exp − α I ρ i (5) = 1 − exp (−α • R out ) ,<label>(6)</label></formula><p>where Rout = i∈I ρi I is the average of the individual ρ i .</p><p>In the following, we show how the out-household infection probability p out and the household secondary attack rate a H (more generally, the assumptions on the in-household transmission probabilities) determine the expected number of infected household members. Let µ k = µ k (p out ) represent the expected number of infected individuals in a household of size k. Furthermore, η k and µ k are directly related to the prevalence α, enabling the computation of the out-household reproduction number Rout , given a H . We have, k≥1</p><formula xml:id="formula_6">H k µ k = α • n (7)</formula><p>and hence (8)</p><formula xml:id="formula_7">k≥1 η k µ k = E • α . (<label>9</label></formula><formula xml:id="formula_8">)</formula><p>For µ k (p out ) we have</p><formula xml:id="formula_9">µ k (p out ) = k l=1 d l,k k l p l out (1 − p out ) k−l , (<label>10</label></formula><formula xml:id="formula_10">)</formula><p>where d l,k is the expected number of infected individuals in a household of size k if l ≥ 1 household members were exposed to infection from outside the household. In general, d l,k can be expressed via recursions. In the following, we illustrate a possible way to compute d l,k when the in-household infection process is described via an Erdős-Rényi random graph model with edges representing infections with edge probability p k = p (k) (which might be different for different household sizes k). To compute d l,k , we have to estimate the probability that exactly m nodes are connected to at least one of the fixed l externally exposed household members. Let P l (m, k) be this probability. Let further Q l (k, p k ) be the probability that in a household of size k with l external exposures, all household members will become infected. As a natural consequence, Q l (l, p k ) = 1 always holds. We have</p><formula xml:id="formula_11">Q l (k, p k ) = 1 − k−1 m=l k − l m − l Q l (m, p k ) (1 − p k ) m(k−m)<label>(11)</label></formula><p>and</p><formula xml:id="formula_12">P l (m, k) = k − l m − l Q l (m, p k ) (1 − p k ) m(k−m) . (<label>12</label></formula><formula xml:id="formula_13">)</formula><p>Finally, we get</p><formula xml:id="formula_14">d l,k = k m=l mP l (m, k) . (<label>13</label></formula><formula xml:id="formula_15">)</formula><p>To start the recursion, one starts with Q l (l, p k ) = 1 and proceeds by iteratively computing Q l (l + i, p k ) for i = 1, 2, ... (up to households of size 6, as the Eurostat household size distributions are truncated at that value <ref type="bibr" target="#b23">[24]</ref>) using Eq. Lastly, to estimate the values of p k for different household sizes, we choose a fixed in-household secondary attack rate a H = 0.2 (assumed to be independent of the household size k), defined as the expected number of secondary cases generated from a first, single infection of the household from outside. Hence, we solve the above recursion equations for d l,k such that a H = (d 1,k − 1) / (k − 1) is equal to a constant a H . Once the d l,k have been computed as a function of the p k , one can solve the fixed point equation</p><formula xml:id="formula_16">k≥1 η k µ k = E • α,</formula><p>which has a nontrivial solution for p out and hence for Rout (Eq. 6) when the household reproduction number (defined in the next section, Eq. 17) is R H &gt; 1. The household reproduction number R H Here, we describe the initial infection process between households and derive the equation for the household reproduction number. The phase transition for the emergence of a giant component in random graphs with household structures and its relation to epidemics has already been studied in great detail in the works of F. Ball (see, e.g., <ref type="bibr" target="#b40">[41]</ref>). Here, we give a short derivation of the equation for the household reproduction number based on the theory of inhomogeneous random graphs. We consider a directed random graph model where edges stand for potential infectious contacts, where the probability that an infected individual i will infect an individual j is given by</p><formula xml:id="formula_17">Pr (i ⇝ j) = ρ i n . (<label>14</label></formula><formula xml:id="formula_18">)</formula><p>We assume that edges are independent, the values ρ i are independent of the household size, and the ρ i distribution has an asymptotic limiting distribution for large n with finite expectation R out,t . The network defined by this edge formation rule would be a directed Bollobas-Janson-Riordan graph <ref type="bibr" target="#b41">[42]</ref>, also known as an inhomogeneous random graph, if some mild conditions on the ρ i distribution were imposed, e.g., boundedness or a finite first moment. Additionally, the population is partitioned into households. Hence, the out-household network structure induces a network structure among the households. We can describe the household connectivity structure using a kernel that specifies the probability that an infected household of size x is connected to a household of size y (note that all edges represent infectious events). It is given by the household contact kernel κ H :</p><formula xml:id="formula_19">Pr (x ⇝ y) = κ H (x, y) H (15) κ H (x, y) = R out,t E (η) (1 + a h (x − 1)) • y, (<label>16</label></formula><formula xml:id="formula_20">)</formula><p>The connectivity properties of the network of households determine the epidemic threshold. The threshold criterion can be formulated as the condition that the household-reproduction number R H (defined as the average number of secondary households infected by an infected household) equals one. Applying the general theory for directed Bollobas-Janson-Riordan graphs <ref type="bibr" target="#b42">[43]</ref> (see also the appendix in <ref type="bibr" target="#b2">[3]</ref>), we obtain the household reproduction number</p><formula xml:id="formula_21">R H = R out,t (1 + a H (η * − 1)) , (<label>17</label></formula><formula xml:id="formula_22">)</formula><p>where the effective household size η * emerges as the quotient between the second and first statistical moments of η.</p><p>We close this section by providing a relation between the out-household reproduction number R out,t at a given time and the average out-household reproduction number Rout , averaged over all infected individuals in an outbreak. Recall that R out,t is the mean number of secondary cases generated by newly infected individuals at time t (here, we consider t to be a discrete-time unit, e.g., a day or a week, short enough that changes of R out,t within such a time unit can be neglected). Let furthermore I t be the newly infected individuals at time t. We then have the relation</p><formula xml:id="formula_23">Rout = T t=0 R out,t • I t / T t=0 I t . (<label>18</label></formula><formula xml:id="formula_24">)</formula></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Partial correlation analysis</head><p>The estimated prevalence α correlates with socioeconomic indicators, such as the Human Development Index (HDI) and its components. However, both quantities are (directly or indirectly) affected by other variables, such as the effective household size η * or the out-household reproduction number Rout . We aim to quantify how much of the correlation between prevalence and the HDI remains after excluding the contributions of those variables. The semi-partial correlation quantifies how much of the correlation remains between two variables (HDI and prevalence α) when the influence of a third variable is removed from only one of them (η * or Rout from COVID-19 prevalence) <ref type="bibr" target="#b43">[44]</ref>. In contrast, the partial correlation quantifies how much of the correlation remains after controlling for the variable that influences both variables. The following paragraph outlines how to compute both the partial and semi-partial correlations.</p><p>Generally, if the relationships among all variables are linear, the partial correlation can be computed as follows. Let X = (x 1 , ..., x N ) and Y = (y 1 , ..., y N ) be the correlating variables, and Z = (z 1 , ..., z N ) be the confounding variable that influences both X and Y . First, one conducts two separate linear regressions with the confounding variable, namely one between X and Z and the other between Y and Z. Let e X and e Y be the residuals of the two linear regressions. The partial correlation r XY,Z is then given by the Pearson correlation coefficient between the residuals e X and e Y . As the residuals represent the relationship not accounted for by the confounding variable, this method excludes its contribution. In case the confounding variable only influences X, the semi-partial correlation can be computed as the Pearson correlation between the residuals e X with the variable Y itself, i.e., without performing the linear regression between Y and Z.</p><p>In our case, the semi-partial correlation is computed as the Pearson correlation between the residuals e α and the HDI. However, because our framework provides a nonlinear theoretical relationship between the prevalence α and the confounding variables, the residuals e α are not computed via linear regression but rather using the theoretical prevalences as described in the main text. When the confounding variable is η * , the theoretical prevalences are computed assuming a common Rout across countries. Vice versa, when the confounding variable is Rout , theoretical prevalences are computed under the assumption of a constant household distribution across countries. The residuals are then correlated with the HDI across all samples for each IFR vector, yielding a distribution of semi-partial correlation coefficients.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Data sources</head><p>Prevalence estimates are based on annual population size, weekly deaths from all causes, and reported COVID-19 deaths (for details, see SI, Section S1.1.2). The first two datasets, covering 2015-2021, come from Eurostat. However, they are incomplete for some countries; for instance, overall death data are missing for Ireland, Luxembourg, and North Macedonia. Without complete all-cause mortality data, excess deaths cannot be estimated. Nevertheless, prevalence for these countries can still be inferred from officially reported COVID-19 deaths. To this end, we used a dataset of daily reported COVID-19 deaths from Johns Hopkins University, which covers all European countries, and aggregated it to weekly counts.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>S1 Extended methods</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>S1.1 Prevalence estimation</head><p>Estimating the prevalence α is a challenging task. For example, reporting practices and capabilities vary widely across countries, leading the number of officially reported COVID-19 cases to deviate substantially from the true number of cases. A more reliable method for obtaining a prevalence estimate involves using death reports and country-specific infection fatality rates (CIFRs). Given a death and a CIFR estimate, the prevalence α can be estimated by</p><formula xml:id="formula_25">α = D CIFR , (<label>1</label></formula><formula xml:id="formula_26">)</formula><p>where D is the number of deaths. Our approach to estimating the true prevalence consists of two steps. First, we estimate the CIFRs based on <ref type="bibr" target="#b24">[25,</ref><ref type="bibr" target="#b25">26]</ref>. Second, we estimate the true number of COVID-19 deaths using observed surplus and reported COVID-19-related deaths. We cover the period from the start of the pandemic until June 13th, 2021. We chose this end date for two reasons. First, it is early enough that mass vaccinations have not yet had a significant effect on reducing COVID-19-related deaths. Second, it represents a date at which infection numbers were low across all European countries <ref type="bibr" target="#b22">[23]</ref>.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>S1.1.1 Estimation of country-specific infection fatality rates (CIFRs)</head><p>Age is one of the dominant factors for COVID-19 severity and fatality risk <ref type="bibr" target="#b17">[18,</ref><ref type="bibr" target="#b25">26,</ref><ref type="bibr" target="#b44">45]</ref>. The marked exponential dependency of COVID-19 infection fatality rate (IFR) on age has some noise in the extremes of the very young and very old. We used the age-dependent IFR and confidence intervals reported in <ref type="bibr" target="#b25">[26]</ref>  </p><formula xml:id="formula_27">A k = a k 1 , a k 1 + 1, ..., a k 2 − 1, a k 2 . Let further ξ * = argmin ξ N s=1   IFR s i∈A s p i − i∈A s p i f IFR (i; ξ) i∈A s p i   2<label>(2)</label></formula><p>where ξ = [ α β γ δ ] and</p><formula xml:id="formula_28">f IF R (i; ξ) =e αh(i;ξ)+β (3) h(i; ξ) = i 2 − 1 2γ log cosh [γ(i − δ)] cosh [γ(−δ)] . (<label>4</label></formula><formula xml:id="formula_29">)</formula><p>These functions were selected to capture the exponential dependency of IFR on age, with saturation for high ages (above 90 years). In this context, Eq. 4 represents the saturation component of the exponent in Eq. 3.</p><p>For a given sample mortality curve parameter vector (ξ) (i.e., the result of reconstructing the mortality curve (f IFR ) from the uncertainty distributions at each point), we can estimate the country-specific IFR (scalar) as a weighted average using the above formula as follows</p><formula xml:id="formula_30">CIFR = M i=0 p i f IFR (i; ξ),<label>(5)</label></formula><p>5. For a specific value of γ, we calculate γ-extended COVID-19 deaths E a (T, γ):</p><formula xml:id="formula_31">E a (T, γ) := C a (T ) + γ • S a (T ) .</formula><p>This procedure is visually represented in Fig. <ref type="figure">S2</ref>. Compared to the officially reported COVID-19 deaths, this method substantially increases the death estimate in some countries (Fig. <ref type="figure" target="#fig_1">S3</ref>).</p><p>Combined with the IFR estimates, we thus obtain a distribution over prevalences (Fig. <ref type="figure" target="#fig_2">S4</ref>). </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>S1.1.3 Estimation of γ</head><p>One of the central parameters in our analysis is γ, i.e., the fraction of the surplus deaths attributable to COVID-19. However, this parameter is hard to estimate. Analyses of the availability and delivery of healthcare services during the pandemic support the hypothesis that excess mortality during the pandemic was mainly attributed to COVID-19-related infections.</p><p>Overall, excess mortality coincided with successive waves of infection, during which healthcare systems operated under unusual conditions. Mortality during these periods may have been related to direct SARS-CoV-2 infections or indirect effects related to healthcare access and delivery. To assess this, we analyzed data from the Polish National Health Fund on urgent medical interventions, including procedures such as treatment of stroke, heart attack, and aneurysm perforation. These services, if left untreated, usually lead to mortality within timescales comparable to waves of infection.</p><p>We use the following procedure to estimate the fraction γ of additional deaths that we attribute to being COVID-19 related.</p><p>Fig. <ref type="figure">S5</ref> shows a visual representation of this procedure. We estimate γ to lie in the range of γ ≈ 0.85, which we used in the analysis in the main text. </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>S1.1.4 Comparison of excess mortality estimates and γ-extended COVID-19 deaths</head><p>Estimates of excess mortality from Our World in Data are calculated using a linear model <ref type="bibr" target="#b13">[14]</ref>. The model is based on linear regression fitted to historical weekly mortality data from 2015-2019, which provides a baseline for expected deaths in subsequent years. Excess mortality is the cumulative difference between observed deaths in a given week and the model's predicted baseline for that week. This approach allows negative excess mortality in some weeks, which often yields lower excess mortality estimates than our method. In addition, the model does not include officially reported COVID-19 deaths in its estimates, which can result in even lower COVID-19 excess mortality estimates, particularly at the beginning of the pandemic.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>S2 Social determinants of household size</head><p>The COVID-19 pandemic has highlighted the social context's essential role in shaping responses to health crises, particularly that of households. As fundamental social units, households influence not only the transmission of infections but also the beliefs, behaviors, and coping strategies that guide individual responses to health emergencies. This study positions the household as the primary unit of analysis, recognizing that its diversity in size and structure is critical for understanding the dynamics of infection spread.</p><p>As illustrated in Fig. <ref type="figure">S8</ref>, the effective household size η * (i.e., mean household size plus a -positive-variancedependent correction factor) correlates with the out-household reproduction number Rout values. To understand how household size affects Rout and may shape pandemic-response patterns, we must view household structures as outcomes of long-run economic and cultural processes. A global trend toward smaller households has been evident for centuries, particularly in developed countries <ref type="bibr" target="#b45">[46]</ref>. This trend is particularly pronounced in Europe, though significant regional variation in household composition remains <ref type="bibr" target="#b46">[47,</ref><ref type="bibr" target="#b47">48]</ref>  There is a strong correlation between household size and the HDI (Fig. <ref type="figure" target="#fig_2">4A</ref>), particularly with the economic component (GNI). These West/North-East/South differences in household size can be analyzed using modernization theory. This theory posits that as societies undergo economic development, they experience structural and cultural changes that transform social institutions, including family structures, which directly affect household size (urbanization, industrialization, income growth, mobility) <ref type="bibr" target="#b58">[59,</ref><ref type="bibr" target="#b59">60]</ref>. Economic growth, a core element of modernization, promotes the emergence of more independent family units, leading to smaller households. As traditional values give way to individualistic cultural frameworks, societies shift from multigenerational households to nuclear families or single-person households <ref type="bibr" target="#b46">[47,</ref><ref type="bibr" target="#b57">58]</ref>. While HDI does not directly measure cultural patterns, it indirectly reflects cultural transformations driven by shifts in the economy and society. For example, the expansion of women's education increases their income potential, promotes financial independence, shapes career aspirations, often leads to lower fertility rates, and ultimately changes the accepted family model.</p><p>The size and structure of households are shaped by a combination of economic, cultural, and institutional factors. These same factors not only determine household size but also affect how societies respond to pandemics. For instance, factors like housing conditions, employment structures, and welfare support systems influence both household size and the ability to implement health measures such as isolation and social distancing. By analyzing the determinants of household size, we also gain insight into the broader mechanisms that shape pandemic risk and public health outcomes. These factors will be briefly discussed.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>S2.1 Economic factors</head><p>Economic conditions, particularly income levels and housing costs, shape household size across Europe. There is a reciprocal relationship between culture and household size: cultural values shape family size, and the model of family size reinforces certain cultural orientations. The size of a country's average family or household strongly correlates with cultural values, where larger households emphasize embeddedness, hierarchy, and mastery. These cultural orientations arise from societal norms that prioritize obedience, conformity, and collective interest to maintain order and effective coordination within large family structures. In turn, these norms foster cultural frameworks that support tradition, authority, and group cohesion, making autonomy and egalitarianism less compatible with such settings <ref type="bibr" target="#b70">[71]</ref>.</p><p>Culture also affects the strength of family ties, which is reflected in frequency of social contacts. For example, young adults in Southern and Eastern Europe often remain in the parental home for longer periods due to stronger social ties. By contrast, young adults in Western and Northern Europe leave home earlier, influenced by cultural norms promoting early independence and institutional support systems for housing and education. Cultural patterns significantly influence societal beliefs and behaviors, affecting compliance with restrictions during the COVID-19 pandemic <ref type="bibr" target="#b19">[20,</ref><ref type="bibr" target="#b71">[72]</ref><ref type="bibr" target="#b72">[73]</ref><ref type="bibr" target="#b73">[74]</ref><ref type="bibr" target="#b74">[75]</ref>.</p><p>For instance, Gelfand's research indicates that societies with strict social norms ("tight" cultures) experienced fewer COVID-19 cases and deaths compared to more permissive ("loose") cultures <ref type="bibr" target="#b75">[76]</ref>. Studies suggest that low trust in governments correlates with higher infection rates <ref type="bibr" target="#b76">[77]</ref>. In Nordic countries, there is a high level of trust, whereas in central-eastern-European countries, levels of trust in government and among individuals are markedly lower <ref type="bibr" target="#b30">[31]</ref>. Therefore, the variation in infection rates can be partly attributed to cultural patterns influencing adherence to restrictions and the prevailing levels of trust within a society. </p></div><figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_0"><head>Figure 1 :</head><label>1</label><figDesc>Figure 1: Disease spread from the perspective of households. A. Disease spread can be categorized into the contagion occurring outside and inside of households. ρi quantifies the number of potentially contagious contacts of an individual i. The out-household reproduction number Rout is defined as the mean ρi, averaged over all infectious individuals in an outbreak I. Once an infectious individual enters a household of size k, the in-household secondary attack rate aH quantifies the in-household outbreak as the fraction of the k − 1 members who are infected. The household reproduction number RH is defined as the expected number of households a typical infectious household infects. B. Variation of the effective household size η * across European countries. C. Methods overview: Using age-dependent infection fatality rates (IFRs) and country demographics, we obtained country-specific IFR samples (CIFRs). Combined with an estimate for the number of COVID-19 deaths, we estimated the COVID-19 prevalence (cumulative incidence) for each country. Finally, combining country-specific prevalences, household size distributions, and in-household secondary attack rates, we computed the out-household reproduction number Rout.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_1"><head>Figure 3 :</head><label>3</label><figDesc>Figure 3: Out-household COVID-19 spread across European countries. A, B. Using our prevalence estimations and country-specific infection fatality rates (CIFR), we computed the Rout distributions (A) and their deviations from the European mean (B) (countries ranked in order of increasing median) for the timeframe between January 1st, 2020, and June 13th, 2021. C. As positions in the ranking for different CIFR vectors are correlated, we obtained a distribution over the possible ranking spots for each country. Vertical lines represent the median and 95% CIs, and color bars represent the probability density or mass.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_2"><head>Figure 4 :</head><label>4</label><figDesc>Figure 4: Effective household size η * and the out-household rep. number Rout influence the correlation between COVID-19 prevalence α and the Human Development Index (HDI). We used the semi-partial correlation to quantify the relative change in the correlation (Pearson vs. semi-partial) between α and HDI when removing the influence of η * (A) and Rout (B) from α.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_3"><head>11 .</head><label>11</label><figDesc>With the Q l (l, p k ) one proceeds to compute the P l (m, k) and d l,k . With the d l,k one can compute the µ k (p out ), via which one solves k≥1 η k µ k = E • α for p out . Via Eq. 6, this offers a relation between the prevalence α, the household size distribution η, and the out-household reproduction number Rout .</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_4"><head></head><label></label><figDesc>Example estimation of total COVID-19 deaths for Bulgaria and Spain. The blue curve shows the maximal weekly deaths over 2015-2019. It is added to the officially reported COVID-19 deaths (green curve). If the overall deaths in any given week during the pandemic exceed this green curve (orange shaded area), we attribute a fraction γ of these additional deaths as being COVID-19 related. This way, we obtain the γ-extended COVID-19 death estimate. The dashed line represents the end date of our γ-extended deaths and prevalence estimations.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_5"><head></head><label></label><figDesc>: A. Number of emergency procedures due to all causes except COVID-19 in Poland, before and during the pandemic. B. Cumulative deviation from historical trends, which is a proxy for γ.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_1"><head>Differences in the effective household size can explain about 40% of the variation in COVID-19 prevalence across European countries in the first pandemic year. A. We</head><label></label><figDesc></figDesc><table><row><cell>A.</cell><cell></cell><cell></cell><cell>B.</cell><cell></cell><cell></cell></row><row><cell>Bulgaria Hungary Czechia Albania Slovakia United Kingdom Poland North Macedonia Montenegro Romania Belgium Lithuania Italy Sweden Slovenia France Spain Luxembourg Germany Portugal Austria Switzerland Serbia Netherlands Latvia Croatia Denmark Estonia Finland Norway Malta Ireland Greece Cyprus Iceland</cell><cell>A</cell><cell></cell><cell></cell><cell>C</cell><cell></cell></row><row><cell cols="3">3.0 Out-household rep. number Rout B 0.0 0.1 0.2 0.3 0.4 Prevalence 0.8 1.0 1.2</cell><cell>3.5 −20</cell><cell>4.0 nordic western eastern islands EU model Rout,EUROPE − 1 [%] D Rout 0 20</cell><cell>0.6 Pearson correlation 0.7 40 0 10</cell><cell>20</cell><cell>30</cell></row><row><cell>Residuals</cell><cell>0.0 0.2 0.2</cell><cell cols="3">3.0 Effective household size 3.5 4.0</cell><cell>0.2 Explained variance 0.4</cell></row><row><cell cols="7">Figure 2: analyzed a hypothetical scenario</cell></row><row><cell cols="7">where all European countries had the same out-household spread (computed by treating Europe as a single country),</cell></row><row><cell cols="7">namely, the same conditions (NPIs, climate, social culture) except for their household size distribution. By doing so,</cell></row><row><cell cols="7">we calculated theoretical prevalences (gray crosses and black dashed line) and interpreted deviations from them as</cell></row><row><cell cols="7">differences in the effective reduction of out-household contagion across countries (B). Besides the strong correlation</cell></row><row><cell cols="7">between observed prevalence and effective household size (C), the latter explains 40.6% (95% CI: [14.7%, 46.1%])</cell></row><row><cell cols="7">of the variance observed in the former (D). Countries are color-coded as follows: Nordic countries (blue), Western</cell></row><row><cell cols="7">European countries (green), and post-communist countries of Central and Eastern Europe (red), and island countries</cell></row><row><cell cols="7">(yellow). Note that, following the method in Fig. 1C, the result is a distribution of theoretical prevalence, which is not</cell></row><row><cell cols="7">shown in this figure for clarity. A larger version with country labels is available in the Supplementary Section S7.</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_2"><head>Table 1 :</head><label>1</label><figDesc>Model variables.</figDesc><table><row><cell cols="2">Variable Name</cell><cell>Formula</cell><cell></cell></row><row><cell>ρ i</cell><cell>Individual out-household reproduction</cell><cell>-</cell><cell></cell></row><row><cell></cell><cell>number</cell><cell></cell><cell></cell></row><row><cell>Rout</cell><cell>Average out-household reproduction</cell><cell>Rout = 1 I</cell><cell>ρ i</cell></row><row><cell></cell><cell>number</cell><cell></cell><cell></cell></row><row><cell>η  *</cell><cell>Effective household size</cell><cell cols="2">E (η) + Var(η) E(η)</cell></row><row><cell>α</cell><cell>Prevalence</cell><cell>-</cell><cell></cell></row><row><cell>B</cell><cell>Household boost factor</cell><cell cols="2">B = 1 + a H (η  *  − 1)</cell></row><row><cell>R H</cell><cell>Household reproduction number</cell><cell>R</cell><cell></cell></row></table><note>H = R out,t B</note></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_3"><head>Table 2 :</head><label>2</label><figDesc>Model parameters.</figDesc><table><row><cell>Parameter Name</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_5"><head></head><label></label><figDesc>(Esteve  et al., 2023; N-IUSSP, 2023). Household structure across Europe can be categorized into four broad regions: Western, Eastern, Southern, and Nordic Europe. This distinction, first conceptualized by Frédéric Le Play in the 1870s and later popularized by John Hajnal in the 1960s, reflects enduring patterns of family composition<ref type="bibr" target="#b48">[49,</ref><ref type="bibr" target="#b49">50]</ref>. Studies support this categorization, with Nordic countries exhibiting a high prevalence of single-person households, Western Europe dominated by nuclear families, Southern Europe characterized by larger family units, and Eastern Europe showing extended family systems<ref type="bibr" target="#b50">[51]</ref><ref type="bibr" target="#b51">[52]</ref><ref type="bibr" target="#b52">[53]</ref><ref type="bibr" target="#b53">[54]</ref><ref type="bibr" target="#b54">[55]</ref><ref type="bibr" target="#b55">[56]</ref><ref type="bibr" target="#b56">[57]</ref><ref type="bibr" target="#b57">[58]</ref>.</figDesc><table /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_6"><head></head><label></label><figDesc>Wealthier regions like Western and Northern Europe exhibit smaller households, often nuclear families or single-person units, driven by financial independence and strong social safety nets. Countries such as Switzerland and Luxembourg, which report the highest GNI and disposable incomes, illustrate this trend. Even in Northern Europe, where welfare systems reduce disposable income (e.g., Norway: $32,514; Denmark: $25,859), household sizes remain small due to comprehensive welfare systems. In contrast, Southern and Eastern Europe face greater economic challenges, such as lower GNI and higher unemployment, housing cost and poor welfare system leading to larger household sizes. Families in countries like Italy (GNI: $39,294) and Greece (GNI: $21,391) often rely on shared resources and multigenerational living due to limited financial independence. This pattern is most prominent in Eastern Europe, where lower disposable incomes, as seen in Romania ($12,635) and Bulgaria ($12,092), drive families toward shared living arrangements. Data reported in<ref type="bibr" target="#b60">[61,</ref><ref type="bibr" target="#b61">62]</ref>. Better housing conditions reduce overcrowding in wealthier countries like the Netherlands and Belgium. By contrast, overcrowding rates exceeding in Bulgaria, Latvia, Romania, and Poland (over 1/3 people living in an overcrowded household) result in higher household density, driven by inadequate housing and economic insecurity<ref type="bibr" target="#b28">[29,</ref><ref type="bibr" target="#b62">63,</ref><ref type="bibr" target="#b63">64]</ref>, which may elevate infection risk during pandemics.Modernization theory explains how differences in economic development between Western/Northern and Eastern/Southern Europe shape employment structures. Consequently, varying levels of economic growth are expected to result in differences in occupational structure and work organization, which can play a crucial role in pandemic control, i.e., the share of the labor force working in the industry, services where there is frequent social contact and professionals with less social contact and possible remote work. For instance, higher economic development in Western and Northern Europe facilitates greater use of remote work and flexible work arrangements, reducing physical proximity and the risk of infection. Remote work rates in 2020 were highest in Finland (24.82%), Luxembourg (23.01%), and Ireland (21.13%). In contrast, remote work was less common in Southern and Eastern Europe, with Latvia (2.87%), Romania (3.18%), and Croatia (3.48%) reporting the lowest rates. In regions with lower economic development, like Eastern and Southern Europe, employment is often concentrated in site-specific sectors such as manufacturing, construction, and mining, where on-site presence is essential, increasing exposure to infection risks. Occupations requiring physical presence faced higher risks of infection and suffered more significant economic consequences. In contrast, those able to work from home were better protected both health-wise and economically, underscoring the importance of remote work capabilities in mitigating the effects of public health crises<ref type="bibr" target="#b64">[65]</ref><ref type="bibr" target="#b65">[66]</ref><ref type="bibr" target="#b66">[67]</ref><ref type="bibr" target="#b67">[68]</ref>.</figDesc><table /><note>S2.2 Cultural factorsCultural factors reinforce the East-South versus West-North divide in household size. Culture values such as embededdness, collectivism, more pronounced in the East and South, contribute to larger, multigenerational households, while autonomy &amp; individualist values in the West and North support smaller, nuclear, or single-person households<ref type="bibr" target="#b68">[69,</ref><ref type="bibr" target="#b69">70]</ref>.</note></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_7"><head>Table S1 :</head><label>S1</label><figDesc>Data overview. CIFR denotes the country-infection fatality rate, D the officially reported COVID-19 deaths, S the surplus deaths (Sec. S1.1.2), α the estimated prevalence, η and η * the mean and effective household size respectively, and Rout the out-household reproduction number. For countries marked with an asterisk (*), prevalence is based on officially reported COVID-19 deaths due to missing data on overall fatalities. Europe (**) uses aggregated data from countries without an asterisk. For distributions, values represent the median and values in brackets the 95% CI. .<ref type="bibr" target="#b37">38</ref>, 1.01] 8.62 20.51 42.67 [25.70, 68.81] 3.63 4.23 0.87 [0.73, 1.36] Austria 1.01 [0.79, 1.50] 14.27 0.07 13.50 [9.54, 18.13] 2.20 2.93 0.79 [0.77, 0.82] Belgium 1.01 [0.81, 1.50] 21.57 0.64 20.64 [14.78, 27.41] 2.27 3.01 0.83 [0.78, 0.88] Bulgaria 1.00 [0.75, 1.53] 25.42 19.41 40.02 [27.46, 55.74] 2.37 3.15 0.96 [0.84, 1.18] Croatia 1.02 [0.78, 1.54] 19.55 2.22 20.09 [13.95, 27.62] 2.71 3.46 0.77 [0.73, 0.83] Cyprus 0.78 [0.58, 1.22] 3.92 1.01 5.84 [3.91, 8.21] 2.64 3.31 0.71 [0.70, 0.73] Czechia 0.92 [0.69, 1.41] 27.90 3.28 32.07 [21.79, 44.75] 2.34 2.96 0.91 [0.83, 1.05] France 1.08 [0.87, 1.56] 16.05 0.26 14.22 [10.40, 18.62] 2.14 2.82 0.81 [0.78, 0.84] Germany 1.15 [0.91, 1.68] 10.51 0.78 9.24 [6.64, 12.30] 2.00 2.64 0.80 [0.78, 0.82] Greece 1.18 [0.95, 1.71] 11.16 0.97 9.58 [7.00, 12.60] 2.55 3.22 0.74 [0.72, 0.76] Hungary 0.94 [0.71, 1.44] 30.25 3.21 33.51 [22.97, 46.33] 2.30 3.02 0.92 [0.83, 1.06] Italy 1.25 [1.00, 1.79] 21.12 5.05 19.34 [14.19, 25.37] 2.30 2.95 0.82 [0.79, 0.87] Latvia 1.04 [0.81, 1.55] 12.33 2.51 13.20 [9.31, 17.86] 2.24 2.96 0.79 [0.76, 0.82] Lithuania 1.04 [0.82, 1.55] 14.86 5.09 17.46 [12.35, 23.55] 2.16 2.83 0.82 [0.79, 0.87] Luxembourg* 0.78 [0.60, 1.22] 12.86 0.00 15.55 [10.55, 21.37] 2.28 2.95 0.80 [0.77, 0.84] Montenegro 0.73 [0.53, 1.17] 25.45 2.18 35.62 [23.30, 51.40] 3.26 4.06 0.83 [0.73, 1.02] Netherlands 0.95 [0.73, 1.44] 10.01 2.12 11.83 [8.20, 16.20] 2.14 2.86 0.79 [0.77, 0.82] North Maced.* 0.66 [0.45, 1.09] 25.92 0.00 38.06 [23.86, 57.46] 3.52 4.14 0.84 [0.72, 1.11] Norway 0.88 [0.68, 1.33] 1.45 0.00 1.57 [1.09, 2.13] 1.97 2.68 0.76 [0.75, 0.76] Poland 0.89 [0.67, 1.35] 19.31 11.92 31.85 [21.74, 43.94] 2.76 3.56 0.85 [0.77, 0.97] Portugal 1.14 [0.90, 1.67] 16.40 3.49 16.20 [11.62, 21.60] 2.46 3.01 0.80 [0.77, 0.84] Romania 0.92 [0.70, 1.40] 15.69 11.65 26.55 [18.23, 36.62] 2.57 3.38 0.83 [0.76, 0.92] Serbia 0.96 [0.71, 1.47] 9.85 17.62 24.82 [16.90, 34.73] 2.84 3.62 0.79 [0.74, 0.88] Slovakia 0.78 [0.56, 1.23] 22.39 5.02 33.02 [21.71, 47.26] 2.86 3.56 0.85 [0.77, 1.01] Slovenia 1.02 [0.79, 1.53] 20.35 1.46 20.15 [14.13, 27.30] 2.44 3.13 0.81 [0.77, 0.87] Spain 1.08 [0.87, 1.58] 17.26 4.79 18.69 [13.51, 24.65] 2.49 3.11 0.80 [0.77, 0.85] Sweden 1.00 [0.79, 1.48] 14.16 0.00 13.40 [9.55, 17.91] 1.98 2.71 0.82 [0.79, 0.85] Switzerland 0.99 [0.78, 1.47] 12.29 0.86 12.50 [8.84, 16.75] 2.18 2.88 0.79 [0.77, 0.82] United Kingdom 0.94 [0.75, 1.42] 22.89 1.85 24.35 [17.22, 32.65] 2.31 2.98 0.85 [0.80, 0.93]</figDesc><table><row><cell></cell><cell>CIFR</cell><cell>D</cell><cell>S</cell><cell>α</cell><cell>E</cell><cell>η  *</cell><cell>Rout</cell></row><row><cell cols="3">Albania 0.60 [0Denmark 0.96 [0.73, 1.44] 4.23</cell><cell>0.08</cell><cell>4.29 [2.98, 5.86]</cell><cell cols="3">1.98 2.64 0.77 [0.77, 0.78]</cell></row><row><cell>Estonia</cell><cell cols="2">1.02 [0.80, 1.52] 9.36</cell><cell>0.08</cell><cell>8.74 [6.20, 11.73]</cell><cell cols="3">2.11 2.85 0.77 [0.76, 0.79]</cell></row><row><cell>Finland</cell><cell cols="2">1.08 [0.84, 1.58] 1.74</cell><cell>0.37</cell><cell>1.83 [1.30, 2.46]</cell><cell cols="3">1.96 2.65 0.76 [0.76, 0.76]</cell></row><row><cell>Iceland</cell><cell cols="2">0.73 [0.56, 1.15] 0.97</cell><cell>0.00</cell><cell>1.25 [0.84, 1.72]</cell><cell cols="3">2.32 3.10 0.71 [0.71, 0.71]</cell></row><row><cell>Ireland*</cell><cell cols="2">0.73 [0.54, 1.13] 9.88</cell><cell>0.00</cell><cell cols="4">13.06 [8.74, 18.21] 2.62 3.38 0.74 [0.72, 0.78]</cell></row><row><cell>Malta</cell><cell cols="2">0.87 [0.67, 1.36] 8.13</cell><cell>0.10</cell><cell>8.83 [6.02, 12.27]</cell><cell cols="3">2.46 3.14 0.74 [0.73, 0.77]</cell></row></table></figure>
+		</body>
+		<back>
+
+			<div type="acknowledgement">
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Acknowledgements</head><p>We thank the Priesemann group for the exciting discussions and their valuable input. Authors with affiliation "1" received support from the Max-Planck-Society. SC, PD, VP, and TK were funded by the German Federal Ministry for Education and Research for the RESPINOW project (031L0298G), and SC, VP, and JW by the infoXpand project (031L0300A). VP was supported by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) under Germany's Excellence Strategy -EXC 2067/1-390729940. VP also acknowledges the support of the Ministry of Science and Culture of Lower Saxony through funds from the program zukunft.niedersachsen of the Volkswagen Foundation for the 'CAIMed -Lower Saxony Center for Artificial Intelligence and Causal Methods in Medicine' project (grant no. ZN4257), "Niedersächsisches Vorab", and the Niedersachsen-Profil-Professur. TK acknowledges support from the Government of Saxony through the SaxoCOV grant. Grammarly Pro AI has been used for grammar checks.</p></div>
+			</div>
+
+			<div type="annex">
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Author Contributions</head><p>Conceptualization: JPB, TK, VP Data curation: FR, JW, MF, PD Formal analysis: JPB, JW, MF, PD, TK, VB Funding acquisition: SC, TK, VP Investigation: BP, FR, JPB, JW, MB, MF, PD, SC, VP Methodology: FR, JPB, MB, PD, TK Project administration: SC, TK, VP Resources: TK, VP Software: JPB, JW, MF, PD, JPB Supervision: SC, TK, VP Validation: all Visualization: JW, MF, PD, SC Writing -Original Draft: BP, FR, JPB, JW, MF, PD, SC, TK, VP Writing -Review &amp; Editing: all</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Supplementary Material</head><p>The Supplementary Material provides an in-depth overview of our research methodology, including detailed analysis methods and data sources. It includes a sensitivity analysis that assesses the robustness of our results to modeling assumptions, data source uncertainties, and key parameters. Additionally, an expanded sociological analysis of our findings is presented, along with supplementary figures and tables that display the data referenced in the manuscript and define relevant variables and parameters. where p i is a fraction of the population at age i in a given country and M is the maximum age in the population. Note that the mortality curve is the same for all countries (for the same params vector ξ) and that the differences in CIFRs between countries are due to the population's age profile (demographics).</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Contents</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>S1.1.2 Estimation of γ-extended COVID-19 deaths</head><p>Determining the true number of COVID-19-related deaths D is challenging, e.g., because many COVID-19 reported deaths were not officially counted as such. To find an accurate estimate, we thus add the officially reported COVID-19 deaths to the maximum number of weekly deaths over previous years -if we observed even more deaths than that, we attribute a fraction γ of those to being COVID-19 related (Fig. <ref type="figure">S2</ref>). We call this estimate the γ-extended number of COVID-19 deaths. Similar adjustments are sometimes also known as excess deaths <ref type="bibr" target="#b22">[23]</ref>.</p><p>In particular, we use the following procedure.</p><p>1. We normalize deaths D a (T ) in the year J using population size P a (J)</p><p>2. We find the maximum number of deaths in each week w over previous years</p><p>{d a (T )} .</p><p>3. Using a three-week moving average, we smoothen the maximum deaths</p><p>4. We calculate surplus deaths S a (T ) as  where N j = w if j = J and N j = 52 if j &lt; J .</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>S2.3 Institutional factors</head><p>Finally, institutional factors, i.e., society's forms of organizations, shape household size and influence pandemic outcomes. The North/West vs. East/South divide is reflected in the prevalence of co-residence between older and younger family members and the availability of formalized care facilities for the elderly. When stateprovided care is limited, family-based care increases, leading to higher co-residence rates within households. Welfare states in Scandinavia provide support through childcare, eldercare, and housing assistance, enabling individual independence and smaller household sizes. For instance, in Nordic countries such as Norway (highest), Denmark, Finland, and Sweden, over 12% of the 80+ population reside in formalized care facilities for older people. This rate rises to 16% in Luxembourg and Switzerland and 24% in Belgium. In contrast, Poland exhibits much lower rates, with less than 1% of the 65+ population living in formalized care facilities, increasing only slightly to 1.6% for the 80+ population (https://nhwstat.org/). State-funded eldercare systems reduce co-residence rates for older adults. For instance, 5% of those over 65 in Nordic countries live with younger household members (aged 50 or below), compared to 38% in Poland-the highest rate in Europe <ref type="bibr" target="#b60">[61,</ref><ref type="bibr" target="#b77">78]</ref>. Weaker welfare systems in Southern and Eastern Europe increase reliance on family support, leading to larger, multigenerational households. While eldercare systems reduce co-residence, they also increase the share of older adults living in formal care institutions. During the COVID-19 pandemic, this arrangement posed infection risks in eldercare facilities, highlighting the dual role of welfare systems in shaping household structure and pandemic outcomes.</p><p>In summary, prolonged modernization processes-such as shifts in labor market structures, technological advancements, and changes in income distribution-have significantly influenced family models and household sizes. While numerous studies emphasize the impact of cultural factors, our analysis of correlations and partial correlations reveals a discernible pattern: economic and structural factors exert a more substantial influence on social contact structure. We interpret this as follows: structural factors directly shape individual behaviors by limiting opportunities for social interactions (e.g., household size or remote work), whereas cultural factors, being more nuanced, affect social networks in a complex and indirect manner.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>S3 Robustness check</head><p>Given the uncertainty around the IFR and the fraction of surplus deaths that are to be attributed to COVID-19 (γ), we proceed iteratively, sampling from the IFR distribution (multivariable) to generate several IFR vectors, which will yield new estimates for the country IFR. We repeat this procedure 50 000 times and estimate a distribution for the theoretical prevalence according to equation 1. This allows us to quantify not only the out-household reproduction number (and thereby have a fair way to compare pandemic management, ruling out the effect of households), but also the uncertainty around this value. The overall methodology is summarized in Fig. <ref type="figure">1C</ref>.  </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>S4 Supplementary Tables</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>S5 Supplementary Figures</head><p>Table <ref type="table">S2</ref>:     The effective household size η * defines a critical out-household reproduction number that, if exceeded, leads to a household reproduction number RH &gt; 1. Countries with a high effective household size η * have to reduce the out-household reproduction number substantially lower to contain an outbreak than countries with a low η * . Note that all countries lie in the supercritical region, as they all experienced COVID-19 outbreaks.</p></div>			</div>
+			<div type="references">
+
+				<listBibl>
+
+<biblStruct xml:id="b0">
+	<analytic>
+		<title level="a" type="main">Individual social contact data and population mobility data as early markers of sars-cov-2 transmission dynamics during the first wave in germany-an analysis based on the covimod study</title>
+		<author>
+			<persName><forename type="first">Victoria</forename><surname>Damilola</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Nicole</forename><surname>Tomori</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tom</forename><surname>Rübsamen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Stefan</forename><surname>Berger</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jasmin</forename><surname>Scholz</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ian</forename><surname>Walde</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Berit</forename><surname>Wittenberg</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Alexander</forename><surname>Lange</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Johannes</forename><surname>Kuhlmann</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Rafael</forename><surname>Horn</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Mikolajczyk</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">BMC medicine</title>
+		<imprint>
+			<biblScope unit="volume">19</biblScope>
+			<biblScope unit="page" from="1" to="13" />
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b1">
+	<analytic>
+		<title level="a" type="main">Social contact patterns during the covid-19 pandemic in 21 european countries-evidence from a two-year study</title>
+		<author>
+			<persName><forename type="first">Kerry Lm</forename><surname>Wong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Amy</forename><surname>Gimma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Pietro</forename><surname>Coletti</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Christel</forename><surname>Faes</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Philippe</forename><surname>Beutels</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Niel</forename><surname>Hens</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Veronika</forename><forename type="middle">K</forename><surname>Jaeger</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Andre</forename><surname>Karch</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Helen</forename><surname>Johnson</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">BMC infectious diseases</title>
+		<imprint>
+			<biblScope unit="volume">23</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page">268</biblScope>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b2">
+	<analytic>
+		<title level="a" type="main">Sir model for households</title>
+		<author>
+			<persName><forename type="first">Philipp</forename><surname>Dönges</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Thomas</forename><surname>Götz</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Nataliia</forename><surname>Kruchinina</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tyll</forename><surname>Krüger</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Karol</forename><surname>Niedzielewski</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Viola</forename><surname>Priesemann</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Moritz</forename><surname>Schäfer</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">SIAM Journal on Applied Mathematics</title>
+		<imprint>
+			<biblScope unit="volume">84</biblScope>
+			<biblScope unit="issue">4</biblScope>
+			<biblScope unit="page" from="1460" to="1481" />
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b3">
+	<analytic>
+		<title level="a" type="main">Estimation of introduction and transmission rates of sars-cov-2 in a prospective household study</title>
+		<author>
+			<persName><surname>Michiel Van Boven</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ilse</forename><surname>Christiaan H Van Dorp</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Vincent</forename><surname>Westerhof</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Valerie</forename><surname>Jaddoe</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Liesbeth</forename><surname>Heuvelman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Elandri</forename><surname>Duijts</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Judith</forename><surname>Fourie</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Marlies</forename><forename type="middle">A</forename><surname>Sluiter-Post</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Paul</forename><surname>Van Houten</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Badoux</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">PLOS Computational Biology</title>
+		<imprint>
+			<biblScope unit="volume">20</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page">e1011832</biblScope>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b4">
+	<analytic>
+		<title level="a" type="main">Population age and household structures shape transmission dynamics of emerging infectious diseases: a longitudinal microsimulation approach</title>
+		<author>
+			<persName><forename type="first">Signe</forename><surname>Møgelmose</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Laurens</forename><surname>Vijnck</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Frank</forename><surname>Neven</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Karel</forename><surname>Neels</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Philippe</forename><surname>Beutels</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Niel</forename><surname>Hens</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of the Royal Society Interface</title>
+		<imprint>
+			<biblScope unit="volume">20</biblScope>
+			<biblScope unit="issue">209</biblScope>
+			<biblScope unit="page">20230087</biblScope>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b5">
+	<analytic>
+		<title level="a" type="main">The impact of household size on measles transmission: A long-term perspective</title>
+		<author>
+			<persName><forename type="first">Subekshya</forename><surname>Bidari</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Wan</forename><surname>Yang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Epidemics</title>
+		<imprint>
+			<biblScope unit="volume">49</biblScope>
+			<biblScope unit="page">100791</biblScope>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b6">
+	<analytic>
+		<title level="a" type="main">Incorporating household structure and demography into models of endemic disease</title>
+		<author>
+			<persName><forename type="first">Joe</forename><surname>Hilton</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Matt</forename><forename type="middle">J</forename><surname>Keeling</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of the Royal Society Interface</title>
+		<imprint>
+			<biblScope unit="volume">16</biblScope>
+			<biblScope unit="issue">157</biblScope>
+			<biblScope unit="page">20190317</biblScope>
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b7">
+	<analytic>
+		<title level="a" type="main">Epidemics with two levels of mixing</title>
+		<author>
+			<persName><forename type="first">Frank</forename><surname>Ball</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Denis</forename><surname>Mollison</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Gianpaolo</forename><surname>Scalia-Tomba</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">The Annals of Applied Probability</title>
+		<imprint>
+			<biblScope unit="page" from="46" to="89" />
+			<date type="published" when="1997">1997</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b8">
+	<analytic>
+		<title level="a" type="main">Epidemics among a population of households</title>
+		<author>
+			<persName><forename type="first">G</forename><surname>Frank</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Owen</forename><forename type="middle">D</forename><surname>Ball</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Lyne</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Mathematical Approaches for Emerging and Reemerging Infectious Diseases: Models, Methods, and Theory</title>
+				<imprint>
+			<publisher>Springer</publisher>
+			<date type="published" when="2002">2002</date>
+			<biblScope unit="page" from="115" to="142" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b9">
+	<analytic>
+		<title level="a" type="main">Modeling household effects in epidemics</title>
+		<author>
+			<persName><forename type="first">Thomas</forename><surname>Götz</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Toward a Multiscale, Multidisciplinary Framework through Modeling and Simulation</title>
+				<imprint>
+			<publisher>Springer</publisher>
+			<date type="published" when="2024">2024</date>
+			<biblScope unit="volume">2</biblScope>
+			<biblScope unit="page" from="71" to="97" />
+		</imprint>
+	</monogr>
+	<note>Predicting Pandemics in a Globally Connected World</note>
+</biblStruct>
+
+<biblStruct xml:id="b10">
+	<monogr>
+		<title level="m" type="main">Sir-model for households</title>
+		<author>
+			<persName><forename type="first">Philipp</forename><surname>Doenges</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Thomas</forename><surname>Götz</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tyll</forename><surname>Krueger</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Karol</forename><surname>Niedzielewski</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Viola</forename><surname>Priesemann</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Moritz</forename><surname>Schaefer</surname></persName>
+		</author>
+		<idno>page 2301.04355</idno>
+		<imprint>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b11">
+	<analytic>
+		<title level="a" type="main">Deterministic epidemic models with explicit household structure</title>
+		<author>
+			<persName><forename type="first">Thomas</forename><surname>House</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Matt</forename><forename type="middle">J</forename><surname>Keeling</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Mathematical biosciences</title>
+		<imprint>
+			<biblScope unit="volume">213</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page" from="29" to="39" />
+			<date type="published" when="2008">2008</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b12">
+	<analytic>
+		<title level="a" type="main">Household structure and infectious disease transmission</title>
+		<author>
+			<persName><forename type="first">T</forename><surname>House</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Matthew</forename><forename type="middle">James</forename><surname>Keeling</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Epidemiology &amp; Infection</title>
+		<imprint>
+			<biblScope unit="volume">137</biblScope>
+			<biblScope unit="issue">5</biblScope>
+			<biblScope unit="page" from="654" to="661" />
+			<date type="published" when="2009">2009</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b13">
+	<analytic>
+		<title level="a" type="main">Tracking excess mortality across countries during the covid-19 pandemic with the world mortality dataset</title>
+		<author>
+			<persName><forename type="first">Ariel</forename><surname>Karlinsky</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dmitry</forename><surname>Kobak</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Elife</title>
+		<imprint>
+			<biblScope unit="volume">10</biblScope>
+			<biblScope unit="page">e69336</biblScope>
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b14">
+	<analytic>
+		<title level="a" type="main">Understanding the effectiveness of government interventions against the resurgence of covid-19 in europe</title>
+		<author>
+			<persName><forename type="first">Mrinank</forename><surname>Sharma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sören</forename><surname>Mindermann</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Charlie</forename><surname>Rogers-Smith</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Gavin</forename><surname>Leech</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Benedict</forename><surname>Snodin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Janvi</forename><surname>Ahuja</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jonas</forename><forename type="middle">B</forename><surname>Sandbrink</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Joshua</forename><forename type="middle">Teperowski</forename><surname>Monrad</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">George</forename><surname>Altman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Gurpreet</forename><surname>Dhaliwal</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nature communications</title>
+		<imprint>
+			<biblScope unit="volume">12</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page">5820</biblScope>
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b15">
+	<analytic>
+		<title level="a" type="main">A global panel database of pandemic policies (oxford covid-19 government response tracker)</title>
+		<author>
+			<persName><forename type="first">Thomas</forename><surname>Hale</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Noam</forename><surname>Angrist</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Rafael</forename><surname>Goldszmidt</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Beatriz</forename><surname>Kira</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Anna</forename><surname>Petherick</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Toby</forename><surname>Phillips</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Samuel</forename><surname>Webster</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Emily</forename><surname>Cameron-Blake</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Laura</forename><surname>Hallas</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Saptarshi</forename><surname>Majumdar</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nature human behaviour</title>
+		<imprint>
+			<biblScope unit="volume">5</biblScope>
+			<biblScope unit="issue">4</biblScope>
+			<biblScope unit="page" from="529" to="538" />
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b16">
+	<analytic>
+		<title level="a" type="main">Estimating excess mortality due to the covid-19 pandemic: a systematic analysis of covid-19-related mortality, 2020-21</title>
+		<author>
+			<persName><forename type="first">Haidong</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Katherine</forename><forename type="middle">R</forename><surname>Paulson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Spencer</forename><forename type="middle">A</forename><surname>Pease</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Stefanie</forename><surname>Watson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Haley</forename><surname>Comfort</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Peng</forename><surname>Zheng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Catherine</forename><surname>Aleksandr Y Aravkin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ryan</forename><forename type="middle">M</forename><surname>Bisignano</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tahiya</forename><surname>Barber</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Alam</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">The Lancet</title>
+		<imprint>
+			<biblScope unit="volume">399</biblScope>
+			<biblScope unit="issue">10334</biblScope>
+			<biblScope unit="page" from="1513" to="1536" />
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b17">
+	<analytic>
+		<title level="a" type="main">Age-specific mortality and immunity patterns of SARS-CoV-2</title>
+		<author>
+			<persName><forename type="first">Megan O'</forename><surname>Driscoll</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Gabriel</forename><surname>Ribeiro</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dos</forename><surname>Santos</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Lin</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Derek</forename><forename type="middle">A T</forename><surname>Cummings</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Andrew</forename><forename type="middle">S</forename><surname>Azman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Juliette</forename><surname>Paireau</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Arnaud</forename><surname>Fontanet</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Simon</forename><surname>Cauchemez</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Henrik</forename><surname>Salje</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nature</title>
+		<imprint>
+			<biblScope unit="volume">590</biblScope>
+			<biblScope unit="page" from="140" to="145" />
+			<date type="published" when="2021">7844. 2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b18">
+	<analytic>
+		<title level="a" type="main">The influence of social and economic ties to the spread of covid-19 in europe</title>
+		<author>
+			<persName><forename type="first">Ryohei</forename><surname>Mogi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jeroen</forename><surname>Spijker</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of Population Research</title>
+		<imprint>
+			<biblScope unit="volume">39</biblScope>
+			<biblScope unit="issue">4</biblScope>
+			<biblScope unit="page" from="495" to="511" />
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b19">
+	<analytic>
+		<title level="a" type="main">The impact of national culture on the increase of covid-19: A cross-country analysis of european countries</title>
+		<author>
+			<persName><forename type="first">Yildirim</forename><surname>Gokmen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Cigdem</forename><surname>Baskici</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yavuz</forename><surname>Ercil</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">International Journal of Intercultural Relations</title>
+		<imprint>
+			<biblScope unit="volume">81</biblScope>
+			<biblScope unit="page" from="1" to="8" />
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b20">
+	<analytic>
+		<title level="a" type="main">Unlocking the importance of perceived governance: The impact on covid-19 in nuts-2 european regions</title>
+		<author>
+			<persName><forename type="first">Vincenzo</forename><surname>Alfano</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Social Science &amp; Medicine</title>
+		<imprint>
+			<biblScope unit="volume">343</biblScope>
+			<biblScope unit="page">116590</biblScope>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b21">
+	<analytic>
+		<title level="a" type="main">Socioeconomic differences in covid-19 infection, hospitalisation and mortality in urban areas in a region in the south of europe</title>
+		<author>
+			<persName><forename type="first">Rafael</forename><surname>Nicolás F Fernández-Martínez</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Diana</forename><surname>Ruiz-Montero</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Alejandro</forename><surname>Gómez-Barroso</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Nicola</forename><surname>Rodríguez-Torronteras</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Inmaculada</forename><surname>Lorusso</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Luis</forename><surname>Salcedo-Leal</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Sordo</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">BMC Public Health</title>
+		<imprint>
+			<biblScope unit="volume">22</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page">2316</biblScope>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b22">
+	<monogr>
+		<author>
+			<persName><forename type="first">Hannah</forename><surname>Ritchie</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Edouard</forename><surname>Mathieu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Lucas</forename><surname>Rodés-Guirao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Cameron</forename><surname>Appel</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Charlie</forename><surname>Giattino</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Esteban</forename><surname>Ortiz-Ospina</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Joe</forename><surname>Hasell</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bobbie</forename><surname>Macdonald</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Diana</forename><surname>Beltekian</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Max</forename><surname>Roser</surname></persName>
+		</author>
+		<ptr target="https://ourworldindata.org/coronavirus" />
+		<title level="m">Coronavirus pandemic (covid-19)</title>
+				<imprint>
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+	<note>Our World in Data</note>
+</biblStruct>
+
+<biblStruct xml:id="b23">
+	<monogr>
+		<title level="m" type="main">Distribution of households by household size</title>
+		<imprint>
+			<date type="published" when="2022-06-22">2022. June, 22 2022</date>
+			<publisher>Eurostat</publisher>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b24">
+	<analytic>
+		<author>
+			<persName><forename type="first">Robert</forename><surname>Brazeau</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sara</forename><surname>Verity</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Han</forename><surname>Jenks</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Charles</forename><surname>Fu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Peter</forename><surname>Whittaker</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ilaria</forename><surname>Winskill</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Patrick</forename><surname>Dorigatti</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Steven</forename><surname>Walker</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ricardo</forename><forename type="middle">P</forename><surname>Riley</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Schnekenberg</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Covid-19 infection fatality ratio: estimates from seroprevalence</title>
+				<imprint>
+			<date type="published" when="2020">2020</date>
+			<biblScope unit="volume">34</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b25">
+	<analytic>
+		<title level="a" type="main">Estimating the covid-19 infection fatality ratio accounting for seroreversion using statistical modelling</title>
+		<author>
+			<persName><forename type="first">Robert</forename><surname>Nicholas F Brazeau</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sara</forename><surname>Verity</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Han</forename><surname>Jenks</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Charles</forename><surname>Fu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Peter</forename><surname>Whittaker</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ilaria</forename><surname>Winskill</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Dorigatti</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><forename type="middle">T</forename><surname>Patrick</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Steven</forename><surname>Walker</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ricardo</forename><forename type="middle">P</forename><surname>Riley</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Schnekenberg</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Communications medicine</title>
+		<imprint>
+			<biblScope unit="volume">2</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page">54</biblScope>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b26">
+	<monogr>
+		<title level="m">How many single-parent households are there in the eu? -products | eurostat news</title>
+				<imprint>
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b27">
+	<monogr>
+		<title level="m" type="main">People in the eu: Who are we and how do we live?</title>
+		<imprint>
+			<date type="published" when="2015-01-15">2015. January 15, 2025</date>
+			<publisher>Eurostat</publisher>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b28">
+	<monogr>
+		<title level="m" type="main">The 2021 population and housing censuses in the eu</title>
+		<imprint>
+			<date type="published" when="2021-01-15">2021. January 15, 2025</date>
+			<publisher>Eurostat European Commission</publisher>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b29">
+	<analytic>
+		<title level="a" type="main">The trouble with trust: Time-series analysis of social capital, income inequality, and covid-19 deaths in 84 countries</title>
+		<author>
+			<persName><forename type="first">Anna</forename><surname>Frank J Elgar</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Stefaniak</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">A</forename><surname>Michael</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Wohl</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Social science &amp; medicine</title>
+		<imprint>
+			<biblScope unit="volume">263</biblScope>
+			<biblScope unit="page">113365</biblScope>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b30">
+	<analytic>
+		<title level="a" type="main">East central europe in the covid-19 crisis</title>
+		<author>
+			<persName><forename type="first">Dorothee</forename><surname>Bohle</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Edgars</forename><surname>Eihmanis</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">East European Politics</title>
+		<imprint>
+			<biblScope unit="volume">38</biblScope>
+			<biblScope unit="issue">4</biblScope>
+			<biblScope unit="page" from="491" to="506" />
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b31">
+	<analytic>
+		<title level="a" type="main">Household transmission of sars-cov-2: a systematic review and meta-analysis</title>
+		<author>
+			<persName><forename type="first">Zachary</forename><forename type="middle">J</forename><surname>Madewell</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yang</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ira</forename><forename type="middle">M</forename><surname>Longini</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Elizabeth</forename><surname>Halloran</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Natalie</forename><forename type="middle">E</forename><surname>Dean</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">JAMA network open</title>
+		<imprint>
+			<biblScope unit="volume">3</biblScope>
+			<biblScope unit="issue">12</biblScope>
+			<biblScope unit="page" from="e2031756" to="e2031756" />
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b32">
+	<analytic>
+		<title level="a" type="main">Factors associated with household transmission of sars-cov-2: an updated systematic review and meta-analysis</title>
+		<author>
+			<persName><forename type="first">Zachary</forename><forename type="middle">J</forename><surname>Madewell</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yang</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ira</forename><forename type="middle">M</forename><surname>Longini</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Elizabeth</forename><surname>Halloran</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Natalie</forename><forename type="middle">E</forename><surname>Dean</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">JAMA network open</title>
+		<imprint>
+			<biblScope unit="volume">4</biblScope>
+			<biblScope unit="issue">8</biblScope>
+			<biblScope unit="page" from="e2122240" to="e2122240" />
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b33">
+	<analytic>
+		<title level="a" type="main">Household secondary attack rates of sars-cov-2 by variant and vaccination status: an updated systematic review and meta-analysis</title>
+		<author>
+			<persName><forename type="first">Zachary</forename><forename type="middle">J</forename><surname>Madewell</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yang</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ira</forename><forename type="middle">M</forename><surname>Longini</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Elizabeth</forename><surname>Halloran</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Natalie</forename><forename type="middle">E</forename><surname>Dean</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">JAMA network open</title>
+		<imprint>
+			<biblScope unit="volume">5</biblScope>
+			<biblScope unit="issue">4</biblScope>
+			<biblScope unit="page" from="e229317" to="e229317" />
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b34">
+	<analytic>
+		<title level="a" type="main">Serotracker: a global sars-cov-2 seroprevalence dashboard</title>
+		<author>
+			<persName><forename type="first">Abel</forename><surname>Rahul K Arora</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jordan</forename><surname>Joseph</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Simona</forename><surname>Van Wyk</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Austin</forename><surname>Rocco</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ewan</forename><surname>Atmaja</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tingting</forename><surname>May</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Niklas</forename><surname>Yan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jonathan</forename><surname>Bobrovitz</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Matthew</forename><forename type="middle">P</forename><surname>Chevrier</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Cheng</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">The Lancet Infectious Diseases</title>
+		<imprint>
+			<biblScope unit="volume">21</biblScope>
+			<biblScope unit="issue">4</biblScope>
+			<biblScope unit="page" from="e75" to="e76" />
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b35">
+	<analytic>
+		<title level="a" type="main">The who estimates of excess mortality associated with the covid-19 pandemic</title>
+		<author>
+			<persName><forename type="first">William</forename><surname>Msemburi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ariel</forename><surname>Karlinsky</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Victoria</forename><surname>Knutson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Serge</forename><surname>Aleshin-Guendel</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Somnath</forename><surname>Chatterji</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jon</forename><surname>Wakefield</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nature</title>
+		<imprint>
+			<biblScope unit="volume">613</biblScope>
+			<biblScope unit="page" from="130" to="137" />
+			<date type="published" when="2023">7942. 2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b36">
+	<analytic>
+		<title level="a" type="main">Conflicting covid-19 excess mortality estimates</title>
+		<author>
+			<persName><forename type="first">Peter</forename><surname>Bager</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jens</forename><surname>Nielsen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Samir</forename><surname>Bhatt</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Lise</forename><surname>Birk Nielsen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tyra</forename><forename type="middle">Grove</forename><surname>Krause</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Lasse Skafte</forename><surname>Vestergaard</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">The Lancet</title>
+		<imprint>
+			<biblScope unit="volume">401</biblScope>
+			<biblScope unit="issue">10375</biblScope>
+			<biblScope unit="page" from="432" to="433" />
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b37">
+	<analytic>
+		<title level="a" type="main">Conflicting covid-19 excess mortality estimates</title>
+		<author>
+			<persName><forename type="first">Matshidiso</forename><surname>Moeti</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Lindiwe</forename><surname>Makubalo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Abdou</forename><surname>Salam Gueye</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Thierno</forename><surname>Balde</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Humphrey</forename><surname>Karamagi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Gordon</forename><surname>Awandare</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Feifei</forename><surname>Thumbi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Francisca</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mark</forename><surname>Mutapi</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Woolhouse</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">The Lancet</title>
+		<imprint>
+			<biblScope unit="volume">401</biblScope>
+			<biblScope unit="issue">10375</biblScope>
+			<biblScope unit="page">431</biblScope>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b38">
+	<analytic>
+		<title level="a" type="main">Conflicting covid-19 excess mortality estimates</title>
+		<author>
+			<persName><forename type="first">O'</forename><surname>Desmond</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Neill</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">The Lancet</title>
+		<imprint>
+			<biblScope unit="volume">401</biblScope>
+			<biblScope unit="issue">10375</biblScope>
+			<biblScope unit="page">431</biblScope>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b39">
+	<analytic>
+		<title level="a" type="main">Conflicting covid-19 excess mortality estimates</title>
+		<author>
+			<persName><forename type="first">Jonas</forename><surname>Schöley</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ariel</forename><surname>Karlinsky</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dmitry</forename><surname>Kobak</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Charles</forename><surname>Tallack</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">The Lancet</title>
+		<imprint>
+			<biblScope unit="volume">401</biblScope>
+			<biblScope unit="issue">10375</biblScope>
+			<biblScope unit="page">431</biblScope>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b40">
+	<analytic>
+		<title level="a" type="main">Reproduction numbers for epidemic models with households and other social structures. i. definition and calculation of r0</title>
+		<author>
+			<persName><forename type="first">Lorenzo</forename><surname>Pellis</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Frank</forename><surname>Ball</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Pieter</forename><surname>Trapman</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Mathematical Biosciences</title>
+		<imprint>
+			<biblScope unit="volume">235</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page" from="85" to="97" />
+			<date type="published" when="2012">2012</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b41">
+	<analytic>
+		<title level="a" type="main">The phase transition in inhomogeneous random graphs</title>
+		<author>
+			<persName><forename type="first">Béla</forename><surname>Bollobás</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Svante</forename><surname>Janson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Oliver</forename><surname>Riordan</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Random Structures &amp; Algorithms</title>
+		<imprint>
+			<biblScope unit="volume">31</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page" from="3" to="122" />
+			<date type="published" when="2007">2007</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b42">
+	<analytic>
+		<title level="a" type="main">Connectivity of a general class of inhomogeneous random digraphs</title>
+		<author>
+			<persName><forename type="first">Junyu</forename><surname>Cao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mariana</forename><surname>Olvera-Cravioto</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Random Structures &amp; Algorithms</title>
+		<imprint>
+			<biblScope unit="volume">56</biblScope>
+			<biblScope unit="issue">3</biblScope>
+			<biblScope unit="page" from="722" to="774" />
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b43">
+	<analytic>
+		<title level="a" type="main">Partial correlation and conditional correlation as measures of conditional independence</title>
+		<author>
+			<persName><forename type="first">Kunihiro</forename><surname>Baba</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ritei</forename><surname>Shibata</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Masaaki</forename><surname>Sibuya</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Australian &amp; New Zealand Journal of Statistics</title>
+		<imprint>
+			<biblScope unit="volume">46</biblScope>
+			<biblScope unit="issue">4</biblScope>
+			<biblScope unit="page" from="657" to="664" />
+			<date type="published" when="2004">2004</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b44">
+	<analytic>
+		<title level="a" type="main">Assessing the age specificity of infection fatality rates for COVID-19: systematic review, meta-analysis, and public policy implications</title>
+		<author>
+			<persName><forename type="first">William</forename><forename type="middle">P</forename><surname>Andrew T Levin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Nana</forename><surname>Hanage</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Kensington</forename><forename type="middle">B</forename><surname>Owusu-Boaitey</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Seamus</forename><forename type="middle">P</forename><surname>Cochran</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Gideon</forename><surname>Walsh</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Meyerowitz-Katz</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">European Journal of Epidemiology</title>
+		<imprint>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b45">
+	<analytic>
+		<title level="a" type="main">Long-term dynamics of household size and their environmental implications</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Bradbury</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">N</forename><surname>Peterson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Liu</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Population and Environment</title>
+		<imprint>
+			<biblScope unit="volume">36</biblScope>
+			<biblScope unit="page" from="73" to="84" />
+			<date type="published" when="2014">2014</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b46">
+	<analytic>
+		<title level="a" type="main">A global perspective on household size and composition, 1970-2020</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Esteve</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Pohl</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Becca</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Genus</title>
+		<imprint>
+			<biblScope unit="volume">80</biblScope>
+			<biblScope unit="issue">2</biblScope>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b47">
+	<monogr>
+		<title level="m">International Union for the Scientific Study of Population (IUSSP). Annual activities and management report</title>
+				<imprint>
+			<date type="published" when="2023-01-15">2023. January 15, 2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b48">
+	<monogr>
+		<author>
+			<persName><forename type="first">Frédéric</forename><surname>Le</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Play</forename></persName>
+		</author>
+		<title level="m">Les ouvriers européens</title>
+				<imprint>
+			<date type="published" when="1877">1877</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b49">
+	<analytic>
+		<title level="a" type="main">European marriage patterns in perspective</title>
+		<author>
+			<persName><forename type="first">J</forename></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Population in history: Essays in historical demography</title>
+				<editor>
+			<persName><forename type="first">D</forename><forename type="middle">V</forename><surname>Glass</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">D</forename><forename type="middle">E C</forename><surname>Eversley</surname></persName>
+		</editor>
+		<meeting><address><addrLine>London and Chicago</addrLine></address></meeting>
+		<imprint>
+			<publisher>Aldine Publishing Company</publisher>
+			<date type="published" when="1965">1965</date>
+			<biblScope unit="page" from="101" to="143" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b50">
+	<analytic>
+		<title level="a" type="main">Family and household as work group and kin group: Areas of traditional europe compared</title>
+		<author>
+			<persName><forename type="first">Peter</forename><surname>Laslett</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Family Forms in Historic Europe</title>
+				<editor>
+			<persName><forename type="first">R</forename><surname>Wall</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">J</forename><surname>Robin</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">P</forename><surname>Laslett</surname></persName>
+		</editor>
+		<imprint>
+			<publisher>Cambridge University Press</publisher>
+			<date type="published" when="1983">1983</date>
+			<biblScope unit="page" from="513" to="564" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b51">
+	<analytic>
+		<title level="a" type="main">Two kinds of preindustrial household formation system</title>
+		<author>
+			<persName><forename type="first">J</forename></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Population and Development Review</title>
+		<imprint>
+			<biblScope unit="volume">8</biblScope>
+			<biblScope unit="issue">3</biblScope>
+			<biblScope unit="page" from="449" to="494" />
+			<date type="published" when="1982">1982</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b52">
+	<analytic>
+		<title level="a" type="main">Explaining cross-national differences in marriage, cohabitation, and divorce in europe, 1990-2000</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Kalmijn</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Population Studies</title>
+		<imprint>
+			<biblScope unit="volume">61</biblScope>
+			<biblScope unit="issue">3</biblScope>
+			<biblScope unit="page" from="243" to="263" />
+			<date type="published" when="2007">2007</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b53">
+	<analytic>
+		<title level="a" type="main">Patterns of family living in the enlarged eu</title>
+		<author>
+			<persName><forename type="first">C</forename><surname>Saraceno</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Handbook of Quality of Life in the Enlarged European Union</title>
+				<editor>
+			<persName><forename type="first">J</forename><surname>Alber</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">T</forename><surname>Fahey</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">C</forename><surname>Saraceno</surname></persName>
+		</editor>
+		<meeting><address><addrLine>London and New York</addrLine></address></meeting>
+		<imprint>
+			<publisher>Routledge</publisher>
+			<date type="published" when="2008">2008</date>
+			<biblScope unit="page" from="47" to="72" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b54">
+	<analytic>
+		<title level="a" type="main">Family ties in western europe: Persistent contrasts</title>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">S</forename><surname>Reher</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Population and Development Review</title>
+		<imprint>
+			<biblScope unit="volume">24</biblScope>
+			<biblScope unit="issue">2</biblScope>
+			<biblScope unit="page" from="203" to="234" />
+			<date type="published" when="1998">1998</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b55">
+	<analytic>
+		<title level="a" type="main">Patterns of family living</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Iacovou</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Social Europe: Living Standards and Welfare States</title>
+				<editor>
+			<persName><forename type="first">M</forename><surname>Iacovou</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">R</forename><surname>Berthoud</surname></persName>
+		</editor>
+		<imprint>
+			<publisher>Edward Elgar Publishing</publisher>
+			<date type="published" when="2004">2004</date>
+			<biblScope unit="page" from="21" to="44" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b56">
+	<analytic>
+		<title level="a" type="main">Spatial construction of european family and household systems: a promising path or a blind alley? an eastern european perspective</title>
+		<author>
+			<persName><forename type="first">Mikołaj</forename><surname>Szołtysek</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Continuity and Change</title>
+		<imprint>
+			<biblScope unit="volume">27</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page" from="11" to="52" />
+			<date type="published" when="2012">2012</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b57">
+	<analytic>
+		<title level="a" type="main">Household composition across the new europe: Where do the new member states fit in?</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Iacovou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">J</forename><surname>Skew</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Demographic Research</title>
+		<imprint>
+			<biblScope unit="volume">25</biblScope>
+			<biblScope unit="issue">14</biblScope>
+			<biblScope unit="page" from="465" to="490" />
+			<date type="published" when="2011">2011</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b58">
+	<monogr>
+		<title level="m" type="main">The Consequences of Modernity</title>
+		<author>
+			<persName><forename type="first">Anthony</forename><surname>Giddens</surname></persName>
+		</author>
+		<imprint>
+			<date type="published" when="1990">1990</date>
+			<publisher>Stanford University Press</publisher>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b59">
+	<analytic>
+		<title level="a" type="main">Family structure and modernization</title>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">W</forename><surname>Van Den Ban</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of Marriage and Family</title>
+		<imprint>
+			<biblScope unit="volume">29</biblScope>
+			<biblScope unit="issue">4</biblScope>
+			<biblScope unit="page" from="771" to="773" />
+			<date type="published" when="1967">1967</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b60">
+	<monogr>
+		<title level="m">Organisation for Economic Co-operation and Development (OECD)</title>
+				<imprint>
+			<publisher>OECD Data</publisher>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+	<note>Gross disposable income per capita of households and npish</note>
+</biblStruct>
+
+<biblStruct xml:id="b61">
+	<monogr>
+		<title level="m" type="main">Living conditions in Europe -housing</title>
+		<imprint>
+			<date type="published" when="2022-01-17">2022. January 17, 2025</date>
+			<publisher>Eurostat</publisher>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b62">
+	<monogr>
+		<title level="m">Household composition and well-being</title>
+				<imprint>
+			<publisher>Publications Office of the European Union</publisher>
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b63">
+	<monogr>
+		<title level="m" type="main">Unaffordable and inadequate housing in europe</title>
+		<author>
+			<persName><forename type="first">H</forename><surname>Dubois</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Nivkoski</surname></persName>
+		</author>
+		<imprint>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b64">
+	<analytic>
+		<title level="a" type="main">The short-term economic consequences of covid-19: Exposure to disease, remote work and government response</title>
+		<author>
+			<persName><forename type="first">L-P</forename><surname>Beland</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Brodeur</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Wright</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">PLoS ONE</title>
+		<imprint>
+			<biblScope unit="volume">18</biblScope>
+			<biblScope unit="issue">3</biblScope>
+			<biblScope unit="page">e0270341</biblScope>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b65">
+	<analytic>
+		<title level="a" type="main">Occupational exposure to covid-19: A systematic review of the literature</title>
+		<author>
+			<persName><surname>Fadel</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Gilbert</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Legeay</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Occupational and Environmental Medicine</title>
+		<imprint>
+			<biblScope unit="volume">79</biblScope>
+			<biblScope unit="page" from="782" to="789" />
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b66">
+	<monogr>
+		<title level="m" type="main">Covid-19 and remote work: An early look at us data</title>
+		<author>
+			<persName><surname>Brynjolfsson</surname></persName>
+		</author>
+		<imprint>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b67">
+	<analytic>
+		<title level="a" type="main">Sarscov-2 infection among employees working from home and on site: An occupational study in switzerland</title>
+		<author>
+			<persName><surname>Schmid</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Anker</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">I</forename><surname>Dubois</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Bureau-Franz</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Piccardi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Colombo Mottaz</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Rodondi</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Frontiers in Public Health</title>
+		<imprint>
+			<biblScope unit="volume">10</biblScope>
+			<biblScope unit="page">980482</biblScope>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b68">
+	<analytic>
+		<title level="a" type="main">Modernization, cultural change, and the persistence of traditional values</title>
+		<author>
+			<persName><forename type="first">Ronald</forename><surname>Inglehart</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Wayne</forename><forename type="middle">E</forename><surname>Baker</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">American Sociological Review</title>
+		<imprint>
+			<biblScope unit="volume">65</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page" from="19" to="51" />
+			<date type="published" when="2000">2000</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b69">
+	<analytic>
+		<title level="a" type="main">National culture as value orientations: Consequences of value differences and cultural distance</title>
+		<author>
+			<persName><forename type="first">Shalom</forename><forename type="middle">H</forename><surname>Schwartz</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Handbook of the Economics of Art and Culture</title>
+				<editor>
+			<persName><forename type="first">A</forename><surname>Victor</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">David</forename><surname>Ginsburgh</surname></persName>
+		</editor>
+		<editor>
+			<persName><surname>Throsby</surname></persName>
+		</editor>
+		<imprint>
+			<publisher>Elsevier</publisher>
+			<date type="published" when="2014">2014</date>
+			<biblScope unit="volume">2</biblScope>
+			<biblScope unit="page" from="547" to="586" />
+		</imprint>
+	</monogr>
+	<note>See p. 558 for detailed discussion</note>
+</biblStruct>
+
+<biblStruct xml:id="b70">
+	<analytic>
+		<title level="a" type="main">A theory of cultural value orientations: Explication and applications</title>
+		<author>
+			<persName><forename type="first">Shalom</forename><forename type="middle">H</forename><surname>Schwartz</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Comparative Sociology</title>
+		<imprint>
+			<biblScope unit="volume">5</biblScope>
+			<biblScope unit="issue">2-3</biblScope>
+			<biblScope unit="page" from="137" to="182" />
+			<date type="published" when="2006">2006</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b71">
+	<analytic>
+		<title level="a" type="main">Culture and covid-19-related mortality: a cross-sectional study of 50 countries</title>
+		<author>
+			<persName><forename type="first">Andreas</forename><surname>Käffer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jörg</forename><surname>Mahlich</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of Public Health Policy</title>
+		<imprint>
+			<biblScope unit="volume">43</biblScope>
+			<biblScope unit="page" from="413" to="430" />
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b72">
+	<analytic>
+		<title level="a" type="main">The role of culture on 2020 sars-cov-2 country deaths: a pandemic management based on cultural dimensions</title>
+		<author>
+			<persName><forename type="first">Alexander</forename><surname>Ibanez</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Gaurav</forename><forename type="middle">S</forename><surname>Sisodia</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">GeoJournal</title>
+		<imprint>
+			<biblScope unit="volume">87</biblScope>
+			<biblScope unit="issue">2</biblScope>
+			<biblScope unit="page" from="1175" to="1191" />
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b73">
+	<analytic>
+		<title level="a" type="main">Culture and contagion: Individualism and compliance with covid-19 policy</title>
+		<author>
+			<persName><forename type="first">Chia-Ying</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Carl</forename><forename type="middle">Benedikt</forename><surname>Frey</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Giorgio</forename><surname>Presidente</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of Economic Behavior &amp; Organization</title>
+		<imprint>
+			<biblScope unit="volume">190</biblScope>
+			<biblScope unit="page" from="191" to="200" />
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b74">
+	<analytic>
+		<title level="a" type="main">Impact of national culture on the severity of the covid-19 pandemic</title>
+		<author>
+			<persName><forename type="first">Yining</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Md</forename><surname>Iqbal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Biswas</forename></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Current Psychology</title>
+		<imprint>
+			<biblScope unit="volume">42</biblScope>
+			<biblScope unit="page" from="15813" to="15826" />
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b75">
+	<analytic>
+		<title level="a" type="main">The relationship between cultural tightness-looseness and covid-19 cases and deaths: a global analysis</title>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">J</forename><surname>Gelfand</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">C</forename><surname>Jackson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Pan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Nau</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Pieper</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Denison</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Wang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">The Lancet Planetary Health</title>
+		<imprint>
+			<biblScope unit="volume">5</biblScope>
+			<biblScope unit="issue">3</biblScope>
+			<biblScope unit="page" from="e135" to="e144" />
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b76">
+	<analytic>
+		<title level="a" type="main">Pandemic preparedness and covid-19: an exploratory analysis of infection and fatality rates, and contextual factors associated with preparedness in177 countries, from jan1,2020 to sept30</title>
+		<author>
+			<persName><forename type="first">T</forename><forename type="middle">J</forename><surname>Bollyky</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><forename type="middle">N</forename><surname>Hulland</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">M</forename><surname>Barber</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">K</forename><surname>Collins</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Kiernan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Moses</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">L</forename><surname>Dieleman</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">The Lancet</title>
+		<imprint>
+			<biblScope unit="volume">399</biblScope>
+			<biblScope unit="issue">10334</biblScope>
+			<biblScope unit="page" from="1489" to="1512" />
+			<date type="published" when="2021">2021. 2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b77">
+	<monogr>
+		<title level="m">Young people -housing conditions</title>
+				<imprint>
+			<publisher>Eurostat</publisher>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+	<note>Statistics Explained</note>
+</biblStruct>
+
+				</listBibl>
+			</div>
+		</back>
+	</text>
+</TEI>

@@ -1,0 +1,699 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xml:space="preserve" xmlns="http://www.tei-c.org/ns/1.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.tei-c.org/ns/1.0 https://raw.githubusercontent.com/kermitt2/grobid/master/grobid-home/schemas/xsd/Grobid.xsd"
+ xmlns:xlink="http://www.w3.org/1999/xlink">
+	<teiHeader xml:lang="en">
+		<fileDesc>
+			<titleStmt>
+				<title level="a" type="main">Morphological instability of an invasive active-passive interface</title>
+			</titleStmt>
+			<publicationStmt>
+				<publisher/>
+				<availability status="unknown"><licence/></availability>
+				<date type="published" when="2026-02-12">February 12, 2026</date>
+			</publicationStmt>
+			<sourceDesc>
+				<biblStruct>
+					<analytic>
+						<author>
+							<persName><forename type="first">Sumit</forename><surname>Sinha</surname></persName>
+							<affiliation key="aff0">
+								<orgName type="department">School of Engineering and Applied Sciences</orgName>
+								<orgName type="institution">Harvard University</orgName>
+								<address>
+									<postCode>02138</postCode>
+									<settlement>Cambridge</settlement>
+									<region>MA</region>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Haiqian</forename><surname>Yang</surname></persName>
+							<affiliation key="aff1">
+								<orgName type="department">Department of Mechanical Engineering</orgName>
+								<orgName type="institution">Massachusetts Institute of Technology</orgName>
+								<address>
+									<addrLine>77 Massachusetts Ave</addrLine>
+									<postCode>02139</postCode>
+									<settlement>Cambridge</settlement>
+									<region>MA</region>
+									<country key="US">USA</country>
+								</address>
+							</affiliation>
+						</author>
+						<author role="corresp">
+							<persName><forename type="first">L</forename><surname>Mahadevan</surname></persName>
+							<email>lmahadev@g.harvard.edu</email>
+							<affiliation key="aff0">
+								<orgName type="department">School of Engineering and Applied Sciences</orgName>
+								<orgName type="institution">Harvard University</orgName>
+								<address>
+									<postCode>02138</postCode>
+									<settlement>Cambridge</settlement>
+									<region>MA</region>
+								</address>
+							</affiliation>
+							<affiliation key="aff2">
+								<orgName type="department">Department of Physics</orgName>
+								<orgName type="institution">Harvard University</orgName>
+								<address>
+									<postCode>02138</postCode>
+									<settlement>Cambridge</settlement>
+									<region>MA</region>
+								</address>
+							</affiliation>
+							<affiliation key="aff3">
+								<orgName type="department">Department of Organismic and Evolutionary Biology</orgName>
+								<orgName type="institution">Harvard University</orgName>
+								<address>
+									<postCode>02138</postCode>
+									<settlement>Cambridge</settlement>
+								</address>
+							</affiliation>
+						</author>
+						<title level="a" type="main">Morphological instability of an invasive active-passive interface</title>
+					</analytic>
+					<monogr>
+						<imprint>
+							<date type="published" when="2026-02-12">February 12, 2026</date>
+						</imprint>
+					</monogr>
+					<idno type="MD5">5BE9D525574CBAB311B0912DBD05337F</idno>
+				</biblStruct>
+			</sourceDesc>
+		</fileDesc>
+		<encodingDesc>
+			<appInfo>
+				<application version="0.7.2" ident="GROBID" when="2026-05-14T17:26+0000">
+					<desc>GROBID - A machine learning software for extracting information from scholarly documents</desc>
+					<ref target="https://github.com/kermitt2/grobid"/>
+				</application>
+			</appInfo>
+		</encodingDesc>
+		<profileDesc>
+			<abstract>
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>Morphological instabilities of growing tissues that impinge on passive materials are typical of invasive cancers. To explain these instabilities in experiments on breast epithelial spheroids in an extracellular matrix, we develop a continuum phase field model of a growing active liquid expanding into a passive viscoelastic matrix. Linear stability analysis of the sharp-interface limit of the governing equations predicts that the tissue interface can develops long-wavelength instabilities, but these instabilities are suppressed when the active carcinoid is embedded in an elastic matrix. We develop a theoretical morphological phase diagram, and complement these with two-dimensional finite element (FEM) phase-field simulations to track the nonlinear evolution of the interface with results consistent with theoretical predictions and experimental observations. Our study provides a basis for the emergence of interfacial instabilities in active-passive systems with the potential to control them.</p></div>
+			</abstract>
+		</profileDesc>
+	</teiHeader>
+	<text xml:lang="en">
+		<body>
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>Introduction: The invasive nature of tumors and their ability to metastasize to distant organs remain among the primary causes of cancer-related mortality. A central mechanism underlying this process is collective cell migration, through which groups of tumor cells coordinately invade surrounding tissue <ref type="bibr" target="#b0">[1,</ref><ref type="bibr" target="#b1">2]</ref>. This mode of invasion is characterized by strong mechanical coupling, sustained tissue-level deformation, and emergent collective dynamics.</p><p>A variety of experimental and theoretical approaches have been used to study collective tumor invasion. Experimental studies have focused on identifying histological, biochemical, and phenotypic signatures associated with collective migration <ref type="bibr" target="#b2">[3]</ref>. Complementing these, agent-based and particle-based models have been developed to resolve cell-scale mechanics, adhesion, and rearrangements during invasion <ref type="bibr" target="#b3">[4]</ref><ref type="bibr" target="#b4">[5]</ref><ref type="bibr" target="#b5">[6]</ref>. At larger scales, continuum descriptions have treated tissues as active materials, employing hydrodynamic theories of active polar and nematic fluids <ref type="bibr" target="#b6">[7]</ref><ref type="bibr" target="#b7">[8]</ref><ref type="bibr" target="#b8">[9]</ref><ref type="bibr" target="#b9">[10]</ref>, chemotactic fronts <ref type="bibr" target="#b10">[11]</ref>, and related formulations to study interfacial instabilities, tissue fluidization, and fingering phenomena <ref type="bibr" target="#b7">[8,</ref><ref type="bibr" target="#b11">[12]</ref><ref type="bibr" target="#b12">[13]</ref><ref type="bibr" target="#b13">[14]</ref>. These continuum approaches have also been extended to include environmental effects through mechanically imposed boundary stresses <ref type="bibr" target="#b14">[15,</ref><ref type="bibr" target="#b15">16]</ref>.</p><p>Recent experiments <ref type="bibr" target="#b16">[17]</ref> have added a new dimension to this picture by demonstrating that the viscoelastic properties of the extracellular matrix play a decisive role in regulating tumor invasion. In particular, the interface of an actively growing breast epithelial tumor spheroid remains flat or spherical when embedded in an elastic matrix, but becomes unstable to longwavelength undulations when the matrix is more liquidlike. This behavior can be understood by comparing the FIG. <ref type="figure">1</ref>. Viscoelasticity of the extra-cellular matrix regulates the morphological instabilities at an invasive active-passive interface. (a) The top row shows the development of instabilities at the interface when a an active growing spheroid is placed in a liquid like matrix (τ → 0). Figure taken from the study of Elosegui-Artola et.al. <ref type="bibr" target="#b16">[17]</ref>. (b) Zooming in allows us to focus on the interface. In the sharpinterface limit, we assume that an active growing tissue moves and pushes against a viscoelastic (linear Maxwell model) matrix. The interface, η(x, t), is initially flat at t = 0 (dashed blue line) but can develop instabilites at a later time. In a minimal setting, we assume that the tissue-matrix lies in the x − y plane, along the x-axis extending from −∞ ≤ x ≤ ∞. matrix stress-relaxation timescale with the tissue growth timescale: if the matrix stress relaxes slowly, this suppresses interfacial instabilities, whereas if the matrix relaxes quickly, there is a propensity for enhancing instabilities. These experimental observations were rationalized using agent-based cellular simulations that explicitly model cell-matrix interactions and matrix remodeling <ref type="bibr" target="#b16">[17]</ref>. While these simulations successfully reproduce the observed phenomenology, they do not yet provide arXiv:2602.10375v1 [cond-mat.soft] 10 Feb 2026 a general theoretical framework that links matrix viscoelasticity, active growth, and interfacial stability in a transparent and predictive manner.</p><p>Here, we develop a continuum phase-field hydrodynamic theory, together with finite-element simulations, to provide such a framework. We build on phase-field methods for modeling interfacial dynamics in complex fluids and soft matter <ref type="bibr" target="#b17">[18]</ref><ref type="bibr" target="#b18">[19]</ref><ref type="bibr" target="#b19">[20]</ref>, by coupling interfacial motion to hydrodynamics and active stresses in growing tissues interacting with viscoelastic environments to explain the experimentally observed behavior of the spheroid-matrix interface in both the linear and nonlinear regimes. Diffuse-interface model of an active tissue invading a viscoelastic matrix: We model a growing epithelial spheroid invading a viscoelastic extracellular matrix using a diffuse-interface (phase-field) formulation that unifies growth, active forcing, matrix viscoelasticity, and interfacial capillarity within a single continuum framework. In Fig. <ref type="figure">1a</ref>, we show the evolution of the instability of a growing epithelial spheroid invading the extracellular matrix, and note that the basic spatiotemporal fields that need to be tracked include the active tissue phase and passive viscoelastic matrix, characterized by a velocity field u(r, t), and the stress-field σ(r, t). The diffuseinterface (phase-field) is modeled via the scalar order parameter ϕ(x, t) ∈ [−1, 1] which distinguishes the active tissue (ϕ = +1) from the passive matrix (ϕ = −1), with a narrow interfacial region of thickness ϵ, assumed to be smaller than all other length scales. In addition to resolving the microscopic physics in a thermodynamically consistent manner, the phase-field model is much easier to solve numerically without the need to separately track the interfaces.</p><p>The phase-field, ϕ, evolves according to a Cahn-Hilliard like equation,</p><formula xml:id="formula_0">∂ϕ ∂t + u • ∇ϕ − M ∇ 2 c − G(ϕ) = 0,<label>(1)</label></formula><p>modified to account for the advection of the phase(s) by the fluid with velocity u(x, t), and a growth term given by G</p><formula xml:id="formula_1">(ϕ) = γ exp(−ϕ 2 )(1 − ϕ 2 ) = γg(ϕ).</formula><p>The form of the growth has been chosen so that growth near the interface (i.e. ϕ ≈ 0) is promoted. Here the double-welled free energy density</p><formula xml:id="formula_2">F/κ ch = (1 − ϕ 2 ) 2 + ϵ 2 (∇ϕ) 2 , so that the chemical potentialc = δF δϕ = κ ch (ϕ 3 − ϕ − ϵ 2 ∇ 2 ϕ</formula><p>), with κ ch having dimensions of energy density, and M characterizing the mobility.</p><p>Force balance (in the overdamped, low Reynolds number limit) for the multi-phase mixture reads as</p><formula xml:id="formula_3">∇ • σ N + f (τ ) (1 − ϕ) 2 σ ′ + c∇ϕ + α(ϕ)u = 0,<label>(2)</label></formula><p>Here the total stress is assumed to be the sum of the phase-dependent Newtonian stress σ N and a viscoelastic contribution for the matrix denoted by σ ′ . The additional terms in (2) are the diffuse capillary (Korteweg) force c∇ϕ that reduces to the Laplace pressure jump in the sharp-interface limit <ref type="bibr" target="#b20">[21,</ref><ref type="bibr" target="#b21">22]</ref>, and an activity due to the movement of cells in the growing tissue that we assume is proportional to α(ϕ)u, where α(ϕ) is the phasedependent part assumed to be of the form α(ϕ) = 1+ϕ 2 α t which vanishes in the passive tissue (when ϕ ≈ −1.</p><p>The Newtonian stress is σ N = −pI + 2η s (ϕ)D(u), where p is the pressure, and the strain rate D(u) = 1 2 (∇u + ∇u T ) with a simple linear interpolant for the viscosity of the mixture of the form η s (ϕ) = (1+ϕ) 2 η s,t +</p><p>(1−ϕ) 2 η s,m , where η s,t and η m,t are the solvent viscosity of the tissue and matrix respectively. The viscoelastic stress in the passive matrix has the form f (τ ) (1−ϕ)  2 σ ′ where the scaling ensures that contributions are non-vanishing only for the viscoelastic part (ϕ ≈ −1), with f (τ ) = (γτ ) 2 with τ the intrinsic time scale given by the ratio of shear viscosity and shear modulus (see SI.S7 for details). The extra viscoelastic stress, σ ′ , is assumed to evolve according to</p><formula xml:id="formula_4">(τ ∂ t + 1)σ ′ − 2η p D(u) = 0,<label>(3)</label></formula><p>so that in the limit τ → 0, we recover the Newtonian fluid regime, whereas τ → ∞ leads to the Hookean solid regime. This allows us to easily recover the range of experimental conditions associated with the study <ref type="bibr" target="#b16">[17]</ref> where τ is controlled by the mechanical properties of the passive matrix surrounding the growing spheroid. Finally, we impose the condition of incompressibility on the velocity u so that</p><formula xml:id="formula_5">∇ • u = 0. (<label>4</label></formula><formula xml:id="formula_6">)</formula><p>The equations ( <ref type="formula" target="#formula_0">1</ref>)-( <ref type="formula" target="#formula_5">4</ref>) suffice to track the evolution of the phase field description of the interface in terms of ϕ(x, t), as well as the velocity u(x, t) and pressure p(x, t) and the matrix stress σ ′ (x, t) given far field boundary conditions for these fields. We note that the phase-field description allows us track the interface by just following regions where ∇ϕ is largest. Sharp-interface limit and linear stability analysis To characterize the morphological instability associated with invasion of the passive matrix by the active tissue, we first address the question of the linear instability of a growing straight interface. This calculation is analytically feasible in the sharp-interface limit, i.e. ϵ/L → 0 of the phase-field system (1-3) (here L corresponds to all other length scales in the problem, i.e. the width of the growing front, the size of the spheroid etc.) The resulting sharp-interface model takes the form of a Darcy-type tissue flowing into an incompressible Maxwell viscoelastic matrix, along with a capillary traction jump arising from the Korteweg stress. The full matched-asymptotic derivation and sharp-diffuse correspondence (see SI.S3), and allows for a linear stability calculation of a base interface that is steadily translating with normal-modes transverse to the growing state (as in section 4 of SI). In summary, in the sharp-interface limit we track the activephase pressure and velocity (p a , v), the matrix pressure and velocity (p m , u), and the viscoelastic extra-stress σ ′ .</p><p>Crucially, the stability analysis is performed about a directed base flow v b = v 0 ŷ (with v 0 &gt; 0), which breaks rotational symmetry and distinguishes perturbations along the interface x and perpendicular to it, i.e. along ŷ. Therefore the most general linearized Darcy law in the active tissue takes a tensorial form:</p><formula xml:id="formula_7">∇(δp a ) = −B δv, B = diag(B x , B y ),<label>(5)</label></formula><p>where δv = v − v b and δp a = p a − p b a denote perturbations. In the sharp-interface model derived by linearizing the active Darcy forcing about v b (see SI.S5), one has B x = β − α/v 0 and B y = β, explicitly exhibiting the anisotropy induced by the base-state direction, noted before in a study that resembles ours at linear order, e.g. <ref type="bibr" target="#b7">[8]</ref>. The growth law in the tissue is</p><formula xml:id="formula_8">∇ • v = γ exp − (η − y)/l , (<label>6</label></formula><formula xml:id="formula_9">)</formula><p>where η is the interface, l is a length scale where growth occurs, and γ is the growth rate. In the bulk matrix (ϕ ≈ −1), α(ϕ) → 0 while the viscoelastic extra stress is present, and the outer limit reduces to an incompressible Maxwell medium:</p><formula xml:id="formula_10">     ∇ • u = 0, ∇ • σ = 0, (τ * ∂ t + 1)σ ′ = η * p ∇u + ∇u T , (ϕ ≈ −1).<label>(7)</label></formula><p>where τ * and η * p are the dimensionless relaxation time and viscosity (see SI.S5). Here σ := −p m I + η * s ∇u + ∇u T +σ ′ where p m enforces mass conservation ∇•u = 0, η * s is the (matrix) solvent viscosity, and σ ′ is the viscoelastic extra-stress evolving according to the Maxwell constitutive law (3). In the sharp-interface limit, the Korteweg term converges to a capillary traction jump, and linearization about a flat interface yields the condition</p><formula xml:id="formula_11">[n • σ • n]] = − S ∂ xx η,<label>(8)</label></formula><p>where S is the surface tension. Together with the kinematic condition expressing continuity of normal velocity, which at linear order reads as</p><formula xml:id="formula_12">∂ t η = v y y=η = u y y=η ,<label>(9)</label></formula><p>where u y , v y are the transverse (y component) velocity fields of the matrix and active tissue, respectively.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Dimensionless parameters:</head><p>The physical problem is controlled by four key dimensionless parameters. i) A dimensionless growth length-scale: L = l βγ α , reflecting the ratio of the growth zone length and the length scale that arises from balancing the active stress and capillary forces, α/βγ, ii) a scaled viscoelastic relaxation timescale: τ * = τ γ, characterizing the ratio of the passive relxation time of the matrix τ and the growth rate γ, The blue portion of the phase diagram is the stable regime (i.e ℜ(Ω(k)) &lt; 0) whereas the red portion is the unstable regime (i.e ℜ(Ω(k)) &gt; 0), following <ref type="bibr" target="#b9">(10)</ref>; the curve that separates the two regime is given by a hyperbola <ref type="bibr" target="#b12">(13)</ref>. We then use FEM simulations to corroborate our results: the red crosses denote when the interface is unstable whereas the blue triangles correspond to the stable interface. The FEM simulations were based on solutions to <ref type="bibr" target="#b0">(1)</ref><ref type="bibr" target="#b1">(2)</ref><ref type="bibr" target="#b2">(3)</ref><ref type="bibr" target="#b3">(4)</ref>. The (τ * , Ca) used in the simulations for the stable and unstable snapshots are given by (100, 0.12) and (0.1, 0.12) respectively. All the other parameter values are listed in the SI.</p><p>iii) a scaled viscosity η * s = ηs βγ 2 α 2</p><p>reflecting the balance between the viscous stresses and activity, iv) an effective Capillary Number: C a = S β 2 γ 2 α 3 reflecting the balance between surface tension and active stresses. For typical experiments with carcinoids <ref type="bibr" target="#b16">[17]</ref>:</p><formula xml:id="formula_13">L ∈ [0, 0.1] , τ * ∈ [0.001, 0.1], η * s ∈ [10 −2 , 10 −7 ]</formula><p>, and C a ∈ [0.1, 0.5] (see SI.S5 for details).</p><p>Stability of a straight interface: To characterize the stability of the interface, we perturb it using the Fourier ansatz η(x, t) = η b (t) + η e ikx+Ωt and use the same form for all fields in each of the phases with Ω being the complex growth rate, imposing decay away from the interface. Applying the kinematic condition, velocity continuity, tangential continuity, and the capillary traction jump yields the dispersion relation Ω(k; C a , τ * , L, η * ) = 0 (derived in SI.S5) written as:</p><formula xml:id="formula_14">−1 + 1 1 + kL + kL + Ω + k 3 C a − 2k 2 Ωη * s 1 + τ * Ω = 0,<label>(10)</label></formula><p>where L = lβγ α is the dimensionless growth-localization length, where l is the growth zone defined in <ref type="bibr" target="#b5">(6)</ref>, and η * s = η s βγ 2 /α 2 is a dimensionless viscosity (scaled by the active stress). The interface is unstable when ℜ (Ω(k)) &gt; 0.</p><p>In the fast-relaxation / high-frequency regime |τ * Ω| ≫ 1, one may approximate (1+τ * Ω) −1 ≃ (τ * Ω) −1 , and (10) FIG. <ref type="figure">3</ref>. Phase-field FEM simulations for the evolution of an invasive active-passive interface (a) Two dimensional simulations of a growing tumor liquid spheroid pushing against an elastic matrix. The tissue grows without developing any instabilities consistent with the predictions of our theory (see the panel from left to right). The (τ * , Ca) used in the simulation is given by (100, 0.12) (b) Same as (a) but with liquid-like matrix. The simulations are consistent with the theoretical predictions which predict the emergence of instabilites in a liquid-like matrix. The inset within each figure shows the experimental micrographs from <ref type="bibr" target="#b16">[17]</ref>. The (τ * , Ca) used in the simulations are given by (0.1, 0.12). The equations solved for both set of cases are (1-3) and rest of the parameter values are listed in Table <ref type="table">S1</ref>.</p><formula xml:id="formula_15">reduces to ℜ (Ω(k)) ≃ 1 − kL − 1 1 + kL + 2k 2 η * s τ * − k 3 C a . (<label>11</label></formula><formula xml:id="formula_16">)</formula><p>As k → 0, ℜ (Ω(k)) → 0, corresponding to a neutrally stable translation mode of the base state, while as k → ∞ the −k 3 C a term stabilizes short wavelength perturbations. To make the short-wave cutoff explicit, note that at large k the dominant balance is between the capillary term and the viscoelastic contribution, so that</p><formula xml:id="formula_17">ℜ (Ω(k)) ∼ − k 3 C a + 2k 2 η * s τ * , (k → ∞, |τ * Ω| ≫ 1).</formula><p>(12) Thus, unstable modes must satisfy (see SI.S6 for details)</p><formula xml:id="formula_18">k ≲ k c := 2η * s τ * C a .<label>(13)</label></formula><p>Equation ( <ref type="formula" target="#formula_18">13</ref>) summarizes the key hyperbolic trend: increasing matrix relaxation time τ * (more elastic-like response) reduces the unstable band, while decreasing τ * (more liquid-like response) broadens it, consistent with the experimental observations in <ref type="bibr" target="#b16">[17]</ref>. The full stability criterion (including the non-uniformity of the small-τ * limit and the re-stabilization at k ≫ k c ) is given SI.S6.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Phase-field Simulations:</head><p>To corroborate the linear stability analysis in the sharp-interface limit, and go beyond it by following the dynamics of interfacial instability, we now turn to phase field simulations of the equations <ref type="bibr" target="#b0">[1]</ref><ref type="bibr" target="#b1">[2]</ref><ref type="bibr" target="#b2">[3]</ref>. We considered two geometries for the phase-field simulations. Firstly, we calibrate the simulations with the analytical predictions of linear stability analysis, by solving Eqns. <ref type="bibr" target="#b0">[1]</ref><ref type="bibr" target="#b1">[2]</ref><ref type="bibr" target="#b2">[3]</ref> in a square box with periodic boundary conditions in x and zero flux conditions in y. The initial ϕ field was initialized by ϕ = 1 for y &lt; L 2 and ϕ = −1 for y &gt; L 2 . Consistent with the theory, the active drop remains stable in an elastic regime (i.e high τ * ) and is unstable in the liquid regime (i.e low τ * ). FIG. <ref type="figure" target="#fig_0">2b</ref> shows the (τ * , C a ) phase diagram, where for higher (τ * , C a ), the interface is stable and vice-versa.</p><p>In the second case, we initialized the active phase, ϕ = 1, on a circular domain of radius L 4 with periodic boundary conditions in both x and y (see SI.S7), to mimic the experimental conditions by simulating the condition where the initial active droplet is a circular domain embedded in a passive matrix, with zero velocity on all four boundaries. The simulations are in good agreement with the experimental observations <ref type="bibr" target="#b16">[17]</ref>: for a solid carcinoid embedded in a solid-like matrix, no interfacial instabilities arise, while when the carcinoid is embedded in a liquid-like matrix, the droplet develops instabilities at the growing interface (See Fig. <ref type="figure">3</ref>). We note that the characteristic finger width is controlled by the interfacial scale ϵ.</p><p>Discussion: Utilizing continuum mechanics and FEM simulations, we have provided a theoretical basis for the experimental observation of how the viscoelastic matrix regulates the interfacial properties of an invasive growing tumor spheroids. The in-vitro experiments showed that when the elasticity of the matrix is enhanced (reduced), the interface becomes morphologically stable (unstable) <ref type="bibr" target="#b16">[17]</ref>. Our continuum model takes the form of a theory for a growing two-dimensional active Darcy-like droplet pushing against a passive Maxwell-like viscoelastic matrix. The linear stability analysis of the dynamical field equations for small perturbations reveals that short-wavelength instabilities are always stable because of surface tension regardless of the matrix properties. However, long-wavelength instabilities are regulated by the stress relaxation time scale, τ , of the matrix with the interface being morphologically stable (unstable) if the matrix is elastic (liquid-like). To track the non-linear evolution of the interface, we developed a custom phase-field FEM simulation of an active droplet invading a viscoelastic matrix. The simulations are in accordance with predictions of the theory and are consistent with the experimental observations. Taken together, our study provides a physical basis for the interfacial control of far-from equilibrium active systems.</p></div><figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_0"><head>FIG. 2 .</head><label>2</label><figDesc>FIG.2. Phase diagram obtained via predictions of the linear stability analysis and non-linear FEM simulations. Morphological phase diagram of the interface as a function of τ * and Ca. The blue portion of the phase diagram is the stable regime (i.e ℜ(Ω(k)) &lt; 0) whereas the red portion is the unstable regime (i.e ℜ(Ω(k)) &gt; 0), following<ref type="bibr" target="#b9">(10)</ref>; the curve that separates the two regime is given by a hyperbola<ref type="bibr" target="#b12">(13)</ref>. We then use FEM simulations to corroborate our results: the red crosses denote when the interface is unstable whereas the blue triangles correspond to the stable interface. The FEM simulations were based on solutions to<ref type="bibr" target="#b0">(1)</ref><ref type="bibr" target="#b1">(2)</ref><ref type="bibr" target="#b2">(3)</ref><ref type="bibr" target="#b3">(4)</ref>. The (τ * , Ca) used in the simulations for the stable and unstable snapshots are given by (100, 0.12) and (0.1, 0.12) respectively. All the other parameter values are listed in the SI.</figDesc><graphic coords="3,317.05,53.42,246.37,167.27" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0"><head></head><label></label><figDesc></figDesc><graphic coords="4,54.00,52.08,539.20,345.88" type="bitmap" /></figure>
+		</body>
+		<back>
+
+			<div type="acknowledgement">
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>Acknowledgements: SS acknowledges the funding support from Dana Farber Cancer Institute (Prof. C.Z. Zhang), and LM thanks the Simons Foundation and the Henri Seydoux Fund for partial financial support.</p><p>Code Availability: The custom FEniCS code has been hosted on GitHub at the following LINK.</p></div>
+			</div>
+
+			<div type="references">
+
+				<listBibl>
+
+<biblStruct xml:id="b0">
+	<analytic>
+		<title/>
+		<author>
+			<persName><forename type="first">P</forename><surname>Friedl</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Locker</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Sahai</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">E</forename><surname>Segall</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nature cell biology</title>
+		<imprint>
+			<biblScope unit="volume">14</biblScope>
+			<biblScope unit="page">777</biblScope>
+			<date type="published" when="2012">2012</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b1">
+	<analytic>
+		<title/>
+		<author>
+			<persName><forename type="first">K</forename><forename type="middle">J</forename><surname>Cheung</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">V</forename><surname>Padmanaban</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">V</forename><surname>Silvestri</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Schipper</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">D</forename><surname>Cohen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">N</forename><surname>Fairchild</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">A</forename><surname>Gorin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">E</forename><surname>Verdone</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><forename type="middle">J</forename><surname>Pienta</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">S</forename><surname>Bader</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Proceedings of the National Academy of Sciences</title>
+		<imprint>
+			<biblScope unit="volume">113</biblScope>
+			<biblScope unit="page">E854</biblScope>
+			<date type="published" when="2016">2016</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b2">
+	<analytic>
+		<title/>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">M</forename><surname>Lee</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">I</forename><surname>Vitolo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><surname>Losert</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">S</forename><surname>Martin</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Scientific reports</title>
+		<imprint>
+			<biblScope unit="volume">11</biblScope>
+			<biblScope unit="page">10291</biblScope>
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b3">
+	<analytic>
+		<title/>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">N</forename><surname>Malmi-Kakkada</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><forename type="middle">S</forename><surname>Samanta</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Sinha</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Thirumalai</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Physical Review X</title>
+		<imprint>
+			<biblScope unit="volume">8</biblScope>
+			<biblScope unit="page">21025</biblScope>
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b4">
+	<analytic>
+		<title/>
+		<author>
+			<persName><forename type="first">D</forename><surname>Drasdo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Höhme</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Physical biology</title>
+		<imprint>
+			<biblScope unit="volume">2</biblScope>
+			<biblScope unit="page">133</biblScope>
+			<date type="published" when="2005">2005</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b5">
+	<analytic>
+		<title/>
+		<author>
+			<persName><forename type="first">D</forename><surname>Matoz-Fernandez</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Martens</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Sknepnek</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Barrat</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Henkes</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Soft matter</title>
+		<imprint>
+			<biblScope unit="volume">13</biblScope>
+			<biblScope unit="page">3205</biblScope>
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b6">
+	<monogr>
+		<author>
+			<persName><forename type="first">J</forename><surname>Ranft</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Basan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Elgeti</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J.-F</forename><surname>Joanny</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Prost</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Jülicher</surname></persName>
+		</author>
+		<title level="m">Proc. Nat. Acad. Sci</title>
+				<meeting>Nat. Acad. Sci</meeting>
+		<imprint>
+			<date type="published" when="2010">2010</date>
+			<biblScope unit="volume">107</biblScope>
+			<biblScope unit="page">20863</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b7">
+	<analytic>
+		<title/>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">J</forename><surname>Bogdan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Savin</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Royal Society Open Science</title>
+		<imprint>
+			<biblScope unit="volume">5</biblScope>
+			<biblScope unit="page">181579</biblScope>
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b8">
+	<analytic>
+		<title/>
+		<author>
+			<persName><forename type="first">R</forename><surname>Alert</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Blanch-Mercader</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Casademunt</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Physical review letters</title>
+		<imprint>
+			<biblScope unit="volume">122</biblScope>
+			<biblScope unit="page">88104</biblScope>
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b9">
+	<analytic>
+		<title/>
+		<author>
+			<persName><forename type="first">R</forename><surname>Alert</surname></persName>
+		</author>
+		<idno type="DOI">10.1088/1751-8121/ac6c61</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of Physics A: Mathematical and Theoretical</title>
+		<imprint>
+			<biblScope unit="volume">55</biblScope>
+			<biblScope unit="page">234009</biblScope>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b10">
+	<analytic>
+		<title/>
+		<author>
+			<persName><forename type="first">R</forename><surname>Alert</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Martínez-Calvo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">S</forename><surname>Datta</surname></persName>
+		</author>
+		<idno type="DOI">10.1103/PhysRevLett.128.148101</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Physical Review Letters</title>
+		<imprint>
+			<biblScope unit="volume">128</biblScope>
+			<biblScope unit="page">148101</biblScope>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b11">
+	<analytic>
+		<title/>
+		<author>
+			<persName><forename type="first">A</forename><surname>Doostmohammadi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">P</forename><surname>Thampi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><forename type="middle">B</forename><surname>Saw</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><forename type="middle">T</forename><surname>Lim</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Ladoux</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">M</forename><surname>Yeomans</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Soft Matter</title>
+		<imprint>
+			<biblScope unit="volume">11</biblScope>
+			<biblScope unit="page">7328</biblScope>
+			<date type="published" when="2015">2015</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b12">
+	<monogr>
+		<author>
+			<persName><forename type="first">J</forename><surname>Ranft</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Basan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Elgeti</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J.-F</forename><surname>Joanny</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Prost</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Jülicher</surname></persName>
+		</author>
+		<title level="m">Proceedings of the National Academy of Sciences</title>
+				<meeting>the National Academy of Sciences</meeting>
+		<imprint>
+			<date type="published" when="2010">2010</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b13">
+	<analytic>
+		<title/>
+		<author>
+			<persName><forename type="first">S</forename><surname>Monfared</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Ardauseva</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Doostmohammadi</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Annual Review of Condensed Matter Physics</title>
+		<imprint>
+			<biblScope unit="volume">17</biblScope>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b14">
+	<analytic>
+		<title/>
+		<author>
+			<persName><forename type="first">M</forename><surname>Basan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J.-F</forename><surname>Joanny</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Prost</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Risler</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Phys. Rev. Lett</title>
+		<imprint>
+			<biblScope unit="volume">106</biblScope>
+			<biblScope unit="page">158101</biblScope>
+			<date type="published" when="2011">2011</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b15">
+	<analytic>
+		<title/>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">J</forename><surname>Williamson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Salbreux</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Physical review letters</title>
+		<imprint>
+			<biblScope unit="volume">121</biblScope>
+			<biblScope unit="page">238102</biblScope>
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b16">
+	<analytic>
+		<title/>
+		<author>
+			<persName><forename type="first">A</forename><surname>Elosegui-Artola</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Gupta</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">J</forename><surname>Najibi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><forename type="middle">R</forename><surname>Seo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Garry</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><forename type="middle">M</forename><surname>Tringides</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">I</forename><surname>De Lázaro</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Darnell</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><surname>Gu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Q</forename><surname>Zhou</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nature materials</title>
+		<imprint>
+			<biblScope unit="volume">22</biblScope>
+			<biblScope unit="page">117</biblScope>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b17">
+	<analytic>
+		<title/>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">M</forename><surname>Anderson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><forename type="middle">B</forename><surname>Mcfadden</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">A</forename><surname>Wheeler</surname></persName>
+		</author>
+		<idno type="DOI">10.1146/annurev.fluid.30.1.139</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Annual Review of Fluid Mechanics</title>
+		<imprint>
+			<biblScope unit="volume">30</biblScope>
+			<biblScope unit="page">139</biblScope>
+			<date type="published" when="1998">1998</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b18">
+	<monogr>
+		<author>
+			<persName><forename type="first">N</forename><surname>Provatas</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Elder</surname></persName>
+		</author>
+		<title level="m">Phase-Field Methods in Materials Science and Engineering</title>
+				<meeting><address><addrLine>Weinheim</addrLine></address></meeting>
+		<imprint>
+			<publisher>Wiley-VCH</publisher>
+			<date type="published" when="2010">2010</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b19">
+	<analytic>
+		<title/>
+		<author>
+			<persName><forename type="first">J</forename><surname>Lowengrub</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Rätz</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Voigt</surname></persName>
+		</author>
+		<idno type="DOI">10.1016/j.jcp.2009.02.007</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of Computational Physics</title>
+		<imprint>
+			<biblScope unit="volume">228</biblScope>
+			<biblScope unit="page">3966</biblScope>
+			<date type="published" when="2009">2009</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b20">
+	<analytic>
+		<title/>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Tang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Communications in Computational Physics</title>
+		<imprint>
+			<biblScope unit="volume">7</biblScope>
+			<biblScope unit="page">333</biblScope>
+			<date type="published" when="2010">2010</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b21">
+	<analytic>
+		<title/>
+		<author>
+			<persName><forename type="first">P</forename><surname>Yue</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Zhou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">J</forename><surname>Feng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><forename type="middle">F</forename><surname>Ollivier-Gooch</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><forename type="middle">H</forename><surname>Hu</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of Computational Physics</title>
+		<imprint>
+			<biblScope unit="volume">219</biblScope>
+			<biblScope unit="page">47</biblScope>
+			<date type="published" when="2006">2006</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+				</listBibl>
+			</div>
+		</back>
+	</text>
+</TEI>

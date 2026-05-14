@@ -1,0 +1,1957 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xml:space="preserve" xmlns="http://www.tei-c.org/ns/1.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.tei-c.org/ns/1.0 https://raw.githubusercontent.com/kermitt2/grobid/master/grobid-home/schemas/xsd/Grobid.xsd"
+ xmlns:xlink="http://www.w3.org/1999/xlink">
+	<teiHeader xml:lang="en">
+		<fileDesc>
+			<titleStmt>
+				<title level="a" type="main">Quasilocalization under coupled mutation-selection dynamics</title>
+			</titleStmt>
+			<publicationStmt>
+				<publisher/>
+				<availability status="unknown"><licence/></availability>
+				<date type="published" when="2026-02-17">February 17, 2026</date>
+			</publicationStmt>
+			<sourceDesc>
+				<biblStruct>
+					<analytic>
+						<author>
+							<persName><forename type="first">C</forename><forename type="middle">J</forename><surname>Palpal-Latoc</surname></persName>
+							<idno type="ORCID">0000-0002-9171-6252</idno>
+						</author>
+						<author>
+							<persName><forename type="first">Ian</forename><surname>Vega</surname></persName>
+							<idno type="ORCID">0000-0002-0428-048X</idno>
+						</author>
+						<author>
+							<affiliation key="aff0">
+								<orgName type="department">Philippine Genome Center</orgName>
+								<orgName type="laboratory">Core Facility for Bioinformatics</orgName>
+								<orgName type="institution">University of the Philippines System</orgName>
+								<address>
+									<postCode>1101</postCode>
+									<settlement>Quezon City</settlement>
+									<country key="PH">Philippines</country>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<affiliation key="aff1">
+								<orgName type="department">National Institute of Physics</orgName>
+								<orgName type="institution">University of the Philippines Diliman</orgName>
+								<address>
+									<postCode>1101</postCode>
+									<settlement>Quezon City</settlement>
+									<country key="PH">Philippines</country>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<affiliation key="aff2">
+								<orgName type="department">National Institute of Physics</orgName>
+								<orgName type="institution">University of the Philippines Diliman</orgName>
+								<address>
+									<postCode>1101</postCode>
+									<settlement>Quezon City</settlement>
+									<country key="PH">Philippines</country>
+								</address>
+							</affiliation>
+						</author>
+						<title level="a" type="main">Quasilocalization under coupled mutation-selection dynamics</title>
+					</analytic>
+					<monogr>
+						<imprint>
+							<date type="published" when="2026-02-17">February 17, 2026</date>
+						</imprint>
+					</monogr>
+					<idno type="MD5">BE8E8D20244DD8385DD7DF4247F94092</idno>
+					<idno type="arXiv">arXiv:2602.14863v1[q-bio.PE]</idno>
+				</biblStruct>
+			</sourceDesc>
+		</fileDesc>
+		<encodingDesc>
+			<appInfo>
+				<application version="0.7.2" ident="GROBID" when="2026-05-14T17:26+0000">
+					<desc>GROBID - A machine learning software for extracting information from scholarly documents</desc>
+					<ref target="https://github.com/kermitt2/grobid"/>
+				</application>
+			</appInfo>
+		</encodingDesc>
+		<profileDesc>
+			<abstract>
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>When mutations are rampant, quasispecies theory or Eigen's model predicts that the fittest type in a population may not dominate. Beyond a critical mutation rate, the population may even be delocalized completely from the peak of the fitness landscape and the fittest is ironically lost. Extensive efforts have been made to understand this exceptional scenario. But in general, there is no simple prescription that predicts the eventual degree of localization for arbitrary fitness landscapes and mutation rates. Here, we derive a simple and general relation linking the quasispecies' Hill numbers, which are diversity metrics in ecology, and the ratio of an effective fitness variance to the mean mutation rate squared. This ratio, which we call the localization factor, emerges from mean approximations of decomposed surprisal or stochastic entropy change rates. On the side of application, the relation we obtained here defines a combination of Hill numbers that may complement other complexity or diversity measures for real viral quasispecies. Its advantage being that there is an underlying biological interpretation under Eigen's model.</p></div>
+			</abstract>
+		</profileDesc>
+	</teiHeader>
+	<text xml:lang="en">
+		<body>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>I. INTRODUCTION</head><p>Under canonical models in population genetics, mutation is seldom by design. The key contribution of quasispecies theory <ref type="bibr" target="#b0">[1]</ref> (otherwise known as Eigen's model or the Eigen-Schuster model) is to reveal the full dynamical impact of mutation when it is very frequent, which is characteristic of asexual organisms such as bacteria but especially viruses <ref type="bibr" target="#b1">[2,</ref><ref type="bibr" target="#b2">3]</ref>. Whereas selection alone may lead to a "survival of the fittest," quasispecies theory predicts that if mutation rates are high enough, less fit variants or "types" can even thrive because they are replenished through frequent mutation. The equilibrium population structure is called the quasispecies <ref type="bibr" target="#b3">[4]</ref>. This provided a theoretical framework for understanding viral evolution and made a lasting influence in virology, where the term "quasispecies" is now used broadly to refer to the heterogeneous nature of viruses <ref type="bibr" target="#b4">[5,</ref><ref type="bibr" target="#b5">6]</ref>.</p><p>That less-fit mutants can persist did not originate from Eigen. Crow and Kimura have earlier studied a deterministic mutation-selection model <ref type="bibr" target="#b6">[7]</ref>. But Eigen's model is defined for arbitrary number of types, frequencies and mutation rates. Under this generalization, the mass of the population can be arbitrarily distributed among the fittest and its mutant relatives. In extreme cases, the quasispecies may be dominated by a single type (localization) such as in survival of the fittest or dispersed over many or all types (delocalization). A wellstudied example of the latter is the error catastrophe. Although there is no universal definition for it, it is often taken to be a (usually sharp) phase transition wherein the fittest type is lost from the population when its per-site mutation probability is above an "error threshold" <ref type="bibr" target="#b7">[8,</ref><ref type="bibr" target="#b8">9]</ref>. Crossing this threshold, the population is totally delocalized from the peak of the fitness * cbpalpallatoc@up.edu.ph landscape (Fig. <ref type="figure">1b</ref>). Vigorous theoretical effort has been spent understanding this threshold assuming mostly singlepeaked fitness landscapes <ref type="bibr" target="#b9">[10]</ref><ref type="bibr" target="#b10">[11]</ref><ref type="bibr" target="#b11">[12]</ref>, with extensions to drift <ref type="bibr" target="#b12">[13]</ref><ref type="bibr" target="#b13">[14]</ref><ref type="bibr" target="#b14">[15]</ref>, recombination <ref type="bibr" target="#b15">[16,</ref><ref type="bibr" target="#b16">17]</ref>, gene networks <ref type="bibr" target="#b17">[18,</ref><ref type="bibr" target="#b18">19]</ref> and epistasis <ref type="bibr" target="#b19">[20]</ref>. Complementary to the error threshold, a total localization threshold has also been obtained that determines when the population is localized entirely on a fitness peak (i.e. survival of the fittest) <ref type="bibr" target="#b20">[21]</ref>. The analogy between quasispecies theory and Anderson localization has also been discussed in Ref. <ref type="bibr" target="#b21">[22]</ref>. More recently, a noise-induced "fidelity catastrophe" has also been shown to occur wherein the population is always localized but switches dominant types over time <ref type="bibr" target="#b22">[23]</ref>.</p><p>Despite these investigations, our understanding of localization for error-prone replication remains incomplete even in the deterministic limit. The particular value of the error or the localization threshold depends on the choice of simplified landscape and mutation scheme. In particular, it has been shown that the error threshold does not generically exist <ref type="bibr" target="#b23">[24]</ref><ref type="bibr" target="#b24">[25]</ref><ref type="bibr" target="#b25">[26]</ref><ref type="bibr" target="#b26">[27]</ref><ref type="bibr" target="#b27">[28]</ref>. Moreover, while error catastrophe and survival of the fittest carry important implications, they are extreme situations. Real error-prone populations should more commonly exist in an intermediate state of "quasilocalization," where the population is diffused in the landscape around some dominant type, which might be the fittest. Indeed, this is the defining characteristic of real viral quasispecies <ref type="bibr" target="#b5">[6,</ref><ref type="bibr" target="#b28">29]</ref>, though we have poor analytical statements about this intermediate scenario.</p><p>We understand that quasilocalization surely represents a balance between mutation and selection effects, with neither dominating. But can we say something more concrete and quantitative, especially beyond single-peaked landscapes? As a step forward, we use information-theoretic bounds to study the degree of localization analytically. Recently, speed limits on the time-evolution of observables, which may or may not be biological, have been obtained without relying on the particular details of the system <ref type="bibr" target="#b29">[30]</ref><ref type="bibr" target="#b30">[31]</ref><ref type="bibr" target="#b31">[32]</ref><ref type="bibr" target="#b32">[33]</ref><ref type="bibr" target="#b33">[34]</ref><ref type="bibr" target="#b34">[35]</ref><ref type="bibr" target="#b35">[36]</ref>. We take specifically the bounds in Ref. <ref type="bibr" target="#b34">[35]</ref> based on decomposing the surprisal or stochastic entropy change rate. Adapting them to Eigen's model, we derive an equilibrium relation for the degree of localization. This relation links what we are calling the localization factor, which is computed from the statistics of the dynamical parameters, and the Hill numbers, which are canonical diversity metrics in ecology, of the quasispecies.</p><p>This paper is organized as follows. In Sec. II, we introduce our formulation of quasispecies theory and important terminology of relevant quantities, including our definition of an "influx rate." We also briefly review the speed limits in Ref. <ref type="bibr" target="#b34">[35]</ref> based on decomposing the surprisal rate. We apply them to Eigen's model, identifying localization and delocalization speeds. In Sec. III, we obtain mean approximations of these speeds. We then derive our main results, the equilibrium relation involving the localization factor and its critical value. In Sec. IV, we discuss the implications of our findings for the maintenance of information. We also propose a viral complexity index based on our results. Finally, we conclude in Sec. V.</p><p>The code for reproducing the figures and simulations in this work is available for download at <ref type="bibr" target="#b36">[37]</ref>. This work benefited from open-source packages matplotlib <ref type="bibr" target="#b37">[38]</ref>, numpy <ref type="bibr" target="#b38">[39]</ref>, scipy <ref type="bibr" target="#b39">[40]</ref>, and pandas <ref type="bibr" target="#b40">[41,</ref><ref type="bibr" target="#b41">42]</ref>.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>II. MUTATION-SELECTION DYNAMICS</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>A. Quasispecies theory</head><p>We begin by reviewing quasispecies theory, hereafter referred to as Eigen's model in which mutation and selection are coupled (Fig. <ref type="figure">1a</ref>). When the total (census) population size n tot (t) is very large (technically, n tot (t) → ∞), a deterministic treatment applies <ref type="bibr" target="#b42">[43]</ref>. For a population with N ∈ N different relevant types, the growth rate of a type i ∈ {1, . . . , N }, is given by <ref type="bibr" target="#b0">[1]</ref> </p><formula xml:id="formula_0">d dt p i (t) = (A i Q ii −D i )p i (t)+ N j̸ =i A j Q ij p j (t)−⟨E(t)⟩p i (t),<label>(1)</label></formula><p>where p i (t) is the relative or normalized frequency of type i and ⟨E(t)⟩ := N i=1 N j=1 A j Q ij p j (t) ensures the frequencies sum to one <ref type="bibr" target="#b43">[44]</ref>. Here, the "types" we consider are implicitly haplotypes or sequences of nucleotides (Fig. <ref type="figure">1a</ref>) comprising a portion or the entirety of the genetic material <ref type="bibr" target="#b44">[45]</ref>.</p><p>In Eq. 1, A i ∈ R is the replication rate of type i. These replication rates define a one-dimensional "fitness landscape," which is the mapping f A : i → A i (Fig. <ref type="figure">1b</ref>). (We adopt the "landscape" term for any other such mapping here.) When we speak of the fittest type or fitness peak, we are therefore referring to the type with the maximum replication rate. On the other hand,</p><formula xml:id="formula_1">Q ij ∈ [0, 1], satisfying N j=1 Q ji = 1,</formula><p>is the probability of producing type i during an erroneous replication of type j and the "copy fidelity" Q ii is the probability of accurate replication of type i. Because mutation is not negligible, it is not necessarily the type with the highest replication rate that will dominate a population. Lastly, D i ∈ R ≥0 is a degradation variable. In the literature, D i is mostly ignored as it can be subsumed by A i but we keep this variable for completeness.</p><formula xml:id="formula_2">A C T G A i Q ii A i (1 − Q ii ) A i TYPE i REPLICATION CLONES MUTANTS SURVIVAL OF THE FITTEST ERROR CATASTROPHE SMALL MUTATION RATES A B A C T G A C T G A C T A A T T G FIG.</formula><p>Eq. 1 can be linearized and if we define the elements of what we will call the "growth matrix"</p><formula xml:id="formula_3">W ∈ R N ×N as W ij := A j Q ij − D i δ ij ,</formula><p>where δ ij is the Kronecker delta, then the solution to Eq. 1 is the weighted sum of the eigenvectors of W, i.e. <ref type="bibr" target="#b45">[46,</ref><ref type="bibr" target="#b46">47]</ref> </p><formula xml:id="formula_4">p i (t) = N j=1 c j h ij e λj t N i=1 N j=1 c j h ij e λj t ,<label>(2)</label></formula><p>where the coefficients c j are determined from initial conditions and h ij denotes the ith component of the jth eigenvector associated with λ j . If W is nonnegative and irreducible, i.e. there is a mutational path from each type i to any type j, then the Perron-Frobenius theorem <ref type="bibr" target="#b47">[48,</ref><ref type="bibr" target="#b48">49]</ref> guarantees that W has a positive, real, and maximum eigenvalue λ max and the components of its corresponding (right) eigenvector h max := (h 1max , . . . , h N max ) T are all strictly positive too. The equilibrium steady-state, the "quasispecies," is then determined purely from λ max and h max :</p><formula xml:id="formula_5">lim t→∞ p i (t) = h imax N j=1 h jmax =: p * i .<label>(3)</label></formula><p>We refer to the existence of such a steady-state as the Perron-Frobenius property. This property may still be obeyed by some matrices that have negative entries (e.g. due to large D i ) as long as the off-diagonal entries are strictly nonnegative (i.e. W is a so-called Metzler matrix <ref type="bibr" target="#b49">[50]</ref>) as is the case here. In this work, we assume that the Perron-Frobenius property is always satisfied. Then, when we speak of a type going "extinct," we only mean that it attains a very small frequency.</p><formula xml:id="formula_6">C R A M É R -R A O B O U N D D E L O C A L IZ A T IO N S P E E D INFLUX LANDSCAPE B C v s θ info v i n f o p 3 p 2 p 1 p(t f ) • σ s • σ μ p(t 0 ) • σ p(t) LOCALIZATION QUASILOCALIZATION DELOCALIZATION Π p f s A INFLUX RATE s i EQUILIBRIUM FREQUENCY p* i FREQUENCY DISTRIBUTION LOCALIZATION SPEED v μ SURPRISAL RATE π − θ info • σ s • σ μ • σ θ s θ μ FIG. 2. (A)</formula><p>Cartoon of the spectrum of equilibrium frequencies (cerulean curve) against the influx landscape (black curve). In the localized regime, the population concentrates on the peak of the influx landscape. In the delocalized regime, the population disperses over all types. (B) The population dynamics can be represented as motion along an octant of an N -dimensional hypersphere (or equivalently, as motion along an N -simplex). Here, N = 3. Each point on this hypersphere corresponds to a vector of type frequencies p(t) ∈ R N that represents the state of the population. The population moves on the hypersphere from t = t0 to t = t f with a net velocity given by the surprisal rate σ(t), which can be decomposed into contributions of the influx rate ( σs (t)) and mutation rate ( σµ (t)). (C) The norm of these surprisal rates yield the (de)localization speeds and the Cramér-Rao bound.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>B. Influx rate</head><p>Survival of the fittest and error catastrophe are almost synonymous with localization and delocalization, respectively. But the latter two can be defined without reference to fitness and in terms of the quasispecies distribution alone. Here, we take total localization to mean the dominance in equilibrium frequency of a single type, which may or may not be the fittest. That is, one type has frequency p * i = 1 and the rest have p * j̸ =i = 0. On the other hand, we consider total delocalization as the complete absence of any dominance among types. That is, all types have the same frequency p * i = 1/N . The quasilocalized regime then corresponds to the intermediate case where types have differential frequencies.</p><p>Based on these definitions, the diagonal entries of W should be the clear contributors to localization. More concretely, the eigenvalue equation for λ max is</p><formula xml:id="formula_7">N j=1 W ij h jmax = λ max h imax .<label>(4)</label></formula><p>The dominance of a single type i (i.e. h jmax = 0 ∀j ̸ = i) then implies from above that W ii = λ max . On the other hand, second-order perturbation theory gives <ref type="bibr" target="#b0">[1]</ref> </p><formula xml:id="formula_8">λ i = W ii + N j̸ =i W ij W ji W ii − W jj + . . . ,<label>(5)</label></formula><p>which shows clearly that the off-diagonal entries move the eigenvalues away from the diagonal. These entries intuitively should then contribute to delocalization. However, the delocalized limit of equal frequencies cannot be reached even if all W ii are the same. If the mutation rates are realistically heterogeneous, then types with larger mutational support will also have larger frequencies. In this situation, the delocalized limit can only be attained if the diagonals vary and compensate for the biases.</p><p>To systematically retrieve the localized and delocalized limits while allowing for mutational biases, we introduce the following gauge:</p><formula xml:id="formula_9">W ii := s i − N j̸ =i W ij ,<label>(6)</label></formula><p>where s i ∈ R is what we are calling the influx rate. It is the sum of the rate of clonal replication of type i (i.e. W ii ) and the mutational bias towards i (i.e.</p><p>N j̸ =i W ij ). In other words, s i is an effective "total" fitness parameter of type i.</p><p>When these influx rates have the same value s, the dynamics becomes equivalent to</p><formula xml:id="formula_10">d dt n i (t) = sn i (t) − N j̸ =i W ij n i (t) + N j̸ =i W ij n j (t).<label>(7)</label></formula><p>To show that this has a delocalized solution, we need to solve the eigenvalue problem</p><formula xml:id="formula_11">W ′ h max = (λ max − s)h max ,<label>(8)</label></formula><p>where W ′ has the same off-diagonal entries as W but has diagonal entries − N j̸ =i W ij . The dominant eigenvector h max in Eq. 8 can be retrieved by considering W ′ alone since s merely shifts the eigenvalue. So consider that the constant vector 1 := (1, . . . , 1) T satisfies</p><formula xml:id="formula_12">W ′ 1 = 0,<label>(9)</label></formula><p>That is, 1 is an eigenvector of W ′ corresponding to a zero eigenvalue. By noting that W ′ is irreducible and applying the Perron-Frobenius theorem indirectly [51], it can be shown that zero is the maximum eigenvalue of W ′ and therefore 1 = h max in Eq. 8. Similar influx rates then result to the delocalized solution p * i = 1/N ∀i. Meanwhile, these rates directly vary the diagonals W ii , which remain important at localization. By tuning s i , the two opposite localization limits can be reached. The population therefore evolves or (de)localizes on the influx landscape f s : i → s i (Fig. <ref type="figure" target="#fig_8">2a</ref>).</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>C. Surprisal rate decomposition</head><p>Even though there is no notion of heat in this abstract dynamical system, a trajectory-dependent or stochastic entropy can nevertheless be defined <ref type="bibr">[52]</ref><ref type="bibr">[53]</ref><ref type="bibr">[54]</ref>. Ignoring jumps to other states, the stochastic entropy of the system at time t is σ i (t) := − ln p i (t). The corresponding entropy change rate is σi (t) = − ṗi (t)/p i (t), where the dot denotes the time derivative. In information theory, this stochastic entropy is better known as the Shannon information or surprisal. And the time derivative is the surprisal rate.</p><p>In Ref. <ref type="bibr" target="#b34">[35]</ref>, the surprisal rate of a similar model to Eq. 1 was decomposed into the contribution of selection and mutation. These component surprisal rates were used to obtain bounds on the rate of change of a general observable. What is remarkable about the bounds in Ref. <ref type="bibr" target="#b34">[35]</ref> is they are tighter than the Cramér-Rao limit, which is a universal speed limit on the time-evolution of an arbitrary observable <ref type="bibr" target="#b30">[31]</ref>. The selection and mutation bounds outperform the Cramér-Rao bound whenever selection or mutation is dominant, respectively. Thus, the bounds can be said to quantify the strength of selection and mutation. Our basic premise here is that a suitable decomposition of σi (t) can also be used to quantify the strength of localization and delocalization.</p><p>To this aim, we first rewrite the growth matrix as W := S+U. Here, S := diag(s 1 , . . . , s N ) is the influx matrix. And U is simply the mutation rate matrix, with off-diagonal elements µ ij := W ij and diagonal entries µ ii := − N j̸ =i W ij . The surprisal rate σi (t) can then be decomposed into</p><formula xml:id="formula_13">σi (t) = σs i (t) + σµ i (t),<label>(10)</label></formula><p>where the decomposed rates are defined as The norm of the total surprisal rate v info := || σ(t)|| is the Cramér-Rao bound. Meanwhile, we identify the norms v s (t) and v µ (t), which have units of inverse time, as the localization and delocalization speeds, respectively. If mutation is neglected and σ(t) = σs (t), then the population will localize towards the type with the largest influx rate (since W ii = s i ). So v s can be interpreted as the speed at which the population localizes. If the influx rates are equal instead and σ(t) = σµ (t), then multiple types will coexist due to their mutational support to each other. As we have shown above, each type will have exactly the same frequency. Hence, v µ (t) can be interpreted as the delocalization speed. These speeds control the motion of the population on an N -dimensional state space (Figs. <ref type="figure" target="#fig_8">2b  and 2c</ref>).</p><formula xml:id="formula_14">σs i (t) := −s i + ⟨s(t)⟩,<label>(11a)</label></formula></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>III. RESULTS</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>A. Mean approximation of speeds</head><p>To look at the speeds more closely and achieve our main result, we seek their mean approximations. Rather than consider all individual influx and mutation rates, we take their moments instead. Accordingly, we consider the influx rates s i as having been sampled from some distribution Π s and the mutation rates µ ij as having been sampled from some distribution Π µ . Provided that N is large, the expectation of v s and v µ with respect to these distributions will approach their true values. This follows from the law of large numbers for the N -term sums in v s and v µ . The resulting quantities can be interpreted as the ensemble average of speeds of populations with statistically similar growth matrices.</p><p>In this approximation scheme, we assume that we can replace the rates with their moments. When calculating the expectations, we essentially take the frequencies in v s and v µ to be independent from these rates. In the localized regime, and particularly at equilibrium, this does not hold because the types' frequencies will strongly covary with their influx and mutation rates. However, we are least interested in this regime since the population's equilibrium frequency distribution is already understood: the type with largest s i will dominate. Meanwhile, in the quasilocalized regime, the covariance between the rates and frequencies is weaker because the frequency is not solely determined by any particular rate. In the delocalized limit, the covariance is exactly zero because all frequencies are equal.</p><p>Since our main regime of interest is the quasilocalized scenario, where the population's frequency distribution is most nontrivial, our approximation remains relevant. In addition, one of our results that the localization factor F (Sec. III C) controls the degree of localization carries into the localized regime. It is only how this factor relates to the equilibrium frequencies exactly that our approximation becomes inapplicable. We shall discuss more about the approximation error and its implication for our main result later.</p><p>Lastly, we also assume, outside the delocalized limit, that no two types are dynamically equivalent. That is, no two types share the same influx rate and mutational support, though some rates may be arbitrarily close but not exactly the same [55]. When there is variation among the influx and mutation rates, the rates vary smoothly. That is, the variance of the rates is not driven by outliers or by separated clumps. This assumption still includes a wide class of realistic influx and mutation landscapes.</p><p>Proceeding with the coarsening of the speeds (squared), we obtain (SM Secs. A 1 and A 2)</p><formula xml:id="formula_15">E (v s ) 2 = V [s] 1 − N i=1 p 2 i ,<label>(12a)</label></formula><formula xml:id="formula_16">E (v µ ) 2 = E [µ] 2 N i=1 1 p i − N 2 + V [µ]   N i=1 p 2 i   N j=1 1 p j − 2N   − N + 2   ,<label>(12b)</label></formula><p>where we denote by E [x] and V [x] the mean and variance of x with respect to its distribution Π x as opposed to the distribution of equilibrium frequencies Π p . We also suppress the time dependence of quantities from now on.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>B. Behavior of the speeds</head><p>Let us discuss Eq. 12a first. It is intuitive that the influx rate variance emerges as the only relevant parameter in the localization speed. The dominance of one type will depend on how large (and therefore, different) its rate is compared to the other types'. The sum of the frequencies squared is also instructive. This sum has a maximum possible value of one, which it attains only when one type dominates. That is, the speed becomes zero when the population is already localized. Using the QM-AM inequality, the sum has a minimum value of 1/N , which it attains if p i = 1/N . The speed is therefore maximal if the population is delocalized. When it is already localized, the speed is zero.</p><p>This behavior of localization can be seen by returning to the "microscopic" equations. Denote by p m the frequency of the type with the largest influx rate s max and let the remaining types retain the usual notation. Then the dynamics, in the mutation-free case, is governed by</p><formula xml:id="formula_17">d dt ln p m = s max − ⟨s⟩, d dt ln p i = s i − ⟨s⟩,<label>(13)</label></formula><p>with s max &gt; s i ∀i. When a type reaches dominance, ⟨s⟩ ≈ s max . The growth rate of the dominant type vanishes, and the rest go to extinction. That is, localization is complete. Moving on to Eq. 12b, we notice that the delocalization speed is more sensitive to small frequencies due to the 1/p i terms. A single type on the brink of extinction can drive the speed to blow up. This makes sense since under delocalization, there is no dominating type which would require other types to go extinct. If a type is found at a small frequency, perhaps as an initial condition, the population must move quickly to avoid its extinction under delocalization. On the other hand, defining the convex function g(x) := 1/x, Jensen's inequality with equal weights of one yields N 2 ≤ N i=1 1/p i . That is, the smallest value of N i=1 1/p i occurs if all p i = 1/N . This drives both the mean and variance terms to zero. These variance terms in particular are generally smaller because of the p 2 i (cf. O(1) of the mean terms) and N (cf. N 2 ) factors. For the rates we consider in this work, we have also checked numerically that they do have negligible impact.</p><p>The critically low frequency p i = 1/N can be seen from the microscopic dynamics. Suppose that all types have the same influx rate, then the dynamics is governed purely by mutation rates:</p><formula xml:id="formula_18">dp i dt = N j=1 µ ij p j − ⟨µ⟩p i .<label>(14)</label></formula><p>From above, it is clear that a type's frequency modulates its growth rate, which decreases if it is larger and increases if it is smaller. If we replace µ ij by the mean mutation rate E[µ], then we have −⟨µ⟩p i ≈ 0. The growth rate is then</p><formula xml:id="formula_19">dp i dt = E[µ](1 − p i ) + E[µ](−N + 1)p i ,<label>(15)</label></formula><formula xml:id="formula_20">= E[µ](1 − N p i ).<label>(16)</label></formula><p>Thus, whether a type will grow or shrink depends on whether its current frequency is above or below 1/N .</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>C. Equilibrium relation</head><p>Having a firmer grasp of the speeds, we now focus on our main result. Our aim is to to derive a relationship between the parameters of the system and a function of frequencies that quantifies localization. We do not seek a particular form of the latter as there is no unique way to measure localization. Our only requirement is that this function must monotonically vary as the population becomes more (de)localized. With this clarified, our starting point is that the speeds should contain the answer. It is intuitive that if v s (v µ ) is much greater than v µ (v s ) throughout the dynamics, then the population localizes (delocalizes). Hence, the relative dominance between these speeds should determine the degree of localization. We shall return to this point later (Sec. III E). Instead, we notice that these speeds equal each other at equilibrium. Since the surprisal rate σ of the population must vanish then, it follows that σs and σµ should have the same norm to cancel each other (Fig. <ref type="figure" target="#fig_8">2b</ref>). This can be shown explicitly by taking the mutation speed and substituting</p><formula xml:id="formula_21">N j̸ =i µ ij h jmax = (λ max − W ii )h imax<label>(17)</label></formula><p>from Eq. 4 to remove the mutation rates. After expanding the squares, the result is (SM Sec. B)</p><formula xml:id="formula_22">v 2 µ = N i=1 p * i s 2 i − N i=1 p * i s i 2 = v 2 s .<label>(18)</label></formula><p>Because of Eq. 18, we can write the following equality using the approximate speeds:</p><formula xml:id="formula_23">E v 2 s + C s (p * ) = E v 2 µ + C µ (p * ),<label>(19)</label></formula><p>where p * := (p * 1 , . . . , p * N ) is the vector of equilibrium frequencies, and C s (p * ) and C µ (p * ) are the covariance corrections to E v 2 s and E v 2 µ , respectively, that become significant in the localized regime. We have derived C s (p * ) explicitly as (SM Sec. D)</p><formula xml:id="formula_24">C s (p * ) := N C s 2 , p * − C s 2 , (p * ) 2 + N C [s, p * ] 2 − 2E [s] N C [s, p * ] − C s, (p * ) 2 − N 2 C [s, p * ] 2 ,<label>(20)</label></formula><p>which shows that the correction is indeed driven by covariance between the rates and frequencies. Substituting the approximate speeds, we can rewrite Eq. 19 as</p><formula xml:id="formula_25">V [s] E [µ] 2 = H(p * ) + C µ (p * ) − C s (p * ) E [µ] 2 1 − N i=1 (p * i ) 2 ,<label>(21)</label></formula><formula xml:id="formula_26">H(p * ) := N i=1 1/p * i − N 2 1 − N i=1 (p * i ) 2 . (<label>22</label></formula><formula xml:id="formula_27">)</formula><p>where we dropped the negligible mutation variance terms in Eq. 12b. In SM Sec. D, we show numerically that both covariance corrections, C µ (p * ) and C s (p * ), are negative overall and become significant when the population enters the localized regime.</p><p>We observe the following about Eq. 21. Its right-hand side diverges if the population is completely localized. The denominators of both terms approach zero. At the same time, the numerator of H(p * ) diverges and the covariance corrections on the second term become important. When the population is completely delocalized instead, both terms vanish as both numerators go to zero. In general, H(p * ) monotonically increases with increasing localization <ref type="bibr">[56]</ref>. The right-hand side of Eq. 21 therefore quantifies the population's degree of localization and by equality, so does the left-hand side. More than this though, notice that the left-hand side contains only the statistics of the growth matrix. We recognize that the covariance corrections in the right-hand side of Eq. 21 also contains the influx and mutation rates. But the term involving these corrections still depends on the solution. Despite containing the rates, it is overall a response variable. Then, Eq. 21 can be understood in the following way. The ratio</p><formula xml:id="formula_28">F := V [s] /E [µ] 2 ,</formula><p>which we now call the localization factor, is not just equal to but sets the degree of localization as measured by the righthand side of Eq. 21, which can be approximated by H(p * ) outside the localized regime. Eq. 21 naturally teases the possibility of using either the frequencies or rate moments alone to infer or predict the other. But because of the covariance corrections, this can only be done very accurately deep in the quasilocalized regime or near the delocalized limit. Nevertheless, the order of F should track well the order of H(p * ), especially outside the localized regime. In lieu of Eq. 21, we can write instead the following approximation where the corrections are suppressed:</p><formula xml:id="formula_29">log b F ≈ log b H(p * ),<label>(23)</label></formula><p>in a chosen base b. Eq. 23 fulfills our main goal of directly linking the parameters to the equilibrium frequencies. It shows that the degree of localization is the result of the strength of mutation against fluctuations in the influx landscape, which mutation rates also contribute to. Eq. 23 suggests that to fully localize a population, V [s] → ∞. To fully delocalize, V [s] → 0. The localized limit can also be reached when E [µ] → 0 but only if the influx rates are still variable. The delocalized limit can also be reached when E [µ] becomes extremely large provided that the influx rates are the same. Thus, at the opposite limits, V [s] already contains sufficient information and the mutation rates matter only in so far as they affect V [s]. Between these limits, the mean mutation rate E [µ] plays a more pronounced role curbing the localizing effect of V [s]; a larger V [s] is required to localize when E [µ] is increased. These implications are not at all surprising. Instead, the contribution of Eq. 23 is to provide an approximate analytical relationship for general fitness landscapes and mutation rates.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>D. Numerical test</head><p>We now test Eq. 23, which in all calculations here is evaluated in base 10, by numerically obtaining the equilibrium frequencies for a spectrum of localization factors. For this purpose, we introduce three independent measures for the degree of localization: first, the Shannon entropy S := − N i=1 p i ln p i , which goes to zero in the localized limit and ln N in the delocalized limit; second, the participation ratio P R := N i=1 p 2 i which is a classic measure of localization and goes to one in the localized limit and N in the delocalized limit; and lastly, we also introduce R 50 which is similar to P R. We define R 50 to be the minimum number of types needed to cover at least 50% of the population. This metric satisfies 1 ≤ R 50 ≤ N/2. Just like P R, R 50 gives an effective number of types that contribute the most frequency to the population. We mention R 50 in addition to P R because the former defines a natural threshold for the localization regime, R 50 = 1. For each localization factor, it also varies less than P R. Note that these three metrics are inversely proportional to the degree of localization, attaining their highest value in the delocalized limit.</p><p>In Fig. <ref type="figure">3a</ref>, we show that indeed the localization factor F sets how localized the population is. The degree of localization, as measured through the median S, P R and R 50 , increases with increasing F . (Note that R 50 plateaus before reaching the delocalized and localized limits by definition.) Notably, we find that larger factors are needed to localize populations with larger N . This makes sense because larger N means more mutational paths and more types that need to be suppressed in the localized regime. Fig. <ref type="figure">3b</ref> demonstrates directly that the magnitude of F lead to qualitatively different dynamics, which agree with our expectations. Small F (left panel of Fig. <ref type="figure">3b</ref>) leads to delocalization and large F (right panel) leads to localization. An intermediate value (middle panel) quasilocalizes the population. In Fig. <ref type="figure">3b</ref> and all time-evolution plots in this work, the dynamics as given by Eq. 10 is integrated until t max when equilibrium is effectively reached. This is defined as where λ 2 is the second-largest eigenvalue of W. That is, t max is roughly the time it takes for the dominant mode, e λmaxt , in Eq. 2 to be 100 times larger than the second-largest mode.</p><formula xml:id="formula_30">t max := ln 100/(λ max − λ 2 ),<label>(24)</label></formula><p>To obtain the accuracy of Eq. 23, we sample columns of U-excluding the diagonals-from the Dirichlet distribution, each with random parameters, and then scale it by a random number drawn uniformly. This choice was made to mimic the constraint</p><formula xml:id="formula_31">N j=1 Q ji A i = A i .</formula><p>We then draw influx rates from a uniform distribution such that they have the variance to achieve the desired F . Fig. <ref type="figure">4a</ref> shows the relative error e rel , which we define as</p><formula xml:id="formula_32">e 2 rel := median{(log 10 H i (p * )/ log 10 F i − 1) 2 },<label>(25)</label></formula><p>and Fig. <ref type="figure">4b</ref> shows the absolute error, which we define as</p><formula xml:id="formula_33">e 2 abs := median{(log 10 H i (p * ) − log 10 F i − 1) 2 }. (<label>26</label></formula><formula xml:id="formula_34">)</formula><p>Looking at Fig. <ref type="figure">4b</ref> first, we see clearly that the absolute error improves as N increases which is expected since our approximation is only valid for large N . In Fig. <ref type="figure">4a</ref>, we find that within the quasilocalized regime, the median relative errors are generally below 6% and get smaller as the population becomes more delocalized (i.e. smaller F ). In the localized regime (to the right of the dotted lines in Fig. <ref type="figure">4a</ref>), the median error notably rises, falls and appears to plateau around 6%. In SM Sec. D 2, we show numerically that this occurs because the approximation error or covariance correction C s (p * ) rises initially faster than C µ (p * ). These corrections, which have the same sign, eventually attain similar orders and cancel each other incompletely, causing the error to fall later at large F . We also tested Eq. 23 using other mutation rate distributions and find similar results (SM Sec. C).</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>E. Critical localization factor</head><p>The localization factor is akin to a control parameter which can be varied to access different localization phases of the population. We can ask whether there is a critical value of F such that the population undergoes a localization phase transition after crossing it. To this end, we point out that the relative dominance between the speeds is maintained until equilibrium when they equal each other. Since the dynamics is deterministic, the population must always be converging toward the steady-state within the time limit given by 1/λ max . That is to say, if the quasispecies is (de)localized, the population must have been (de)localizing throughout until equilibrium. We show numerical examples in Fig. <ref type="figure">5</ref>. If v s starts out much larger than v µ or vice versa, this relative dominance between them is preserved in the nonequilibrium phase. If the speeds however start out approximately equal, they may switch in dominance but neither gets significantly larger than the other. Because this relative dominance is maintained, we can set one speed to be greater at the start of the dynamics and determine F such that the population will (de)localize from its initial state. Given a vector of initial frequencies p † := (p † 1 , . . . , p † N ) and using Eqs. 12a and 12b, we obtain the following conditions and their resulting effect to the population:</p><formula xml:id="formula_35">F ≫ H(p † ) → localize,<label>(27a)</label></formula><formula xml:id="formula_36">F = H(p † ) → retain degree of localization,<label>(27b)</label></formula><formula xml:id="formula_37">F ≪ H(p † ) → delocalize,<label>(27c)</label></formula><p>where we did not need to be concerned with the covariance corrections since we are far from equilibrium. If H(p † ) → ∞ or H(p † ) → 0, then no value of F can localize or delocalize the population even further, respectively. In which case, any finite F moves the population away from either extreme limit. What is more interesting is the case of an initially quasilocalized. Then, H(p † ) serves as a critical value of F . With a factor above or below H(p † ), the population transitions to the localized or delocalized regime, respectively. The phase space of an initially quasilocalized population can be categorized into three regions, which are characterized by whether F is greater than, less than, or equal to H(p † ).</p><p>To gain more intuition, we can rewrite H(p † ) for an initially quasilocalized population. First, we note that the denominator of H(p † ) may be approximated by unity in this regime, especially for large N . Next, the numerator can be expressed in terms of the statistics of the absolute frequencies. Eq. 27b then becomes (SM Sec. E)</p><formula xml:id="formula_38">F ≈ (N 2 − N )E n † E 1/n † ,<label>(28)</label></formula><p>where the dagger indicates the absolute frequencies are initial or far from equilibrium. Next, the first-order Taylor series expansion of E [x/y] is given by [57]</p><formula xml:id="formula_39">E [x/y] ≈ E [x] E [y] − C [x, y] E [x] 2 + V [x] E [y] 3 .<label>(29)</label></formula><p>Applying this to Eq. 28, we have</p><formula xml:id="formula_40">F ≈ (N 2 − N )(CV 2 n † + 1) ≈ N 2 CV 2 n † ,<label>(30)</label></formula><p>where CV 2 n † := V n † /E n † 2 is the squared coefficient of variation. Thus, it becomes harder to localize the population when there are many types, which we have already seen previously, but also when the frequencies have high variability.</p><p>As a concrete example, we mention a related and interesting numerical result in Ref. <ref type="bibr" target="#b34">[35]</ref> (particularly, their Appendix C). The authors observed that their selection and mutation bounds equal in tightness whenever the maximum clonal replication rate (λ max in their notation) is N times as large as the maximum mutation rate (their W max ). There are subtle differences between their variables and ours. But we can get a similar result, following some of the assumptions made in Ref. <ref type="bibr" target="#b34">[35]</ref>. First, we can quantify the strength of localization and delocalization through</p><formula xml:id="formula_41">θ s := arccos v info − v µ v s ,<label>(31a)</label></formula><formula xml:id="formula_42">θ µ := arccos v info − v s v µ ,<label>(31b)</label></formula><p>respectively (see Fig. <ref type="figure" target="#fig_8">2c</ref>), analogous to how Ref. <ref type="bibr" target="#b34">[35]</ref> quantified the strength of selection and mutation through their θ * and θ † (Eqs. 15 and B3 of Ref. <ref type="bibr" target="#b34">[35]</ref>, respectively) <ref type="bibr">[58]</ref>. Equal strength of (de)localization (analogous to equal tightness of the bounds in Ref. <ref type="bibr" target="#b34">[35]</ref>) is retrieved when θ s = θ µ (θ * = θ † in Ref. <ref type="bibr" target="#b34">[35]</ref>). It can be shown <ref type="bibr">[59]</ref> that this is equivalent to v s = v µ , which is Eq. 27b.</p><p>Next, we also let the absolute (initial or nonequilibrium) frequencies be drawn randomly from a uniform distribution with support ranging from 10 x1 to 10 x2 , where x 1 , x 2 ∈ R + and x 2 &gt; x 1 . We also take the rates to be drawn from uniform distributions. Let s ∼ U (−s max , s max ) and µ ∼ U (0, µ max ). Applying these assumptions to Eq. 27b, we get (SM Sec. E)</p><formula xml:id="formula_43">s 2 max µ 2 max = (N 2 − N ) 3 4 ln 10 2 1 + 10 −∆x 1 − 10 −∆x ∆x − 1 , (<label>32</label></formula><formula xml:id="formula_44">)</formula><p>where ∆x := x 2 − x 1 . The support of n in Ref. <ref type="bibr" target="#b34">[35]</ref> was not explicitly mentioned but if the maximum difference between any frequency is two orders of magnitude (∆x = 2), we obtain</p><formula xml:id="formula_45">s max µ max ≈ N.<label>(33)</label></formula><p>In Fig. <ref type="figure">6</ref>, we verify that Eq. 33 acts like a critical point. For s max /N µ max &gt; 1, we find that the population localizes. On the other hand, when s max /N µ max &lt; 1, the population delocalizes.</p><p>We have checked that s max /N µ max ≈ 1 yields a quasilocalized population. In Fig. <ref type="figure" target="#fig_4">7</ref>, we see that this can attributed to how v s and v µ evolve over time. When s max /N µ max is much greater (less) than one, the speed v s starts out much larger (smaller) than v µ and maintains its relative dominance over time until equilibrium. Note that in the quasilocalized scenario (s max /N µ max ≈ 1), there is still a type which has the largest frequency so that v s must still be somewhat larger than v µ to quasilocalize the population.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>IV. DISCUSSION</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>A. Maintenance of information</head><p>Information has been defined as a relative quantity representing correlation between two systems <ref type="bibr" target="#b50">[60]</ref>, e.g. a population and its environment. To be concrete, we take the following definition of information that a population stores about an environment as a difference in entropies <ref type="bibr" target="#b51">[61,</ref><ref type="bibr" target="#b52">62]</ref>:</p><formula xml:id="formula_46">I ∆S := S max − S(p * ) (<label>34</label></formula><formula xml:id="formula_47">)</formula><p>where S max is the maximum uncertainty about the population and S(p * ) := − N i=1 p * i log b p * i is the entropy given that the population is in the environment. The maximum uncertainty is S max = log b N = L if the logarithm base is the alphabet size of the type sequence. Thus, the maximum information that we can maintain scales with L, which occurs when S(p * ) = 0 or when we know the environment prefers a single type. Eigen's original error threshold is a statement about the maximum possible length L max (and hence, the maximum information content) that can be faithfully reproduced.</p><p>From Eq. 34, it is clear that the degree of localization is directly tied to the possible amount of information that can be maintained. Our equilibrium relation Eq. 23 and the conditions in Eq. 27 align with previous findings <ref type="bibr" target="#b0">[1,</ref><ref type="bibr" target="#b53">[63]</ref><ref type="bibr" target="#b54">[64]</ref><ref type="bibr" target="#b55">[65]</ref> that mutation impedes preservation of information. Indeed, one can view the critical value of F , Eq. 27b, as a generalized delocalization threshold for an initially quasilocalized population. It is akin to a "soft" error threshold. Eq. 28 does not imply an error catastrophe where the fittest becomes extinct, which we recall is landscape-dependent. But Eq. 28 does prescribe when the structure of the quasispecies, and therefore the information shared with the environment through Eq. 34, becomes lost.</p><p>We also mention a subtle point about how mutation can muddle information. Note that fitness (i.e. the replication rate A i ) is central to the concept of information as a correlation between a population and its environment. This is because that correlation is physically manifested through natural selection. (Mutation does not correlate with the environment provided that mutation rates are not directly selected for or environmental effects do not modulate mutation rates.) However, the population localizes on the influx landscape so that frequencies are not proportional to fitness in general. With Eq. 34, we could obtain I ∆S = 0 even if there is variation in fitness when such variation compensates for mutational biases leading to delocalization. On the other hand, even if there is no variation in fitness, mutational biases can still lead to a quasilocalized population. In which case, we will have computed I ∆S ̸ = 0 even though selection did not take place. Only when the mutation probabilities Q ij keep the influx-rate ranking of types identical to their fitness ranking can the information preserved, in the sense of Eq. 34, faithfully reflect selection strength. We note that mutation is not unique in this aspect; genetic drift can fix certain types even though they have no fitness advantage.</p><p>Alternative to Eq. 34, we can take inspiration from Ref. <ref type="bibr" target="#b55">[65]</ref> and define information as the Kullback-Leibler divergence between p * and its equivalent constant-fitness quasispecies:</p><formula xml:id="formula_48">I KL := −S(p * ) − N i=0 p * i log b p µ i ,<label>(35)</label></formula><p>where p µ i denote the equilibrium frequencies of types sharing a replication rate (but with the same mutation probabilities that produced p * ). This definition removes the confounding created by mutation. However, mutation still sets the baseline for the information maintained. The definitions I KL and I ∆S coincide if p µ i = 1/N ∀i. In this case, the degree of localization or F monotonically increases with the information maintained, with I KL = I ∆S = 0 when F = 0. For general p µ i that can be characterized by a localization factor F µ , I KL can be increased by setting |F − F µ | &gt; 0. This means that the maintained information, through Eq. <ref type="bibr" target="#b34">35</ref>, can be increased potentially even by delocalization. For small mutation rates, this is not entirely surprising because selection may favor multiple types. But Eq. 35 highlights that, for general mutation rates, a delocalized state may still be the result of strong variation in fitness.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>B. Viral complexity</head><p>On the side of application, we note that Eq. 23 also gives rise to a theory-driven measure for viral complexity: H(p * ) or its logarithm. Viral complexity has been defined as variation in a set of haplotypes quantified independently of the population size <ref type="bibr" target="#b56">[66,</ref><ref type="bibr" target="#b57">67]</ref>. Complexity indices essentially measure the quasispecies' diversity, which has implications for its adaptability <ref type="bibr" target="#b58">[68]</ref><ref type="bibr" target="#b59">[69]</ref><ref type="bibr" target="#b60">[70]</ref> as well as disease progression and treatment <ref type="bibr" target="#b61">[71]</ref><ref type="bibr" target="#b62">[72]</ref><ref type="bibr" target="#b63">[73]</ref>. Some of the suggested complexity indices <ref type="bibr" target="#b56">[66]</ref> include information-theoretic measures such as the Shannon entropy and diversity indices borrowed from ecology such as Hill numbers.</p><p>We propose that the logarithm of H(p * ) serve as an additional complexity index. Its unique advantage over other frequency-based measures is its direct connection with Eigen's model. Specifically, it carries an underlying dynamical, or biological, meaning given by Eq. 23. For example, suppose that for a given set of haplotype frequencies, we computed log 10 H(p * ) = 2. If Eigen's model applies to the population, then Eq. 23 implies that the standard deviation of effective fitness (i.e. the influx rate) of haplotypes is 10 times larger than the mean mutation rate. But even if Eigen's model does not apply, log b H(p * ) is still useful as a metric. In any case, log H(p * ) can be interpreted by analogy with a population that evolves under Eigen's model. This is in the same vein that Hill numbers, which we introduce in the next paragraphs, can be interpreted by analogy with a population of types of equal abundance.</p><p>Lastly, we note that H(p * ) can be written in terms of these ecological diversity metrics also proposed for viral complexity. The denominator of H(p * ) is the Gini-Simpson index. It is the probability of randomly picking two individuals of different types from the population. It makes sense that it is inversely proportional to V [s], which for large enough values, would concentrate the population on a single type.</p><p>To interpret the numerator of H(p * ), we introduce Hill numbers. The Hill number of order a is defined as a H := (</p><formula xml:id="formula_49">N i=1 p a i ) 1/1−a [74].</formula><p>It is meant to be a standardized diversity metric and can be interpreted as the effective number of equally abundant species (or types) that would give the same diversity a H <ref type="bibr" target="#b65">[75]</ref>. The order a decides the weighting of the type frequencies in this metric. The Hill number of order a = 0 is simply the number of types N , placing equal weights on all type frequencies. When a = −1, which would yield the square root of the sum in the numerator, more weight is placed on rare (i.e. small frequency) types. Now, the Hill numbers are monotonically decreasing for increasing a. Negative orders would therefore produce diversity or effective numbers much greater than N 2 . The numerator may then be interpreted as the "excess diversity" due to the presence of rare types. That this is inversely proportional to the mean mutation rate follows from the tendency of mutation to distribute the frequency mass and prevent such rare types. The metric H(p * ) can be fully expressed in terms of these Hill numbers:</p><formula xml:id="formula_50">H(p * ) = ( −1 H * ) 2 − ( 0 H * ) 2 1 − ( 2 H * ) −1 ,<label>(36)</label></formula><p>where the asterisk denotes that the Hill numbers are evaluated at equilibrium. We note that Hill numbers with negative orders are usually not computed in ecology. However, the Hill number of order a = −1 plays a clear and important role here. That said, the presence of inverse frequency terms would require the sampling effort to be comprehensive to detect rare haplotypes in actual populations. Higher-order Hill numbers, such as the Shannon entropy, which discount rare types more are still subject to sampling bias <ref type="bibr" target="#b66">[76]</ref>. We admit that this does not make Eq. 22 easily applicable to real data compared to traditional metrics. Nevertheless, Eq. 23 provides an impetus to detect low-frequency haplotypes, which serves as a trade-off for a more biologically meaningful complexity index.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>V. SUMMARY AND CONCLUSION</head><p>Next-generation sequencing coupled with algorithmic advances <ref type="bibr" target="#b67">[77,</ref><ref type="bibr" target="#b68">78]</ref> have revealed the great heterogeneity of viral populations. Eigen's model, which introduced the quasispecies concept, has been very influential in understanding this mutation-driven diversity. But analytical results often rely on particular landscapes and mutation schemes or focus on extreme cases (e.g. error catastrophe or survival of the fittest). In this work, we derived a general relation, Eq. 23, which links the statistics of the model parameters to the population's equilibrium frequencies (Sec. III C). We showed that the ratio of an effective fitness variance to the mean mutation rate squared, which we call the localization factor F , controls the degree of localization. For an initially quasilocalized popula-tion, we also obtained a critical value of F , Eq. 27b or Eq. 30, that acts like a delocalization threshold (Sec. III E). These relations hold as long as the number of types N is large and the replication and mutation rates vary smoothly. Under these general assumptions, our results reinforce other observations <ref type="bibr" target="#b53">[63]</ref><ref type="bibr" target="#b54">[64]</ref><ref type="bibr" target="#b55">[65]</ref> that mutation impedes maintenance of information (Sec. IV A).</p><p>We have also proposed a viral complexity or diversity index (Sec. IV B). Compared to other such diversity metrics, Eq. 22 or its logarithm is directly connected to Eigen's model and has a biological interpretation. However, because it depends on inverse frequency terms and on N explicitly, it is more difficult to evaluate accurately compared to traditional measures. Still, rich high-throughput data paired with statistical models (e.g. <ref type="bibr" target="#b69">[79]</ref>) will prove very useful in this regard. Quantifying potential biases with simulated datasets <ref type="bibr" target="#b66">[76]</ref> could be explored in a separate work. In any case, Eq. 22 motivates accurate reconstruction of minority haplotypes.</p><p>Our work adds to recent efforts applying speed limits or trade-off relations to population dynamics <ref type="bibr" target="#b32">[33]</ref><ref type="bibr" target="#b33">[34]</ref><ref type="bibr" target="#b34">[35]</ref><ref type="bibr" target="#b35">[36]</ref>. Together with these studies, our results invite further applications of information theory or stochastic thermodynamics to biological systems. We concur with Ref. <ref type="bibr" target="#b34">[35]</ref>, for example, that the decomposition of the surprisal rate may yield insights in other models as it did here. For instance, Eigen's model can be extended to include recombination rates. It would be interesting to see how recombination modifies the localization factor. We leave these considerations for future work. matics (Elsevier, 1989) p. 17-26.</p><p>[51] Define the matrix M := W ′ + kI, where I is the identity matrix and k is some large enough constant such that M is positive.</p><p>Note also that M is irreducible because W ′ is. Now, 1 is an eigenvector of W ′ and also of M. The Perron-Frobenius theorem guarantees that M has a unique (up to a scalar multiple) positive eigenvector which corresponds to its largest eigenvalue λ M max . For M, 1 is that eigenvector. To get back to W ′ , see that W ′ h = (M − kI)h = (λ M − k)h, where h is an eigenvector of either matrix and λ M is an eigenvector of M. Thus, maximizing λ M retrieves the maximum eigenvalue λ W ′ of W ′ . Substituting 1 for h, we find that λ W ′ max = λ M max − k = 0. [55] This is not unreasonable despite synonymous mutations that produce the same protein (and hence, supposedly the same fitness effect). In the case of SARS-CoV-2, for example, there is still variation in the fitness effects of synonymous mutations <ref type="bibr" target="#b72">[82]</ref> and the site-specific mutation rates are even more variable <ref type="bibr" target="#b73">[83]</ref>.</p><p>[56] For a convex function g, the sum ϕ := N i=1 g(xi) is Schurconvex <ref type="bibr" target="#b74">[84]</ref>. That is, ϕ increases as x := (x1, . . . , xN ) becomes more localized. Then, the sums N i=1 1/p * i and N i=1 (p * i ) 2 , which have convex addends, both increase with increasing localization, and as a result, so does H(p * ). , where the covariance and variances are evaluated with respect to the type frequencies. This states that the norm of the projection of σµ ( σs ) onto σs ( σµ ) is equal to the norm of σµ ( σs ), which would imply that</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>SUPPLEMENTAL MATERIAL Appendix A: Mean approximation of localization and delocalization speeds</head><p>In the following derivations, the summation indices always run from one to N , subject to the indicated constraints. Sometimes, when there are three or more indices, only one summation symbol is used for brevity. But in any case, each index is always summed over. When taking the expectation of the sums, it is assumed that the rates are independent of the frequencies. This assumption breaks down in the localized regime. The relevant correction to the approximate localization speed is extracted in Sec. D.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="1.">Approximation of the localization speed</head><p>The square of the localization speed is given by</p><formula xml:id="formula_51">(v s ) 2 = i p i ( σs i ) 2 = i s 2 i p i − i s i p i 2 . (A1)</formula><p>Then its expectation value is</p><formula xml:id="formula_52">E (v s ) 2 = E i s 2 i p i − E   i s i p i 2   , (A2) = E s 2 − E   i s 2 i p 2 i + i j̸ =i s i p i s j p j   , (A3) = E s 2 − E s 2 i p 2 i − E [s i s j ] i j̸ =i p i p j , (A4) = E s 2 − E s 2 i p 2 i − E [s] 2 1 − i p 2 i , (A5) = E s 2 − E s 2 i p 2 i − E [s] 2 + E [s] 2 i p 2 i , (A6) = E s 2 − E [s] 2 1 − i p 2 i . (A7) So, E (v s ) 2 = V [s] 1 − i p 2 i . (A8)</formula></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.">Approximation of the delocalization speed</head><p>The square of the delocalization speed is given by</p><formula xml:id="formula_53">(v µ ) 2 = i p i ( σµ i ) 2 , (A9) = i 1 p i   j µ ij p j   2 −   i j µ ij p j   2 . (<label>A10</label></formula><formula xml:id="formula_54">)</formula><p>Extracting the diagonal mutation rate terms, we obtain</p><formula xml:id="formula_55">(v µ ) 2 = i p i   j̸ =i µ ij p j p i   2 −   i j̸ =i µ ij p j   2 + 2 j̸ =i µ ij p j µ ii + i µ 2 ii p i − 2 j̸ =i µ ij p j k µ kk p k − i µ ii p i 2 (A11) a.</formula></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Mean of off-diagonal mutation contributions</head><p>Let us first take the mean of the off-diagonal terms. Note that</p><formula xml:id="formula_56">i 1 p i   j̸ =i µ ij p j   2 = i 1 p i   j̸ =i k̸ =i µ ij p j µ ik p k   , (A12) = i 1 p i   j̸ =i µ 2 ij p 2 j   + j̸ =k̸ =i 1 p i µ ij p j µ ik p k . (A13)</formula><p>Then,</p><formula xml:id="formula_57">E    i 1 p i   j̸ =i µ ij p j   2    = E µ 2 j̸ =i p 2 j p i + E [µ] 2 j̸ =k̸ =i p j p k p i , (A14) = E µ 2   i j p 2 j p i − 1   + E [µ] 2   i j̸ =i k̸ =i p j p k p i − i j̸ =i p 2 j p i   , (A15) = E µ 2   i j p 2 j p i − 1   + E [µ] 2   i j k̸ =i p j p k p i − i k̸ =i p k   − E [µ] 2   i j p 2 j p i − 1   , (A16) = V [µ]   i j p 2 j p i − 1   + E [µ] 2   i j k̸ =i p j p k p i − i k̸ =i p k   , (A17) = V [µ]   i j p 2 j p i − 1   + E [µ] 2   i k̸ =i p k p i − i k̸ =i p k   , (A18) = V [µ]   i j p 2 j p i − 1   + E [µ] 2 i 1 − p i p i − i (1 − p i ) , (A19) = V [µ]   i j p 2 j p i − 1   + E [µ] 2 i 1 p i − N − N + 1 , (A20) = V [µ]   i j p 2 j p i − 1   + E [µ] 2 i 1 p i − 2N + 1 , (A21) = V [µ] j̸ =i p 2 j p i + E [µ] 2 i 1 p i − 2N + 1 . (A22) Next, E      i j̸ =i µ ij p j   2    , = E   i j̸ =i k l̸ =k µ ij p j µ kl p l   . (A23)</formula><p>Now, µ ij = µ kl only when (i, j) = (k, l). We can write the sum above as</p><formula xml:id="formula_58">E ⟨µ⟩ 2 = E   i j̸ =i µ 2 ij p 2 j   + E       (i,j)̸ =(k,l) j̸ =i l̸ =k µ ij p j µ kl p l       (A24) = E µ 2 i j̸ =i p 2 j + E [µ] 2 (i,j)̸ =(k,l) j̸ =i l̸ =k p j p l , (A25) = E µ 2 i j̸ =i p 2 j + E [µ] 2      i j̸ =i p j   2 − i j̸ =i p 2 j    , (A26) = V [µ] i j̸ =i p 2 j + E [µ] 2   i j̸ =i p j   2 , (A27) = V [µ] i j̸ =i p 2 j + E [µ] 2 i (1 − p i ) 2 , (A28) = V [µ] i j̸ =i p 2 j + E [µ] 2 (N − 1) 2 . (A29)</formula><p>Then, the total off-diagonal contribution is</p><formula xml:id="formula_59">E (v µ ) 2 off-diagonal = V [µ] j̸ =i p 2 j p i + E [µ] 2 i 1 p i − 2N + 1 −   V [µ] i j̸ =i p 2 j + E [µ] 2 (N − 1) 2   , (A30) = E [µ] 2 i 1 p i − 2N + 1 − (N − 1) 2 + V [µ] i j̸ =i p 2 j p i − p 2 j .<label>(A31)</label></formula><p>Simplifying,</p><formula xml:id="formula_60">E (v µ ) 2 off-diagonal = E [µ] 2 i 1 p i − N 2 + V [µ] i j̸ =i 1 p i − 1 p 2 j . (A32) b.</formula></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Mean of diagonal mutation contributions</head><p>The diagonal contributions to the delocalization speed are</p><formula xml:id="formula_61">(v µ ) 2 diagonal = 2 i j̸ =i µ ij p j µ ii + i µ 2 ii p i − 2   i j̸ =i µ ij p j   k µ kk p k − i µ ii p i 2 , (A33) = −2 i j̸ =i k̸ =i µ ij µ ik p j + i j̸ =i k̸ =i µ ij µ ik p i , + 2 i j̸ =i k l̸ =k µ ij µ kl p j p k − i j̸ =i k l̸ =k µ ij µ kl p i p k . (A34)</formula><p>Let us first tackle the triple sums, which share the same mean, except for the factor −2. Expanding one of them, we have</p><formula xml:id="formula_62">i µ 2 ii p i = i j̸ =i µ 2 ij p j + i̸ =j̸ =k µ ij µ ik p i . (A35)</formula><p>Then, So the mean of the two quadruple sums is</p><formula xml:id="formula_63">E i µ 2 ii p i = E µ 2 i j̸ =i p i + E [µ]</formula><formula xml:id="formula_64">E   −2   i j̸ =i µ ij p j   k µ kk p k − i µ ii p i 2   = V [µ] − i p 2 i (N + 1) − 2 + E [µ] 2 (N − 1) 2 . (A52)</formula><p>The total diagonal contribution is Combining the diagonal and off-diagonal contributions, the approximate delocalized speed (squared) is</p><formula xml:id="formula_65">E (v µ ) 2 diagonal = V [µ] −</formula><formula xml:id="formula_66">E (v µ ) 2 = E [µ] 2 i 1 p i − N 2 + V [µ]   i p 2 i   j 1 p j − 2N   − N + 2   . (<label>A54</label></formula><formula xml:id="formula_67">)</formula></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Appendix B: Equality of speeds at equilibrium</head><p>We show explicitly that the localization and delocalization speeds equal each other at equilibrium. The eigenvalue equation states We extract the correction terms to each of the three approximations in Eq. A4. First,</p><formula xml:id="formula_68">j̸ =i µ ij h jmax = λ max h imax − W ii h imax . (B1) With h tot := i h imax , (v µ ) 2 = i 1 h imaxhtot (λ max h imax − W ii h imax + µ ii h imax ) 2 − 1 h 2 tot k (λ max h kmax − W kk h kmax ) + k µ kk h kmax 2 (B2) But W ii = s i + µ ii . So, (v µ ) 2 = i 1 h imax h tot (λ max − s i h imax ) 2 − 1 h 2 tot k λ max h kmax − k s k h kmax 2 , (<label>B3</label></formula><formula xml:id="formula_69">) = i h imax h tot (λ max − s i ) 2 − 1 h 2 tot k (λ max − s k ) h kmax 2 , (<label>B4</label></formula><formula xml:id="formula_70">) = i h imax h tot λ 2 max − 2λ max s i + s 2 i − 1 h 2 tot   k λ max h kmax 2 − 2 k λ max h kmax k s k h kmax + k s k h kmax 2   ,<label>(B5)</label></formula><formula xml:id="formula_71">i s 2 i p i = E s 2 i p i + i p i s 2 i − E s 2 . (D1)</formula><p>Then, the error in the first mean is</p><formula xml:id="formula_72">i p i s 2 i − E s 2 = i s 2 i p i − E s 2 i p i . (D2)</formula><p>This is simply the covariance between s and p:</p><formula xml:id="formula_73">1 N i p i s 2 i − E s 2 = E s 2 p − E s 2 E [p] = C s 2 , p . (D3) Next, i s 2 i p 2 i = E s 2 i p 2 i + i p 2 i s 2 i − E s 2 . (<label>D4</label></formula><formula xml:id="formula_74">)</formula><p>The error in the second mean is i</p><formula xml:id="formula_75">p 2 i s 2 i − E s 2 = i s 2 i p 2 i − E s 2 i p 2 i .<label>(D5)</label></formula><p>This is also a covariance but between s 2 and p 2 : </p><formula xml:id="formula_76">1 N i p 2 i s 2 i − E s 2 = E s 2 p 2 − E s 2 E p 2 = C</formula></div><figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_0"><head>0 1 S 1 PFIG. 3 .</head><label>113</label><figDesc>FIG. 3. (A)The degree of localization as measured by different metrics increases with F . Each point is the median value of the respective metric over 10 3 realizations per given F . Notably, a population with larger N will localize at a larger F . (B) Different F lead to qualitatively different frequency dynamics. The left panel shows the time-evolution of frequencies at F = 1, the middle at F = 1.5 × 10 3 , and the right at F = 5.5 × 10 5 , with N = 50 in all cases. The frequencies are plotted against time normalized by the maximum time of integration tmax (see Eq. 24 in main text).</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_1"><head>N = 50 N 10 1 FFIG. 4 .</head><label>501014</label><figDesc>FIG.<ref type="bibr" target="#b3">4</ref>. Accuracy of the equilibrium relation. See the main text for exact definition of relative and absolute errors. Top: The relation Eq. 23 has a median relative error e rel within 10% across regimes, with median errors below 6% in the quasi-and delocalized regimes. The dotted lines and arrows (top of the plot) indicate the approximate onsets of the localized regimes for different N that have the same but darker color scheme as the errors. Here, the onset of the localized regime is defined as when the median R50 for a given F drops to one. Bottom: The median absolute error e abs is shown for low values of F as the relative error becomes undefined when F → 0. Each median error in both panels is computed from 10 3 realizations per given F . The 95% confidence intervals are constructed from the interquartile range (IQR) of the computed errors: ±1.57 × IQR/ √ 10 3 .</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_2"><head>3 FIG. 5 .</head><label>35</label><figDesc>FIG. 5. Time-evolution of pairs of localization and delocalization speeds for F = 1.5 × 10 6 (top panel), F = 1.5 × 10 3 (middle), and F = 1.5 (bottom) with N = 50 in all cases. If vs (vµ) starts out much larger, it stays larger than vµ (vs) until equilibrium. If the speeds have similar orders, they may switch in dominance (middle panel) over time but they will still have comparable magnitudes.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_3"><head>5 ∆R 50 /N/ 2 FIG. 6 .</head><label>55026</label><figDesc>FIG.6. For uniformly distributed parameters and initial frequencies (see main text), smax/µmax = N marks a critical point from which the population (de)localizes. The above panels show the difference in degree of localization ∆X := X(p * ) − X(p * 0 ) where X is the localization metric (S, P R, or R50), p * is the quasispecies evolved under smax/N µmax ̸ = 1, and p * 0 is the quasispecies evolved under smax/µmax = N . Each point is the median value of 10 3 realizations per smax/N µmax. The narrow error bars shown mark the interquartile range (IQR). The 95% confidence intervals for the median constructed from the IQR, ±1.57 × IQR/ √ 10 3 , are much tighter and not shown.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_4"><head>FIG. 7 .</head><label>7</label><figDesc>FIG.7. Time-evolution of vs/vµ over 10 3 time points per given smax/N µmax. Since the time of integration to reach equilibrium at tmax (see Eq. 24 in main text) varies for different parameter values, each solid trace of the same color indicates the same time step (out of 10 3 time points until tmax) instead rather than the same clock time of integration. Thus, the solid violet line which traces a ragged diagonal from vs/vµ ∼ 10 −4 to vs/vµ ∼ 10 4 is comprised by initial values of vs/vµ across 150 different instances of smax/N µmax. The solid yellow horizontal line, where vs/vµ = 1, constitutes equilibrium at time tmax, which would be different for each smax/N µmax. For uniformly distributed rates and initial frequencies, vs dominates until equilibrium (yellow line) whenever smax/N µmax ≫ 1 and vµ dominates until equilibrium whenever smax/N µmax ≪ 1.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_5"><head></head><label></label><figDesc>[52] G. E. Crooks, Entropy production fluctuation theorem and the nonequilibrium work relation for free energy differences, Phys. Rev. E 60, 2721 (1999). [53] H. Qian, Entropy production and excess entropy in a nonequilibrium steady-state of single macromolecules, Phys. Rev. E 65, 021111 (2002). [54] U. Seifert, Entropy production along a stochastic trajectory and an integral fluctuation theorem, Physical Review Letters 95, 10.1103/physrevlett.95.040602 (2005).</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_6"><head></head><label></label><figDesc>[57] A. Stuart and K. Ord, Kendall's advanced theory of statistics, distribution theory (John Wiley &amp; Sons, 2010). [58] To be clear, they quantified the tendency of selection and mutation bounds to give tighter limits through their P * (θ * ) and P † (θ † ). But considering θ * and θ † directly is equivalent. [59] Let a = v info , b = vs, and c = vµ. Then, θ s = θ µ =⇒ (a − b)/c = (a − c)/b =⇒ (b − c)(a − (b + c)) = 0. This has two solutions: either a = b + c or b = c. The former is a special case of the latter. After expanding v info and noting the identity √ x + √ y = x + y + 2 √ xy, it can be written as Cov[ σs , σµ ] = Var[ σs ]Var[ σµ ]</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_7"><head>= 2 i j̸ =i µ ii µ ij p j + i µ 2 µ ii p i 2 = i j̸ =i µ 2 i j̸ =i k µ ij p j µ kk p k = i j̸ =i µ 2 =i k l̸ =k p i p k − 1</head><label>222221</label><figDesc>E µ 2 (N − 1) + E [µ] 2 (N − 2)(N − 1), (A37) = E µ 2 (N − 1) + E [µ] 2 (N − 1) 2 − (N − 1) , (A38) = V [µ] (N − 1) + E [µ] 2 (N − 1) 2 . (A39)Thus, the mean of the two triple sums isE  ii p i   = −V [µ] (N − 1) − E [µ] 2 (N − 1) 2 . (A40)On the other hand, the pair of quadruple sums do not share the same mean. Expanding one of them, we havei ij p 2 i + (i,j)̸ =(k,l) j̸ =i k̸ =l) µ ij µ kl p i p k . ij p j p i + (i,j)̸ =(k,l) j̸ =i k̸ =l) µ ij µ kl p j p k . =i k µ ij p j µ kk p k   = E µ 2 i j̸ =i p j p i + E [µ]2 (i,j)̸ =(k,l) j̸ =i k̸ =l)p j p k ,</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_8"><head>i p 2 i</head><label>2</label><figDesc>(N + 1) − (N − 1) + 2 . (A53) c. Total mean of the delocalization speed</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_9"><head>CountFIG. 8 .i λ 2 max − 2λ max s i + s 2 λ 2 Appendix D: Covariance correction terms 1 .</head><label>82221</label><figDesc>FIG.8. Histograms (bin size is 40) of influx (top) and mutation rates (bottom). Each column shows the rate distributions from one realization with F = 10 3 and N = 100. The left column shows mutation rates drawn from the Dirichlet distribution, the middle column from the uniform distribution, and the right column from the beta distribution.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_0"><head></head><label></label><figDesc>1. (A) In Eigen's model, mutants are produced as a result of erroneous replication, coupling the replication rate Ai (hence, selection) of a type i, shown above as a sequence of nucleotides, and its copy fidelity Qii (hence, mutation). (B) Much of the theoretical work has focused on the error catastrophe (right) in which the population (closed black circles) is delocalized from the peak of the fitness landscape (purple curve). On the opposite extreme is survival of the fittest (left) where the entire population is on the peak. The middle diagram represents the case when mutation is seldom.</figDesc><table /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_2"><head></head><label></label><figDesc>s 2 , p 2 .So the error in the third mean isi j̸ =i s i p i s j p j − E [s] i p j [∆s i ∆s j + E [s] (∆s i + ∆s j )] . (D9)We can rewrite the two parts of this error separately. First, i j̸ =i p i p j ∆s i ∆s j = i j p i ∆s i p j ∆s j −</figDesc><table><row><cell></cell><cell>2 .</cell><cell>(D8)</cell></row><row><cell>2</cell><cell>p i p j =</cell></row><row><cell>i j̸ =i</cell><cell>i j̸ =i</cell></row><row><cell></cell><cell>p 2 i ∆s 2 i ,</cell><cell>(D10)</cell></row><row><cell></cell><cell>i</cell></row><row><cell cols="2">= N 2 E [p∆s] 2 − N E [p∆s] , = N 2 (E [sp] − E [s] E [p]) 2 − N (E [sp] − E [s] E [p]) 2 , = N 2 C [s, p] 2 − N C [s, p] 2 .</cell><cell>(D11) (D12) (D13)</cell></row><row><cell>Second,</cell><cell></cell></row><row><cell>E [s]</cell><cell></cell></row></table><note>(D6)For the last mean, we define∆s i := s i − E [s]. Then, i j̸ =i s i p i s j p j = i j̸ =i p i p j (∆s i + E [s]) (∆s j + E [s]) , (D7) = i j̸ =i p i p j ∆s i ∆s j + E [s] (∆s i + ∆s j ) + E [s] p i j̸ =i p i p j (∆s i + ∆s j ) = 2E [s] i j̸ =i p i ∆s i p j ,(D14)</note></figure>
+		</body>
+		<back>
+
+			<div type="acknowledgement">
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>ACKNOWLEDGMENTS</head><p>CJP thanks F. Tablizo for encouraging feedback and useful discussions. CJP was supported in part by grants to the Philippine Genome Center from the Department of Health -Epidemiology Bureau for the national SARS-CoV-2 biosurveillance initiative.</p></div>
+			</div>
+
+			<div type="annex">
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Appendix C: Numerical implementation and additional results</head><p>The full code to reproduce the figures or calculations is available for download at <ref type="bibr" target="#b36">[37]</ref>. Here, we briefly mention how the rates are drawn and how a single realization of a quasispecies population is simulated for a given localization factor F . To obtain the quasispecies p * , we need only solve for the maximum eigenvalue and the associated right eigenvector of the growth matrix W.</p><p>To build W, we need to draw N influx rates s i and N 2 − N mutation rates µ ij (j ̸ = i).</p><p>In this work, the influx rates are always drawn from a uniform distribution. These rates may be positive or negative (if the mutation rates are much larger or because the degradation rates are large enough). Meanwhile, the mutation rates, which are never negative, may be drawn from the (1) Dirichlet distribution, (2) the uniform distribution, and the (3) beta distribution. To draw mutation rates from the Dirichlet distribution, we draw N Dirichlet vectors (of size N − 1) with uniform-random parameters. Next, we draw N random numbers from a uniform distribution that we use to variably scale each of the vectors. Sampling is done this way to mimic the constraint</p><p>(Note that this does not impose a constraint on the influx rates.) To draw from the beta distribution, the distribution parameters are drawn uniformly first. Drawing from the uniform distribution is straightforward. In Fig. <ref type="figure">8</ref>, we show examples of sampled rates across different distributions.</p><p>To generate a quasispecies for a given F , we need to adjust the distribution parameters of the rates to get the desired instead. When V [s] is allowed to vary, we draw mutation rates with their default parameters and then adjust V [s] accordingly. In this case, the mean mutation rate E [µ] is fixed except when drawing from the beta distribution whose default parameters are random and therefore does not have the same skewness at each instance. When V [s] is fixed instead, E [µ] is adjusted. In Figs. 9 and 10, we show the relative and absolute errors of Eq. 23 across all three mutation rate distributions, whether the influx rates are all positive or may be negative, and whether V [s] is fixed or adjusted directly. Overall, we find similar results with relative errors dropping below 6% outside the lcoalized regime. Relative error e rel N = 50 (free Localization factor F FIG. 9. Accuracy of Eq. 23 when influx rates may be negative or positive. Each column shows relative and absolute errors when mutation rates are drawn from the Dirichlet distribution (left column), the uniform distribution (middle), and the beta distribution (right). The colors denote the number of types. Open markers indicate the errors when the influx rate variance is held fixed (here, V [s] = 100) but the mean mutation rate is varied to get the desired F . Meanwhile, filled markers show the opposite, when the influx rate variance is allowed to vary to achieve a given F . </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>= 2E [s]</head><p>i</p><p>The total correction to the approximation of the localization speed is</p><p>(D19)</p><p>The middle two terms which involve covariance differences should be roughly on the same order. The covariances involving s 2 is larger than those only involving s, but this is compensated by the E [s] factor. Meanwhile, the N 2 term swamps the last covariance. Hence, the correction leans to the negative.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.">Numerical evaluation of the covariance corrections</head><p>In Fig. <ref type="figure">11</ref>, we numerically evaluate the corrections to the speed approximations, C s (p</p><p>, at equilibrium. We find that by and large the approximations overestimate the speeds and grow in magnitude as F increases. Therefore, both C s (p * ) and C µ (p * ) largely have negative signs in the localized regime (i.e. large F ). In Fig. <ref type="figure">12</ref>, the correction C µ (p * ) catches up to C s (p * ) within a 100% relative error margin. Since both corrections have the same negative sign, the overall error in the equilibrium relation Eq. 23 is markedly diminished as they cancel each other to a substantial degree. This explains the drop in error in Fig. <ref type="figure">4</ref> in the localized regime. Appendix E: Critical smax/µmax for uniformly distributed rates and initial frequencies For an initially quasilocalized population and to leading order of p, we can rewrite Eq. 27b as</p><p>Following the assumption in Ref. <ref type="bibr" target="#b34">[35]</ref> that s ∼ U (−s max , s max ) and µ ∼ U (0, µ max ), we then have</p><p>Plugging this back into Eq. E1, we have</p><p>It remains to be shown that the right-hand side of the above equation is on the order of N 2 . In Ref. <ref type="bibr" target="#b34">[35]</ref>, the distributions of the type population sizes have not been specified except that they are uniform. Therefore, we consider the general case that n ∼ U (a, b), where a and b are positive numbers. Making this general assumption, we then take the expectation value of the sum i 1/p. We can rewrite this sum explicitly in terms of the absolute frequencies as</p><p>Then,</p><p>where we made use of the fact that since j ̸ = i, then n j ̸ = n i such that n j and 1/n i are independent. Because some types are in general fitter and others less so, the differences in the population sizes of the types can be orders of magnitude. Hence, it is better to consider the orders of a and b explicitly. If we let a = 10 x and b = 10 y , where y and x are positive reals and y &gt; x, then </p></div>			</div>
+			<div type="references">
+
+				<listBibl>
+
+<biblStruct xml:id="b0">
+	<analytic>
+		<title level="a" type="main">Selforganization of matter and the evolution of biological macromolecules</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Eigen</surname></persName>
+		</author>
+		<idno type="DOI">10.1007/bf00623322</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Die Naturwissenschaften</title>
+		<imprint>
+			<biblScope unit="volume">58</biblScope>
+			<biblScope unit="page" from="465" to="523" />
+			<date type="published" when="1971">1971</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b1">
+	<analytic>
+		<title level="a" type="main">The evolution of mutation rates: separating causes from consequences</title>
+		<author>
+			<persName><forename type="first">P</forename><forename type="middle">D</forename><surname>Sniegowski</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><forename type="middle">J</forename><surname>Gerrish</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Johnson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Shaver</surname></persName>
+		</author>
+		<idno type="DOI">10.1002/1521-1878(200012)22:12&lt;1057::aid-bies3&gt;3.0.co;2-w</idno>
+	</analytic>
+	<monogr>
+		<title level="j">BioEssays</title>
+		<imprint>
+			<biblScope unit="volume">22</biblScope>
+			<biblScope unit="page" from="1057" to="1066" />
+			<date type="published" when="2000">2000</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b2">
+	<analytic>
+		<title level="a" type="main">Mechanisms of viral mutation</title>
+		<author>
+			<persName><forename type="first">R</forename><surname>Sanjuán</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Domingo-Calap</surname></persName>
+		</author>
+		<idno type="DOI">10.1007/s00018-016-2299-6</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Cellular and Molecular Life Sciences</title>
+		<imprint>
+			<biblScope unit="volume">73</biblScope>
+			<biblScope unit="page" from="4433" to="4448" />
+			<date type="published" when="2016">2016</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b3">
+	<analytic>
+		<title level="a" type="main">What is a quasispecies?</title>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">A</forename><surname>Nowak</surname></persName>
+		</author>
+		<idno type="DOI">10.1016/0169-5347(92)90145-2</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Trends in Ecology &amp; Evolution</title>
+		<imprint>
+			<biblScope unit="volume">7</biblScope>
+			<biblScope unit="page" from="118" to="121" />
+			<date type="published" when="1992">1992</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b4">
+	<analytic>
+		<title level="a" type="main">Quasispecies theory in virology</title>
+		<author>
+			<persName><forename type="first">E</forename><surname>Domingo</surname></persName>
+		</author>
+		<idno type="DOI">10.1128/jvi.76.1.463-465.2002</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of Virology</title>
+		<imprint>
+			<biblScope unit="volume">76</biblScope>
+			<biblScope unit="page" from="463" to="465" />
+			<date type="published" when="2002">2002</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b5">
+	<monogr>
+		<author>
+			<persName><forename type="first">E</forename><surname>Domingo</surname></persName>
+		</author>
+		<idno type="DOI">10.1016/c2017-0-04115-0</idno>
+		<title level="m">Virus as Populations: Composition, Complexity, Quasispecies, Dynamics, and Biological Implications</title>
+				<imprint>
+			<publisher>Academic Press</publisher>
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b6">
+	<monogr>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">F</forename><surname>Crow</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Kimura</surname></persName>
+		</author>
+		<title level="m">An Introduction to Population Genetics Theory</title>
+				<meeting><address><addrLine>New York</addrLine></address></meeting>
+		<imprint>
+			<publisher>Harper and Row</publisher>
+			<date type="published" when="1970">1970</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b7">
+	<analytic>
+		<title level="a" type="main">Error thresholds for molecular quasispecies as phase transitions: From simple landscapes to spin-glass models</title>
+		<author>
+			<persName><forename type="first">P</forename><surname>Tarazona</surname></persName>
+		</author>
+		<idno type="DOI">10.1103/physreva.45.6038</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Physical Review A</title>
+		<imprint>
+			<biblScope unit="volume">45</biblScope>
+			<biblScope unit="page" from="6038" to="6050" />
+			<date type="published" when="1992">1992</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b8">
+	<analytic>
+		<title level="a" type="main">Error catastrophe and antiviral strategy</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Eigen</surname></persName>
+		</author>
+		<idno type="DOI">10.1073/pnas.212514799</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Proceedings of the National Academy of Sciences</title>
+		<imprint>
+			<biblScope unit="volume">99</biblScope>
+			<biblScope unit="page" from="13374" to="13376" />
+			<date type="published" when="2002">2002</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b9">
+	<analytic>
+		<title level="a" type="main">Statistical mechanics of Eigen&apos;s evolution model</title>
+		<author>
+			<persName><forename type="first">I</forename><surname>Leuthäusser</surname></persName>
+		</author>
+		<idno type="DOI">10.1007/bf01010413</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of Statistical Physics</title>
+		<imprint>
+			<biblScope unit="volume">48</biblScope>
+			<biblScope unit="page" from="343" to="360" />
+			<date type="published" when="1987">1987</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b10">
+	<analytic>
+		<title level="a" type="main">Exact solution of the quasispecies model in a sharply peaked fitness landscape</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Galluccio</surname></persName>
+		</author>
+		<idno type="DOI">10.1103/physreve.56.4526</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Physical Review E</title>
+		<imprint>
+			<biblScope unit="volume">56</biblScope>
+			<biblScope unit="page" from="4526" to="4539" />
+			<date type="published" when="1997">1997</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b11">
+	<analytic>
+		<title level="a" type="main">Exact solution of the Eigen model with general fitness functions and degradation rates</title>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">B</forename><surname>Saakian</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C.-K</forename><surname>Hu</surname></persName>
+		</author>
+		<idno type="DOI">10.1073/pnas.0504924103</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Proceedings of the National Academy of Sciences</title>
+		<imprint>
+			<biblScope unit="volume">103</biblScope>
+			<biblScope unit="page" from="4935" to="4939" />
+			<date type="published" when="2006">2006</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b12">
+	<analytic>
+		<title level="a" type="main">Error thresholds of replication in finite populations mutation frequencies and the onset of muller&apos;s ratchet</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Nowak</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Schuster</surname></persName>
+		</author>
+		<idno type="DOI">10.1016/s0022-5193(89)80036-0</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of Theoretical Biology</title>
+		<imprint>
+			<biblScope unit="volume">137</biblScope>
+			<biblScope unit="page" from="375" to="395" />
+			<date type="published" when="1989">1989</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b13">
+	<analytic>
+		<title level="a" type="main">Error threshold in finite populations</title>
+		<author>
+			<persName><forename type="first">D</forename><surname>Alves</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">F</forename><surname>Fontanari</surname></persName>
+		</author>
+		<idno type="DOI">10.1103/physreve.57.7008</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Physical Review E</title>
+		<imprint>
+			<biblScope unit="volume">57</biblScope>
+			<biblScope unit="page" from="7008" to="7013" />
+			<date type="published" when="1998">1998</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b14">
+	<analytic>
+		<title level="a" type="main">Finite-size scaling of the error threshold transition in finite populations</title>
+		<author>
+			<persName><forename type="first">P</forename><forename type="middle">R A</forename><surname>Campos</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">F</forename><surname>Fontanari</surname></persName>
+		</author>
+		<idno type="DOI">10.1088/0305-4470/32/1/001</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of Physics A: Mathematical and General</title>
+		<imprint>
+			<biblScope unit="volume">32</biblScope>
+			<biblScope unit="page" from="L1" to="L7" />
+			<date type="published" when="1999">1999</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b15">
+	<analytic>
+		<title level="a" type="main">Viral quasispecies and recombination</title>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">C</forename><surname>Boerlijst</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Bonhoeffer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">A</forename><surname>Nowak</surname></persName>
+		</author>
+		<idno type="DOI">10.1098/rspb.1996.0231</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Proceedings of the Royal Society of London. Series B: Biological Sciences</title>
+		<imprint>
+			<biblScope unit="volume">263</biblScope>
+			<biblScope unit="page" from="1577" to="1584" />
+			<date type="published" when="1996">1996</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b16">
+	<analytic>
+		<title level="a" type="main">Quasispecies and recombination</title>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">N</forename><surname>Jacobi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Nordahl</surname></persName>
+		</author>
+		<idno type="DOI">10.1016/j.tpb.2006.08.002</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Theoretical Population Biology</title>
+		<imprint>
+			<biblScope unit="volume">70</biblScope>
+			<biblScope unit="page" from="479" to="485" />
+			<date type="published" when="2006">2006</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b17">
+	<analytic>
+		<title level="a" type="main">Error and repair catastrophes: A two-dimensional phase diagram in the quasispecies model</title>
+		<author>
+			<persName><forename type="first">E</forename><surname>Tannenbaum</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><forename type="middle">I</forename><surname>Shakhnovich</surname></persName>
+		</author>
+		<idno type="DOI">10.1103/physreve.69.011902</idno>
+		<idno>.1103/physreve.69.011902</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Physical Review E</title>
+		<imprint>
+			<biblScope unit="volume">69</biblScope>
+			<biblScope unit="page">10</biblScope>
+			<date type="published" when="2004">2004</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b18">
+	<analytic>
+		<title level="a" type="main">Solution of the quasispecies model for an arbitrary gene network</title>
+		<author>
+			<persName><forename type="first">E</forename><surname>Tannenbaum</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><forename type="middle">I</forename><surname>Shakhnovich</surname></persName>
+		</author>
+		<idno type="DOI">10.1103/physreve.70.021903</idno>
+		<idno>.1103/physreve.70.021903</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Physical Review E</title>
+		<imprint>
+			<biblScope unit="volume">70</biblScope>
+			<biblScope unit="page">10</biblScope>
+			<date type="published" when="2004">2004</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b19">
+	<analytic>
+		<title level="a" type="main">Error thresholds in the presence of epistatic interactions</title>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">A</forename><surname>Herrera-Martí</surname></persName>
+		</author>
+		<idno type="DOI">10.1103/physreve.110.054412</idno>
+		<idno>.1103/phys- reve.110.054412</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Physical Review E</title>
+		<imprint>
+			<biblScope unit="volume">110</biblScope>
+			<biblScope unit="page">10</biblScope>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b20">
+	<analytic>
+		<title level="a" type="main">A localization threshold for macromolecular quasispecies from continuously distributed replication rates</title>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">S</forename><surname>Mccaskill</surname></persName>
+		</author>
+		<idno type="DOI">10.1063/1.446590</idno>
+	</analytic>
+	<monogr>
+		<title level="j">The Journal of Chemical Physics</title>
+		<imprint>
+			<biblScope unit="volume">80</biblScope>
+			<biblScope unit="page" from="5194" to="5202" />
+			<date type="published" when="1984">1984</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b21">
+	<analytic>
+		<title level="a" type="main">Random matrices and localization in the quasispecies theory</title>
+		<author>
+			<persName><forename type="first">B</forename><surname>Waclaw</surname></persName>
+		</author>
+		<idno type="DOI">10.5506/aphyspolb.42.1141</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Acta Physica Polonica B</title>
+		<imprint>
+			<biblScope unit="volume">42</biblScope>
+			<biblScope unit="page">1141</biblScope>
+			<date type="published" when="2011">2011</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b22">
+	<monogr>
+		<author>
+			<persName><forename type="first">E</forename><surname>Crosato</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">E</forename><surname>Spinney</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">G</forename><surname>Morris</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/ARXIV.2508.12871</idno>
+		<title level="m">Stochastic multistability of clonallike states in the Eigen model: a fidelity catastrophe</title>
+				<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b23">
+	<analytic>
+		<title level="a" type="main">Model dependency of error thresholds: the role of fitness functions and contrasts between the finite and infinite sites models</title>
+		<author>
+			<persName><forename type="first">T</forename><surname>Wiehe</surname></persName>
+		</author>
+		<idno type="DOI">10.1017/s0016672397002619</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Genetical Research</title>
+		<imprint>
+			<biblScope unit="volume">69</biblScope>
+			<biblScope unit="page" from="127" to="136" />
+			<date type="published" when="1997">1997</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b24">
+	<analytic>
+		<title level="a" type="main">Mutation-selection models solved exactly with methods of statistical mechanics</title>
+		<author>
+			<persName><forename type="first">E</forename><surname>Baake</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Wagner</surname></persName>
+		</author>
+		<idno type="DOI">10.1017/s0016672301005110</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Genetical Research</title>
+		<imprint>
+			<biblScope unit="volume">78</biblScope>
+			<biblScope unit="page" from="93" to="117" />
+			<date type="published" when="2001">2001</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b25">
+	<analytic>
+		<title level="a" type="main">Quasispecies made simple</title>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">J</forename><surname>Bull</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><forename type="middle">A</forename><surname>Meyers</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Lachmann</surname></persName>
+		</author>
+		<idno type="DOI">10.1371/journal.pcbi.0010061</idno>
+	</analytic>
+	<monogr>
+		<title level="j">PLoS Computational Biology</title>
+		<imprint>
+			<biblScope unit="volume">1</biblScope>
+			<biblScope unit="page">e61</biblScope>
+			<date type="published" when="2005">2005</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b26">
+	<analytic>
+		<title level="a" type="main">Quasispecies theory in the context of population genetics</title>
+		<author>
+			<persName><forename type="first">C</forename><forename type="middle">O</forename><surname>Wilke</surname></persName>
+		</author>
+		<idno type="DOI">10.1186/1471-2148-5-44</idno>
+	</analytic>
+	<monogr>
+		<title level="j">BMC Evolutionary Biology</title>
+		<imprint>
+			<biblScope unit="volume">5</biblScope>
+			<biblScope unit="page" from="1471" to="2148" />
+			<date type="published" when="2005">2005</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b27">
+	<analytic>
+		<title level="a" type="main">Error-threshold exists in fitness landscapes with lethal mutants</title>
+		<author>
+			<persName><forename type="first">N</forename><surname>Takeuchi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Hogeweg</surname></persName>
+		</author>
+		<idno type="DOI">10.1186/1471-2148-7-15</idno>
+	</analytic>
+	<monogr>
+		<title level="j">BMC Evolutionary Biology</title>
+		<imprint>
+			<biblScope unit="volume">7</biblScope>
+			<biblScope unit="page">15</biblScope>
+			<date type="published" when="2007">2007</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b28">
+	<analytic>
+		<title level="a" type="main">Nucleotide sequence heterogeneity of an RNA phage population</title>
+		<author>
+			<persName><forename type="first">E</forename><surname>Domingo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Sabo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Taniguchi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Weissmann</surname></persName>
+		</author>
+		<idno type="DOI">10.1016/0092-8674(78)90223-4</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Cell</title>
+		<imprint>
+			<biblScope unit="volume">13</biblScope>
+			<biblScope unit="page" from="735" to="744" />
+			<date type="published" when="1978">1978</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b29">
+	<analytic>
+		<title level="a" type="main">Stochastic thermodynamic interpretation of information geometry</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Ito</surname></persName>
+		</author>
+		<idno type="DOI">10.1103/physrevlett.121.030605</idno>
+		<idno>.1103/phys- revlett.121.030605</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Physical Review Letters</title>
+		<imprint>
+			<biblScope unit="volume">121</biblScope>
+			<biblScope unit="page">10</biblScope>
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b30">
+	<analytic>
+		<title level="a" type="main">Stochastic time evolution, information geometry, and the cramér-rao bound</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Ito</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Dechant</surname></persName>
+		</author>
+		<idno type="DOI">10.1103/physrevx.10.021056</idno>
+		<idno>.1103/physrevx.10.021056</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Physical Review X</title>
+		<imprint>
+			<biblScope unit="volume">10</biblScope>
+			<biblScope unit="page">10</biblScope>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b31">
+	<analytic>
+		<title level="a" type="main">Time-information uncertainty relations in thermodynamics</title>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">B</forename><surname>Nicholson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><forename type="middle">P</forename><surname>García-Pintos</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Del Campo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">R</forename><surname>Green</surname></persName>
+		</author>
+		<idno type="DOI">10.1038/s41567-020-0981-y</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Nature Physics</title>
+		<imprint>
+			<biblScope unit="volume">16</biblScope>
+			<biblScope unit="page" from="1211" to="1215" />
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b32">
+	<analytic>
+		<title level="a" type="main">Information geometry in the population dynamics of bacteria</title>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Guan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Shi</surname></persName>
+		</author>
+		<idno type="DOI">10.1088/1742-5468/ab96b0</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of Statistical Mechanics: Theory and Experiment</title>
+		<imprint>
+			<biblScope unit="volume">2020</biblScope>
+			<biblScope unit="page">73501</biblScope>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b33">
+	<analytic>
+		<title level="a" type="main">Universal constraint on nonlinear population dynamics</title>
+		<author>
+			<persName><forename type="first">K</forename><surname>Adachi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Iritani</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Hamazaki</surname></persName>
+		</author>
+		<idno type="DOI">10.1038/s42005-022-00912-4</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Communications Physics</title>
+		<imprint>
+			<biblScope unit="volume">5</biblScope>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b34">
+	<analytic>
+		<title level="a" type="main">Geometric speed limit for acceleration by natural selection in evolutionary processes</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Hoshino</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Nagayama</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Yoshimura</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">F</forename><surname>Yamagishi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Ito</surname></persName>
+		</author>
+		<idno type="DOI">10.1103/physrevresearch.5.023127</idno>
+		<idno>.1103/physrevresearch.5.023127</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Physical Review Research</title>
+		<imprint>
+			<biblScope unit="volume">5</biblScope>
+			<biblScope unit="page">10</biblScope>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b35">
+	<analytic>
+		<title level="a" type="main">Limits on the evolutionary rates of biological traits</title>
+		<author>
+			<persName><forename type="first">L</forename><forename type="middle">P</forename><surname>García-Pintos</surname></persName>
+		</author>
+		<idno type="DOI">10.1038/s41598-024-61872-z</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Scientific Reports</title>
+		<imprint>
+			<biblScope unit="volume">14</biblScope>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b36">
+	<monogr>
+		<author>
+			<persName><forename type="first">C</forename><forename type="middle">J</forename></persName>
+		</author>
+		<title level="m">Palpal-latoc, Accompanying code for &quot;Quasilocalization under coupled mutation-selection dynamics</title>
+				<imprint>
+			<date type="published" when="2026">2026</date>
+		</imprint>
+	</monogr>
+	<note>GitHub repository</note>
+</biblStruct>
+
+<biblStruct xml:id="b37">
+	<analytic>
+		<title level="a" type="main">Matplotlib: A 2d graphics environment</title>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">D</forename><surname>Hunter</surname></persName>
+		</author>
+		<idno type="DOI">10.1109/MCSE.2007.55</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Computing in Science &amp; Engineering</title>
+		<imprint>
+			<biblScope unit="volume">9</biblScope>
+			<biblScope unit="page">90</biblScope>
+			<date type="published" when="2007">2007</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b38">
+	<analytic>
+		<title level="a" type="main">Array programming with NumPy</title>
+		<author>
+			<persName><forename type="first">C</forename><forename type="middle">R</forename><surname>Harris</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><forename type="middle">J</forename><surname>Millman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">J</forename><surname>Van Der Walt</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Gommers</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Virtanen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Cournapeau</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Wieser</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Taylor</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Berg</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><forename type="middle">J</forename><surname>Smith</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Kern</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Picus</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Hoyer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">H</forename><surname>Van Kerkwijk</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Brett</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Haldane</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">F</forename><surname>Del Río</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Wiebe</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Peterson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Gérard-Marchant</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Sheppard</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Reddy</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><surname>Weckesser</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Abbasi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Gohlke</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><forename type="middle">E</forename><surname>Oliphant</surname></persName>
+		</author>
+		<idno type="DOI">10.1038/s41586-020-2649-2</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Nature</title>
+		<imprint>
+			<biblScope unit="volume">585</biblScope>
+			<biblScope unit="page">357</biblScope>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b39">
+	<analytic>
+		<title level="a" type="main">and SciPy 1.0 Contributors, SciPy 1.0: Fundamental Algorithms for Scientific Computing in Python</title>
+		<author>
+			<persName><forename type="first">P</forename><surname>Virtanen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Gommers</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><forename type="middle">E</forename><surname>Oliphant</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Haberland</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Reddy</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Cournapeau</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Burovski</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Peterson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><surname>Weckesser</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Bright</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">J</forename><surname>Van Der Walt</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Brett</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Wilson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><forename type="middle">J</forename><surname>Millman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Mayorov</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">R J</forename><surname>Nelson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Jones</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Kern</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Larson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><forename type="middle">J</forename><surname>Carey</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">İ</forename><surname>Polat</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Feng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><forename type="middle">W</forename><surname>Moore</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Vander-Plas</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Laxalde</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Perktold</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Cimrman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">I</forename><surname>Henriksen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><forename type="middle">A</forename><surname>Quintero</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><forename type="middle">R</forename><surname>Harris</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">M</forename><surname>Archibald</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">H</forename><surname>Ribeiro</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Pedregosa</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Van Mulbregt</surname></persName>
+		</author>
+		<idno type="DOI">10.1038/s41592-019-0686-2</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Nature Methods</title>
+		<imprint>
+			<biblScope unit="volume">17</biblScope>
+			<biblScope unit="page">261</biblScope>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b40">
+	<monogr>
+		<author>
+			<persName><forename type="first">T</forename></persName>
+		</author>
+		<idno type="DOI">10.5281/zenodo.3509134</idno>
+		<idno>pandas-dev/pandas</idno>
+		<title level="m">pandas development team</title>
+				<imprint>
+			<publisher>Pandas</publisher>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b41">
+	<analytic>
+		<title level="a" type="main">Data Structures for Statistical Computing in Python</title>
+		<author>
+			<persName><forename type="first">Wes</forename><surname>Mckinney</surname></persName>
+		</author>
+		<idno type="DOI">10.25080/Majora-92bf1922-00a</idno>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 9th Python in Science Conference</title>
+				<editor>
+			<persName><forename type="first">Stéfan</forename><surname>Van Der</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">Walt</forename></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">Jarrod</forename><surname>Millman</surname></persName>
+		</editor>
+		<meeting>the 9th Python in Science Conference</meeting>
+		<imprint>
+			<date type="published" when="2010">2010</date>
+			<biblScope unit="page" from="56" to="61" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b42">
+	<monogr>
+		<title level="m" type="main">Real viral populations start out with a very small population size after undergoing a population bottleneck at the start of an infection. In this early stage, stochastic effects dominate and Eigen&apos;s model therefore does not apply. But unless the infection is cleared early on, the population size will eventually grow very large and the deterministic limit is</title>
+		<imprint/>
+	</monogr>
+	<note>virtually attained. For example, each person was estimated to carry 10 9 − 10 11 copies of viral genetic material during peak infection of SARS-CoV-2 [80</note>
+</biblStruct>
+
+<biblStruct xml:id="b43">
+	<monogr>
+		<title level="m">population with a time-varying total population size with the frequency pi(t) being relative and N i=1 pi(t) = 1. Indeed, Eq. 1 is exact for the mean relative frequencies of the unconstrained population</title>
+				<imprint/>
+	</monogr>
+	<note>In Eigen&apos;s original formulation, the total population size is constant so that the frequency pi(t) in Eq. 1 is absolute and N i=1 pi(t) = ntot(t) = constant. But Eq. 1 also holds for a. see Equation 2.12 of Ref. [81. and the constant-size population is retrieved with the additional requirement that the covariance of the absolute frequencies vanishes (see Equation 3.14 of Ref. [81. In either case, Eq. 1 applies in the deterministic limit</note>
+</biblStruct>
+
+<biblStruct xml:id="b44">
+	<analytic>
+		<title level="a" type="main">population, biological or otherwise</title>
+	</analytic>
+	<monogr>
+		<title level="m">Nothing however prevents applying Eq. 1 to model evolving phenotypes or a more abstract</title>
+				<imprint/>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b45">
+	<analytic>
+		<title level="a" type="main">On Eigen&apos;s theory of the selforganization of matter and the evolution of biological macromolecules</title>
+		<author>
+			<persName><forename type="first">C</forename><forename type="middle">J</forename><surname>Thompson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">L</forename><surname>Mcbride</surname></persName>
+		</author>
+		<idno type="DOI">10.1016/0025-5564(74)90110-2</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Mathematical Biosciences</title>
+		<imprint>
+			<biblScope unit="volume">21</biblScope>
+			<biblScope unit="page" from="127" to="142" />
+			<date type="published" when="1974">1974</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b46">
+	<analytic>
+		<title level="a" type="main">On the theory of selection of coupled macromolecular systems</title>
+		<author>
+			<persName><forename type="first">B</forename><surname>Jones</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Enns</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">S</forename><surname>Rangnekar</surname></persName>
+		</author>
+		<idno type="DOI">10.1016/s0092-8240(76)80040-7</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Bulletin of Mathematical Biology</title>
+		<imprint>
+			<biblScope unit="volume">38</biblScope>
+			<biblScope unit="page" from="15" to="28" />
+			<date type="published" when="1976">1976</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b47">
+	<analytic>
+		<title level="a" type="main">Zur Theorie der Matrices</title>
+		<author>
+			<persName><forename type="first">O</forename><surname>Perron</surname></persName>
+		</author>
+		<idno type="DOI">10.1007/bf01449896</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Mathematische Annalen</title>
+		<imprint>
+			<biblScope unit="volume">64</biblScope>
+			<biblScope unit="page" from="248" to="263" />
+			<date type="published" when="1907">1907</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b48">
+	<analytic>
+		<title level="a" type="main">Über Matrizen aus nicht negativen Elementen</title>
+		<author>
+			<persName><forename type="first">G</forename><surname>Frobenius</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Sitzungsberichte der Preußischen Akademie der Wissenschaften zu Berlin</title>
+		<imprint>
+			<biblScope unit="volume">23</biblScope>
+			<biblScope unit="page">456</biblScope>
+			<date type="published" when="1912">1912</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b49">
+	<analytic>
+		<title level="a" type="main">A &quot;dynamic&quot; proof of the Frobenius-Perron theorem for Metzler matrices</title>
+		<author>
+			<persName><forename type="first">K</forename><forename type="middle">J</forename><surname>Arrow</surname></persName>
+		</author>
+		<idno type="DOI">10.1016/b978-0-12-058470-3.50009-4</idno>
+	</analytic>
+	<monogr>
+		<title level="m">Probability, Statistics, and Mathe-Var</title>
+				<imprint/>
+	</monogr>
+	<note>σµ ] or vs = vµ</note>
+</biblStruct>
+
+<biblStruct xml:id="b50">
+	<analytic>
+		<title level="a" type="main">Information theory in molecular biology</title>
+		<author>
+			<persName><forename type="first">C</forename><surname>Adami</surname></persName>
+		</author>
+		<idno type="DOI">10.1016/j.plrev.2004.01.002</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Physics of Life Reviews</title>
+		<imprint>
+			<biblScope unit="volume">1</biblScope>
+			<biblScope unit="page" from="3" to="22" />
+			<date type="published" when="2004">2004</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b51">
+	<analytic>
+		<title level="a" type="main">What is complexity?</title>
+		<author>
+			<persName><forename type="first">C</forename><surname>Adami</surname></persName>
+		</author>
+		<idno type="DOI">10.1002/bies.10192</idno>
+	</analytic>
+	<monogr>
+		<title level="j">BioEssays</title>
+		<imprint>
+			<biblScope unit="volume">24</biblScope>
+			<biblScope unit="page" from="1085" to="1094" />
+			<date type="published" when="2002">2002</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b52">
+	<analytic>
+		<title level="a" type="main">What is information?</title>
+		<author>
+			<persName><forename type="first">C</forename><surname>Adami</surname></persName>
+		</author>
+		<idno type="DOI">10.1098/rsta.2015.0230</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Philosophical Transactions of the Royal Society A: Mathematical, Physical and Engineering Sciences</title>
+		<imprint>
+			<biblScope unit="volume">374</biblScope>
+			<biblScope unit="page">20150230</biblScope>
+			<date type="published" when="2016">2016</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b53">
+	<analytic>
+		<title level="a" type="main">Selective breeding analysed as a communication channel: Channel capacity as a fundamental limit on adaptive complexity</title>
+		<author>
+			<persName><forename type="first">C</forename><surname>Watkins</surname></persName>
+		</author>
+		<idno type="DOI">10.1109/SYNASC.2008.100</idno>
+	</analytic>
+	<monogr>
+		<title level="m">10th International Symposium on Symbolic and Numeric Algorithms for Scientific Computing</title>
+				<imprint>
+			<date type="published" when="2008">2008. 2008</date>
+			<biblScope unit="page" from="514" to="518" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b54">
+	<analytic>
+		<title level="a" type="main">Is life impossible? information, sex, and the origin of complex organisms</title>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">R</forename><surname>Peck</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Waxman</surname></persName>
+		</author>
+		<idno type="DOI">10.1111/j.1558-5646.2010.01074.x</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Evolution</title>
+		<imprint>
+			<biblScope unit="volume">64</biblScope>
+			<biblScope unit="page" from="3300" to="3309" />
+			<date type="published" when="2010">2010</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b55">
+	<analytic>
+		<title level="a" type="main">Accumulation and maintenance of information in evolution</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Hledík</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Barton</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Tkačik</surname></persName>
+		</author>
+		<idno type="DOI">10.1073/pnas.2123152119</idno>
+		<idno>.1073/pnas.2123152119</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Proceedings of the National Academy of Sciences</title>
+		<imprint>
+			<biblScope unit="volume">119</biblScope>
+			<biblScope unit="page">10</biblScope>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b56">
+	<analytic>
+		<title level="a" type="main">Viral quasispecies complexity measures</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Gregori</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Perales</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Rodriguez-Frias</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">I</forename><surname>Esteban</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Quer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Domingo</surname></persName>
+		</author>
+		<idno type="DOI">10.1016/j.virol.2016.03.017</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Virology</title>
+		<imprint>
+			<biblScope unit="volume">493</biblScope>
+			<biblScope unit="page" from="227" to="237" />
+			<date type="published" when="2016">2016</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b57">
+	<analytic>
+		<title level="a" type="main">From quasispecies theory to viral quasispecies: How complexity has permeated virology</title>
+		<author>
+			<persName><forename type="first">E</forename><surname>Domingo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Perales</surname></persName>
+		</author>
+		<idno type="DOI">10.1051/mmnp/20127508</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Mathematical Modelling of Natural Phenomena</title>
+		<imprint>
+			<biblScope unit="volume">7</biblScope>
+			<biblScope unit="page" from="105" to="122" />
+			<date type="published" when="2012">2012</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b58">
+	<analytic>
+		<title level="a" type="main">What is a quasispecies? historical origins and current scope</title>
+		<author>
+			<persName><forename type="first">E</forename><surname>Domingo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Schuster</surname></persName>
+		</author>
+		<idno type="DOI">10.1007/82_2015_453</idno>
+	</analytic>
+	<monogr>
+		<title level="m">Quasispecies: From Theory to Experimental Systems</title>
+				<imprint>
+			<publisher>Springer International Publishing</publisher>
+			<date type="published" when="2015">2015</date>
+			<biblScope unit="page" from="1" to="22" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b59">
+	<analytic>
+		<title level="a" type="main">Increased fidelity reduces poliovirus fitness and virulence under selective pressure in mice</title>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">K</forename><surname>Pfeiffer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Kirkegaard</surname></persName>
+		</author>
+		<idno type="DOI">10.1371/journal.ppat.0010011</idno>
+	</analytic>
+	<monogr>
+		<title level="j">PLoS Pathogens</title>
+		<imprint>
+			<biblScope unit="volume">1</biblScope>
+			<biblScope unit="page">e11</biblScope>
+			<date type="published" when="2005">2005</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b60">
+	<analytic>
+		<title level="a" type="main">Quasispecies diversity determines pathogenesis through cooperative interactions in a viral population</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Vignuzzi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">K</forename><surname>Stone</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">J</forename><surname>Arnold</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><forename type="middle">E</forename><surname>Cameron</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Andino</surname></persName>
+		</author>
+		<idno type="DOI">10.1038/nature04388</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Nature</title>
+		<imprint>
+			<biblScope unit="volume">439</biblScope>
+			<biblScope unit="page" from="344" to="348" />
+			<date type="published" when="2005">2005</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b61">
+	<analytic>
+		<title level="a" type="main">The outcome of acute hepatitis c predicted by the evolution of the viral quasispecies</title>
+		<author>
+			<persName><forename type="first">P</forename><surname>Farci</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Shimoda</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Coiana</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Diaz</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Peddis</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">C</forename><surname>Melpolder</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Strazzera</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">Y</forename><surname>Chien</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">J</forename><surname>Munoz</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Balestrieri</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">H</forename><surname>Purcell</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><forename type="middle">J</forename><surname>Alter</surname></persName>
+		</author>
+		<idno type="DOI">10.1126/science.288.5464.339</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Science</title>
+		<imprint>
+			<biblScope unit="volume">288</biblScope>
+			<biblScope unit="page" from="339" to="344" />
+			<date type="published" when="2000">2000</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b62">
+	<analytic>
+		<title level="a" type="main">Topology of evolving, mutagenized viral populations: quasispecies expansion, compression, and operation of negative selection</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Ojosnegros</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Agudo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Sierra</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Briones</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Sierra</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>González-López</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Domingo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Cristina</surname></persName>
+		</author>
+		<idno type="DOI">10.1186/1471-2148-8-207</idno>
+	</analytic>
+	<monogr>
+		<title level="j">BMC Evolutionary Biology</title>
+		<imprint>
+			<biblScope unit="volume">8</biblScope>
+			<biblScope unit="page" from="1471" to="2148" />
+			<date type="published" when="2008">2008</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b63">
+	<analytic>
+		<title level="a" type="main">Lethal mutagenesis of foot-and-mouth disease virus involves shifts in sequence space</title>
+		<author>
+			<persName><forename type="first">C</forename><surname>Perales</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Henry</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Domingo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Wain-Hobson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J.-P</forename><surname>Vartanian</surname></persName>
+		</author>
+		<idno type="DOI">10.1128/jvi.00716-11</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of Virology</title>
+		<imprint>
+			<biblScope unit="volume">85</biblScope>
+			<biblScope unit="page" from="12227" to="12240" />
+			<date type="published" when="2011">2011</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b64">
+	<analytic>
+		<title level="a" type="main">Diversity and evenness: A unifying notation and its consequences</title>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">O</forename><surname>Hill</surname></persName>
+		</author>
+		<idno type="DOI">10.2307/1934352</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Ecology</title>
+		<imprint>
+			<biblScope unit="volume">54</biblScope>
+			<biblScope unit="page" from="427" to="432" />
+			<date type="published" when="1973">1973</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b65">
+	<analytic>
+		<title level="a" type="main">Unifying species diversity, phylogenetic diversity, functional diversity, and related similarity and differentiation measures through hill numbers</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Chao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C.-H</forename><surname>Chiu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Jost</surname></persName>
+		</author>
+		<idno type="DOI">10.1146/annurev-ecolsys-120213-091540</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Annual Review of Ecology, Evolution, and Systematics</title>
+		<imprint>
+			<biblScope unit="volume">45</biblScope>
+			<biblScope unit="page" from="297" to="324" />
+			<date type="published" when="2014">2014</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b66">
+	<analytic>
+		<title level="a" type="main">Inference with viral quasispecies diversity indices: clonal and NGS approaches</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Gregori</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Salicrú</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Domingo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Sanchez</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">I</forename><surname>Esteban</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Rodríguez-Frías</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Quer</surname></persName>
+		</author>
+		<idno type="DOI">10.1093/bioinformatics/btt768</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Bioinformatics</title>
+		<imprint>
+			<biblScope unit="volume">30</biblScope>
+			<biblScope unit="page" from="1104" to="1111" />
+			<date type="published" when="2014">2014</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b67">
+	<analytic>
+		<title level="a" type="main">Recent advances in inferring viral diversity from high-throughput sequencing data</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Posada-Cespedes</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Seifert</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Beerenwinkel</surname></persName>
+		</author>
+		<idno type="DOI">10.1016/j.virusres.2016.09.016</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Virus Research</title>
+		<imprint>
+			<biblScope unit="volume">239</biblScope>
+			<biblScope unit="page" from="17" to="32" />
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b68">
+	<analytic>
+		<title level="a" type="main">Epidemiological data analysis of viral quasispecies in the next-generation sequencing era</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Knyazev</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Hughes</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Skums</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Zelikovsky</surname></persName>
+		</author>
+		<idno type="DOI">10.1093/bib/bbaa101</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Briefings in Bioinformatics</title>
+		<imprint>
+			<biblScope unit="volume">22</biblScope>
+			<biblScope unit="page" from="96" to="108" />
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b69">
+	<analytic>
+		<title level="a" type="main">VILOCA: sequencing quality-aware viral haplotype reconstruction and mutation calling for short-read and long-read data</title>
+		<author>
+			<persName><forename type="first">L</forename><surname>Fuhrmann</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Langer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">I</forename><surname>Topolsky</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Beerenwinkel</surname></persName>
+		</author>
+		<idno type="DOI">10.1093/nargab/lqae152</idno>
+		<idno>.1093/nargab/lqae152</idno>
+	</analytic>
+	<monogr>
+		<title level="j">NAR Genomics and Bioinformatics</title>
+		<imprint>
+			<biblScope unit="volume">6</biblScope>
+			<biblScope unit="page">10</biblScope>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b70">
+	<analytic>
+		<title level="a" type="main">The total number and mass of SARS-CoV-2 virions</title>
+		<author>
+			<persName><forename type="first">R</forename><surname>Sender</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><forename type="middle">M</forename><surname>Bar-On</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Gleizer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Bernshtein</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Flamholz</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Phillips</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Milo</surname></persName>
+		</author>
+		<idno type="DOI">10.1073/pnas.2024815118</idno>
+		<idno>pnas.2024815118</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Proceedings of the National Academy of Sciences</title>
+		<imprint>
+			<biblScope unit="volume">118</biblScope>
+			<biblScope unit="page">10</biblScope>
+			<date type="published" when="1073">1073. 2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b71">
+	<analytic>
+		<title level="a" type="main">A stochastic theory of macromolecular evolution</title>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">S</forename><surname>Mccaskill</surname></persName>
+		</author>
+		<idno type="DOI">10.1007/bf00317940</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Biological Cybernetics</title>
+		<imprint>
+			<biblScope unit="volume">50</biblScope>
+			<biblScope unit="page" from="63" to="73" />
+			<date type="published" when="1984">1984</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b72">
+	<analytic>
+		<title level="a" type="main">Fitness effects of mutations to SARS-CoV-2 proteins</title>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">D</forename><surname>Bloom</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">A</forename><surname>Neher</surname></persName>
+		</author>
+		<idno type="DOI">10.1093/ve/vead055</idno>
+		<idno>.1093/ve/vead055</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Virus Evolution</title>
+		<imprint>
+			<biblScope unit="volume">9</biblScope>
+			<biblScope unit="page">10</biblScope>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b73">
+	<analytic>
+		<title level="a" type="main">The mutation rate of SARS-CoV-2 is highly variable between sites and is influenced by sequence context, genomic region, and rna structure</title>
+		<author>
+			<persName><forename type="first">H</forename><forename type="middle">K</forename><surname>Haddox</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Angehrn</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Sesta</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Jennings-Shaffer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">D</forename><surname>Temple</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">G</forename><surname>Galloway</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">S</forename><surname>Hinrichs</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><forename type="middle">S</forename><surname>Dewitt</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">D</forename><surname>Bloom</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><forename type="middle">A M</forename><surname>Iv</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">A</forename><surname>Neher</surname></persName>
+		</author>
+		<idno type="DOI">10.1093/nar/gkaf503</idno>
+		<idno>.1093/nar/gkaf503</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Nucleic Acids Research</title>
+		<imprint>
+			<biblScope unit="volume">53</biblScope>
+			<biblScope unit="page">10</biblScope>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b74">
+	<analytic>
+		<title level="a" type="main">Inequalities: Theory of majorization and its applications</title>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">W</forename><surname>Marshall</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">I</forename><surname>Olkin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><forename type="middle">C</forename><surname>Arnold</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="s">Springer Series in Statistics</title>
+		<imprint>
+			<date type="published" when="2010">2010</date>
+			<publisher>Springer</publisher>
+		</imprint>
+	</monogr>
+	<note>2nd ed</note>
+</biblStruct>
+
+				</listBibl>
+			</div>
+		</back>
+	</text>
+</TEI>

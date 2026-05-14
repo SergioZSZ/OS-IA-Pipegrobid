@@ -1,0 +1,1450 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xml:space="preserve" xmlns="http://www.tei-c.org/ns/1.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.tei-c.org/ns/1.0 https://raw.githubusercontent.com/kermitt2/grobid/master/grobid-home/schemas/xsd/Grobid.xsd"
+ xmlns:xlink="http://www.w3.org/1999/xlink">
+	<teiHeader xml:lang="en">
+		<fileDesc>
+			<titleStmt>
+				<title level="a" type="main">Recurrent Structural Policy Gradient for Partially Observable Mean Field Games</title>
+			</titleStmt>
+			<publicationStmt>
+				<publisher/>
+				<availability status="unknown"><licence/></availability>
+				<date type="published" when="2026-02-23">23 Feb 2026</date>
+			</publicationStmt>
+			<sourceDesc>
+				<biblStruct>
+					<analytic>
+						<author role="corresp">
+							<persName><forename type="first">Clarisse</forename><surname>Wibault</surname></persName>
+							<email>&lt;clarisse.wibault@magd.ox.ac.uk&gt;.</email>
+							<affiliation key="aff0">
+								<orgName type="laboratory" key="lab1">FLAIR</orgName>
+								<orgName type="laboratory" key="lab2">Foerster Lab for AI Research</orgName>
+								<orgName type="institution">University of Oxford</orgName>
+							</affiliation>
+							<affiliation key="aff1">
+								<orgName type="laboratory" key="lab1">MLRG</orgName>
+								<orgName type="laboratory" key="lab2">Machine Learning Research Group</orgName>
+								<orgName type="institution">University of Oxford</orgName>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Johannes</forename><surname>Forkel</surname></persName>
+							<affiliation key="aff0">
+								<orgName type="laboratory" key="lab1">FLAIR</orgName>
+								<orgName type="laboratory" key="lab2">Foerster Lab for AI Research</orgName>
+								<orgName type="institution">University of Oxford</orgName>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Sebastian</forename><surname>Towers</surname></persName>
+							<affiliation key="aff0">
+								<orgName type="laboratory" key="lab1">FLAIR</orgName>
+								<orgName type="laboratory" key="lab2">Foerster Lab for AI Research</orgName>
+								<orgName type="institution">University of Oxford</orgName>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Tiphaine</forename><surname>Wibault</surname></persName>
+							<affiliation key="aff2">
+								<orgName type="department">iFo Insitute</orgName>
+								<orgName type="institution">Ludwig-Maximilians-Universität Munich</orgName>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Juan</forename><surname>Duque</surname></persName>
+							<affiliation key="aff3">
+								<orgName type="institution" key="instit1">MILA</orgName>
+								<orgName type="institution" key="instit2">AI Institute</orgName>
+								<address>
+									<region>Québec</region>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">George</forename><surname>Whittle</surname></persName>
+							<affiliation key="aff1">
+								<orgName type="laboratory" key="lab1">MLRG</orgName>
+								<orgName type="laboratory" key="lab2">Machine Learning Research Group</orgName>
+								<orgName type="institution">University of Oxford</orgName>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Andreas</forename><surname>Schaab</surname></persName>
+							<affiliation key="aff4">
+								<orgName type="institution">UC Berkeley</orgName>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Yucheng</forename><surname>Yang</surname></persName>
+							<affiliation key="aff5">
+								<orgName type="department">Swiss Finance Institute</orgName>
+								<orgName type="institution">University of Zurich</orgName>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Chiyuan</forename><surname>Wang</surname></persName>
+							<affiliation key="aff6">
+								<orgName type="institution">Peking University</orgName>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Michael</forename><surname>Osborne</surname></persName>
+							<affiliation key="aff1">
+								<orgName type="laboratory" key="lab1">MLRG</orgName>
+								<orgName type="laboratory" key="lab2">Machine Learning Research Group</orgName>
+								<orgName type="institution">University of Oxford</orgName>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Benjamin</forename><surname>Moll</surname></persName>
+							<affiliation key="aff7">
+								<orgName type="department">School of Economics</orgName>
+								<orgName type="institution">London</orgName>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Jakob</forename><surname>Foerster</surname></persName>
+							<affiliation key="aff0">
+								<orgName type="laboratory" key="lab1">FLAIR</orgName>
+								<orgName type="laboratory" key="lab2">Foerster Lab for AI Research</orgName>
+								<orgName type="institution">University of Oxford</orgName>
+							</affiliation>
+						</author>
+						<title level="a" type="main">Recurrent Structural Policy Gradient for Partially Observable Mean Field Games</title>
+					</analytic>
+					<monogr>
+						<imprint>
+							<date type="published" when="2026-02-23">23 Feb 2026</date>
+						</imprint>
+					</monogr>
+					<idno type="MD5">174037319266F5C3BF0AD8C7EF77899F</idno>
+					<idno type="arXiv">arXiv:2602.20141v1[cs.AI]</idno>
+				</biblStruct>
+			</sourceDesc>
+		</fileDesc>
+		<encodingDesc>
+			<appInfo>
+				<application version="0.7.2" ident="GROBID" when="2026-05-14T17:25+0000">
+					<desc>GROBID - A machine learning software for extracting information from scholarly documents</desc>
+					<ref target="https://github.com/kermitt2/grobid"/>
+				</application>
+			</appInfo>
+		</encodingDesc>
+		<profileDesc>
+			<abstract>
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>Mean Field Games (MFGs) provide a principled framework for modeling interactions in large population models: at scale, population dynamics become deterministic, with uncertainty entering only through aggregate shocksor common noise. However, algorithmic progress has been limited since model-free methods are too high variance and exact methods scale poorly. Recent Hybrid Structural Methods (HSMs) use Monte Carlo rollouts for the common noise in combination with exact estimation of the expected return, conditioned on those samples. However, HSMs have not been scaled to Partially Observable settings. We propose Recurrent Structural Policy Gradient (RSPG), the first history-aware HSM for settings involving shared aggregate observations. We also introduce MFAX, our JAX-based framework for MFGs. By leveraging known transition dynamics, RSPG achieves state-ofthe-art performance as well as an order-of-magnitude faster convergence and solves, for the first time, a macroeconomics MFG with heterogeneous agents, common noise and history-aware policies. MFAX is publicly available at: https://github.com/CWibault/mfax.</p></div>
+			</abstract>
+		</profileDesc>
+	</teiHeader>
+	<text xml:lang="en">
+		<body>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="1">Introduction</head><p>Training policies in large multi-agent systems is notoriously difficult: RL-based methods rely on high-variance, trajectorybased sampling and therefore scale poorly as the number of agents grows <ref type="bibr">(Cui et al., 2022;</ref><ref type="bibr" target="#b24">Matignon et al., 2012;</ref><ref type="bibr" target="#b8">Daskalakis et al., 2009)</ref>. But, in many large population systems, such as financial markets, traffic control and communication networks <ref type="bibr" target="#b5">(Cardaliaguet &amp; Lehalle, 2017;</ref><ref type="bibr" target="#b40">Yang et al., 2018b;</ref><ref type="bibr" target="#b3">Cabannes et al., 2021)</ref>, individuals only respond to the aggregate behaviour of other agents. As a motivating example, an agent might care about the price of a stock, which is determined by the rest of the population, but not whether a certain individual has decided to buy or sell that stock. Moreover, in such large population systems, individual randomness or idiosyncratic noise marginalises out at the macroscopic level. At such a scale, the system's evolution is well defined by deterministic population dynamics, with uncertainty entering only through common noiseaggregate shocks that affect the entire population simultaneously.</p><p>Hence, assuming all agents have the same state-conditioned objective, reward, transition and observation models, the analysis of a large population game can be reduced to the interaction between a stand-in agent with policy π and the population distribution, or mean-field µ t , over all individual states S. The Markov state of the system is the aggregate state (µ t , z t ), where z t represents the common noise. Such Mean-Field Games (MFGs) <ref type="bibr" target="#b20">(Lasry &amp; Lions, 2007;</ref><ref type="bibr" target="#b14">Huang et al., 2006)</ref> have found applications in numerous areas such as epidemic control, communications, energy networks, finance, and macroeconomics, <ref type="bibr" target="#b9">(Elie et al., 2020;</ref><ref type="bibr" target="#b0">Alasseur et al., 2019;</ref><ref type="bibr" target="#b39">Yang et al., 2018a;</ref><ref type="bibr" target="#b4">Cardaliaguet &amp; Hadikhanloo, 2015;</ref><ref type="bibr" target="#b25">Moll, 2025)</ref>.</p><p>Unlike fully sample-based Reinforcement Learning (RL), Hybrid Structural Methods (HSMs) <ref type="bibr" target="#b12">(Han et al., 2022;</ref><ref type="bibr" target="#b41">Yang et al., 2025)</ref> leverage the fact that individual transition dynamics T (s t+1 | s t , a t , µ t , z t ) are known, either by assumption or inferred at the population level, and that the individual state space is computationally tractable in many applications. The benefits are twofold. Firstly, this allows computing the analytic mean-field updatethe mean-field update found by marginalising individual transition dynamics. Secondly, it allows policy optimisation to use exact expectations over individual dynamics, substantially reducing variance as now only the common noise is sampled.</p><p>However, these HSMs, like RL based MFG algorithms, have been limited to fully-observable settings <ref type="bibr">(Cui &amp; Koeppl, 2022;</ref><ref type="bibr" target="#b31">Perrin et al., 2022;</ref><ref type="bibr" target="#b2">Benjamin &amp; Abate, 2025;</ref><ref type="bibr" target="#b38">Wu et al., 2025;</ref><ref type="bibr" target="#b41">Yang et al., 2025)</ref>. In many real-world situations involving public information, such as market prices in economics, agents only receive shared observations o t of the aggregate state. We begin by introducing the more general Partially Observable Mean-Field Games with Common Noise. We then show how, by restricting memory to a history of shared aggregate observations, exact expectations can remain tractable, benefiting from the associated variance reduction, while still enabling history-dependent behaviour to be learned.</p><p>To evaluate our resulting algorithm Recurrent Structural Policy Gradient (RSPG) against both HSM and RL based MFG algorithms, we introduce MFAX, our JAX-based MFG framework. MFAX makes three main improvements over current open-source MFG libraries. First, unlike current libraries, MFAX distinguishes between problem settings with white-box access to individual transition dynamics and those with only sample-based access. Second, MFAX accelerates analytic mean-field updates by using a functional representation of the update operator and leveraging GPU parallelism across both states and actions. For example, a single mean-field update of Linear Quadratic -a standard MFG environmentis respectively 10 and 1000 times faster than OpenSpiel and MFGLib <ref type="bibr" target="#b17">Lanctot et al. (2019)</ref>; <ref type="bibr" target="#b11">Guo et al. (2025)</ref>. Being fully JAX-based, MFAX also enables parallel execution across environments, which we leverage in the HSM and RL algorithm implementations released alongside our framework. Third, MFAX supports more complex environments involving partial-observability, common-noise and multiple initial mean-field distributions; these features are missing from existing frameworks. update operator Φ π :</p><formula xml:id="formula_0">µ t+1 (s t+1 ) = Φ π (µ t , z t )(s t+1 ) := T (s t+1 | s t , a t , µ t , z t )π(a t | s t , µ t , z t )µ t (s t )da t ds t ,<label>(1)</label></formula><p>where π( Since S and A are finite, (1) can be rewritten in vector-matrix form,</p><formula xml:id="formula_1">µ t+1 = A π µt,zt ⊤ µ t ,<label>(2)</label></formula><p>where A π µt,zt is a matrix whose (s t , s t+1 ) th entry is</p><formula xml:id="formula_2">E at∼π(•|st,µt,zt) [T (s t+1 | s t , a t , µ t , z t )] and µ t is a vector of length |S| such that |S| k=1 µ t (k) = 1.</formula><p>We let M evol (π, z 0:t ) denote the mean-field sequence µ 0:t = (µ 0 , ..., µ t ) which is generated from π and z 0:t<ref type="foot" target="#foot_0">1</ref> through (1), and define</p><formula xml:id="formula_3">J evol (π, π ′ ) =E π ∞ t=0 γ t R(s t , a t , M evol (π ′ , z 0:t ) t , z t ) ,<label>(3)</label></formula><p>where the expectation is taken with respect to</p><formula xml:id="formula_4">z 0 ∼ p z0 , z t+1 ∼ Ξ(•|z t ), µ t = M evol (π ′ , z 0:t ) t , s 0 ∼ µ 0 , a t ∼ π(• | s t , µ t , z t ), s t+1 ∼ T (• | s t , a t , µ t , z t ).</formula><p>We distinguish between the mean-field control problem and the mean-field equilibrium problemor mean-field game (MFG). In the control problem, we condition on exogenous mean-field behaviour induced by a policy π ′ , and try to learn π ∈ argmax π J evol (π, π ′ ). Thus the control problem reduces to finding an optimal policy in a non-stationary MDP. In the equilibrium problem, the mean-field behaviour is endogenous and generated by the policy π itself. We aim to find a mean-field Nash equilibrium, at which a policy π * is the best response to the population behaviour it induces, i.e.: Definition 2.2. <ref type="bibr" target="#b38">(Wu et al., 2025)</ref> A policy π * (and its induced population behaviour) constitute a mean-field Nash equilibrium, if π * ∈ argmax π J evol (π, π * ).</p><p>Solving MFGs generally involves a two-step process alternating between calculating the population behaviour of the current policy, and then letting the updated policy be the best response to that population behaviour.  <ref type="bibr" target="#b4">(Cardaliaguet &amp; Hadikhanloo, 2015)</ref>. In practice, however, DP becomes intractable because, as demonstrated by the "Master equation" (6), the resulting Bellman equation is set on (and hence requires integrating over) the space of all possible mean-field distributions induced by common-noise sequences.</p><p>Reinforcement Learning (RL) based methods treat the transition model of both the individual and aggregate states as black-boxes (Information Box 2). Hence, RL based methods rely on Monte Carlo rollouts (8). Without access to individual dynamics, the analytic mean-field update operator cannot be applied and the mean-field distribution is repeatedly re-approximated using sample-based methods (7) or by learning a function µ t+1 ≈ Φθ (µ t , z t ) (where θ represents the parameters of that function) that can approximate the analytic mean-field update operator <ref type="bibr" target="#b30">(Perrin et al., 2021;</ref><ref type="bibr" target="#b15">Inoue et al., 2021)</ref>, see Figure <ref type="figure" target="#fig_0">1</ref>. Since RL-based methods do not require the analytic mean-field update operator to be tractable, they can scale to larger individual state spaces.</p><p>Hybrid Structural Methods (HSMs) are an intermediary between DP and RL based methods by leveraging access to known individual dynamics T (s t+1 | s t , a t , µ t , z t ) (Information Box 3) to achieve lower-variance updates than fully sample-based RL (9), but using Monte Carlo rollouts of the common-noise and its associated mean-field. </p><formula xml:id="formula_5">µ t+1 = Φ π (µ t , z t ) = A π µt,zt ⊤ µ t .</formula><p>Moreover, DP based methods could theoretically compute the exact value functions as expectation over next states s t+1 , actions a t , and common noise z t :</p><formula xml:id="formula_6">V π,π (s t ′ = s) = E π ∞ t=t ′ γ t−t ′ R(s t , a t , µ t , z t ) s t ′ = s ,<label>(4)</label></formula><p>where the expectation is taken over</p><formula xml:id="formula_7">z 0 ∼ p z0 , z t+1 ∼ Ξ(• | z t ), µ 0:∞ = M Evol (π, z 0:∞ ), a t ∼ π(• | s t , µ t , z t ), s t+1 ∼ T (• | s t , a t , µ t , z t ).</formula><p>When v π,π is an |S|-length vector with the values V (s t ′ = s) of each individual state s ∈ S, (4) becomes,</p><formula xml:id="formula_8">v π,π,t ′ = E µ 0 ∼pµ 0 ,z0∼pz 0 ,zt+1∼Ξ(•|zt) rπ µ t ′ ,z t ′ + γA π µ t ′ ,z t ′ rπ µ t ′ +1 ,z t ′ +1 + γ 2 A π µ t ′ ,z t ′ A π µ t ′ +1 ,z t ′ +1 rπ µ t ′ +2 ,z t ′ +2 + • • • ,<label>(5)</label></formula><p>where rµ t ,zt := Π µ t ,zt ⊙ R µ t ,zt 1, where Π µ t ,zt and R µ t ,zt are |S| × |A| matrices whose (s, a) th elements are π(a | s, µ t , z t ) and R(s, a, µ t , z t ) respectively. Note that premultiplying by A π µ t ,zt computes the expectation over next states.</p><p>The value function V satisfies the infinite-dimensional "Master-Equation" in which the distribution µ is a state variable:</p><formula xml:id="formula_9">V (s, µ, z) = E a∼π(•|s,µ,z) R(s, a, µ, z) + γE s ′ ∼T (•|s,a,µ,z),z ′ ∼Ξ(•|z) [V (s ′ , Φ π (µ, z), z ′ )]<label>(6)</label></formula><p>Information Box 2.</p><p>Reinforcement Learning based methods assume no access to transition dynamics, instead sampling next states, actions and common noise.</p><p>Without access to individual dynamics, the analytic mean-field update operator cannot be applied, so the mean-field distribution is repeatedly re-approximated e.g. using j = 1, .., M sample-based mean-fields:</p><formula xml:id="formula_10">µ (j) t (s) ≈ 1 N N i=1 δ(s − s (i,j) t</formula><p>).</p><p>The value V π,π of a state is approximated using Monte Carlo rollouts:</p><formula xml:id="formula_12">V π,π (s (i,j) t ′ ) ≈ ∞ t=t ′ γ t−t ′ R(s (i,j) t , a (i,j) t , µ (j) t , z (j) t ) s (i,j) t ′<label>(8)</label></formula><p>where z</p><formula xml:id="formula_13">(j) 0 ∼ p z0 , µ (j) 0 ∼ p µ 0 , s (i,j) 0 ∼ µ 0 , a (i,j) t ∼ π(• | s (i,j) t , µ (j) t , z (j) t ), s (i,j) t+1 ∼ T (• | s (i,j) t , a (i,j) t , µ (j) t , z (j) t ), z (j) t+1 ∼ Ξ(• | z (j)</formula><p>t ) and the mean-field is repeatedly re-approximated.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Information Box 3.</head><p>Hybrid Structural Methods leverage known individual dynamics T (s t+1 | s t , a t , µ t , z t ) to compute the expectation over next states and actions, but, unlike DP they sample common noise. Access to individual transitions means that the mean-field can be updated using the analytic mean-field update operator:</p><formula xml:id="formula_14">µ (j) t+1 = Φ π (µ (j) t , z (j) t ) = A π µ (j) t ,z (j) t ⊤ µ (j) t .</formula><p>The state values are approximated as:</p><formula xml:id="formula_15">v π,π,t ′ ≈ rπ µ (j) t ′ ,z (j) t ′ + γA π µ (j) t ′ ,z (j) t ′ rπ µ (j) t ′ +1 ,z (j) t ′ +1 + γ 2 A π µ (j) t ′ ,z (j) t ′ A π µ (j) t ′ +1 ,z (j) t ′ +1 rπ µ (j) t ′ +2 ,z (j) t ′ +2 + • • • (9)</formula><p>where z</p><formula xml:id="formula_16">(j) 0 ∼ p z0 , µ (j) 0 ∼ p µ 0 , z (j) t+1 ∼ Ξ(• | z (j) t ), µ (j) t+1 = Φ π (µ (j) t , z<label>(j)</label></formula><p>t ). As before, premultiplying by A π µ t ,zt computes the expectation over next states and rµ (j)   t ,z</p><formula xml:id="formula_17">(j) t := Π µ (j) t ,z (j) t ⊙ R µ (j)</formula><p>t ,z (j) t</p><p>1.  <ref type="formula">2024</ref>) study independent learning in a partially observable n-player MFG and prove almost-sure convergence of naive-single agent learning iterates under mild assumptions. By assuming that the observation of the aggregate state is independent of the individual state, their "Compressed Observability" setting is less general than our partially-observable problem formulation presented in Section 5. <ref type="bibr" target="#b33">Saldi et al. (2019)</ref> consider a more general observation structure by only specifying an observation kernel that depends on the individual state. Notably, neither work includes common noise in the problem formulation.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.2">Algorithms</head><p>Convergence has been established for several classes of MFG algorithms, but the underlying assumptions, such as monotonicity <ref type="bibr">(Hu &amp; Zhang, 2025;</ref><ref type="bibr" target="#b29">Perrin et al., 2020;</ref><ref type="bibr" target="#b27">Perolat et al., 2021)</ref> or continuous reward and transition functions <ref type="bibr">(Cui &amp; Koeppl, 2022)</ref>, often fail to hold in practice, particularly in settings with threshold-based dynamics or multiple Nash equilibria. Among DP for MFGs, <ref type="bibr" target="#b29">Perrin et al. (2020)</ref> compute best responses via backward induction in the presence of common noise. However, since policies are conditioned on the common-noise sequence, the algorithm requires enumerating all realisations, significantly limiting the scalability of the approach. By contrast, <ref type="bibr" target="#b12">Han et al. (2022)</ref> and <ref type="bibr" target="#b41">Yang et al. (2025)</ref>, who study macroeconomic MFGs, propose HSMs that leverage known individual dynamics and accommodate continuous noise realisations; the latter introduce a Structural Policy Gradient (SPG) method, but their algorithm is limited to memoryless, tabular policies. RSPG is the first HSM to learn history-aware policies with continuous observations of the mean-field.</p><p>Most RL algorithms assume full observability y t = (s t , o t ) = (s t , µ t , z t ) <ref type="bibr" target="#b38">(Wu et al., 2025;</ref><ref type="bibr" target="#b30">Perrin et al., 2021)</ref> or local observability y t = s t <ref type="bibr" target="#b28">(Perrin, 2022;</ref><ref type="bibr" target="#b1">Algumaei et al., 2023;</ref><ref type="bibr">Hu &amp; Zhang, 2025;</ref><ref type="bibr">Cui &amp; Koeppl, 2022)</ref>. (Note that local observability is sufficient for deterministic initial mean-field distributions and in the absence of common noise <ref type="bibr" target="#b22">(Laurière et al., 2024)</ref>). <ref type="bibr" target="#b35">Subramanian et al. (2021)</ref>  </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5">Partially Observable Mean Field Games with Common Noise</head><p>We formalise Partially Observable Mean Field Games with Common Noise (POMFGs-CN) as decision making under uncertainty in large population models, where agents receive only partial information about the aggregate state (µ t , z t ) of the system, which, as previously defined, includes both the mean-field and external shocks that affect the entire population simultaneously. We note that in POMFGs-CN, the aggregate state (µ t , z t ) is not in general Markovian, but for consistent naming, we still refer to it as state.</p><p>A POMFG-CN is defined by the following tuple:</p><formula xml:id="formula_18">(p µ0 , p z0 , S, A, Z, O, U , T , Ξ, R, γ),</formula><p>where p µ0 , p z0 , S, Z, A, T , Ξ, R, γ are the same as in MFGs with common noise as defined in Section 2. Defining the analytic mean-field update operator is more involved, as we need to keep track of not just the current mean-field µ t , which is a distribution over S, but a distribution μt over H t . µ 0:t = (µ 0 , µ 1 , ..., µ t ) is then fully determined by μt . Note though that the reverse it not true, i.e. µ 0:t does not fully determine μt . Given an individual policy π, the evolution of μ is then defined as follows.</p><p>Given μt and z t , we define</p><formula xml:id="formula_19">µ t+1 (s t+1 ) = Φ π (μ t , z t )(s t+1 ) := T (s t+1 | s t , a t , µ t , z t )π(a t | τ t )μ t (τ t )da t dτ t ,<label>(10)</label></formula><p>or</p><formula xml:id="formula_20">µ t+1 = A π μt ,zt</formula><p>⊤ μt in matrix-vector form. We write τ t+1 = (τ t , a t , s t+1 , o t+1 ), and then, given μt and z t:t+1 , define μt+1 through</p><formula xml:id="formula_21">μt+1 (τ t+1 ) = Φπ (μ t , z t:t+1 )(τ t+1 ) := U(o t+1 | s t+1 , Φ π (μ t , z 0:∞ ), z t+1 )T (s t+1 | s t , a t , µ t , z t )π(a t | τ t )μ t (τ t ).<label>(11)</label></formula><p>Furthermore, we let M evol (π, z 0:t ) denote the sequence µ 0:t that is generated from π and z 0:t through (11)<ref type="foot" target="#foot_1">2</ref> .</p><p>As in fully-observable MFGs defined in Section 2.1, we distinguish between the control problem and the equilibrium problem. In the control problem in POMFGs-CN, we condition on exogeneous population behaviour induced by a fixed policy π ′ , and we look to find a policy π which maximizes</p><formula xml:id="formula_22">J evol (π, π ′ ) :=E π ∞ t=0 γ t R(s t , a t , M evol (π ′ , z 0:t ) t , z t ) ,<label>(12)</label></formula><p>where the expectation is taken with respect to</p><formula xml:id="formula_23">z 0 ∼ p z0 , z t+1 ∼ Ξ(•|z t ), µ t = M evol (π ′ , z 0:t ) t , s 0 ∼ µ 0 , o t ∼ U(•|s t , µ t , z t ), a t ∼ π(• | τ t ), s t+1 ∼ T (• | s t , a t , µ t , z t ).</formula><p>Thus the control problem reduces to finding an optimal policy in a standard single-agent POMDP.</p><p>In the equilibrium problem the population behaviour is endogenous and generated by the policy itself, and the goal is to find a mean-field Nash equilibrium, defined as follows: Definition 5.1. We say that a policy π * (and its induced population behaviour) constitutes a mean-field Nash equilibrium if and only if</p><formula xml:id="formula_24">π * ∈ argmax π J evol (π, π * ).<label>(13)</label></formula><p>Unfortunately, unlike the analytic mean-field update operator for policies conditioning on (µ t , z t ) as in (1), the update operators Φ π and Φπ for policies conditioning on IAOHs are intractable, as they require maintaining a distribution μt over H t , with H t growing exponentially with time. Even if the mean-field update were to be a queryable black-box, to compute the expected reward at the next timestep in HSMs (9) requires integrating over IAOHs. Thus we consider the following special case, in which things get a lot simpler.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5.1">The Special Case of Shared Observations</head><p>In many real-world settings involving public information, such as financial markets, for example, agents receive shared observations of the aggregate state, i.e. o t = U (µ t , z t )<ref type="foot" target="#foot_2">3</ref> . In that case, in order to find mean-field Nash equilibria, we can restrict our search space to policies that only condition on the current individual state s t and the history of shared observations o 0:t of the aggregate state, i.e.</p><formula xml:id="formula_25">a t ∼ π(• | s t , o 0:t ). The benefit is that if o t = U (µ t , z t )</formula><p>, and a policy π only conditions on s t and o 0:t , then the dynamics described through</p><formula xml:id="formula_26">µ t+1 (s t+1 ) = Φ π (µ t , z t , o 0:t )(s t+1 ) := T (s t+1 | s t , a t , µ t , z t )π(a t | s t , o 0:t )µ t (s t )da t ds t ,<label>(14)</label></formula><p>are the same as the dynamics described by (11). Thus, rather than having to keep track of the distribution μt over H t , with H t growing exponentially in time, memory can be restricted to one shared OH o 0:t , which is computationally tractable.</p><p>6 Methods</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="6.1">Recurrent Structural Policy Gradient (RSPG)</head><p>With access to the transition model and using the reduced policy, we can compute and differentiate through the exact expected return given a sampled initial mean-field distribution and common-noise sequence. The pseudo-code for RSPG is provided in Algorithm 1 in Appendix A.1. At each iteration, we sample E environments in parallel, rollout the endogenous mean-field sequence µ π 0:T , and compute the discounted return backwards through time using the reduced policy π(a t | s t , o 0:t ) and version of (9) conditioned on the history of shared aggregate observations. Gradients are taken with respect to the policy parameters and allowed to flow through the individual state transitions and expected rewards over actions. Gradients do not propagate through the mean-field transitions.</p><p>Figure <ref type="figure" target="#fig_0">1</ref> (right) depicts the architecture of the policy network: only observations of the aggregate state are processed by the recurrent neural network (RNN), ensuring that the hidden state remains independent of the individual state. For continuous actions, rather than parameterising a categorical policy on the discretised action space, we parameterise an underlying continuous distribution and construct a categorical policy by evaluating log-probability-densities at fixed action intervals. This structured prior improves performance compared to directly parameterising the categorical policy by preserving ordinality in the action space. Ablations are provided in Appendix C.4.1.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="6.2">Advantages &amp; Limitations of HSMs and RL</head><p>HSMs and RL based methods offer complementary advantages and limitations for solving MFGs. By leveraging access to individual transition dynamics, HSMs benefit from greater sample efficiency and lower-variance gradient updates. However, HSMs require tractable analytic mean-field updates and discrete policy classes. In contrast, RL based methods do not require explicit knowledge of the transition model, enabling learning under unknown dynamics, large or intractable state spaces, and dense transition operators. Unlike HSMs, they naturally support continuous state and action spaces, avoiding approximation errors and sensitivities associated with discretisation. Moreover, since RL based methods are fully sample-based, they also extend to partially-observable settings where observations of the aggregate state depend on the individual states, allowing for greater environment complexity. However, they do not benefit from the same variance reduction as HSMs. MFAX is designed to combine computational efficiency with ease of use. MFAX environments are implemented with a base class with deterministic individual state transition and reward functions; MFAX then handles the mean-field updates using either the exact analytic mean-field update or a sample-based approximation. When computing the analytic mean-field update and expectations over next individual states, MFAX computes the associated matrix-vector products in functional form, avoiding materialising the A matrix altogether. This translates memory requirements from O(|S| 2 ) to O(|S| + |S| × |A| + |Z|), which is more efficient when the transition kernel T (s t+1 | s t , µ t , z t ) is sparse and the action space is much smaller than the state space. Such sparsity and imbalance |A| ≪ |S| commonly arise in discretised MFGs derived from continuous-state models and where the action space is low-dimensional relative to the discretisation resolution. We refer the reader to Appendix B for more details on MFAX's environment structure.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="7">MFAX</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="7.1">Environment and Algorithmic Framework</head><p>By parallelising across both states and actions and using the functional representation of the expectation and update operators (i.e. premultiplying by the A matrix and its transpose), one mean-field update in MFAX is more than 10 times faster than OpenSpiel and 1000 times faster than MFGLib <ref type="bibr" target="#b18">(Lanctot et al., 2020;</ref><ref type="bibr" target="#b11">Guo et al., 2025)</ref>. Being JAX-based, MFAX also allows for GPU accelerated parallelisation across environments, which we leverage in our algorithmic implementations. As well as environments, MFAX implements two HSM and three RL algorithms. We refer the reader to Appendix B.2 for more details.  </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="7.2">Specific Environment Implementations</head><p>Table <ref type="table" target="#tab_7">3</ref> in Appendix B.4 summarises the features of our test environments. The two toy environments, Linear Quadratic and Beach Bar, are partially observable adaptations of environments with common noise that are standard in MFG literature <ref type="bibr" target="#b29">(Perrin et al., 2020;</ref><ref type="bibr" target="#b38">Wu et al., 2025)</ref>. In Linear Quadratic, the reward encourages agents to concentrate together. Beach Bar's reward encourages agents to remain close to the bar while it is open, but move away from the bar at the potential closure time. Hence, Beach Bar tests agents' ability to anticipate that the bar might close. In both environments, the shared observation includes the mean-state, but not the timestep, realisation of common noise, or full mean-field distribution.</p><p>The Macroeconomics environment is a heterogeneous agent model with common noise, where prices (interest rates and wages) are endogenously determined from the mean-field distribution <ref type="bibr" target="#b16">(Krusell &amp; Smith, 1998)</ref>. We implement the environment as a long but finite horizon game. The individual state space is 2D, representing wealth and income, while the action space 1D, representing the proportion of its budget constraint that an agent chooses to consume. Agents aim to maximise their present discounted value (PDV) of utility from consumption and thus must learn to balance instant reward with saving for the future. Following <ref type="bibr" target="#b25">Moll (2025)</ref>, we consider a partially observable case where agents only observe the prices. The common noise is 1D and has the interpretation of the aggregate shock, or the productivity of a so-called representative firm. We refer the reader to Appendix B for more details regarding each environment.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="8">Experiments</head><p>Our experiments assess RSPG for quality of convergence (proximity to a Nash equilibrium); speed of convergence and quality of the learned policy, including its ability to capture history-dependent behaviour.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="8.1">Ablations and Benchmarks</head><p>We ablate RSPG with its history-independent counterpart, SPG, which we extend to use an MLP rather than a tabular policy.</p><p>We also benchmark HSMs with purely sample-based RL algorithms: Independent PPO (IPPO) <ref type="bibr" target="#b34">(Schulman et al., 2017;</ref><ref type="bibr" target="#b1">Algumaei et al., 2023;</ref><ref type="bibr" target="#b36">Witt et al., 2020)</ref>, Recurrent IPPO <ref type="bibr" target="#b26">(Ni et al., 2022)</ref> and M-OMD <ref type="bibr" target="#b21">(Laurière et al., 2022)</ref>. We refer the reader to Appendix B.2 for more details. <ref type="bibr" target="#b22">Laurière et al. (2024)</ref> use the notion of exploitability, which quantifies the maximum increase in expected return that a player can achieve by deviating from the policy used by the population, to determine the proximity to a Nash equilibrium and evaluate convergence:</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="8.2">Evaluation Metrics</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="8.2.1">EXPLOITABILITY</head><formula xml:id="formula_27">X (π) = E [J * evol (π) − J evol (π, π)]</formula><p>where J * evol (π) = sup π ′ ∈Π J evol (π ′ , π), Π is the set of policies conditioning on the same inputs as the learned policy π, and the expectation is taken with respect to µ 0 ∼ p µ0 , z 0 ∼ p z0 , z t+1 ∼ Ξ(• | z t ). A policy π forms a Nash Equilibrium with respect to Π if and only if its exploitability is exactly zero. For our experiments, the "exploitability" resembles regret, since rather than restricting Π for the best-response policy to Interest rates (first column) and wages (second column) are determined by the mean-field distribution. The environment is implemented as a finite horizon: with RSPG, agents learn anticipatory behaviour, spending more wealth just before the end of the episode, pushing interest rates up and wages down. This is not the case for SPG, which is memoryless.</p><p>the information set of each learned policy (which would render exploitability values incomparable between memoryless and history-aware algorithms), we compute J * evol (π) over a common, more expressive class of best-response policies with perfect information. Even though this might render it impossible to reach zero exploitability, it provides a conservative upper bound on the true distance to equilibrium and enables meaningful comparison across algorithms. We approximate exploitability by averaging over sampled common-noise sequences. Since all of our environments have exact analytic mean-field counterparts, we use backwards induction to compute J * evol (π).</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="8.2.2">WALL-CLOCK TRAINING TIME</head><p>Since the expectation in HSMs renders comparing the number of environment steps for HSMs and RL impossible, we compare algorithms based on wall-clock training time. To facilitate reproducibility and scrutiny, we release all algorithm implementations and hyperparameter configurations (see Appendix C.2 for more details).</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="8.2.3">QUALITATIVE ANALYSIS</head><p>To identify interesting behaviour, we visualise the evolution of the mean-field and learned policy.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="8.3">Results</head><p>RSPG is the only method that consistently achieves competitive exploitability across all three environments, converging to the lowest or second-lowest exploitability (Figure <ref type="figure" target="#fig_1">2</ref>). SPG performs comparably to RSPG in the endogenous environment because the observation provides substantial information about the aggregate state, reducing the importance of memory.</p><p>In contrast, M-OMD, SPG, and IPPO perform poorly in the Beach Bar and Linear Quadratic environments because they learn memoryless policies. Notably, despite the endogenous environment being nearly fully observable, M-OMD still underperforms. This could be due to the environment's larger state-action space, where Q-function based methods struggle to exploit the underlying ordinal structure of the action space. This is not the case for the policy-based methods, which allow us to parameterise an underlying continuous distribution (Section 6.1 and Figure <ref type="figure" target="#fig_9">10</ref>).</p><p>As anticipated, SPG and RSPG achieve approximately an order-of-magnitude faster convergence than RL-based methods. HSMs learn directly from mean-field rollouts, while RL methods incur additional overhead from single-agent rollouts between successive mean-field iterations. RIPPO is slower than IPPO and M-OMD because maintaining temporal consistency for history-awareness requires sequential re-calculation in the loss function. This contrasts to memoryless algorithms, where loss function re-calculations can be fully parallelised.</p><p>Visual inspection of the learned mean-field distributions shows that, unlike memoryless agents, history-dependent agents acquire anticipatory behaviour. This is particularly evident in the Beach Bar and Macroeconomics environments (Figures <ref type="figure" target="#fig_3">4 and 3</ref>). With RSPG and RIPPO, agents learn to move away from the Beach Bar just before the potential closure time.</p><p>Similarly, in the macroeconomics environment, agents learn to spend their wealth nearing the end of the episode, which pushes the interest rates upwards. Interest rates are determined by the mean-field distribution, and negatively correlated with percentage of agents in high wealth states. Even though SPG and RSPG attain similar levels of exploitability in the macroeconomics environment (Figure <ref type="figure" target="#fig_1">2</ref>), only RSPG captures such anticipatory behaviour. We refer the reader to Appendix C.1 for more visualisations.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="9">Conclusion</head><p>In this work we present RSPG, the first history-aware HSM leveraging known transition dynamics for lower variance updates. Empirically, we show that when access to the individual dynamics is available, RSPG achieves state-of-the-art performance, an order-of-magnitude faster convergence, and more realistic agent behaviour in both toy environments and a macroeconomics MFG. We also present MFAX, the first JAX-based environment framework for MFGs. Unlike other MFG libraries, MFAX distinguishes between mean-field environments with white-box and black-box access to the transition model, as well as supporting partial observability, common noise and multiple initial distributions.</p><p>In the future, HSMs could be applied to more complex situations involving games of major and minor players or several mean-fields. In such cases (where the "common-noise" would now include the behaviour of the major player or opposing mean-fields) rather than differentiating through the entire rollout, a value function could be learned, with the variance reduction being incorporated within the generalised advantage estimation. MFAX enables the implementation of much more complex environments, such as ones with individual agent observation functions or threshold-based reward functions, which could be used to simulate phenomena such as bank-runs, for example. More generally, the library could incorporate a third mean-field update wrapper that supports function approximation for the analytic mean-field update, thereby allowing extensions to higher-dimensional individual state spaces: the analytic mean-field update could be learned from real-world data, for example, with attention being paid only to volatile areas of the mean-field.</p><p>M-OMD We implement M-OMD, an algorithm specifically designed for MFGs, which amends the DQN target to y = r(s, a)</p><formula xml:id="formula_28">+ ατ log π(a | s) + γE a ′ ∼π(•|s ′ ) [Q(s ′ , a ′ ) − τ log π(a ′ | s ′ )</formula><p>] and uses a softmax rather than argmax policy to smoothen policy updates, while still allowing for the policy to become greedier with time. Modifying the reward rather than the optimisation objective amends the convergence trajectory of (π, µ 0:T ) without altering the final fixed-point converged to. M-OMD and its variations <ref type="bibr" target="#b37">(Wu et al., 2024;</ref><ref type="bibr" target="#b25">2025;</ref><ref type="bibr" target="#b2">Benjamin &amp; Abate, 2025)</ref> are state-of-the-art for most MFG problem settings. The pseudocode is given in <ref type="bibr" target="#b38">(Wu et al., 2025)</ref>.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>B.3 MFAX Evaluation Metrics</head><p>To evaluate the algorithms, MFAX computes an approximate exploitability using backwards induction, if environments are implemented using the analytic mean-field update wrapper. For both analytic mean-field and sample-based environment wrappers, MFAX computes the per-agent mean-expected return for that environment. All algorithms allow the train-wallclock time to be measured. The first environment we implement is a partially observable adaptation of the Linear Quadratic environment with common noise that is standard in MFG literature <ref type="bibr" target="#b29">(Perrin et al., 2020;</ref><ref type="bibr" target="#b38">Wu et al., 2025)</ref>. The environment is finite horizon, with a fixed initial mean-field distribution. We define the following tuple:</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>B.4 MFAX Specific Environment Details</head><formula xml:id="formula_29">(p µ0 , p z0 , S, Z, A, O, U , T , Ξ, R, T ).<label>(15)</label></formula><p>The individual state space, the state space of the common noise and the action space are all 1D and given by:</p><formula xml:id="formula_30">S := {0, 1, 2, • • • , 99}, Z := {−1, 1}, A := {−3, −2, −1, 0, 1, 2, 3}.<label>(16)</label></formula><p>The initial mean-field and common noise are given by:</p><formula xml:id="formula_31">p µ0 := δ Unif(S) , p z0 := Unif({−1, 1}). (<label>17</label></formula><formula xml:id="formula_32">)</formula><p>The transition dynamics are given by:</p><formula xml:id="formula_33">T (s t+1 | s t , a t , µ t , z t , t) := clip round s t + a t + σ • ξ t • ρ + ϵ • 1 − ρ 2 , 0, |S| , Ξ[z t+1 | z t ] := δ zt , (<label>18</label></formula><formula xml:id="formula_34">)</formula><p>where ξ t has a piecewise effect depending on the instantiation of the common noise z t :</p><formula xml:id="formula_35">ξ t =      −10 z t , t &lt; 8, 0 z t , 8 ≤ t ≤ 20, 10 z t , t &gt; 20,<label>(19)</label></formula><p>and the idiosyncratic noise ϵ ∼ N (0, 1), is, in practice, discretised as {−3σ, ..., 3σ}.</p><p>The reward is given by: R t (s t , a t , µ t , z t , t)</p><formula xml:id="formula_36">:= −c a • a 2 t + q • a t • [µ t • s − s t ] − κ 2 [µ t • s − s t ] 2 , R T (s t , a t , µ t , z t , t) := − c term 2 [µ t • s − s t ] 2 ,<label>(20)</label></formula><p>effectively encouraging agents to concentrate together. The observation of the aggregate state g = (µ, z, t) is 1D and given by:</p><formula xml:id="formula_37">U(o t | µ t , z t , t) = (δ (o t − µ t • s)) ,<label>(21)</label></formula><p>where s denotes a vector of length |S| containing the index of state, such that the observation is just the mean state of the mean-field. We use the following parameters for the implementation: The second environment we implement is a partially observable version of the beach-bar environment, again standard in MFG literature <ref type="bibr" target="#b29">(Perrin et al., 2020;</ref><ref type="bibr" target="#b38">Wu et al., 2025)</ref>. The environment is finite horizon. The aggregate aggregate state is given by g = (µ, z, l, t), where l is the location of the bar that is set at the beginning of the episode and hence independent of time, and z, the common noise, determines whether the bar closes at t = T /2. We define the following tuple:</p><formula xml:id="formula_38">(p µ0 , p z0 , L 0 , S, Z, A, O, U , T , Ξ, R, T ).<label>(22)</label></formula><p>The individual state space, the state space of the common noise and the action space are all 1D and given by:</p><formula xml:id="formula_39">S := {0, 1, 2, • • • , 99}, Z := {0, 1}, A := {−5, −4, −3, −2, −1, 0, 1, 2, 3, 4, 5}.<label>(23)</label></formula><p>The initial mean-field and common noise are given by:</p><formula xml:id="formula_40">L 0 := Unif(S), l 0 ∼ L 0 , p µ0 := δ Unif(S\l0) , p z0 := Unif({0, 1}).<label>(24)</label></formula><p>The transition dynamics are given by:</p><formula xml:id="formula_41">T (s t+1 | s t , a t , µ t , z t , t) := legal [s t + a t + ϵ] , Ξ[z t+1 | z t ] := δ zt ,<label>(25)</label></formula><p>where ϵ is an instantiation of the idiosynchratic noise and is sampled from {−2, −1, 0, 1, 2} with probability {0.05, 0.1, 0.7, 0.1, 0.05}, and "legal" is a function that prevents agents from moving into illegal states. The instantiation of the common noise ξ is given by:</p><formula xml:id="formula_42">ξ t = 1, t &lt; T /2, z t , t ≥ T /2.<label>(26)</label></formula><p>The idiosyncratic noise is given by: ϵ ∼ N (0, 1), which, in practice, is discretised as {−3σ, ..., 3σ}.</p><p>The reward is given by: R(s t , a t , µ t , z t , l, t)</p><formula xml:id="formula_43">:= − |l − s t | ξ t (27) − |S| (1 − z t ) 1 t ≥ T 2 − 1 1{|l − s t | = 1} (28) − ξ t clip(log µ t [s t ], −|S|, 0) (29) − 0.1 |S| (1 − ξ t ) clip(log µ t [s t ], −|S|, 0)<label>(30)</label></formula><formula xml:id="formula_44">− |a t | |S| .<label>(31)</label></formula><p>where the first term penalises being far from the bar when it is open, the second term is a strong penalty for being next to the bar when the bar is closed, the third term is a weak reward for being in sparse areas when the bar is open, and the fourth term is a stronger reward for being in sparse areas when the bar is closed. The observation is 3D and given by:</p><formula xml:id="formula_45">U(o t |, µ t , z t , l, t) = δ (µ t •s) , ξ t , l .<label>(32)</label></formula><p>again, s denotes a vector of length |S| containing the index of state, such that the first element of the observation tuple is just the mean state of the mean-field. The observation does not include the timestep, meaning that a notion of time can only be encoded in the history. i.e., in addition to their individual states s, agents observe the two prices p * 1 and p * 2 but not the entire distribution µ. We use the following parameters for the implementation:        We use a higher number of parallelised environments for Beach Bar, since, unlike Linear Quadratic and Macroeconomics, it has multiple initial distributions. Environments For our sample-based environments, we use 10, 000 agents to approximate the mean-field. We ensure that the number of agents is much larger than the individual state-space N ≫ |S| such that this is not a limiting factor in algorithmic performance. Since agents are v-mapped, this does not add to training time.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>C.3 Compute</head><p>Unless stated otherwise, all experiments were run on NVIDIA L40S GPUs (48 GB).</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>C.4 Ablations</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>C.4.1 POLICY REPRESENTATION</head><p>The policy parameterisation significantly influences the final exploitability. HSMs that compute the exact analytic mean-field update require integration over the policy. For continuous action spaces (such as those encountered in macroeconomic environments) we approximate this integral by discretising the policy: the continuous action distribution is evaluated at uniformly spaced points over the action domain and then renormalised. This discretisation consistently outperforms a categorical parameterisation, which lacks an inductive bias reflecting the ordinal structure of the action space, and consistently converges to a sub-optimal solution. </p></div><figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_0"><head>Figure 1 .</head><label>1</label><figDesc>Figure 1. Top left: the analytic mean-field update computes the exact expectation over next states. Bottom left: a sample-based mean-field update re-approximates the mean-field at each step, by tracking individual agents. Right: network architecture for the reduced policy used in RSPG.The hidden state is independent of the individual state such that the analytic mean-field update has the same asymptotic computational cost as a memoryless policy. If the actions are continuous, an underlying continuous distribution is parameterised. The log-probabilities are evaluated at equal intervals along the action space, and used as logits for a categorical distribution. This structured prior induces ordinality in the action space.</figDesc><graphic coords="5,79.74,246.71,437.39,190.53" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_1"><head>Figure 2 .</head><label>2</label><figDesc>Figure 2. Exploitability versus training wall-clock time for partially observable Linear Quadratic, Beach Bar, and Macroeconomics environments. All experiments were conducted on NVIDIA L40S GPUs (48 GB). HSMs (SPG, RSPG) are an order of magnitude faster than RL methods, with history-aware RSPG consistently achieving among the lowest exploitability. Shaded regions indicate 95%ile CI for the mean over 10 seeds.</figDesc><graphic coords="9,55.44,67.06,486.01,138.47" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_2"><head>Figure 3 .</head><label>3</label><figDesc>Figure3. Heatmaps: mean-field distribution (income on y-axis and wealth on x-axis) at specific timesteps during the episode for the Macroeconomics environment (with total episode length of 128 steps). Interest rates (first column) and wages (second column) are determined by the mean-field distribution. The environment is implemented as a finite horizon: with RSPG, agents learn anticipatory behaviour, spending more wealth just before the end of the episode, pushing interest rates up and wages down. This is not the case for SPG, which is memoryless.</figDesc><graphic coords="10,55.44,67.06,485.98,132.14" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_3"><head>Figure 4 .</head><label>4</label><figDesc>Figure 4. Mean-field distribution (y-axis) versus time (x-axis) for the Beach Bar environment. Agents are rewarded for being next to the bar when it is open, and penalised for being directly next to the bar when it is closed, or just before it closes, which can occur halfway through the episode (white-line). With RSPG and RIPPO, agents learn to apprehend the time at which the bar might close, moving away from the bar just before potential closure, and back towards it if it stays open (as above).</figDesc><graphic coords="11,55.44,67.06,485.99,89.06" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_4"><head>Figure 5 .</head><label>5</label><figDesc>Figure 5. Mean-field distribution (y-axis) versus time (x-axis) for the Beach Bar environment (top). Learned policy (middle) versus best response policy (bottom). Agents are rewarded for being next to the bar when it is open, and penalised for being directly next to the bar when it is closed, or just before it closes, which can occur halfway through the episode (white-line). Here the bar stays open, which is why agents move back towards the bar.</figDesc><graphic coords="21,55.44,456.86,486.02,211.15" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_5"><head>Figure 6 .</head><label>6</label><figDesc>Figure 6. Mean-field distribution (y-axis) versus time (x-axis) for the Beach Bar environment (top). Learned policy (middle) versus best response policy (bottom). Agents are rewarded for being next to the bar when it is open, and penalised for being directly next to the bar when it is closed, or just before it closes, which can occur halfway through the episode (white-line). Here the bar stays closes, which is why agents move away from the bar.</figDesc><graphic coords="22,55.44,67.06,486.02,211.15" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_6"><head>Figure 7 .</head><label>7</label><figDesc>Figure 7. Mean-field distribution (y-axis) versus time (x-axis) for the Linear Quadratic environment (top). Learned policy (middle) versus best response policy (bottom). Agents are subject to one of two realisations of common noise, pushing the entire population downwards or upwards.</figDesc><graphic coords="22,55.44,466.82,486.02,211.15" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_7"><head>Figure 8 .</head><label>8</label><figDesc>Figure8. Heatmaps: mean-field distribution (income on y-axis and wealth on x-axis) at specific timesteps during the episode for the Macroeconomics environment (with total episode length of 128 steps). Interest rates (first column) and wages (second column) are determined by the mean-field distribution. The environment is implemented as a finite horizon: with RSPG and RIPPO, we see that agents learn anticipatory behaviour, spending more wealth just before the end of the episode, pushing interest rates up and wages down. This is not the case for the memoryless policies.</figDesc><graphic coords="23,55.44,67.06,485.98,334.66" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_8"><head>Figure 9 .</head><label>9</label><figDesc>Figure9. Learned actions (top) and best response actions (middle) and (difference) between the two (bottom) for the Macroeconomics environment. For M-OMD, the learned policy is much coarser, which we attribute to the fact that it is not parameterised by an underlying continuous action distribution.</figDesc><graphic coords="24,55.44,67.06,485.98,198.41" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_9"><head>Figure 10 .</head><label>10</label><figDesc>Figure10. Underlying continuous actions (second row), and their associated continuous consumptions (third row), rewards (final row) and cumulative discounted rewards (top row) over the entire episode for the Macroeconomics environment. We include these plots for macroeconomics interest. M-OMD is omitted, since it does not have an underlying continuous action distribution.</figDesc><graphic coords="24,55.44,361.82,486.00,316.15" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_10"><head>Figure 11 .</head><label>11</label><figDesc>Figure 11. Exploitability versus training wall-clock time for partially observable Macroeconomics environment with ordinal versus categorical policies. Experiments were run on NVIDIA A40 GPUs. Having an underlying continuous distribution (Ordinal) consistently outperforms the underlying categorical distribution (Discrete), which does not encode information about the ordinal nature of the action space.</figDesc><graphic coords="26,176.94,540.11,243.00,127.90" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_0"><head></head><label></label><figDesc>• | s t , µ t , z t ) denotes the action distribution of an agent conditioned on the individual state s t and aggregate state (µ t , z t ). The reward r t = R(s t , a t , µ t , z t ) is a scalar function of the individual state s t , the action a t and the aggregate state (µ t , z t ).</figDesc><table /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_2"><head></head><label></label><figDesc>Dynamic Programming based methods assume access to both the individual state dynamics, i.e. T (s t+1 | s t , a t , µ t , z t ) and the aggregate state dynamics, i.e. Ξ(z t+1 | z t ) and</figDesc><table><row><cell>Information Box 1.</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_3"><head></head><label></label><figDesc>consider partial observability by only allowing observation of neighboring agents, and, although not formally presented as a partially observable setting,<ref type="bibr" target="#b2">Benjamin &amp; Abate (2025)</ref> consider a scenario where agents form a local estimate of the global mean-field. Since neither implement recurrent or history-dependent policies, agents are memoryless. Only few RL methods consider problem settings with common noise. Those that do<ref type="bibr" target="#b38">(Wu et al., 2025;</ref><ref type="bibr" target="#b2">Benjamin &amp; Abate, 2025)</ref> are based on Q-Functions, which extend less naturally to continuous action spaces than policy-based algorithms.<ref type="bibr" target="#b1">Algumaei et al. (2023)</ref> and<ref type="bibr" target="#b10">Guo et al. (2023)</ref> use policy-based algorithms, but applications are restricted to fully-observable environments with no common noise.</figDesc><table /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_5"><head>Table 1 .</head><label>1</label><figDesc>Comparison of Open-Source MFG libraries. MFAX is the only library to explicitly distinguish between white-box and black-box access to the individual transition dynamics, and support common-noise, partial observability and multiple initial mean-field distributions.</figDesc><table><row><cell></cell><cell cols="2">INDIVIDUAL TRANSITION DYNAMICS</cell><cell></cell><cell>FEATURES</cell><cell></cell></row><row><cell>LIBRARY</cell><cell>WHITE BOX</cell><cell>BLACK BOX</cell><cell cols="3">PARTIALLY OBSERVABLE COMMON NOISE MULTIPLE µ0</cell></row><row><cell>MFAX</cell><cell>Y</cell><cell>Y</cell><cell>Y</cell><cell>Y</cell><cell>Y</cell></row><row><cell>OPENSPIEL</cell><cell>N</cell><cell>Y</cell><cell>N</cell><cell>N</cell><cell>N</cell></row><row><cell>MFGLIB</cell><cell>N</cell><cell>Y</cell><cell>N</cell><cell>N</cell><cell>N</cell></row></table><note>MFAX is our JAX-based environment framework for MFGs. Unlike existing MFG libraries and as summarised in Table1, MFAX cleanly separates environments with white-box access to the individual state transition dynamics from those with black-box access, supporting both exact analytic mean-field updates and sample-based mean-field updates. Also unlike other MFG libraries, MFAX accommodates partial observability, common noise, and multiple initial mean-field distributions.</note></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_6"><head>Table 2 .</head><label>2</label><figDesc>Time</figDesc><table><row><cell cols="3">for one mean-field update of the Linear Quadratic environment (100 states and 7 actions, following MFG literature (Wu</cell></row><row><cell cols="3">et al., 2025)) for each library. All experiments were averaged over 90 updates after 10 warm-up steps (excluding compilation time) and</cell></row><row><cell>conducted on NVIDIA L40S GPUs (48 GB).</cell><cell></cell><cell></cell></row><row><cell>LIBRARY</cell><cell>LANGUAGE</cell><cell>MEAN-FIELD UPDATE (S)</cell></row><row><cell>MFAX</cell><cell>PYTHON</cell><cell>ANALYTIC: 2.98 × 10 −4 SAMPLE-BASED: 4.35 × 10 −4</cell></row><row><cell>OPENSPIEL</cell><cell>C++</cell><cell>5.44 × 10 −3</cell></row><row><cell>MFGLIB</cell><cell>PYTHON</cell><cell>3.58 × 10 −1</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_7"><head>Table 3 .</head><label>3</label><figDesc>Overview and comparison of the features and spatial dimensions of the Linear Quadratic, Beach Bar and Endogenous test environments.</figDesc><table><row><cell></cell><cell></cell><cell>FEATURES</cell><cell></cell><cell cols="3">SPATIAL DIMENSIONS</cell></row><row><cell>ENVIRONMENT</cell><cell cols="3">PARTIALLY OBSERVABLE COMMON NOISE MULTIPLE µ0</cell><cell>|S|</cell><cell>|A|</cell><cell>|Z|</cell></row><row><cell>LINEAR QUADRATIC</cell><cell>Y</cell><cell>Y</cell><cell>N</cell><cell>100</cell><cell>7</cell><cell>2</cell></row><row><cell>BEACH BAR</cell><cell>Y</cell><cell>Y</cell><cell>Y</cell><cell>100</cell><cell>11</cell><cell>2</cell></row><row><cell>MACROECONOMICS</cell><cell>Y</cell><cell>Y</cell><cell>N</cell><cell>1000</cell><cell>∞</cell><cell>∞</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_8"><head>Table 4 .</head><label>4</label><figDesc>Parameters used for the Linear-Quadratic environment.</figDesc><table><row><cell cols="2">PARAMETER DESCRIPTION</cell><cell>VALUE</cell></row><row><cell>σ</cell><cell>IDIOSYNCRATIC NOISE STD</cell><cell>1.0</cell></row><row><cell>ρ</cell><cell>NOISE PARAMETER</cell><cell>0.5</cell></row><row><cell>ca</cell><cell>REWARD ACTION COST</cell><cell>0.5</cell></row><row><cell>cTERM</cell><cell>REWARD TERMINAL COST</cell><cell>1.0</cell></row><row><cell>q</cell><cell>REWARD ACTION DIRECTION PARAMETER</cell><cell>0.1</cell></row><row><cell>κ</cell><cell>REWARD DISTANCE PENALTY</cell><cell>0.5</cell></row><row><cell>T</cell><cell>TIME HORIZON</cell><cell>30</cell></row><row><cell>|S|</cell><cell>NUMBER OF STATES</cell><cell>99</cell></row><row><cell>|A|</cell><cell>NUMBER OF ACTIONS</cell><cell>7</cell></row><row><cell>|Z|</cell><cell>NUMBER OF COMMON NOISE REALISATIONS</cell><cell>2</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_9"><head>Table 5 .</head><label>5</label><figDesc>Parameters used for the Beach-Bar environment.</figDesc><table><row><cell cols="2">PARAMETER DESCRIPTION</cell><cell>VALUE</cell></row><row><cell>T</cell><cell>TIME HORIZON</cell><cell>30</cell></row><row><cell>|S|</cell><cell>NUMBER OF STATES</cell><cell>100</cell></row><row><cell>|A|</cell><cell>NUMBER OF ACTIONS</cell><cell>11</cell></row><row><cell>|Z|</cell><cell>NUMBER OF COMMON NOISE REALISATIONS</cell><cell>2</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_10"><head>Table 6 .</head><label>6</label><figDesc>Parameters used for the Macroeconomics environment.</figDesc><table><row><cell cols="2">PARAMETER DESCRIPTION</cell><cell>VALUE</cell></row><row><cell>α</cell><cell>COBB-DOUGLAS: CAPITAL SHARE</cell><cell>0.36</cell></row><row><cell>γ</cell><cell>DISCOUNT FACTOR</cell><cell>0.95</cell></row><row><cell>σ</cell><cell>COEFFICIENT OF RELATIVE RISK AVERSION</cell><cell>2</cell></row><row><cell>ρz</cell><cell>PERSISTENCE OF AR(1) FOR zt</cell><cell>0.9</cell></row><row><cell>νz</cell><cell>VOLATILITY OF AR(1) FOR zt</cell><cell>0.03</cell></row><row><cell>T</cell><cell>TIME HORIZON</cell><cell>128</cell></row><row><cell>S1</cell><cell>STATE SPACE FOR S1</cell><cell>[0, 99]</cell></row><row><cell>S2</cell><cell>STATE SPACE FOR S2</cell><cell>[0.1, 2]</cell></row><row><cell>A</cell><cell>ACTION SPACE</cell><cell>[0, 1]</cell></row><row><cell>|S h 1 |</cell><cell>DISCRETISED NUMBER OF STATES S1</cell><cell>200</cell></row><row><cell>|S h 2 |</cell><cell>DISCRETISED NUMBER OF STATES S2</cell><cell>5</cell></row><row><cell>|A h |</cell><cell>DISCRETISED NUMBER OF ACTIONS</cell><cell>20</cell></row><row><cell>C Experiments</cell><cell></cell><cell></cell></row></table><note>C.1 Further Results</note></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_11"><head>Table 8 .</head><label>8</label><figDesc>Hyperparameter Sweep Values.</figDesc><table><row><cell>HYPERPARAMETER</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_12"><head>Table 9 .</head><label>9</label><figDesc>Number of Parallelised Environments (same for all algorithms).</figDesc><table><row><cell>ENVIRONMENT</cell><cell>NUMBER OF PARALLELISED ENVIRONMENTS</cell></row><row><cell cols="2">LINEAR QUADRATIC 8</cell></row><row><cell>BEACH BAR</cell><cell>128</cell></row><row><cell>MACROECONOMICS</cell><cell>8</cell></row></table></figure>
+			<note xmlns="http://www.tei-c.org/ns/1.0" place="foot" n="1" xml:id="foot_0">We assume w.l.o.g. that µ0 is a deterministic function of z0. This is notationally convenient as then µ0:∞ is a deterministic function of z0:∞</note>
+			<note xmlns="http://www.tei-c.org/ns/1.0" place="foot" n="2" xml:id="foot_1">As for MFGs-CN, we assume w.l.o.g. that µ0 is a deterministic function of z0. This is notationally convenient as then µ0:∞ is a deterministic function of z0:∞</note>
+			<note xmlns="http://www.tei-c.org/ns/1.0" place="foot" n="3" xml:id="foot_2">Note that ot being a deterministic rather than a random function of µt and zt does not lose generality, as we can just put the randomness of ot into zt</note>
+		</body>
+		<back>
+
+			<div type="acknowledgement">
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>B.2 MFAX Algorithms</head><p>We implement the following algorithms in MFAX: SPG We implement SPG <ref type="bibr" target="#b41">(Yang et al., 2025)</ref> using an MLP rather than a tabular policy. SPG is implemented in the same way as RSPG (pseudo-code given in Appendix A.1), but without history.</p><p>RSPG We implement RSPG (pseudo-code given in Appendix A.1).</p><p>IPPO We implement a mean-field version of Independent Proximal Policy Optimization <ref type="bibr" target="#b34">(Schulman et al., 2017;</ref><ref type="bibr" target="#b36">Witt et al., 2020;</ref><ref type="bibr" target="#b1">Algumaei et al., 2023)</ref> as, despite its theoretical shortcomings, it has been shown to outperform joint learning approaches in various Multi-Agent Reinforcement Learning tasks due to its robustness to environment non-stationarity <ref type="bibr" target="#b36">(Witt et al., 2020)</ref>. We provide the pseudo-code for our implementation below.</p><p>Algorithm 4 IPPO input: Policy π with parameters θ π repeat for E environments in parallel do ▷ Generate mean-field sequence using sample-based mean-field distribution end for ▷ Return {µ 0:T , z 0:T } 1:E ▷Update θ π using single-agent PPO for N agents within each environment. until convergence RIPPO We implement a mean-field version of Recurrent IPPO <ref type="bibr" target="#b26">(Ni et al., 2022)</ref>. The pseudo-code is identical to that of IPPO, but the policy includes an RNN.</p></div>
+			</div>
+
+			<div type="annex">
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Impact Statement</head><p>This paper presents work whose goal is to advance the field of machine learning. There are many potential societal consequences of our work, none of which we feel must be specifically highlighted here.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>A Methods</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>A.1 Recurrent Structural Policy Gradient</head><p>Below, we provide the pseudo-code for RSPG. Crucially, gradients are allowed to propagate through the expected rewards over actions and the individual state transitions, but not through the mean-field updates or environment reward function:</p><p>Algorithm 1 RSPG input: parameters θ π repeat for E environments in parallel do µ 0 ∼ p µ0 , z 0 ∼ p z0 , o 0 ∼ O(µ 0 , z 0 ), h 0 ← 0, d 0 ← 0, v T ← 0 for t = 0 : T − 1 do ▷ Generate mean-field sequence using analytic mean-field update</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>B Benchmark Structure</head><p>JAX-based open-source implementations inspiring MFAX include PureJaxRL <ref type="bibr" target="#b23">(Lu et al., 2022)</ref>, Gymnax <ref type="bibr" target="#b19">(Lange, 2022)</ref> and JaxMARL <ref type="bibr" target="#b32">(Rutherford et al., 2024)</ref>, respectively implementing single file RL algorithms; single-agent RL environments; and multi-agent environments and algorithms.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>B.1 MFAX Environment Structure</head><p>In this section, we provide a brief overview of MFAX's modular environment structure.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>B.1.1 BASE ENVIRONMENTS</head><p>Environments are required to have a base class that implements deterministic single state step and reward functions -which return the deterministic next individual states and rewards given the current individual state, aggregate state and a single action-and functions determining when the environment sequence has terminated or truncated.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>B.1.2 ANALYTIC MEAN-FIELD WRAPPER</head><p>Broadly speaking, analytic mean-field environments must implement:</p><p>1. a single state step function, which adds idiosyncratic noise to the deterministic next state and returns the next state indices as well as their probabilities;</p><p>2. an aggregate observation function, which returns the common observation of the aggregate state;</p><p>3. and a reset function, which determines the exact initial mean-field distribution.</p><p>Given these functions, the generic environment analytic mean-field update wrapper handles updating the entire mean-field distribution (which involves computing A ⊤ µ), calculating expectations over next states (such as Av, for example) and returning the reward matrix R.</p><p>Rather than constructing or storing A, we implement the associated matrix-vector products -the analytic mean-field update and expectation operators-in functional form, with the mean-field distribution, policy, vector to be pre-multipled by, and common noise as inputs. This avoids materialising the transition operator altogether, reducing memory requirements from O(|S| 2 ) to O(|S| + |S| × |A| + |Z|), which is linear in the number of states. This is much more efficient in practice, since in many applications (such as two-dimensional physical spaces and macroeconomic models) the transition kernel T (s ′ | s, µ, z) is sparse, inducing a highly sparse transition operator A, while the action space is much smaller than the state space (|A| ≪ |S|).</p><p>Mean-field sequence The pseudo-code for generating the mean-field sequence for a analytic mean-field environment is presented in Algorithm 2; "analytic mean-field" represents the functional form of pre-multiplying by the A ⊤ matrix.</p><p>Algorithm 2 Mean-field sequence generation for analytic mean-field environment</p><p>Broadly speaking, sample-based mean-field environments must implement:</p><p>1. a single agent step function, which steps a single agent forward given the current individual state, aggregate state and action by sampling idiosyncratic noise and adding that to the deterministic next state from the base environment;</p><p>2. a local observation function, which returns the individual observation of the aggregate state;</p><p>3. a reset function, which samples individual agents from an initial mean-field distribution.</p><p>Given these functions, the generic environment sample-based wrapper handles updating the entire mean-field distribution by stepping a fixed number of agents forwards and re-computing the mean-field statistics based on the updated samples.</p><p>Mean-field sequence The pseudo-code for generating the mean-field sequence for a sample-based environment is presented in Algorithm 3.</p><p>Algorithm 3 Mean-field sequence generation for sample-based environment</p><p>t+1 , µ t+1 , z t+1 ) end for end for ▷ Return {µ t , z t } 0:T</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>B.4.3 MACROECONOMICS</head><p>The Macroeconomics environment we implement is a heterogeneous agent model with common noise developed by <ref type="bibr" target="#b16">Krusell &amp; Smith (1998)</ref>, where prices are endogenously determined from the mean-field distribution. The environment is long, but finite horizon, with a fixed initial mean-field distribution. We define the following tuple:</p><p>The individual state space is two-dimensional-with interpretation of wealth and income-and the action space is onedimensional, representing the proportion of its budget constraint that an agent chooses to consume.</p><p>In practice, to track the mean-field distribution, we discretise the continuous state space S on a finite grid</p><p>points, obtained via a geometric discretisation of each state dimension. The mean-field distribution µ is represented on S h , while individual state dynamics are defined on the continuous space S. To evaluate the analytic mean-field update, we linearly discretise the action space A.</p><p>The initial mean-field and common noise are given by:</p><p>For clarity, in the following we use a dash to denote time t + 1 and subscripts to denote the state component, since the state is two dimensional. The transition dynamics T (s ′ | s, a, µ, z) are given by</p><p>with probability 0.8, s i+1</p><p>2 , with probability 0.1,</p><p>where s i 2 is the current grid point of the second state component (income), and s 1 represents the continuous value of the first component (wealth). D is the discretisation function. Transitions are clipped at the boundary of S h 2 . The quantities p * 1 and p * 2 have the interpretation of the interest rate and wage, and are defined via the following price functionals:</p><p>where F is the production function of a representative firm:</p><p>The reward is given by: R(s, a, µ, z) := (a</p><p>Following <ref type="bibr" target="#b25">Moll (2025)</ref>, we consider a partially observable case in which the observation is two-dimensional and given by:</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>C.2 Implementation Details and Hyperparameters</head><p>Network Structures We use the following architectures.</p><p>For environments with state indices as inputs, we use an embedding layer of size 64 to encode the index. Otherwise, we use a feed-forward layer of hidden size 64.</p><p>For history-aware policies, observations are encoded using a GRU with hidden size 64, and then passed through one layer of ReLU activation and a feed-forward layer of hidden size 64.</p><p>For memoryless policies, observations are encoded using a feed forward layer of hidden size 64.</p><p>Encoded states and observations are then concatenated and passed through an MLP with 3 feed forward layers with hidden size 128 and ReLU activation.</p><p>Policy networks used for RSPG, SPG, IPPO and RIPPO have categorical heads for the toy environments and continuous Beta distribution heads for the Macroeconomics environment.</p><p>We use Adam for all training and anneal the learning rate using a linear schedule, reducing the learning rate by a factor of 10 over training.</p><p>Hyperparameter Sweeps We use the same memory-and budget-related hyperparameters (such as number of parallelised environments) as well as capacity-related hyperparameters (such as network architecture) for all algorithms. For algorithmspecific hyperparameters, we perform sweeps over identical ranges when applicable, and report results using configurations that achieve both low exploitability and fast convergence. SPG and RSPG have relatively few hyperparameters, and we therefore sweep only over the learning rate. For the RL-based algorithms, in addition to the learning rate, we sweep over the number of updates between mean-field sequence rollouts, which significantly affects wall-clock training time. SPG and RSPG do not have single-agent rollouts between mean-field sequence rollouts, which significantly reduces the training time.</p><p>For the RL algorithms, we also sweep over the number of single-agents per parallelised environment. For IPPO and RIPPO we additionally sweep over the entropy coefficient, and the amended DQN target parameters τ and α for M-OMD. In total, we sweep over 3 hyperparameter configurations for SPG and RSPG, 81 for IPPO and RIPPO, and 243 for M-OMD. </p></div>			</div>
+			<div type="references">
+
+				<listBibl>
+
+<biblStruct xml:id="b0">
+	<monogr>
+		<title level="m" type="main">An Extended Mean Field Game for Storage in Smart Grids</title>
+		<author>
+			<persName><forename type="first">C</forename><surname>Alasseur</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">I</forename><forename type="middle">B</forename><surname>Tahar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Matoussi</surname></persName>
+		</author>
+		<ptr target="http://arxiv.org/abs/1710.08991.arXiv:1710.08991[math" />
+		<imprint>
+			<date type="published" when="2019-04">April 2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b1">
+	<monogr>
+		<title level="m" type="main">Regularization of the policy updates for stabilizing Mean Field Games</title>
+		<author>
+			<persName><forename type="first">T</forename><surname>Algumaei</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Solozabal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Alami</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Hacid</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Debbah</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Takac</surname></persName>
+		</author>
+		<ptr target="http://arxiv.org/abs/2304.01547.arXiv:2304.01547[cs" />
+		<imprint>
+			<date type="published" when="2023-04">April 2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b2">
+	<monogr>
+		<title level="m" type="main">Improving Real-World Applicability of Networked Mean-Field Games using Function Approximation and Empirical Mean-Field Estimation</title>
+		<author>
+			<persName><forename type="first">P</forename><surname>Benjamin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Abate</surname></persName>
+		</author>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b3">
+	<monogr>
+		<title level="m" type="main">Solving N-player dynamic routing games with congestion: a mean field approach</title>
+		<author>
+			<persName><forename type="first">T</forename><surname>Cabannes</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Lauriere</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Perolat</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Marinier</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Girgin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Perrin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">O</forename><surname>Pietquin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">M</forename><surname>Bayen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Goubault</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Elie</surname></persName>
+		</author>
+		<ptr target="http://arxiv.org/abs/2110.11943.arXiv:2110.11943" />
+		<imprint>
+			<date type="published" when="2021-10">October 2021</date>
+		</imprint>
+	</monogr>
+	<note>math</note>
+</biblStruct>
+
+<biblStruct xml:id="b4">
+	<monogr>
+		<title level="m" type="main">Learning in Mean Field Games: the Fictitious Play</title>
+		<author>
+			<persName><forename type="first">P</forename><surname>Cardaliaguet</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Hadikhanloo</surname></persName>
+		</author>
+		<ptr target="http://arxiv.org/abs/1507.06280.arXiv:1507.06280" />
+		<imprint>
+			<date type="published" when="2015-07">July 2015</date>
+		</imprint>
+	</monogr>
+	<note>math</note>
+</biblStruct>
+
+<biblStruct xml:id="b5">
+	<monogr>
+		<title level="m" type="main">Mean Field Game of Controls and An Application To Trade Crowding</title>
+		<author>
+			<persName><forename type="first">P</forename><surname>Cardaliaguet</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C.-A</forename><surname>Lehalle</surname></persName>
+		</author>
+		<ptr target="http://arxiv.org/abs/1610.09904.arXiv:1610.09904[q-fin" />
+		<imprint>
+			<date type="published" when="2017-09">September 2017</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b6">
+	<monogr>
+		<title level="m" type="main">Approximately Solving Mean Field Games via Entropy-Regularized Deep Reinforcement Learning</title>
+		<author>
+			<persName><forename type="first">K</forename><surname>Cui</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Koeppl</surname></persName>
+		</author>
+		<ptr target="http://arxiv.org/abs/2102.01585.arXiv:2102.01585[cs" />
+		<imprint>
+			<date type="published" when="2022-07">July 2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b7">
+	<monogr>
+		<title level="m" type="main">A Survey on Large-Population Systems and Scalable Multi-Agent Reinforcement Learning</title>
+		<author>
+			<persName><forename type="first">K</forename><surname>Cui</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Tahir</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Ekinci</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Elshamanhory</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Eich</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Koeppl</surname></persName>
+		</author>
+		<ptr target="http://arxiv.org/abs/2209.03859.arXiv:2209.03859[cs" />
+		<imprint>
+			<date type="published" when="2022-09">September 2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b8">
+	<analytic>
+		<title level="a" type="main">The complexity of computing a nash equilibrium</title>
+		<author>
+			<persName><forename type="first">C</forename><surname>Daskalakis</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><forename type="middle">W</forename><surname>Goldberg</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><forename type="middle">H</forename><surname>Papadimitriou</surname></persName>
+		</author>
+		<idno type="DOI">10.1137/070699652</idno>
+		<ptr target="https://doi.org/10.1137/070699652" />
+	</analytic>
+	<monogr>
+		<title level="j">SIAM Journal on Computing</title>
+		<imprint>
+			<biblScope unit="volume">39</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page" from="195" to="259" />
+			<date type="published" when="2009">2009</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b9">
+	<analytic>
+		<title level="a" type="main">Contact rate epidemic control of COVID-19: an equilibrium view</title>
+		<author>
+			<persName><forename type="first">R</forename><surname>Elie</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Hubert</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Turinici</surname></persName>
+		</author>
+		<idno type="DOI">10.1051/mmnp/2020022</idno>
+		<ptr target="http://arxiv.org/abs/2004.08221.arXiv:2004.08221[physics" />
+	</analytic>
+	<monogr>
+		<title level="j">Mathematical Modelling of Natural Phenomena</title>
+		<idno type="ISSN">0973-5348</idno>
+		<imprint>
+			<biblScope unit="volume">15</biblScope>
+			<biblScope unit="issue">35</biblScope>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b10">
+	<monogr>
+		<title level="m" type="main">A General Framework for Learning Mean-Field Games</title>
+		<author>
+			<persName><forename type="first">X</forename><surname>Guo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Hu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Xu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Zhang</surname></persName>
+		</author>
+		<imprint>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b11">
+	<monogr>
+		<title level="m" type="main">MFGLib: A Library for Mean-Field Games</title>
+		<author>
+			<persName><forename type="first">X</forename><surname>Guo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Hu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Santamaria</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Tajrobehkar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Zhang</surname></persName>
+		</author>
+		<ptr target="http://arxiv.org/abs/2304.08630.arXiv:2304.08630[cs" />
+		<imprint>
+			<date type="published" when="2025-09">September 2025</date>
+		</imprint>
+	</monogr>
+	<note>version: 2</note>
+</biblStruct>
+
+<biblStruct xml:id="b12">
+	<monogr>
+		<title level="m" type="main">Deepham: A global solution method for heterogeneous agent models with aggregate shocks</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Han</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename></persName>
+		</author>
+		<ptr target="https://arxiv.org/abs/2112.14377" />
+		<imprint>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b13">
+	<monogr>
+		<title level="m" type="main">Online Mean-Field Reinforcement Learning with Occupation Measures for Large Population Games</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Hu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Mf-Oml</surname></persName>
+		</author>
+		<ptr target="http://arxiv.org/abs/2405.00282.arXiv:2405.00282[math" />
+		<imprint>
+			<date type="published" when="2025-09">September 2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b14">
+	<analytic>
+		<title level="a" type="main">Large population stochastic dynamic games: closed-loop mckean-vlasov systems and the nash certainty equivalence principle</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Huang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Malhame</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Caines</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">COMMUNICATIONS IN INFORMATION AND SYSTEMS</title>
+		<imprint>
+			<biblScope unit="volume">6</biblScope>
+			<biblScope unit="page" from="221" to="252" />
+			<date type="published" when="2006">2006</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b15">
+	<monogr>
+		<title level="m" type="main">Model Predictive Mean Field Games for Controlling Multi-Agent Systems</title>
+		<author>
+			<persName><forename type="first">D</forename><surname>Inoue</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Ito</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Kashiwabara</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Saito</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Yoshida</surname></persName>
+		</author>
+		<ptr target="http://arxiv.org/abs/2004.07994.arXiv:2004.07994[math" />
+		<imprint>
+			<date type="published" when="2021-08">August 2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b16">
+	<analytic>
+		<title level="a" type="main">Income and Wealth Heterogeneity in the Macroeconomy</title>
+		<author>
+			<persName><forename type="first">P</forename><surname>Krusell</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">A</forename><surname>Smith</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of Political Economy</title>
+		<imprint>
+			<biblScope unit="volume">106</biblScope>
+			<biblScope unit="issue">5</biblScope>
+			<biblScope unit="page" from="867" to="896" />
+			<date type="published" when="1998-10">October 1998</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b17">
+	<monogr>
+		<title level="m" type="main">OpenSpiel: A framework for reinforcement learning in games</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Lanctot</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Lockhart</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J.-B</forename><surname>Lespiau</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">V</forename><surname>Zambaldi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Upadhyay</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Pérolat</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Srinivasan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Timbers</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Tuyls</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Omidshafiei</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Hennes</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Morrill</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Muller</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Ewalds</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Faulkner</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Kramár</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><forename type="middle">D</forename><surname>Vylder</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Saeta</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Bradbury</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Ding</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Borgeaud</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Lai</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Schrittwieser</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Anthony</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Hughes</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">I</forename><surname>Danihelka</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ryan-Davis</forename></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename></persName>
+		</author>
+		<idno>CoRR, abs/1908.09453</idno>
+		<ptr target="http://arxiv.org/abs/1908.09453" />
+		<imprint>
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b18">
+	<monogr>
+		<title level="m" type="main">OpenSpiel: A Framework for Reinforcement Learning in Games</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Lanctot</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Lockhart</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J.-B</forename><surname>Lespiau</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">V</forename><surname>Zambaldi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Upadhyay</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Pérolat</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Srinivasan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Timbers</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Tuyls</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Omidshafiei</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Hennes</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Morrill</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Muller</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Ewalds</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Faulkner</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Kramár</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><forename type="middle">D</forename><surname>Vylder</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Saeta</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Bradbury</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Ding</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Borgeaud</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Lai</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Schrittwieser</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Anthony</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Hughes</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">I</forename><surname>Danihelka</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ryan-Davis</forename></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename></persName>
+		</author>
+		<ptr target="http://arxiv.org/abs/1908.09453.arXiv:1908.09453[cs" />
+		<imprint>
+			<date type="published" when="2020-09">September 2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b19">
+	<monogr>
+		<title level="m" type="main">gymnax: A JAX-based reinforcement learning environment library</title>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">T</forename><surname>Lange</surname></persName>
+		</author>
+		<ptr target="http://github.com/RobertTLange/gymnax" />
+		<imprint>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b20">
+	<analytic>
+		<title level="a" type="main">Mean field games</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Lasry</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Lions</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Japanese Journal of Mathematics</title>
+		<imprint>
+			<biblScope unit="volume">2</biblScope>
+			<biblScope unit="page" from="229" to="260" />
+			<date type="published" when="2007">2007</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b21">
+	<monogr>
+		<title level="m" type="main">Policy iteration method for time-dependent Mean Field Games systems with non-separable Hamiltonians</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Laurière</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Song</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Q</forename><surname>Tang</surname></persName>
+		</author>
+		<ptr target="http://arxiv.org/abs/2110.02552.arXiv:2110.02552" />
+		<imprint>
+			<date type="published" when="2022-09">September 2022</date>
+		</imprint>
+	</monogr>
+	<note>math</note>
+</biblStruct>
+
+<biblStruct xml:id="b22">
+	<monogr>
+		<title level="m" type="main">Learning in Mean Field Games: A Survey</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Laurière</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Perrin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Pérolat</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Girgin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Muller</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Élie</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Geist</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">O</forename><surname>Pietquin</surname></persName>
+		</author>
+		<ptr target="http://arxiv.org/abs/2205.12944.arXiv:2205.12944[cs" />
+		<imprint>
+			<date type="published" when="2024-07">July 2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b23">
+	<analytic>
+		<title level="a" type="main">Discovered policy optimisation</title>
+		<author>
+			<persName><forename type="first">C</forename><surname>Lu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Kuba</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Letcher</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Metz</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Schroeder De Witt</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Foerster</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Advances in Neural Information Processing Systems</title>
+		<imprint>
+			<biblScope unit="volume">35</biblScope>
+			<biblScope unit="page" from="16455" to="16468" />
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b24">
+	<analytic>
+		<title level="a" type="main">Independent reinforcement learners in cooperative Markov games: a survey regarding coordination problems</title>
+		<author>
+			<persName><forename type="first">L</forename><surname>Matignon</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><forename type="middle">J</forename><surname>Laurent</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Le</forename><surname>Fort-Piat</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename></persName>
+		</author>
+		<idno type="DOI">10.1017/S0269888912000057</idno>
+		<ptr target="https://www.cambridge.org/core/product/identifier/S0269888912000057/type/journal_article" />
+	</analytic>
+	<monogr>
+		<title level="j">The Knowledge Engineering Review</title>
+		<idno type="ISSN">0269- 8889</idno>
+		<imprint>
+			<biblScope unit="volume">27</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page" from="1" to="31" />
+			<date type="published" when="2012-02">February 2012</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b25">
+	<monogr>
+		<title level="m" type="main">The Trouble with Rational Expectations in Heterogeneous Agent Models: A Challenge for Macroeconomics</title>
+		<author>
+			<persName><forename type="first">B</forename><surname>Moll</surname></persName>
+		</author>
+		<ptr target="https://arxiv.org/abs/2508.20571" />
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b26">
+	<monogr>
+		<title level="m" type="main">Recurrent Model-Free RL Can Be a Strong Baseline for Many POMDPs</title>
+		<author>
+			<persName><forename type="first">T</forename><surname>Ni</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Eysenbach</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Salakhutdinov</surname></persName>
+		</author>
+		<ptr target="http://arxiv.org/abs/2110.05038.arXiv:2110.05038[cs" />
+		<imprint>
+			<date type="published" when="2022-06">June 2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b27">
+	<monogr>
+		<title level="m" type="main">Scaling up Mean Field Games with Online Mirror Descent</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Perolat</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Perrin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Elie</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Laurière</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Piliouras</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Geist</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Tuyls</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">O</forename><surname>Pietquin</surname></persName>
+		</author>
+		<ptr target="http://arxiv.org/abs/2103.00623.arXiv:2103.00623[cs" />
+		<imprint>
+			<date type="published" when="2021-02">February 2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b28">
+	<monogr>
+		<title level="m" type="main">Scaling up Multi-agent Reinforcement Learning with Mean Field Games and Vice-versa</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Perrin</surname></persName>
+		</author>
+		<imprint>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b29">
+	<monogr>
+		<title level="m" type="main">Fictitious Play for Mean Field Games: Continuous Time Analysis and Applications</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Perrin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Perolat</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Laurière</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Geist</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Elie</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">O</forename><surname>Pietquin</surname></persName>
+		</author>
+		<ptr target="http://arxiv.org/abs/2007.03458.arXiv:2007.03458" />
+		<imprint>
+			<date type="published" when="2020-10">October 2020</date>
+		</imprint>
+	</monogr>
+	<note>math</note>
+</biblStruct>
+
+<biblStruct xml:id="b30">
+	<monogr>
+		<title level="m" type="main">Mean Field Games Flock! The Reinforcement Learning Way</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Perrin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Laurière</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Pérolat</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Geist</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Élie</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">O</forename><surname>Pietquin</surname></persName>
+		</author>
+		<ptr target="http://arxiv.org/abs/2105.07933.arXiv:2105.07933[cs" />
+		<imprint>
+			<date type="published" when="2021-05">May 2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b31">
+	<analytic>
+		<title level="a" type="main">Generalization in Mean Field Games by Learning Master Policies</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Perrin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Laurière</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Pérolat</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Élie</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Geist</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">O</forename><surname>Pietquin</surname></persName>
+		</author>
+		<idno type="DOI">10.1609/aaai.v36i9.21173</idno>
+		<ptr target="https://ojs.aaai.org/index.php/AAAI/article/view/21173" />
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the AAAI Conference on Artificial Intelligence</title>
+				<meeting>the AAAI Conference on Artificial Intelligence</meeting>
+		<imprint>
+			<date type="published" when="2022-06">June 2022</date>
+			<biblScope unit="volume">36</biblScope>
+			<biblScope unit="page" from="9413" to="9421" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b32">
+	<monogr>
+		<title level="m" type="main">Multi-Agent RL Environments and Algorithms in JAX</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Rutherford</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Ellis</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Gallici</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Cook</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Lupu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Ingvarsson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Willi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Hammond</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Khan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><forename type="middle">S D</forename><surname>Witt</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Souly</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Bandyopadhyay</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Samvelyan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Jiang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">T</forename><surname>Lange</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Whiteson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Lacerda</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Hawes</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Rocktaschel</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Lu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">N</forename><surname>Foerster</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Jaxmarl</surname></persName>
+		</author>
+		<ptr target="http://arxiv.org/abs/2311.10090.arXiv:2311.10090[cs" />
+		<imprint>
+			<date type="published" when="2024-11">November 2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b33">
+	<analytic>
+		<title level="a" type="main">Approximate Nash Equilibria in Partially Observed Stochastic Games with Mean-Field Interactions</title>
+		<author>
+			<persName><forename type="first">N</forename><surname>Saldi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Bas ¸ar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Raginsky</surname></persName>
+		</author>
+		<idno type="DOI">10.1287/moor.2018.0957</idno>
+		<ptr target="https://pubsonline.informs.org/doi/10.1287/moor.2018.0957" />
+	</analytic>
+	<monogr>
+		<title level="j">Mathematics of Operations Research</title>
+		<idno type="ISSN">0364-765X</idno>
+		<imprint>
+			<biblScope unit="volume">44</biblScope>
+			<biblScope unit="issue">3</biblScope>
+			<biblScope unit="page" from="1006" to="1033" />
+			<date type="published" when="2019-08">August 2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b34">
+	<monogr>
+		<title level="m" type="main">Proximal policy optimization algorithms</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Schulman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Wolski</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Dhariwal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Radford</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">O</forename><surname>Klimov</surname></persName>
+		</author>
+		<imprint>
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b35">
+	<monogr>
+		<title level="m" type="main">Partially Observable Mean Field Reinforcement Learning</title>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">G</forename><surname>Subramanian</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">E</forename><surname>Taylor</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Crowley</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Poupart</surname></persName>
+		</author>
+		<imprint>
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b36">
+	<monogr>
+		<title level="m" type="main">Is Independent Learning All You Need in the StarCraft Multi-Agent Challenge?</title>
+		<author>
+			<persName><forename type="first">C</forename><forename type="middle">S D</forename><surname>Witt</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Gupta</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Makoviichuk</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">V</forename><surname>Makoviychuk</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><forename type="middle">H S</forename><surname>Torr</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Sun</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Whiteson</surname></persName>
+		</author>
+		<ptr target="http://arxiv.org/abs/2011.09533.arXiv:2011.09533[cs" />
+		<imprint>
+			<date type="published" when="2020-11">November 2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b37">
+	<monogr>
+		<title level="m" type="main">Population-aware Online Mirror Descent for Mean-Field Games by Deep Reinforcement Learning</title>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Lauriere</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">J C</forename><surname>Chua</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Geist</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">O</forename><surname>Pietquin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Mehta</surname></persName>
+		</author>
+		<ptr target="http://arxiv.org/abs/2403.03552.arXiv:2403.03552[cs" />
+		<imprint>
+			<date type="published" when="2024-03">March 2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b38">
+	<monogr>
+		<title level="m" type="main">Population-aware Online Mirror Descent for Mean-Field Games with Common Noise by Deep Reinforcement Learning</title>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Lauriere</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Geist</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">O</forename><surname>Pietquin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Mehta</surname></persName>
+		</author>
+		<ptr target="http://arxiv.org/abs/2509.03030.arXiv:2509.03030[cs" />
+		<imprint>
+			<date type="published" when="2025-09">September 2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b39">
+	<analytic>
+		<title level="a" type="main">Mean Field Game-Theoretic Framework for Interference and Energy-Aware Control in 5G Ultra-Dense Networks</title>
+		<author>
+			<persName><forename type="first">C</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Sheng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Anpalagan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xiao</forename></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename></persName>
+		</author>
+		<idno type="DOI">10.1109/MWC.2017.1600114</idno>
+		<ptr target="https://ieeexplore.ieee.org/document/8030547/" />
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Wireless Communications</title>
+		<idno type="ISSN">1558- 0687</idno>
+		<imprint>
+			<biblScope unit="volume">25</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page" from="114" to="121" />
+			<date type="published" when="2018-02">February 2018a</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b40">
+	<monogr>
+		<title level="m" type="main">Learning Deep Mean Field Games for Modeling Large Population Behavior</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Ye</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Trivedi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Xu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Zha</surname></persName>
+		</author>
+		<ptr target="http://arxiv.org/abs/1711.03156.arXiv:1711.03156[cs" />
+		<imprint>
+			<date type="published" when="2018-04">April 2018b</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b41">
+	<monogr>
+		<title level="m" type="main">Structural Reinforcement Learning for Heterogeneous Agent Macroeconomics</title>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Schaab</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Moll</surname></persName>
+		</author>
+		<ptr target="http://arxiv.org/abs/2512.18892.arXiv:2512.18892" />
+		<imprint>
+			<date type="published" when="2025-12">December 2025</date>
+		</imprint>
+	</monogr>
+	<note>econ</note>
+</biblStruct>
+
+<biblStruct xml:id="b42">
+	<monogr>
+		<title level="m" type="main">Mean-Field Games With Finitely Many Players: Independent Learning and Subjectivity</title>
+		<author>
+			<persName><forename type="first">B</forename><surname>Yongacoglu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Arslan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Yuksel</surname></persName>
+		</author>
+		<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+				</listBibl>
+			</div>
+		</back>
+	</text>
+</TEI>

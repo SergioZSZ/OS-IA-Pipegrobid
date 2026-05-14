@@ -1,0 +1,1257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xml:space="preserve" xmlns="http://www.tei-c.org/ns/1.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.tei-c.org/ns/1.0 https://raw.githubusercontent.com/kermitt2/grobid/master/grobid-home/schemas/xsd/Grobid.xsd"
+ xmlns:xlink="http://www.w3.org/1999/xlink">
+	<teiHeader xml:lang="en">
+		<fileDesc>
+			<titleStmt>
+				<title level="a" type="main">Align When They Want, Complement When They Need! Human-Centered Ensembles for Adaptive Human-AI Collaboration</title>
+			</titleStmt>
+			<publicationStmt>
+				<publisher/>
+				<availability status="unknown"><licence/></availability>
+				<date type="published" when="2026-02-23">23 Feb 2026</date>
+			</publicationStmt>
+			<sourceDesc>
+				<biblStruct>
+					<analytic>
+						<author>
+							<persName><forename type="first">Hasan</forename><surname>Amin</surname></persName>
+							<email>hasanamin@purdue.edu</email>
+							<affiliation key="aff0">
+								<orgName type="institution">Purdue University</orgName>
+								<address>
+									<country key="US">USA</country>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Ming</forename><surname>Yin</surname></persName>
+							<email>mingyin@purdue.edu</email>
+							<affiliation key="aff0">
+								<orgName type="institution">Purdue University</orgName>
+								<address>
+									<country key="US">USA</country>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Rajiv</forename><surname>Khanna</surname></persName>
+							<email>rajivak@purdue.edu</email>
+							<affiliation key="aff0">
+								<orgName type="institution">Purdue University</orgName>
+								<address>
+									<country key="US">USA</country>
+								</address>
+							</affiliation>
+						</author>
+						<title level="a" type="main">Align When They Want, Complement When They Need! Human-Centered Ensembles for Adaptive Human-AI Collaboration</title>
+					</analytic>
+					<monogr>
+						<imprint>
+							<date type="published" when="2026-02-23">23 Feb 2026</date>
+						</imprint>
+					</monogr>
+					<idno type="MD5">3A24B45CF18F445AFE219AA2AD545835</idno>
+					<idno type="arXiv">arXiv:2602.20104v1[cs.AI]</idno>
+				</biblStruct>
+			</sourceDesc>
+		</fileDesc>
+		<encodingDesc>
+			<appInfo>
+				<application version="0.7.2" ident="GROBID" when="2026-05-14T17:25+0000">
+					<desc>GROBID - A machine learning software for extracting information from scholarly documents</desc>
+					<ref target="https://github.com/kermitt2/grobid"/>
+				</application>
+			</appInfo>
+		</encodingDesc>
+		<profileDesc>
+			<abstract>
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>In human-AI decision making, designing AI that complements human expertise has been a natural strategy to enhance human-AI collaboration, yet it often comes at the cost of decreased AI performance in areas of human strengths. This can inadvertently erode human trust and cause them to ignore AI advice precisely when it is most needed. Conversely, an aligned AI fosters trust yet risks reinforcing suboptimal human behavior and lowering human-AI team performance. In this paper, we start by identifying this fundamental tension between performance-boosting (i.e., complementarity) and trust-building (i.e., alignment) as an inherent limitation of the traditional approach for training a single AI model to assist human decision making. To overcome this, we introduce a novel, human-centered adaptive AI ensemble that strategically toggles between two specialist AI models-the aligned model and the complementary model-based on contextual cues, using an elegantly simple yet provably near-optimal Rational Routing Shortcut mechanism. Comprehensive theoretical analyses elucidate why the adaptive AI ensemble is effective and when it yields maximum benefits. Moreover, experiments on both simulated and real-world data show that when humans are assisted by the adaptive AI ensemble in decision making, they can achieve significantly higher performance than when they are assisted by single AI models that are trained to either optimize for their independent performance or even the human-AI team performance.</p></div>
+			</abstract>
+		</profileDesc>
+	</teiHeader>
+	<text xml:lang="en">
+		<body>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Introduction</head><p>AI systems are increasingly being developed to support human decision making in various domains, yet the grand promise of effective human-AI collaboration remains largely unfulfilled. Contrary to intuition, human-AI teams routinely underperform compared to their best constituent, i.e., the human or AI alone <ref type="bibr" target="#b6">(Dell'Acqua, Kogut, and Perkowski 2023;</ref><ref type="bibr" target="#b0">Agarwal et al. 2023;</ref><ref type="bibr" target="#b29">Vaccaro, Almaatouq, and Malone 2024;</ref><ref type="bibr" target="#b8">Goh et al. 2024)</ref>. This recurring failure signals a fundamental gap in our current understanding and raises a deeper question at the core of collaborative AI <ref type="bibr">design:</ref> what makes an AI a truly effective teammate? Figure <ref type="figure">1</ref>: Summary comparison of human-AI team performance across AI design paradigms. Standard AI optimizes independent accuracy; aligned and complementary AIs specialize in trust-building and error-correction, respectively; behavior-aware AI optimizes team loss under our human interaction model. Our proposed adaptive AI ensemble, including the more practical one using Rational Routing Shortcut (RRS), strategically toggles between aligned and complementary AI, and achieves the highest team accuracy.</p><p>Results shown here correspond to the behavior-grounded evaluation on WoofNette data.</p><p>A dominant paradigm in human-AI collaboration emphasizes complementarity: optimizing AI to be correct on instances where human judgment is weak <ref type="bibr" target="#b17">(Madras, Pitassi, and Zemel 2018;</ref><ref type="bibr" target="#b14">Lai et al. 2022;</ref><ref type="bibr" target="#b27">Steyvers et al. 2022;</ref><ref type="bibr" target="#b35">Zhang, Lee, and Carter 2022;</ref><ref type="bibr" target="#b11">Holstein and Aleven 2021)</ref>. While this approach can elevate team performance in principle, it often neglects a crucial psychological and behavioral reality: human trust in AI is not merely a function of AI's objective accuracy, but hinges disproportionately on AI's alignment with human judgment, especially on instances where humans feel more confident <ref type="bibr" target="#b16">(Lu and Yin 2021;</ref><ref type="bibr" target="#b5">Chong et al. 2022</ref>). When such complementary AI diverges from human intuition on instances where humans are confident, even if wrongly so, it can degrade trust and reliance, resulting in users paradoxically ignoring AI advice precisely when it would have been most valuable <ref type="bibr" target="#b16">(Lu and Yin 2021;</ref><ref type="bibr" target="#b15">Lu, Wang, and Yin 2024)</ref>. Conversely, an AI that focuses on alignment with human judgment may foster trust but also reinforce suboptimal human decisions, squandering the performance gains that complementary AI can deliver <ref type="bibr" target="#b9">(Grgić-Hlača, Castelluccia, and Gummadi 2022;</ref><ref type="bibr">Askell et al. 2021;</ref><ref type="bibr" target="#b22">Ouyang et al. 2022;</ref><ref type="bibr" target="#b10">Guo et al. 2024)</ref>. Recognizing the importance of human-AI team performance, some recent work has attempted to optimize for team decision making directly, taking human-AI interaction behavior into account <ref type="bibr" target="#b0">(Bansal et al. 2021;</ref><ref type="bibr" target="#b17">Mahmood, Lu, and Yin 2024)</ref>. Such behavior-aware AI has been a promising proof-of-concept, already leading to some gains in team performance compared to human or AI alone, despite strong assumptions like rationality <ref type="bibr" target="#b0">(Bansal et al. 2021)</ref> or confidence thresholding <ref type="bibr" target="#b17">(Mahmood, Lu, and Yin 2024)</ref>.</p><p>In this work, we start by extending the behavior-aware AI framework to incorporate more realistic human behavior, capturing the dual need to foster trust through alignment and boost performance through complementarity. We introduce a behaviorally grounded Confidence-Gated Probabilistic Reliance (CGPR) model that formally links human self-confidence and trust to the likelihood of accepting AI recommendations. Building on this, we derive the optimal single-model, behavior-aware AI that directly optimizes team decision making performance. In doing so, we uncover an intriguing phenomenon: the "complementarityalignment tradeoff." That is, even the best single-model, behavior-aware AI cannot simultaneously optimize for both trust (through alignment) and team performance (through complementarity) across all regions of the decision space.</p><p>In light of these fundamental limitations of the singlemodel paradigms, we supplement the behavior-aware AI with a new direction: human-centered adaptive AI ensembles that dynamically toggle between alignment and complementarity-preserving trust where it matters most, and providing support where it helps most. In particular, we propose a practicable instantiation of the adaptive AI framework that learns separate specialist AI models for alignment and complementarity, and then dynamically selects between them at inference time using Rational Routing Shortcut (RRS), a simple and theoretically principled mechanism that approximates human-aware, optimal routing without requiring access to private or hard-to-measure human states. We further provide rigorous theoretical analyses quantifying when and why adaptive AI yields substantial team performance gains over any single-model alternative. Finally, we showcase the generalizability and robustness of our theoretical insights through simulations and a behavior-grounded image decision making benchmark constructed from real human accuracy and confidence data. Notably, our adaptive AI ensemble achieves remarkable empirical improvements in enhancing human-AI team accuracy in decision making in practice: up to 9% increase in team accuracy over standard AI optimized solely for independent accuracy, and 6% over behavior-aware AI optimized explicitly for team performance (see Figure <ref type="figure">1</ref>)-remarkably, while relying on specialized AI components individually less accurate than the standard AI model.</p><p>While empirical work on human-AI collaboration is rapidly growing, a formal understanding of the interplay between team performance, complementarity and alignment is severely lacking. Our work provides one of the first foun-dational frameworks to characterize and address this gap, and highlights a shift in human-AI collaboration: moving from static, single-model approaches to adaptive, behaviorally grounded, and theoretically grounded systems that aim to "align when desired, and complement when needed." Our main contributions are:</p><p>1. Principled human behavior modeling and complementarity-alignment tradeoff characterization: We introduce CGPR as a realistic, behaviorallygrounded model of human-AI interaction in AIassisted decision making. Through this, we provide the first rigorous characterization of a fundamental complementarity-alignment tradeoff, proving why single-model approaches are inherently limited. Our models and analyses incorporate important behavioral factors, such as confidence and trust, into the core of the machine learning, rather than treating them as secondary considerations or empirical observations.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.">Practical adaptive AI ensemble framework:</head><p>We propose a human-centered adaptive AI ensemble to overcome tradeoffs like above. We offer a practical instantiation that trains specialist models for alignment and complementarity, and then efficiently toggles between them at test time through RRS, without requiring access to private or hard-to-measure human data. The benefits of our framework are validated through comprehensive experimentation. Our approach is flexible and extensible to a broad range of models and applications.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.">Extensive theoretical analyses and insights:</head><p>We provide extensive theoretical guarantees that bring a new level of rigor to human-centered machine learning. This includes precisely bounding the complementarityalignment tradeoff (Theorem 2) as well as the performance gains of adaptive ensemble over optimal single model (Theorem 4), offering fresh perspective on when and why adaptive AI is most useful in practice. These results establish a new class of human-centered theoretical tools.</p><p>Other related work. Distinct from mainstream research on human-AI collaboration-which largely optimizes for complementarity or alignment, often overlooking nuanced behavioral dynamics-our work builds on and advances "behavior-aware" frameworks <ref type="bibr" target="#b0">(Bansal et al. 2021;</ref><ref type="bibr" target="#b17">Mahmood, Lu, and Yin 2024)</ref> by introducing more realistic cognitive modeling and rigorous theory. Parallel efforts on "learning to defer" <ref type="bibr" target="#b17">(Madras, Pitassi, and Zemel 2018;</ref><ref type="bibr">Wilder, Horvitz, and Kamar 2020;</ref><ref type="bibr" target="#b2">Bondi et al. 2022;</ref><ref type="bibr" target="#b7">Dvijotham et al. 2023)</ref> investigate the division of labor between humans and AI, typically assuming the AI can act as the final decision maker; in contrast, we focus on AI-assisted decision making where the human always retains control and AI provides recommendations. Our approach uniquely formalizes the interplay between trust, confidence, and team performance, moving beyond simplified reliance models and establishing theoretically grounded methods for adaptive, human-centered teaming.</p><p>The Complementarity-Alignment Tradeoff in Human-AI Collaboration</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Problem Setup</head><p>In human-AI joint decision making, each instance of a decision making case is represented by features x ∈ X , and the objective is to predict an outcome y ∈ Y. In our AI-assisted decision making setup, an AI model m provides a recommendation y m = m(x; θ m ) to a human decision maker (DM) h who has an independent judgment y h = h(x; θ h ).</p><p>The final decision d ∈ Y is made by the human DM, based on their own initial judgment y h and the AI's recommendation y m . Typically, AI models are trained independently to minimize empirical risk over a dataset</p><formula xml:id="formula_0">D = {(x i , y i )} N i=1 , by optimizing θ m = arg min θ ′ m 1 N N i=1 ℓ (m(x i ; θ ′ m ), y i )</formula><p>, where ℓ(•) is an appropriate loss function. However, by optimizing for AI's independent accuracy instead of team performance, this approach fails to account for how the human integrates the AI's recommendations into their final decision. To model this human-AI interaction, we define a team decision making model f (•), which depends on the data instance, the AI recommendation, and the human DM's own judgment. The team loss optimization is then formulated as:</p><formula xml:id="formula_1">θ m = arg min θ ′ m 1 N N i=1 ℓ (f (x i , m(x i ; θ ′ m ), h(x i ; θ h )), y i )</formula></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Modeling Human Behavior</head><p>Optimizing human-AI team performance critically depends on accurately modeling how human DMs factor AI recommendations into their decisions. Prior work introduced a deterministic, confidence-thresholded reliance rule (Mahmood, <ref type="bibr" target="#b15">Lu, and Yin 2024)</ref>, where a human with confidence C h (x) accepts the AI's prediction y m only when their own confidence falls below a threshold τ . Formally, this Confidence-Gated Reliance (CGR) model takes the form:</p><formula xml:id="formula_2">f CGR (x, m, h) = y h if C h (x) &gt; τ, y m otherwise.<label>(1)</label></formula><p>While analytically convenient, accumulating empirical evidence shows that human reliance on AI advice is often more nuanced and probabilistic, influenced significantly by human trust and observed AI behavior <ref type="bibr" target="#b5">(Chong et al. 2022;</ref><ref type="bibr" target="#b25">Schemmer et al. 2023;</ref><ref type="bibr" target="#b16">Lu and Yin 2021;</ref><ref type="bibr" target="#b4">Chiang and Yin 2021;</ref><ref type="bibr" target="#b20">Narayanan et al. 2023</ref>).</p><p>To address this gap, we propose the Confidence-Gated Probabilistic Reliance (CGPR) model. Let D a = {x : C h (x) &gt; τ } and D c = {x : C h (x) ≤ τ } denote the "alignment" (high-confidence) and "complementarity" (low-confidence) regions, respectively. In D a , the human follows their own judgment, as in CGR. In D c , however, the DM relies on the AI prediction y m probabilistically. Recent evidence suggests that trust is disproportionately influenced by how often the AI contradicts the human when the human feels confident <ref type="bibr" target="#b16">(Lu and Yin 2021;</ref><ref type="bibr" target="#b9">Grgić-Hlača, Castelluccia, and Gummadi 2022;</ref><ref type="bibr" target="#b32">Wang, Lu, and Yin 2022)</ref>. We thus model the reliance probability r to be governed by the perceived alignment between the human and the AI in the high-confidence region:</p><formula xml:id="formula_3">r = 1 − L h (D a , m), with L h (D a , m) = E x∈Da [ℓ(m(x), h(x))</formula><p>] quantifying disagreement between the AI and the human. We take ℓ(•, •) to be 0-1 loss here, so that r ∈ [0, 1] represents a probability. Putting these components together, the CGPR team decision rule is:</p><formula xml:id="formula_4">f (x, m, h) =      y h if C h (x) &gt; τ, y m with prob. r if C h (x) ≤ τ, y h otherwise.</formula><p>(2)</p><p>Here, we interpret trust as the human's willingness to follow the AI's recommendation, i.e., the reliance probability r in CGPR, and thus use "trust" and "reliance" interchangeably. The CGPR model uniquely integrates human confidence, probabilistic reliance, and alignment-driven trust into a coherent and optimizable framework, significantly extending prior approaches and providing a principled foundation for (adaptive) human-centered AI.</p><p>Optimizing Behavior-Aware AI Building on the behavior-aware AI framework, we derive the optimal single-model AI model that directly optimizes team performance, accounting for the probabilistic and confidence-dependent nature of human reliance. Using Eq. 2, the team loss can be decomposed as:</p><formula xml:id="formula_5">L team (D, m, h) = L(D a , h) + L(D c , m)+ L(D c , h) − L(D c , m) L h (D a , m) (3)</formula><p>Since we cannot control a given human DM h, we consider the human-only components L a,h := L(D a , h) and L c,h := L(D c , h) to be constant for optimization purpose. Therefore, the optimal, behavior-aware AI parameters are obtained by solving the following optimization problem:</p><formula xml:id="formula_6">θ * ba = arg min θ ba L(D c , m)+ L c,h −L(D c , m) L h (D a , m)<label>(4)</label></formula><p>Multiobjective optimization and the complementarity-alignment tradeoff. The behavior-aware optimization objective surfaces a tension between two desirable but conflicting goals: complementarity, achieved by minimizing L(D c , m), and alignment, achieved by minimizing L h (D a , m). Worse, their coupling in Eq. 4 creates a compounding effect: as the model becomes better at complementing (L(D c , m) decreases), the influence of alignment loss grows (via the term [L c,h − L(D c , m)]), potentially increasing total team loss despite localized gains. One could attempt to address this through standard multi-objective optimization, e.g., by minimizing a weighted combination</p><formula xml:id="formula_7">w•L(D c , m)+(1−w)•L h (D a , m)</formula><p>, thereby choosing a point on the Pareto frontier. However, this strategy merely shifts the compromise instead of resolving it. The core issue is more fundamental: improving complementarity often entails diverging from human judgment patterns (in low-confidence regions), while improving alignment necessitates mimicking human behavior (in high-confidence regions). These objectives could potentially be diametrically opposite. This reveals a critical insight that optimizing a single model to balance both alignment and complementarity is not only inefficient but also often inherently suboptimal. </p><formula xml:id="formula_8">L h (D a , m) = α • L(D a , m) + (1 − α) 1 − L(D a , m) ,</formula><p>where α is human accuracy in the alignment region D a . Therefore, the sensitivity of alignment loss to changes in model's prediction loss can be quantified as:</p><formula xml:id="formula_9">∂L h (D a , m) ∂L(D a , m) = 2α − 1.<label>(5)</label></formula><p>This means attempting to improve model at mimicking human judgments effectively scales the required changes in the model's ability to predict ground truth by (2α − 1) −1 . For small α, the alignment loss becomes largely insensitive to prediction loss, making it difficult to improve alignment by improving underlying ground-truth accuracy, and viceversa. Note that this decomposition is obtained under conditional independence assumption in binary classification setting, with a comprehensive analysis deferred to Appendix.</p><p>Quantifying the complementarity-alignment tradeoff. Let L a (θ) := L h (D a , m(• ; θ)) and L c (θ) := L(D c , m(• ; θ)) be the alignment and complementarity objectives, each a logistic loss with ℓ 2 -penalty. Denote by θ * ma and θ * mc the corresponding minimizers, with θ denoting parameters for an arbitrary third modelincluding possibly θ * ba from Eq. 4-in the region of interest. We consider a closed neighborhood R that contains all three points, and let λ a max and λ c min be the maximum and minimum eigenvalues of the Hessians of L a and L c over R. Define the effective curvature ratio λ r := λ c min /λ a max , which captures the ratio between how quickly alignment can improve and how slowly complementarity can degrade in the worst case. For notational convenience, we also define the human-accuracy factor as κ := 2α − 1, and quantify the distance from the specialist models to a given model as d c := ∥θ − θ * mc ∥ and d a := ∥θ − θ * ma ∥. Theorem 2 (Complementarity-Alignment Tradeoff). For any θ ∈ R, define the local unit tradeoff</p><formula xml:id="formula_10">T (θ) := lim ε↓0 L c θ − ε∇L a (θ) − L c (θ) − L a θ − ε∇L a (θ) − L a (θ) = − ∇L c (θ) ⊤ ∇L a (θ) ∥∇L a (θ)∥ 2 ,</formula><p>i.e. the instantaneous increase in complementarity loss per unit decrease in alignment loss when taking the steepest descent step for alignment. For every θ ∈ R,</p><formula xml:id="formula_11">T (θ) ≥ λ r κ d c d a − cosϕ(θ) ,<label>(6)</label></formula><p>where ϕ(θ) is the angle between ∇L a (θ) and ∇L c (θ). Moreover, if the gradients remain sufficiently opposed in the descent direction in a neighborhood of θ * ma , i.e., − cos ϕ(θ) ≥ c 0 &gt; 0 for some constant c 0 , then lim θ→θ * ma T (θ) = +∞ at rate Ω 1 da . Theorem 2 starkly illustrates why a single model cannot satisfy both the objectives simultaneously. In fact, whenever the specialist solutions are distinct and human accuracy is imperfect, it becomes mathematically impossible to jointly achieve optimal alignment and complementarity. In the extreme case where the human's high confidence decisions are essentially guesses (α → 0.5), the tradeoff becomes unbounded. Under realistic conditions, one model is not enough for truly effective human-AI collaboration.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Human-Centered Adaptive AI Ensembles</head><p>The fundamental tradeoff established in last section suggests that we must move beyond the single model paradigm. Fortunately, unlike classic tradeoffs that are uniform across the input space, adequate human behavior modeling guides us that the demands here vary systematically across regions: trust is essential where humans are highly self-confident, while performance is essential where they are not. Thus to effectively navigate the tension, we propose an adaptive ensemble of human-centered AI models. The key idea is to leverage two specialist models, each dedicated to its own specific objective of alignment or complementarity, and to dynamically route decisions between them based on context, thereby achieving the best of both worlds.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Adaptive AI for Complementarity and Alignment</head><p>Rather than forcing a single AI model onto the complementarity-alignment Pareto frontier, we can do better by training separate specialist AI models. The two specialists in our case naturally stem from Eq. 4 and the identified complementarity-alignment tradeoff. We thus train a complementary AI m c parameterized by θ mc , which minimizes prediction loss explicitly in the complementarity region (θ * mc = arg min L(D c , m c )), and an aligned AI m a parameterized by θ ma , which minimizes the disagreement with human judgments in the alignment region</p><formula xml:id="formula_12">(θ * ma = arg min L h (D a , m a )).</formula><p>Having trained specialized AI models, our main challenge is to decide, for each instance, which model's advice to present to the human DM. An ideal solution, termed oracle routing, with access to human confidence and threshold used within CGPR model (Eq. 2) "knows" whether a test instance belongs to the alignment or complementarity region, and routes accordingly:</p><formula xml:id="formula_13">m oracle (x) = m a (x) if x ∈ D a (i.e., C h (x) &gt; τ ), m c (x) otherwise. (<label>7</label></formula><formula xml:id="formula_14">)</formula><p>Rational Routing Shortcut. The oracle routing requires directly observing the human DM's confidence and comparing it against their threshold, yet accurately estimating such human internal states is difficult, noisy, and contextdependent. To bypass this complexity, we propose the Rational Routing Shortcut (RRS) mechanism, which makes instance-wise routing decisions solely on the confidence estimates of the specialized models themselves. Specifically, let C c (x) and C a (x) be the respective confidence of the complementary and aligned specialists in their predictions. RRS routes to the specialist with greater confidence:</p><formula xml:id="formula_15">m RRS (x) = m a (x) if C a (x) ≥ C c (x), m c (x) otherwise. (<label>8</label></formula><formula xml:id="formula_16">)</formula><p>Why RRS intuitively works? RRS implicitly capitalizes on the intuition that higher model confidence is indicative of an instance falling within that model's designated region of expertise, using confidence as an implicit signal for region membership. Hence, RRS intelligently approximates oraclelike routing without ever directly observing human confidence. Remarkably, this simple shortcut turns out to not only be intuitively appealing but also provably near-optimal for team decision making: Theorem 3 (Near-Oracle Guarantee for RRS). Let D a and D c denote the alignment and complementarity regions, and let m a , m c be the corresponding aligned and complementary specialists. Suppose we are given real-valued confidence-estimation functions</p><formula xml:id="formula_17">C a , C c : X → [0, 1]. Fix ε ∈ [0, 1]</formula><p>and suppose that for every instance x:</p><formula xml:id="formula_18">(i) (Calibration) |C c (x) − P[m c (x) = y | x]| ≤ ε and |C a (x) − P[m a (x) = h(x) | x]| ≤ ε. (ii) (Estimator dominance in alignment region) If x ∈ D a then C a (x) ≥ C c (x). (iii) (Bounded sub-optimality outside alignment region) If x ∈ D c and C a (x) ≥ C c (x), then P[m a (x) = y] ≥ P[m c (x) = y] − ε.</formula><p>Then the expected CGPR team accuracy achieved by the Rational Routing Shortcut satisfies Accuracy RRS ≥ Accuracy Oracle − ε.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Theoretical Analysis: The Benefit of Two Models</head><p>To understand when and why our adaptive ensemble is provably advantageous, we analyze the performance gap between the (optimal) single-model solution and an oraclestyle adaptive ensemble that uses the alignment specialist on D a and the complementarity specialist on D c . This yields a quantitative characterization of when adaptive combination of two models is fundamentally better than one model.</p><p>Let L a (θ) and L c (θ) denote the losses restricted to the alignment and complementarity regions, respectively, with θ * ma and θ * mc being their corresponding minimizers. Define distance between specialist models as D := ∥θ * ma − θ * mc ∥, and human accuracy factor κ := 2α − 1. Theorem 4 (Adaptive AI Performance Gain). Assume the underlying prediction losses in the alignment and complementarity regions are µ-strongly convex in θ. Let g w (θ) := w L a (θ) + (1 − w) L c (θ) denote a weighted single-model surrogate objective. In particular, for w = p := P[x ∈ D a ], let L * single := min θ g p (θ) be the loss of the best single model over the full population. The adaptive ensemble achieves</p><formula xml:id="formula_19">L adapt = p L a (θ * ma ) + (1 − p) L c (θ * mc ).</formula><p>Then, the advantage of the adaptive ensemble can be lower bounded as:</p><formula xml:id="formula_20">Γ team := L * single − L adapt ≥ κ • µ • p(1 − p) • D 2 2 .</formula><p>This shows how the benefit of using two models is not merely conceptual but can be precisely quantified in terms of human reliability, loss surface geometry, task mixture balance and specialist divergence. Specifically, the gap increases when: (i) humans are more reliable in the aligned region (κ large), (ii) the loss landscape is "well-conditioned" or sharply curved (µ large), (iii) the two regions occur with comparable frequency (p(1 − p) large), and (iv) the alignment and complementarity optima are far apart (D 2 large).</p><p>Applicability to the behavior-aware team objective. Although the behavior-aware objective in Eq. 3 is non-convex due to the multiplicative term</p><formula xml:id="formula_21">(1 − L h (D a , m)) L(D c , m),</formula><p>the insight and bound of Theorem 4 remain indicative for the behavior-aware objective under mild regularity. When human reliance L h (D a , m) varies smoothly with model confidence and increases with alignment performance, the objective locally behaves like a convex combination of two strongly convex region-specific objectives (up to bounded perturbations). In this regime, the optimization landscape near the specialist solutions retains strong-convexity curvature, and the adaptive-single gap continues to scale quadratically with specialist separation. This approximation is consistent with our empirical results (Fig. <ref type="figure" target="#fig_2">3</ref>).</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Navigating Real-World Uncertainties</head><p>In practice, it is difficult to tell whether a given instance belongs to the complementarity or alignment region. We now (i) show how to train specialists under imperfect region knowledge, and (ii) quantify how this uncertainty propagates to test-time routing and resulting adaptive AI gains.</p><p>Impact of uncertainty at training time. In real-world settings, humans' self-confidence threshold τ required to evaluate whether an instance belongs to the complementarity or alignment region may not only be unknown to the AI model developer, but also vary across different DMs and across time. To generalize to more realistic scenarios, we move beyond static human self-confidence threshold τ assumption, and instead model it as being drawn per-decision from a known (or estimated) distribution f T . With τ stochastic, we introduce the notion of probabilistic region membership and expected region loss, which transforms our optimization problems into instance-weighted empirical risk minimization objectives. In fact, we can neatly integrate this into our analysis by simply generalizing loss definitions. For example, the expected complementarity loss becomes:</p><formula xml:id="formula_22">L(D c , m) = E τ 1 |D| xi∈D I{C h i ≤ τ } ℓ m(x i ), y i = 1 |D| xi∈D E[(x i , y i ) ∈ D c ] w c i ℓ m(x i ), y i .</formula><p>Proposition 5. When human confidence thresholds are drawn from a known distribution with CDF F T (•), the optimal instance weighting in the complementarity region is given by w</p><formula xml:id="formula_23">c i = 1 − F T (C h i ).</formula><p>A symmetric case can be made for expected alignment loss, with w a i = F T (C h i ). This weighting scheme naturally extends to both adaptive and behavior-aware AI training.</p><p>In line with insights from prior work, this weighting is principled and flexible: in fact, assuming uniform τ yields w c i = 1 − C h i , recovering previously effective heuristics as a special case. Additionally, if F T (•) or individual confidence values are unknown, uniform distribution assumption and confidence-prediction models (learned from a small pilot) can provide robust proxies, enabling practical instanceweighted training. Finally, while confidence calibration does influence the attainable gains, incorporating confidence into the AI optimization process leads to behavior-aware models that substantially outperform non-behavior-aware baselines (Mahmood, Lu, and Yin 2024).</p><p>Impact of uncertainty at test time. At deployment, uncertainty about region membership can lead to misrouting, i.e., instances assigned to the wrong specialist. Let ρ be the misrouting probability (expected fraction of misrouted instances), and H the average region entropy, measuring uncertainty. The expected adaptive team loss is</p><formula xml:id="formula_24">L adaptive = (1 − ρ) L(D a , m a ) + L(D c , m c ) + ρ L(D a , m c ) + L(D c , m a ) .<label>(9)</label></formula><p>As we show in Appendix, the misrouting probability can actually be bounded by the entropy: ρ ≤ H 2 log 2 . This, coupled with Theorem 4, helps us precisely quantify the impact of region uncertainty. Corollary 6 (Adaptive AI Performance Gain Under Uncertainty). Let Γ team denote the performance gain of adaptive AI over the best single model, and define p :</p><formula xml:id="formula_25">= P[x ∈ D a ].</formula><p>Then, under uncertainty level H,</p><formula xml:id="formula_26">Γ team ≥ 1 − H 2 log 2 κ • µ • p(1 − p) • D 2 2 ,<label>(10)</label></formula><p>This shows that the benefit of adaptive ensembles degrades gracefully as uncertainty increases, and even moderate certainty suffices for substantial gains. In summary, adaptive AI is robust to real-world uncertainty in both training and deployment, and principled weighting and entropybased analyses enable reliable human-AI collaboration even when perfect information is unattainable.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Evaluation on Simulated Data</head><p>To rigorously evaluate our theoretical framework and substantiate the practical benefits of our proposed adaptive AI ensemble, we conducted controlled simulations on College Admissions data that we synthesize. This setting enables precise measurement of the complementarity-alignment tradeoff, which helps validate Theorem 2, and direct quantification of adaptive AI ensemble gains under varying conditions, which helps validate Theorem 4 and Corollary 6.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Experimental Setup</head><p>We mimic a committee making a binary admission decision (Y = {+1, −1}) based on an applicant's Grade Point Average (GPA) and standardized test score. Consistent with some real settings, we assume applicants come from two subpopulations that differ in how well these features (x = {x GPA , x Score }) indicate academic potential:</p><p>1. Privileged Group: We model the applicants from this group as residing within the feature space of alignment region (D a ), where human evaluators are confident and typically accurate. Due to access to better schools and test prep, an applicant's test score is assumed to be the most predictive feature. 2. Underprivileged Group: We model these applicants as residing within the complementarity region (D c ), where evaluators are less confident. Here, an applicant's GPA, reflecting long-term performance in their specific context, is assumed to be more predictive.</p><p>Ground truth generation. For each instance, x GPA and x Score are sampled uniformly from [0, 1]. The instance is assigned to the alignment region D a with probability p (default p = 0.5). The ground truth label y is then generated based on the region-specific predictive feature:</p><formula xml:id="formula_27">x ∈ D a : y = I[(0.5 + δ)x Score + (0.5 − δ)x GPA ≥ 0.5] x ∈ D c : y = I[(0.5 + δ)x GPA + (0.5 − δ)x Score ≥ 0.5]</formula><p>Here, δ ∈ [0, 0.5] (default δ = 0.25) controls the feature importance and thus the divergence between the two regions' optimal decision boundaries, and consequently the specialist model divergence D. This scenario provides an intuitive analog for the tension between alignment and complementarity, while offering precise control over key parameters.</p><p>Human DM behavior. We simulate human judgments h(x) to be correct with probability α in D a (default α = 1); human accuracy in D c does not affect the CGPR dynamics and is set to a random baseline value when needed. Human confidence C h (x) is then drawn uniformly from ±0.1 around that region's accuracy. This couples confidence and accuracy in a noisy, realistic manner. Unless otherwise noted, group membership is treated as known for routing (i.e., oracle routing) to isolate the other theoretical factors.</p><p>AI training. We trained the following logistic regressionbased AI models: (i) Single AI, trained to minimize the weighted objective g p (θ) from Theorem 4, which collapses to standard AI trained for empirical risk minimization under our default settings; (ii) Complementary AI, trained on D c using ground-truth labels y and weighted loss (1 − C h (x));</p><p>(iii) Aligned AI, trained on D a using human predictions h(x) as pseudo-labels and weighted loss C h (x); and (iv) Adaptive AI ensemble that uses the pre-trained specialists m a and m c and, dynamically selects the correct specialist based on the instance's known group membership (G ∈ {D a , D c }).</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Evaluating Complementarity-Alignment Tradeoff</head><p>To probe the fundamental limitation of static models, we empirically measure the complementarity-alignment tradeoff single . To vary the degree of specialization, we increase the aligned group fraction p from 0.5 to 0.99, thereby moving the optimal single model closer to the aligned specialist. Figure <ref type="figure" target="#fig_1">2</ref> shows that the empirical tradeoff grows sharply as θ * single approaches the aligned specialist, and that the blow-up is faster when humans are less accurate in the aligned region (lower α), confirming the (1/κ) scaling predicted by theory. These findings complement Theorem 2, and empirically establish that no single static model can simultaneously optimize alignment and complementarity when the regions are structurally distinct and human accuracy is imperfect.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Evaluating Adaptive AI Gains</head><p>We also empirically validate the adaptive AI performance gain predicted by our theoretical analysis (Theorem 4 and Corollary 6). We systematically vary each of the four key factors in our bound-specialist divergence (D), human reliability (κ), task mixture balance (p(1−p)), and group uncertainty (H)-and measure the resulting gain of the adaptive ensemble over the best single model. The results in Figure <ref type="figure" target="#fig_2">3</ref> confirm all four theoretical dependencies.</p><p>Impact of specialist divergence. Here, we vary δ ∈ [0, 0.5], which directly controls the geometric divergence between the aligned and complementary decision boundaries and hence the parameter distance D. Figure <ref type="figure" target="#fig_2">3</ref>(i) shows that even moderate divergence yields meaningful improvements to adaptive ensemble's accuracy gain, while large δ produces substantial adaptive advantages, confirming that specialist heterogeneity is a primary driver of adaptive benefit.</p><p>Impact of human accuracy. Next, we vary the human accuracy in the alignment region, α ∈ [0.5, 1], which modulates the reliability factor κ appearing in our theoretical bounds. As shown in Figure <ref type="figure" target="#fig_2">3</ref>(ii), the adaptive advantage increases monotonically with α. Higher human reliability strengthens the signal that the aligned specialist should follow, improving routing quality and magnifying the benefit of deferring to human expertise where appropriate. These results validate that gains scale with human reliability.</p><p>Impact of task-mixture balance. Then, we vary the mixture proportion p = P[x ∈ D a ], which controls the relative size of the two subpopulations and determines the p(1 − p) scaling in our adaptive-single gap bound. Figure <ref type="figure" target="#fig_2">3</ref>(iii) confirms the predicted unimodal behavior: adaptive gains peak when the two regions are balanced (p ≈ 0.5) and diminish when one region dominates the population. When one task is rare, a single model suffers little penalty from specializing toward the larger region, reducing the relative value of adaptivity. This supports the theoretical insight that adaptive AI is most valuable when the environment contains multiple substantial and distinct regimes.</p><p>Impact of region certainty. Finally, we vary the correctness of group labels, which determines how accurately the ensemble can assign each instance to the relevant specialist. Figure <ref type="figure" target="#fig_2">3</ref>(iv) illustrates that while perfect group information maximizes the adaptive AI advantage, substantial gains persist even when group assignments are noisy. This aligns with our theoretical observation that the benefit degrades smoothly with misrouting, and the ensemble remains robust as long as group identification is moderately reliable.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Evaluation on Real-World Data</head><p>The controlled simulations above allowed us to isolate the structural factors predicted by our theory. To complement those findings, we examine whether the same qualitative patterns appear in a more complex perceptual domain where human competence, confidence, and uncertainty are empirically grounded. Instead of full-fledged real-world deployment, our goal is to assess whether the core mechanisms behind adaptive teaming continue to hold under realistic human variability. To this end, we evaluate on the WoofNette benchmark (Mahmood, Lu, and Yin 2024), which was explicitly built to study human-AI collaboration under heterogeneous and instance-specific uncertainty.</p><p>Task and dataset. WoofNette is a 10-class classification benchmark built from ImageNet, containing five everyday objects (e.g., Gas Pump, Parachute) and five dog breeds (e.g., Australian Terrier, Dingo), with 9,446 training and 4,054 test images. This structure naturally produces two regions: objects, where humans tend to be accurate and confident (approximate alignment region), and dog breeds, where human accuracy drops and confusion rises (approximate complementarity region). Importantly, instance-level variation within each class introduces additional uncertainty, making this a strong testbed for our adaptive framework.</p><p>Human DM behavior. Human predictions and selfreported confidence are estimated from a pilot study of 500 images and 4,644 annotations. We use inter-annotator agreement as a proxy for human confidence and train a lightweight ResNet-152 to generalize these confidence estimates to the full dataset, yielding C h (x). Human predictions (ii) gain scales with human accuracy (α) in alignment region (i.e., the aligned group's feature regime), reflecting the reliability factor κ; (iii) gain peaks when the task mixture is balanced (i.e., aligned group fraction p ≈ 0.5), matching the concave p(1 − p) dependence; and (iv) gain increases linearly with group certainty (1 − H/2 log 2), demonstrating robustness to routing uncertainty. AI training. All AI models share a ResNet-50 backbone, initialized from ImageNet. To preserve room for human contribution, we cap training early when AI reaches human-level accuracy (≈ 65%). We train the following AI paradigms: (i) Standard AI, trained on all data, without regard for human strengths or weaknesses; (ii) Aligned / Complementary AI, trained with instance-weighted losses using C h (x) to reflect the specialist regions; (iii) Behavior-Aware AI, trained to optimize team performance under the CGPR model (Eq. 4); and (iv) Adaptive AI (Oracle, RRS), which combines previously trained specialists using either the oracle confidence labels (Adaptive (Oracle); Eq. 7) or the Rational Routing Shortcut (Adaptive (RRS); Eq. 8).</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Paradigm</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Evaluation and Results</head><p>For each test image, we simulate a team decision by drawing a threshold τ , using the CGPR model to determine if the human defers to the AI, and recording the team accuracy over the entire test set (see Table <ref type="table">1</ref>).</p><p>Adaptive AI ensemble outperforms baselines. The adaptive AI ensemble consistently achieves the highest team accuracy, outperforming both standard and behavior-aware baselines by clear margins. Notably, both Adaptive (Oracle) and Adaptive (RRS) achieve substantial improvements, with RRS variant performing virtually as well as the Oracle, despite having no access to human confidence at test time.</p><p>Gains realized despite weaker base AI models. The specialists used in the adaptive ensemble have lower individual accuracy than the standard AI, yet the adaptive team significantly outperforms the standard model. This reinforces the central insight of our theory and synthetic experiments, and underscores the value of intelligent combination and context-aware delegation over raw classifier performance.</p><p>Robustness to real-world constraints. This behaviorgrounded experiment highlights that the adaptive AI framework, including its practical RRS instantiation, is robust to the uncertainties of a real-world task. Teaming gains persist even when region boundaries are instance-specific, human confidence is noisy, and AI predictions are imperfect.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Conclusion</head><p>This work advances the science of human-AI collaboration by introducing a principled and practical framework for adaptive teaming-one that is deeply informed by human behavioral realities, rigorous theory, and robust empirical validation. We formalize the complementarity-alignment tradeoff and show that the tension between performanceboosting and trust-building is an inherent limitation of single-model approaches, and provide the first tight theoretical characterization of this tradeoff. Our adaptive ensemble paradigm, powered by Confidence-Gated Probabilistic Reliance (CGPR) team decision making model and Rational Routing Shortcut (RRS)-based specialist selection, consistently achieves highest team performance in both synthetic and real-world experiments. Crucially, our results demonstrate that trustworthy, high-performing human-AI teams are possible only when AI systems dynamically align with human strengths and complement them where it matters most.</p><p>We believe these advances contribute to the design of reliable, human-centered AI, enabling future systems that not only perform, but truly partner with, their human users.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Extended Related Work</head><p>Human-AI Collaboration and Trust. Successful human-AI collaboration extends beyond merely optimizing AI accuracy, critically relying on human cognitive and behavioral dynamics such as trust, calibrated reliance, and interpretability <ref type="bibr">(Yin, Wortman Vaughan, and Wallach 2019;</ref><ref type="bibr" target="#b1">Bansal et al. 2019;</ref><ref type="bibr" target="#b13">Kolomaznik et al. 2024)</ref>. Empirical studies consistently demonstrate that enhancing AI accuracy alone does not guarantee improved team performance, as unpredictable or counterintuitive AI behavior often erodes human trust and results in suboptimal team decision-making <ref type="bibr" target="#b18">(Mayer et al. 2025;</ref><ref type="bibr" target="#b4">Chiang and Yin 2021;</ref><ref type="bibr" target="#b15">Lu, Wang, and Yin 2024)</ref>. Moreover, discrepancies between users' mental models of AI capabilities and actual AI performance can lead to both over-and under-reliance, exacerbating performance issues, especially in complex decision-making contexts <ref type="bibr" target="#b30">(Vafa, Rambachan, and Mullainathan 2024;</ref><ref type="bibr" target="#b28">Steyvers et al. 2025;</ref><ref type="bibr" target="#b8">Goh et al. 2024)</ref>.</p><p>Complementarity vs. Alignment in AI Systems. Recent approaches in human-AI collaboration predominantly pursue the notion of complementarity, aiming to enhance overall decision quality by designing AI systems that selectively intervene on tasks or instances where human judgment is weak <ref type="bibr" target="#b17">(Madras, Pitassi, and Zemel 2018;</ref><ref type="bibr" target="#b14">Lai et al. 2022;</ref><ref type="bibr" target="#b0">Bansal et al. 2021;</ref><ref type="bibr" target="#b27">Steyvers et al. 2022)</ref>. Although intuitively appealing, this paradigm frequently overlooks human trust dynamics, as disagreements between AI recommendations and confident human judgments-regardless of AI correctness-can significantly degrade trust and diminish reliance <ref type="bibr" target="#b16">(Lu and Yin 2021;</ref><ref type="bibr" target="#b5">Chong et al. 2022;</ref><ref type="bibr" target="#b11">Holstein and Aleven 2021)</ref>. Conversely, alignment-focused strategies, which prioritize human-AI agreement to foster trust, risk reinforcing incorrect human intuitions, thereby failing to leverage AI's potential for correcting human errors <ref type="bibr" target="#b9">(Grgić-Hlača, Castelluccia, and Gummadi 2022;</ref><ref type="bibr">Askell et al. 2021;</ref><ref type="bibr" target="#b22">Ouyang et al. 2022)</ref>. Our work demonstrates, and empirically, single-model systems inherently struggle to simultaneously achieve high trust (alignment) and performance (complementarity), precisely quantifying this fundamental for the first time.</p><p>Behavior-Aware AI and Optimization for Team Performance. To address these challenges, recent studies advocate for behavior-aware AI frameworks, which explicitly incorporate human behavioral models, such as trust calibration and confidence-based delegation, into the AI training process <ref type="bibr" target="#b0">(Bansal et al. 2021;</ref><ref type="bibr" target="#b17">Mahmood, Lu, and Yin 2024)</ref>. However, existing behavior-aware approaches typically adopt simplistic or static assumptions regarding human decision-making processes, such as rational or fixedthreshold reliance models, limiting their robustness and flexibility in realistic and diverse human contexts <ref type="bibr" target="#b29">(Vaccaro, Almaatouq, and Malone 2024;</ref><ref type="bibr" target="#b0">Bansal et al. 2021)</ref>. Our work advances this literature by introducing the Confidence-Gated Probabilistic Reliance model that dynamically integrates nuanced human trust and confidence dynamics, enabling more accurate modeling and optimization of team outcomes.</p><p>Ensemble and Multi-Objective Learning. Our adaptive, human-centered ensemble framework connects to a broad tradition of adaptive expert and ensemble methods <ref type="bibr" target="#b12">(Jacobs et al. 1991;</ref><ref type="bibr" target="#b13">Jordan and Jacobs 1991;</ref><ref type="bibr" target="#b26">Shazeer et al. 2017;</ref><ref type="bibr">Fedus, Zoph, and Shazeer 2022;</ref><ref type="bibr" target="#b36">Zoph et al. 2022)</ref>. Classic mixture-of-experts and multi-task learning architectures have demonstrated the power of learning to dynamically combine specialized predictors for diverse tasks <ref type="bibr" target="#b23">(Pfeiffer et al. 2021;</ref><ref type="bibr" target="#b18">Momma, Dong, and Liu 2022;</ref><ref type="bibr" target="#b34">Yu et al. 2020)</ref>, and recent works have generalized this to settings involving multiple objectives and stakeholder preferences <ref type="bibr" target="#b3">(Chakraborty et al. 2024;</ref><ref type="bibr" target="#b33">Yang et al. 2024;</ref><ref type="bibr" target="#b31">Wang et al. 2025)</ref>. However, these methods still generally reduce to one single (ensemble) model aiming to operate close to the desired point on Pareto frontier. Additionally, and perhaps more importantly, these ensemble methods rarely integrate human trust, confidence, or behavioral feedback as firstclass objectives, nor do they address the unique challenges of human-AI team decision-making. "Learning to defer" approaches <ref type="bibr" target="#b17">(Madras, Pitassi, and Zemel 2018;</ref><ref type="bibr" target="#b19">Mozannar and Sontag 2020)</ref> have pioneered selective delegation, but typically focus on binary defer-or-predict mechanisms without the rich behavioral nuance of human confidence and alignment either.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Theory Hessian eigenvalue bounds for logistic loss</head><p>Many of this paper's bounds compare solutions of regularized logistic objectives via second-order control (e.g., Taylor expansions and strong convexity-type arguments). Rather than introducing abstract smoothness/strong-convexity con-stants, we work with explicit Hessian eigenvalue bounds that are (i) data-dependent and (ii) directly interpretable in terms of feature norms, empirical covariance, and (optionally) ℓ 2 regularization.</p><p>Setup. Consider binary classification with data {(x i , y i )} n i=1 , where x i ∈ R d and y i ∈ {−1, +1}. Let ℓ(z) = log(1 + exp(−z)) denote the scalar logistic loss and define the (possibly ℓ 2 -regularized) empirical objective</p><formula xml:id="formula_28">L(θ) = 1 n n i=1 ℓ y i ⟨θ, x i ⟩ + λ 2 ∥θ∥ 2 , λ ≥ 0. (11)</formula><p>Assumption 1 (Data and logit regularity). We assume the following on a region of interest:</p><formula xml:id="formula_29">A1. (Bounded features) ∥x i ∥ ≤ B for all i. A2. (Empirical covariance lower bound) 1 n n i=1 x i x ⊤</formula><p>i ⪰ γI for some γ &gt; 0. A3. (Bounded logits on the region) For all θ in the parameter region considered, ⟨θ, x i ⟩ ≤ M for all i ∈ {1, . . . , n}.</p><p>Assumption above is standard and naturally holds under properly normalized data, constrained parameter space, or when regularization is present <ref type="bibr" target="#b24">(Quinzan et al. 2023</ref>). Moreover, note that the setup above is flexible and encompasses several commonly studied models in machine learning, including logistic regression, one-layer neural networks and two-layer neural networks with fixed hidden layers. Lemma 7 (Scalar logistic curvature). Let σ(z) = 1/(1 + e −z ). Then</p><formula xml:id="formula_30">ℓ ′′ (z) = σ(z) 1 − σ(z) = σ(z)σ(−z), so 0 &lt; ℓ ′′ (z) ≤ 1 4 for all z. Moreover, on |z| ≤ M , ℓ ′′ (z) ≥ c(M ) := σ(M )σ(−M ) &gt; 0. Proof. A direct calculation gives ℓ ′′ (z) = σ(z)(1−σ(z)) = σ(z)σ(−z).</formula><p>This function is maximized at z = 0 with value 1/4, is strictly positive for all z, and on the interval [−M, M ] it attains its minimum at the endpoints ±M , yielding the stated c(M ).</p><p>Lemma 8 (Hessian eigenvalue bounds for logistic loss). Let ∇ 2 L(θ) denote the Hessian of the (regularized) logistic loss.</p><p>(i) (Uniform upper bound). Under assumption A1,</p><formula xml:id="formula_31">∇ 2 L(θ) ⪯ B 2 4 + λ I.<label>(12)</label></formula><p>(ii) (Lower bound on the bounded-logit region). Under assumptions A2 and A3,</p><formula xml:id="formula_32">∇ 2 L(θ) ⪰ (c(M )γ + λ) I.<label>(13)</label></formula><p>Proof. Recall that</p><formula xml:id="formula_33">∇ 2 L(θ) = 1 n n i=1 ℓ ′′ y i ⟨θ, x i ⟩ x i x ⊤ i + λI. (i) Upper bound. By Lemma 7, ℓ ′′ (•) ≤ 1/4, hence 1 n n i=1 ℓ ′′ (•) x i x ⊤ i ⪯ 1 4n n i=1 x i x ⊤ i . Using x i x ⊤ i ⪯ i ∥ ⪯ B 2 I from assumption A1 yields 1 4n n i=1 x i x ⊤ ⪯ B 2</formula><p>4 I, and adding λI gives Eq. ( <ref type="formula" target="#formula_31">12</ref>). (ii) Lower bound. On the region where |⟨θ, x i ⟩| ≤ M for all i, Lemma 7 gives ℓ ′′ (y i ⟨θ, x i ⟩) ≥ c(M ). Therefore,</p><formula xml:id="formula_34">1 n n i=1 ℓ ′′ (•) x i x ⊤ i ⪰ c(M ) • 1 n n i=1 x i x ⊤ i ⪰ c(M )γI,</formula><p>where the last step uses assumption A2. Adding λI yields Eq. ( <ref type="formula" target="#formula_32">13</ref>).</p><p>Notation. For convenience, we will refer to the resulting spectral bounds as</p><formula xml:id="formula_35">λ max := B 2 4 + λ, λ min := c(M )γ + λ.<label>(14)</label></formula><p>In subsequent proofs, λ max plays the role of a smoothness constant and λ min provides a (restricted) strong convexity modulus on the bounded-logit region.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Proof of Lemma 1 (Extended)</head><p>We formalize how alignment loss (disagreement with the human) relates to the model's prediction loss on the alignment region D a . This relationship is used in the main analysis to translate changes in predictive performance on D a into changes in the reliance probability r = 1 − L h (D a , m) (and hence downstream team performance). For simplicity, we first present the cleanest closed form under binary labels and a mild conditional-independence condition, and then briefly discuss what changes in multiclass or correlated-error settings.</p><p>Binary setup. Assume Y = {0, 1}. Let X denote a random instance conditioned on X ∈ D a . Let Y ∈ Y be the true label, Y H ∈ Y the human decision, and M (X) ∈ Y the model prediction. In the high-confidence region D a , define</p><formula xml:id="formula_36">α := P[Y H = Y ] (human accuracy), L(D a , m) := P[M (X) ̸ = Y ] (model prediction loss), L h (D a , m) := P[M (X) ̸ = Y H ]</formula><p>(alignment loss). All probabilities in this subsection are implicitly conditioned on X ∈ D a . Assumption 2 (Conditional independence of errors given the true label). Once the true label Y = y is known, whether the human is correct or incorrect conveys no additional information about whether the model will err:</p><formula xml:id="formula_37">P[M (X) ̸ = y | Y H = y, Y = y] = P[M (X) ̸ = y | Y = y], ∀ y ∈ {0, 1}. (<label>15</label></formula><formula xml:id="formula_38">)</formula><p>This assumption is particularly plausible in D a , where instances are easy and human mistakes are typically sparse and noise-like (rather than systematically shared with model errors). Similar independence assumptions are common in prior human-AI works (e.g., <ref type="bibr" target="#b0">(Bansal et al. 2021))</ref>.</p><p>We now prove the decomposition stated in Lemma 1 in binary setting under conditional independence assumption.</p><p>Proof of Lemma 1. We condition on whether the human is correct:</p><formula xml:id="formula_39">L h (D a , m) = P[M (X) ̸ = Y H ] = P[M (X) ̸ = Y H | Y H = Y ] • P[Y H = Y ] + P[M (X) ̸ = Y H | Y H ̸ = Y ] • P[Y H ̸ = Y ]. (16) By definition, P[Y H = Y ] = α and P[Y H ̸ = Y ] = 1 − α. Term 1: conditioning on Y H = Y . When Y H = Y , the event {M (X) ̸ = Y H } is exactly {M (X) ̸ = Y }, hence P[M (X) ̸ = Y H | Y H = Y ] = P[M (X) ̸ = Y | Y H = Y ] = P[M (X) ̸ = Y ] = L(D a , m),<label>(17)</label></formula><p>where the second equality follows from Assumption 2 (applied and then marginalized over Y ).</p><formula xml:id="formula_40">Term 2: conditioning on Y H ̸ = Y . Under binary labels, Y H ̸ = Y implies Y H = 1 − Y , so the event {M (X) ̸ = Y H } is equivalent to {M (X) = Y }. Therefore, P[M (X) ̸ = Y H | Y H ̸ = Y ] = P[M (X) = Y | Y H ̸ = Y ] = 1 − P[M (X) ̸ = Y | Y H ̸ = Y ] = 1 − P[M (X) ̸ = Y ] = 1 − L(D a , m),<label>(18)</label></formula><p>where the penultimate step uses Assumption 2. Substituting Eqs. ( <ref type="formula" target="#formula_39">17</ref>)-( <ref type="formula" target="#formula_40">18</ref>) into Eq. ( <ref type="formula">16</ref>) yields the decomposition Extension to multiclass setting. For |Y| &gt; 2, the identity used above, </p><formula xml:id="formula_41">L h (D a , m) = α L(D a , m) + (1 − α) 1 − L(D a , m) .<label>(19)</label></formula><formula xml:id="formula_42">Y H ̸ = Y =⇒ {M (X) ̸ = Y H } ≡ {M (X) = Y }, no longer holds. Conditioning on whether the human is cor- rect still yields L h (D a , m) = α • P[M (X) ̸ = Y | Y H = Y ] + (1 − α) • P[M (X) ̸ = Y H | Y H ̸ = Y ],<label>(</label></formula></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Proof of Theorem 2</head><p>We make precise the local complementarity-alignment tradeoff : when taking an infinitesimal steepest-descent step for the alignment objective, the complementarity objective can increase, and the unit tradeoff is controlled by (i) the angle between the two gradients and (ii) the relative distances to the scaled by (Hessian eigenvalue) bounds. Let ϕ(θ) be the angle between ∇L a (θ) and ∇L c (θ), i.e.,</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Setup</head><formula xml:id="formula_43">cos ϕ(θ) := ∇L a (θ) ⊤ ∇L c (θ) ∥∇L a (θ)∥ ∥∇L c (θ)∥ .</formula><p>Let λ a min , λ a max (resp. λ c min , λ c max ) denote the Hessian eigenvalue lower/upper bounds for L a (resp. L c ) on the region of interest, as provided by Lemma 8. Finally, when translating between alignment loss and prediction loss in D a , Lemma 1 yields the scalar factor κ = 2α − 1.</p><p>Step 1: Infinitesimal alignment-descent step. Fix θ and consider the steepest descent direction for L a :</p><formula xml:id="formula_44">d := −ε∇L a (θ), ε &gt; 0. Define ∆L a (ε) := L a (θ + d) − L a (θ) and ∆L c (ε) := L c (θ + d) − L c (θ).</formula><p>Step 2: Lower bound ∆L c (ε). By the second-order Taylor lower bound using ∇ 2 L c (•) ⪰ λ c min I (Lemma 8),</p><formula xml:id="formula_45">L c (θ + d) ≥ L c (θ) + ∇L c (θ) ⊤ d + λ c min 2 ∥d∥ 2 ⇒ ∆L c (ε) ≥ −ε ∇L c (θ) ⊤ ∇L a (θ) + λ c min 2 ε 2 ∥∇L a 2 . (<label>21</label></formula><formula xml:id="formula_46">)</formula><p>Writing the inner product via the angle ϕ(θ) gives</p><formula xml:id="formula_47">∆L c (ε) ≥ −ε ∥∇L c (θ)∥ ∥∇L a (θ)∥ cos ϕ(θ) + λ c min 2 ε 2 ∥∇L a (θ)∥ 2 . (<label>22</label></formula><formula xml:id="formula_48">)</formula><p>Step 3: Relate ∥∇L c (θ)∥ to d c . Since L c is λ c min -strongly convex on the region,</p><formula xml:id="formula_49">∇L c (θ) − ∇L c (θ * mc ) ⊤ (θ − θ * mc ) ≥ λ c min ∥θ − θ * mc ∥ 2 .</formula><p>Using ∇L c (θ * mc ) = 0 and Cauchy-Schwarz yields</p><formula xml:id="formula_50">∥∇L c (θ)∥ ≥ λ c min ∥θ − θ * mc ∥ = λ c min d c . (<label>23</label></formula><formula xml:id="formula_51">)</formula><p>Step 4: Upper bound −∆L a (ε) and relate ∥∇L a (θ)∥ to d a . To bound the denominator, note that the Taylor upper bound with ∇ 2 L a (•) ⪯ λ a max I gives</p><formula xml:id="formula_52">L a (θ + d) ≤ L a (θ) + ∇L a (θ) ⊤ d + λ a max 2 ∥d∥ 2 ⇒ −∆L a (ε) ≥ ε∥∇L a (θ)∥ 2 − λ a max 2 ε 2 ∥∇L a (θ)∥ 2 . (<label>24</label></formula><formula xml:id="formula_53">)</formula><p>For the infinitesimal ratio as ε ↓ 0, the leading term is ε∥∇L a (θ)∥ 2 . We also need an upper bound on ∥∇L a (θ)∥ in terms of d a .</p><p>By</p><formula xml:id="formula_54">λ a max -smoothness (Lipschitz gradient), ∥∇L a (θ) − ∇L a (θ * ma )∥ ≤ λ a max ∥θ − θ * ma ∥. Since ∇L a (θ * ma ) = 0, we obtain ∥∇L a (θ)∥ ≤ λ a max ∥θ − θ * ma ∥ = λ a max d a . (<label>25</label></formula><formula xml:id="formula_55">)</formula><p>Step 5: Take the ratio and send ε → 0 + . Combining Eq. ( <ref type="formula" target="#formula_47">22</ref>) and the leading-order denominator from Eq. ( <ref type="formula" target="#formula_52">24</ref>), we have</p><formula xml:id="formula_56">∆L c (ε) −∆L a (ε) ≥ − ε ∥∇L c (θ)∥ ∥∇L a (θ)∥ cos ϕ + λ c min 2 ε 2 ∥∇L a (θ)∥ 2 ε ∥∇L a (θ)∥ 2 = − ∥∇L c (θ)∥ ∥∇L a (θ)∥ cos ϕ + λ c min 2 ε<label>(26)</label></formula><p>Letting ε → 0 + yields the local unit tradeoff</p><formula xml:id="formula_57">T (θ) := lim ε→0 + ∆L c (ε) −∆L a (ε) ≥ − ∥∇L c (θ)∥ ∥∇L a (θ)∥ cos ϕ(θ).</formula><p>Substituting the bounds Eq. ( <ref type="formula" target="#formula_50">23</ref>) and Eq. ( <ref type="formula" target="#formula_54">25</ref>) gives</p><formula xml:id="formula_58">T (θ) ≥ λ c min λ a max d c d a − cos ϕ(θ) . (<label>27</label></formula><formula xml:id="formula_59">)</formula><p>Optional κ factor (alignment loss vs. prediction loss). The bound Eq. ( <ref type="formula" target="#formula_58">27</ref>) is stated in terms of the gradients of L a (θ). If L a is instantiated as the alignment loss L h (D a , m) rather than the model prediction loss L(D a , m), Lemma 1 provides the scalar conversion ∂L h (Da,m) ∂L(Da,m) = κ. Consequently, the tradeoff per unit decrease in alignment loss introduces a factor 1/κ. Divergence as d a → 0. If θ → θ * ma , then d a → 0. Unless the two optima coincide (so d c → 0 as well), d c remains bounded away from 0 in a neighborhood of θ * ma . If additionally the gradients remain sufficiently opposed near θ * ma , i.e., − cos ϕ(θ) ≥ c 0 &gt; 0 for all θ in a neighborhood of θ * ma , then Eq. ( <ref type="formula" target="#formula_58">27</ref>) implies</p><formula xml:id="formula_60">T (θ) ≥ λ c min λ a max d c d a c 0 = Ω 1 d a , so T (θ) → +∞ as d a → 0.</formula></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Proof of Theorem 3</head><p>We prove that the Rational Routing Shortcut (RRS) achieves expected CGPR team accuracy within ε of the oracle routing strategy under the conditions of Theorem 3. The key point is that CGPR behaves identically on the alignment region D a , so it suffices compare the on D c .</p><p>Setup. For any instance x, define the conditional correctness probabilities</p><formula xml:id="formula_61">p (x) := P[m c (x) = y | x] , p a (x) := P[m a (x) = y | x] ,</formula><p>and the reported confidences C c (x) := confidence reported by m c on x, C a (x) := confidence reported by m a on x.</p><p>Let m oracle (x) denote the oracle specialist (Eq. 7), and m RRS (x) denote the RRS-selected specialist (Eq. 8). Finally, for j ∈ {a, c} let r j := 1 − L h (D a , m j ) denote the CGPR reliance probability when model m j is selected in D c .</p><p>Step 1: Reduce to comparing performance on D c . Under CGPR, the expected team accuracy Accuracy S for any routing strategy S ∈ {oracle, RRS} can be written as</p><formula xml:id="formula_62">E x∈Da [1{h(x) = y}]</formula><p>(always human in alignment region)</p><formula xml:id="formula_63">+ E x∈Dc [r S • 1{m S (x) = y} + (1 − r S ) • 1{h(x) = y}]</formula><p>(CGPR mixture in complementarity region)</p><p>.</p><p>The D a term is identical for both strategies (CGPR always uses the human in D a ), so it suffices to compare the D c term.</p><p>Step RRS selects m a when C a (x) ≥ C c (x) and otherwise selects m c , so define</p><formula xml:id="formula_65">p RRS (x) := p a (x), if C a (x) ≥ C c (x), p c (x), otherwise. If C c (x) &gt; C a (x), then RRS selects m c and p RRS (x) = p Oracle (x). If instead C a (x) ≥ C c (x)</formula><p>, then by the bounded sub-optimality condition in Theorem 3(iii),</p><formula xml:id="formula_66">p a (x) ≥ p c (x) − ε, so p RRS (x) ≥ p Oracle (x) − ε. Combining both cases, for all x ∈ D c , p RRS (x) ≥ p Oracle (x) − ε.<label>(29)</label></formula><p>Note: the calibration condition in Theorem 3(i) is not needed for this inequality, and it serves to interpret C a , C c as approximate correctness estimates.</p><p>Step 3: Reliance factors coincide (r RRS = r Oracle ). By Theorem 3(ii), if x ∈ D a then C a (x) ≥ C c (x), so RRS selects m a on D a , matching the oracle's choice on D a . Therefore,</p><formula xml:id="formula_67">L h (D a , m RRS ) = L h (D a , m a ) = L h (D a , m oracle ),</formula><p>and hence r RRS = r Oracle . Denote their common value by r.</p><p>Step 4: Bound the expected accuracy gap on D c . Taking conditional expectation of the D c term in Eq. ( <ref type="formula" target="#formula_64">28</ref>) yields</p><formula xml:id="formula_68">Accuracy Oracle − Accuracy RRS = E x∈Dc r • p Oracle (x) − p RRS (x) .<label>(30)</label></formula><p>By Eq. ( <ref type="formula" target="#formula_66">29</ref>), p Oracle (x) − p RRS (x) ≤ ε pointwise on D c , so</p><formula xml:id="formula_69">0 ≤ r • p Oracle (x) − p RRS (x) ≤ r ε ≤ ε.</formula><p>Taking expectation in Eq. ( <ref type="formula" target="#formula_68">30</ref>) gives Accuracy Oracle − Accuracy RRS ≤ ε.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Rearranging yields</head><p>Accuracy RRS ≥ Accuracy Oracle − ε, which completes the proof.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Proof of Theorem 4</head><p>We lower bound the advantage of the adaptive ensemble over the best single model by combining (i) strong convexity of the regional prediction losses and (ii) a weighted "twocenters" quadratic minimization. The only subtlety is that the alignment objective in D a is an agreement-with-human loss, which we incorporate via the κ factor from Lemma 1.</p><p>Step 0: Reduce to prediction losses and incorporate κ.</p><p>In the alignment region D a , the alignment objective is L a (θ) = L h (D a , m(•; θ)). By Lemma 1, for binary labels and under its conditions,</p><formula xml:id="formula_70">L a (θ) = (1 − α) + κ L a (θ),<label>(31)</label></formula><p>where L a (θ) := L(D a , m(•; θ)) and κ := 2α − 1 ∈ (0, 1]. Consider the full-population single-model surrogate objective</p><formula xml:id="formula_71">g(θ) := p L a (θ) + (1 − p) L c (θ), p := P[x ∈ D a ].</formula><p>Substituting Eq. (31) gives</p><formula xml:id="formula_72">g(θ) = p(1 − α) + pκ L a (θ) + (1 − p) L c (θ) =: g(θ)</formula><p>.</p><p>Since p(1−α) is constant in θ, minimizing g(θ) is equivalent to minimizing g(θ), and</p><formula xml:id="formula_74">min θ g(θ) − L adapt = min θ g(θ) − L adapt ,<label>(33)</label></formula><p>where L adapt := pκ L a (θ * ma ) + (1 − p) L c (θ * mc ). Moreover, Eq. ( <ref type="formula" target="#formula_70">31</ref>) is an affine transform with positive slope κ, so L a (θ) and L a (θ) share the same minimizer, resulting in θ * ma = arg min θ L a (θ).</p><p>Step 1: Strong-convexity lower bounds. By assumption, the underlying prediction losses in the two regions are µstrongly convex in θ. In particular, for all θ,</p><formula xml:id="formula_75">L a (θ) ≥ L a (θ * ma ) + µ 2 ∥θ − θ * ma ∥ 2 , (34) L c L c * mc ) + µ 2 ∥θ − θ * ∥ 2 . (<label>35</label></formula><formula xml:id="formula_76">)</formula><p>Multiplying Eq. ( <ref type="formula">34</ref>) by pκ and Eq. ( <ref type="formula" target="#formula_75">35</ref>) by (1 − p) and summing yields, for all θ, </p><formula xml:id="formula_77">g(θ) ≥ L adapt + µ 2 pκ ∥θ − θ * ma ∥ 2 + (1 − p) ∥θ − θ * mc ∥ 2 . (<label>36</label></formula><formula xml:id="formula_78">min θ pκ ∥θ−θ * ma ∥ 2 +(1−p) ∥θ−θ * mc ∥ 2 = pκ(1 − p) (1 − p) + pκ D 2 . (38) Since κ ∈ (0, 1] and p ∈ [0, 1], we have (1 − p) + pκ ≤ 1, and therefore pκ(1 − p) (1 − p) + pκ D 2 ≥ pκ(1 − p) D 2 .<label>(39)</label></formula><p>Remark (Tightness). The exact coefficient in Eq. ( <ref type="formula">38</ref>) can be written as pκ(1 − p) • 1 (1−p)+pκ , and the multiplicative factor 1 (1−p)+pκ ≥ 1 quantifies how much larger the tight minimum can be relative to the simpler lower bound in Eq. (39). We use Eq. ( <ref type="formula" target="#formula_78">39</ref>) for a clean closed form.</p><p>Step 3: Conclude the performance gain bound. Taking min θ on both sides of Eq. ( <ref type="formula" target="#formula_77">36</ref>) and using Eqs. ( <ref type="formula">38</ref>)-( <ref type="formula" target="#formula_78">39</ref>) yields</p><formula xml:id="formula_79">min θ g(θ) ≥ L adapt + µ 2 pκ(1 − p) D 2 .<label>(40)</label></formula><p>Finally, by Eq. ( <ref type="formula" target="#formula_74">33</ref>),</p><formula xml:id="formula_80">Γ team := L * single − L adapt = min θ g(θ) − L adapt ≥ µ 2 pκ(1 − p) D 2 = κµ 2 p(1 − p) D 2 .</formula></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Proof of Proposition 5</head><p>The instance weight w c i is the expected indicator that x i is routed to the complementarity region D c under a randomized human confidence threshold. Recall that x i ∈ D c if and only if C h i ≤ τ . Assume τ is supported on [0, 1] with CDF F T and density f T . Then </p><formula xml:id="formula_81">w c i := E τ [1{x i ∈ D c }] = E τ 1{C h i ≤ τ } = 1 0 1{C h i ≤ τ } f T (τ ) dτ = 1 C h i f T (τ ) dτ = 1 − F T (C h i ), which proves the claim.</formula></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Experiments</head><p>All experiments are implemented in Python using Tensor-Flow and scikit-learn with default hyperparameters unless otherwise noted. Training and evaluation are conducted on systems equipped with NVIDIA A10 GPUs.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>College Admission</head><p>In this dataset, we mimic the college admission scenario, where decision makers need to determine whether to admit an applicant to college (i.e., Y = {+1, −1}, +1 represents admitted while −1 represents rejected), given two features of the applicant-their Grade Point Average (i.e., "GPA") and their standardized test scores (i.e., "SCORE"). Applicants belong to either a privileged (aligned) or underprivileged (complementary) group, reflecting regions where different signals are more informative and where human confidence may vary. The dataset is constructed so that SCORE is more predictive of the admission outcome for privileged applicants, while GPA is more predictive for underprivileged applicants. Privileged applicants, with access to better preparation and the ability to retake tests, are more likely to have a representative SCORE, making it a reliable basis for their admission decision. Underprivileged applicants, in contrast, better demonstrate their abilities through schoolspecific GPA.</p><p>For each of the n applicants, the values of x GPA and x Score are sampled uniformly from [0, 1]. Each applicant is assigned to the privileged group with probability p. The ground truth label is then generated based on group membership: in the alignment region, y = I[(0.5 + δ) x Score + (0.5 − δ) x GPA ≥ 0.5]; in the complementarity region, y = I[(0.5+δ) x GPA +(0.5−δ) x Score ≥ 0.5]. The parameter δ ∈ [0, 0.5] controls the separation between the two regions' optimal decision boundaries, while p governs how closely a single model approximates one of the two specialists. Our defaults are p = 0.5 (balanced groups) and δ = 0.25 (moderate feature dominance per group). Figures <ref type="figure" target="#fig_8">A1 and A2</ref> illustrate this setting.</p><p>Generalization across model families. We verify that the benefits of adaptive AI are not confined to the linear setting assumed in our theoretical analysis. Using the same setting as Figure <ref type="figure" target="#fig_2">3a</ref> in the main text, we evaluate the accuracy gap between adaptive AI and standard AI for four additional model families: Decision Tree, Random Forest, Multilayer Perceptron, and Support Vector Machine (Radial Basis Function kernel). We continue to vary δ to induce different levels of specialist divergence, but measure divergence via the change in model predictions, since the notion of model "parameters" is not straightforward for all architectures. Figure <ref type="figure" target="#fig_9">A3</ref> shows that, across all five model families, accuracy gains grow quadratically with specialist divergence, consistent with the theoretical insights derived for the logistic regression setting.</p><p>Robustness to multi-objective model weight selection. Theorem 4 defines the optimal single-model baseline as L * single = min θ g p (θ), i.e., the population-consistent weighted surrogate with w = p := P[x ∈ D a ]. A natural concern is whether the adaptive AI advantage is an artifact of this particular weighting. To address this, we broaden the single-model comparison class by training a family of fixed-weight models θ * w ∈ arg min θ g w (θ) for w ∈ {0, 0.25, 0.5, 0.75, 1}, where w = 0 and w = 1 correspond to the complementary and aligned specialists, respectively, and w = p recovers the standard AI baseline.</p><p>Figure <ref type="figure">A4</ref> (top) shows accuracy gains over the standard model (w=p) across varying aligned group fractions p. The largest single-model accuracy gains occur at the endpoints w ∈ {0, 1}, corresponding to pure specialists. This may appear counterintuitive: when p = 0.75, one might expect a model trained with w = 0.75 to outperform a specialist with w = 1. However, because the two groups' optimal boundaries are sufficiently distinct, soft interpolation via intermediate weights produces boundaries that are suboptimal for both groups. Hard commitment to one group's boundary is more effective for that group, and adaptive AI exploits this by routing each instance to the appropriate specialist. Figure <ref type="figure">A4</ref> (bottom) confirms that adaptive AI also achieves lower log-loss (i.e., the actual training objective) compared to every single model. Under log-loss, deviating from the population-consistent weight w=p does not improve the single-model objective on the mixture distribution, reaffirming the baseline choice in Theorem 4. Notably, the benefits of intermediate weights are restored under this metric: for example, at p = 0.25, single AI with w=0.25 outperforms the complementary specialist (w=0). Taken together, these results demonstrate that the adaptive AI advantage persists regardless of the single-model weighting and cannot be recovered by tuning a fixed-weight surrogate.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>WoofNette</head><p>The WoofNette dataset (Mahmood, Lu, and Yin 2024) comprises images of five easily recognizable objects and five challenging dog breeds. Sample training images are shown in Figure <ref type="figure">A5</ref>.</p></div><figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_0"><head>S</head><label></label><figDesc>ta n d a rd A li g n e d C o m p le m e n ta ry B e h a v io r-A w a re A d a p ti v e (O ra c le ) A d a p ti v e (R R S )</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_1"><head>Figure 2 :</head><label>2</label><figDesc>Figure 2: Complementarity-alignment tradeoff increases sharply with specialization, exacerbated by imperfect human DM in alignment region (α), illustrating that a single model cannot simultaneously optimize for trust and performance. defined in Theorem 2. Specifically, we assess how a small perturbation in model parameters-in the direction of the alignment specialist-impacts the model's loss in the complementarity region. Formally, for a single-model optimum θ * single , a perturbation direction v and small ϵ, the tradeoff ratio is measured as: Tradeoff = ∆L(Dc,θ * single +ϵv) −∆L(Da,θ * single +ϵv) , where ∆L(D, θ) denotes the change in loss on region D as the model parameters are nudged from θ *single . To vary the degree of specialization, we increase the aligned group fraction p from 0.5 to 0.99, thereby moving the optimal single model closer to the aligned specialist. Figure2shows that the empirical tradeoff grows sharply as θ * single approaches the aligned specialist, and that the blow-up is faster when humans are less accurate in the aligned region (lower α), confirming the (1/κ) scaling predicted by theory. These findings complement Theorem 2, and empirically establish that no single static model can simultaneously optimize alignment and complementarity when the regions are structurally distinct and human accuracy is imperfect.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_2"><head>Figure 3 :</head><label>3</label><figDesc>Figure 3: Accuracy gain (Γ team ) of adaptive AI ensemble over single AI on the College Admissions data. The plots (left to right) empirically validate that: (i) gain increases with specialist divergence (∥θ * ma −θ * mc ∥);(ii) gain scales with human accuracy (α) in alignment region (i.e., the aligned group's feature regime), reflecting the reliability factor κ; (iii) gain peaks when the task mixture is balanced (i.e., aligned group fraction p ≈ 0.5), matching the concave p(1 − p) dependence; and (iv) gain increases linearly with group certainty (1 − H/2 log 2), demonstrating robustness to routing uncertainty.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_3"><head></head><label></label><figDesc>Taking the derivative with respect to L(D a , m) gives ∂L h (D a , m) ∂L(D a , m) = 2α − 1.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_4"><head></head><label></label><figDesc>20) but the second conditional probability depends on which wrong label Y H takes and how often the model matches that wrong label. Thus, without introducing additional confusion-matrix parameters describing the joint distribution of (M (X), Y H ) given Y , there is no binary-style closed form.Extension to correlated errors setting. If the human and model share systematic failure modes (e.g., particular subpopulations or visual artifacts), thenP[M (X) ̸ = y | Y H = y, Y = y] can differ substantially from P[M (X) ̸ = y | Y = y].In this case, the decomposition in Eq. (19) generally does not hold. One can still express L h (D a , m) by conditioning on (Y, Y H ), but additional dependence parameters are required to relate it to L(D a , m).</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_5"><head>.</head><label></label><figDesc>Recall that L a (θ) and c (θ) denote the (regularized) empirical logistic losses restricted to D a and D c , re-d a := ∥θ − θ * ma ∥, d c := ∥θ − θ * mc ∥.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_6"><head></head><label></label><figDesc>2: Pointwise comparison of oracle vs. RRS on D c . For x ∈ D c , the oracle always selects m c hence p Oracle (x) := p c (x).</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_7"><head>)</head><label></label><figDesc>Step 2: Minimize the weighted two-center quadratic. Let a, b ∈ R d and w 1 , w 2 &gt; 0. A standard identity givesmin θ w 1 ∥θ − a∥ 2 + w 2 ∥θ − b∥ 2 = w 1 w 2 w 1 + w 2 ∥a − b∥ 2 ,(37) attained uniquely at θ = (w 1 a + w 2 b)/(w 1 + w 2 ). Applying Eq. (37) with a = θ * ma , b = θ * mc , w 1 = pκ, and w 2 = 1 − p, and writing D := ∥θ * ma − θ * mc ∥, we obtain</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_8"><head>Figure A2 :</head><label>A2</label><figDesc>Figure A2: Visualization of decision boundary of standard and specialist logistic regression models on College Admission dataset with p = 0.5 and δ = 0.25.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_9"><head>Figure A3 :</head><label>A3</label><figDesc>Figure A3: Adaptive AI gains extend beyond logistic regression and grow quadratically with specialist divergence across varied models.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_10"><head></head><label></label><figDesc>Figure A4: Adaptive AI gains persist across the full family of fixed-weight single-model surrogates. Top: accuracy gains over standard AI. Pure specialists (w∈{0, 1}) can outperform intermediate weights, yet adaptive AI consistently dominates. Bottom: log-loss improvement (positive values indicate lower loss). Fixed-weight deviations do not improve upon the population-consistent objective, confirming w = p as the appropriate single-model baseline; adaptive AI achieves further improvement by routing to specialists.</figDesc></figure>
+		</body>
+		<back>
+
+			<div type="acknowledgement">
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Acknowledgments</head><p>We thank the National Science Foundation for support under grants IIS-2229876 and IIS-2340209 for this work. Any opinions, findings, conclusions, or recommendations expressed here are those of the authors alone.</p></div>
+			</div>
+
+			<div type="annex">
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Proof of Corollary 6</head><p>We analyze how uncertainty in region membership at deployment degrades the performance gain of adaptive AI. The argument proceeds in three steps: (i) express the adaptive loss under misrouting, (ii) bound the misrouting probability via entropy, and (iii) derive a rigorous additive degradation bound. We then show how the multiplicative form stated in the main text follows under an additional assumption.</p><p>denote the (possibly learned) posterior probability that instance x belongs to the alignment region, and</p><p>Define the average instance-level binary entropy (in nats)</p><p>(41) We consider hard routing by maximum posterior: x is assigned to D a if p(x) ≥ 1 2 and to D c otherwise. The perinstance misrouting probability is therefore</p><p>Adaptive team loss under uncertainty. Let m a and m c denote the specialists trained for D a and D c , respectively. Under misrouting rate ρ, the expected adaptive loss can be written as</p><p>Define the ideal (oracle-routed) adaptive loss</p><p>), and the routing-induced excess loss</p><p>Then Eq. ( <ref type="formula">42</ref>) can be rewritten as</p><p>Since each specialist is optimized for its own region,</p><p>Bounding misrouting probability by entropy. We now relate ρ to H. Lemma 9 (Misrouting is tightly bounded by entropy). For p ∈ [0, 1], let ρ(p) := min{p, 1 − p} and define the binary entropy</p><p>ρ ≤ H 2 log 2 .</p><p>Moreover, the constant 1/(2 log 2) is optimal, and equality holds at p = 1 2 .</p><p>Proof. By symmetry about p = 1 2 , it suffices to consider p ∈ [0, 1 2 ], where ρ(p) = p. Define ϕ(p) := H(p) − 2(log 2) p. We have ϕ(0) = 0 and H( <ref type="formula">1</ref>2 ) = log 2, hence ϕ( 1 2 = 0. calculation yields</p><p>&lt; for p ∈ (0, 1), so ϕ is strictly concave. Since ϕ is concave and equals 0 at the endpoints of [0, 1 2 ], it satisfies ϕ(p) ≥ 0 on this interval. Therefore H(p) ≥ 2(log 2)p for p ∈ [0, 1 2 ], i.e., p ≤ H(p)/(2 log 2). By symmetry (replace p with 1 − p), the same holds on [ 1 2 , 1]. For optimality, suppose ρ(p) ≤ c H(p) holds for all p. Evaluating at p = 1 2 gives 1 2 ≤ c log 2, so c ≥ 1/(2 log 2). Equality holds at p = 1 2 . Additive degradation bound. Let L * single := min θ g p (θ) denote the best single-model loss, and define</p><p>To control ∆, we use boundedness of the per-instance loss.</p><p>For 0-1 loss, ℓ ∈ [0, 1] holds by definition. For logistic loss, under bounded logits (e.g., bounded features and a bounded parameter region as assumed in the curvature subsection), ℓ(z) = log(1 + e −z ) is uniformly bounded, and one may rescale by a constant so that ℓ ∈ [0, 1] without changing the optimizer. Accordingly, assume 0 ≤ ℓ ≤ 1, implying each region-average loss lies in [0, 1] and hence</p><p>Combining Eq. ( <ref type="formula">44</ref>) and Eq. ( <ref type="formula">45</ref>) yields</p><p>Finally, Lemma 9 gives ρ ≤ H/(2 log 2), and Theorem 4 gives Γ team (0) ≥ κµ 2 p(1 − p)D 2 . Substituting into Eq. ( <ref type="formula">46</ref>) yields the explicit additive lower bound:</p><p>Recovering the multiplicative form. The main text states a multiplicative degradation factor. This follows from Eq. ( <ref type="formula">44</ref>) if the misrouting penalty is not too large relative to the ideal gain, namely if</p><p>Under Eq. ( <ref type="formula">47</ref>), we have </p></div>			</div>
+			<div type="references">
+
+				<listBibl>
+
+<biblStruct xml:id="b0">
+	<analytic>
+		<title level="a" type="main">human expertise with artificial intelligence: Experimental evidence from radiology</title>
+		<author>
+			<persName><forename type="first">N</forename><surname>Agarwal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Moehring</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Rajpurkar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename></persName>
+		</author>
+		<idno type="arXiv">arXiv:2112.00861</idno>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the AAAI Conference on Artificial Intelligence</title>
+				<meeting>the AAAI Conference on Artificial Intelligence</meeting>
+		<imprint>
+			<date type="published" when="2021">2023. 2021. 2021</date>
+			<biblScope unit="page" from="11405" to="11414" />
+		</imprint>
+		<respStmt>
+			<orgName>National Bureau of Economic Research</orgName>
+		</respStmt>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+	<note>A general language assistant as a laboratory for alignment</note>
+</biblStruct>
+
+<biblStruct xml:id="b1">
+	<analytic>
+		<title level="a" type="main">Beyond accuracy: The role of mental models in human-AI team performance</title>
+		<author>
+			<persName><forename type="first">G</forename><surname>Bansal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Nushi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Kamar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><forename type="middle">S</forename><surname>Lasecki</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">S</forename><surname>Weld</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Horvitz</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the AAAI Conference on Human Computation and Crowdsourcing</title>
+				<meeting>the AAAI Conference on Human Computation and Crowdsourcing</meeting>
+		<imprint>
+			<date type="published" when="2019">2019</date>
+			<biblScope unit="volume">7</biblScope>
+			<biblScope unit="page" from="2" to="11" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b2">
+	<analytic>
+		<title level="a" type="main">Role of human-AI interaction in selective prediction</title>
+		<author>
+			<persName><forename type="first">E</forename><surname>Bondi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Koster</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Sheahan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Chadwick</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Bachrach</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Cemgil</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">U</forename><surname>Paquet</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Dvijotham</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the AAAI Conference on Artificial Intelligence</title>
+				<meeting>the AAAI Conference on Artificial Intelligence</meeting>
+		<imprint>
+			<date type="published" when="2022">2022</date>
+			<biblScope unit="volume">36</biblScope>
+			<biblScope unit="page" from="5286" to="5294" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b3">
+	<analytic>
+		<title level="a" type="main">MaxMin-RLHF: alignment with diverse human preferences</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Chakraborty</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Qiu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Yuan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Koppel</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Manocha</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Huang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">S</forename><surname>Bedi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Wang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 41st International Conference on Machine Learning</title>
+				<meeting>the 41st International Conference on Machine Learning</meeting>
+		<imprint>
+			<date type="published" when="2024">2024</date>
+			<biblScope unit="page" from="6116" to="6135" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b4">
+	<analytic>
+		<title level="a" type="main">You&apos;d better stop! Understanding human reliance on machine learning models under covariate shift</title>
+		<author>
+			<persName><forename type="first">C.-W</forename><surname>Chiang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Yin</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 13th ACM Web Science Conference 2021</title>
+				<meeting>the 13th ACM Web Science Conference 2021</meeting>
+		<imprint>
+			<date type="published" when="2021">2021</date>
+			<biblScope unit="page" from="120" to="129" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b5">
+	<analytic>
+		<title level="a" type="main">Human confidence in artificial intelligence and in themselves: The evolution and impact of confidence on adoption of AI advice</title>
+		<author>
+			<persName><forename type="first">L</forename><surname>Chong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Goucher-Lambert</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Kotovsky</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Cagan</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Computers in Human Behavior</title>
+		<imprint>
+			<biblScope unit="volume">127</biblScope>
+			<biblScope unit="page">107018</biblScope>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b6">
+	<analytic>
+		<title level="a" type="main">Super mario meets ai: Experimental effects of automation and skills on team performance and coordination</title>
+		<author>
+			<persName><forename type="first">F</forename><surname>Dell'acqua</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Kogut</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Perkowski</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Review of Economics and Statistics</title>
+		<imprint>
+			<biblScope unit="page" from="1" to="47" />
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b7">
+	<analytic>
+		<title level="a" type="main">Enhancing the reliability and accuracy of AI-enabled diagnosis via complementarity-driven deferral to clinicians</title>
+		<author>
+			<persName><forename type="first">K</forename><surname>Dvijotham</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Winkens</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Barsbey</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Ghaisas</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Stanforth</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Pawlowski</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Strachan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Ahmed</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Azizi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Bachrach</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of Machine Learning Research</title>
+		<imprint>
+			<biblScope unit="volume">29</biblScope>
+			<biblScope unit="issue">7</biblScope>
+			<biblScope unit="page" from="1" to="39" />
+			<date type="published" when="2022">2023. 2022</date>
+		</imprint>
+	</monogr>
+	<note>Nature Medicine</note>
+</biblStruct>
+
+<biblStruct xml:id="b8">
+	<analytic>
+		<title level="a" type="main">Large language model influence on diagnostic reasoning: a randomized clinical trial</title>
+		<author>
+			<persName><forename type="first">E</forename><surname>Goh</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Gallo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Hom</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Strong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Weng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Kerman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">A</forename><surname>Cool</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Kanjee</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">S</forename><surname>Parsons</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Ahuja</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">JAMA Network Open</title>
+		<imprint>
+			<biblScope unit="volume">7</biblScope>
+			<biblScope unit="issue">10</biblScope>
+			<biblScope unit="page" from="e2440969" to="e2440969" />
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b9">
+	<analytic>
+		<title level="a" type="main">Taking advice from (dis) similar machines: the impact of human-machine similarity on machine-assisted decisionmaking</title>
+		<author>
+			<persName><forename type="first">N</forename><surname>Grgić-Hlača</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Castelluccia</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><forename type="middle">P</forename><surname>Gummadi</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the AAAI Conference on Human Computation and Crowdsourcing</title>
+				<meeting>the AAAI Conference on Human Computation and Crowdsourcing</meeting>
+		<imprint>
+			<date type="published" when="2022">2022</date>
+			<biblScope unit="volume">10</biblScope>
+			<biblScope unit="page" from="74" to="88" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b10">
+	<analytic>
+		<title level="a" type="main">Controllable Preference Optimization: Toward Controllable Multi-Objective Alignment</title>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Guo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Cui</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Yuan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Ding</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Sun</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Sun</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Xie</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Zhou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Lin</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing</title>
+				<meeting>the 2024 Conference on Empirical Methods in Natural Language Processing</meeting>
+		<imprint>
+			<date type="published" when="2024">2024</date>
+			<biblScope unit="page" from="1437" to="1454" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b11">
+	<monogr>
+		<title level="m" type="main">Designing for human-AI complementarity in K-12 education</title>
+		<author>
+			<persName><forename type="first">K</forename><surname>Holstein</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">V</forename><surname>Aleven</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2104.01266</idno>
+		<imprint>
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b12">
+	<analytic>
+		<title level="a" type="main">Adaptive mixtures of local experts</title>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">A</forename><surname>Jacobs</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">I</forename><surname>Jordan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">J</forename><surname>Nowlan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><forename type="middle">E</forename><surname>Hinton</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Neural computation</title>
+		<imprint>
+			<biblScope unit="volume">3</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page" from="79" to="87" />
+			<date type="published" when="1991">1991</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b13">
+	<analytic>
+		<title level="a" type="main">The role of socio-emotional attributes in enhancing human-AI collaboration</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Jordan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Jacobs</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Kolomaznik</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">V</forename><surname>Petrik</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Slama</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">V</forename><surname>Jurik</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Advances in neural information processing systems</title>
+				<imprint>
+			<date type="published" when="1991">1991. 2024</date>
+			<biblScope unit="volume">15</biblScope>
+			<biblScope unit="page">1369957</biblScope>
+		</imprint>
+	</monogr>
+	<note>Hierarchies of adaptive experts</note>
+</biblStruct>
+
+<biblStruct xml:id="b14">
+	<analytic>
+		<title level="a" type="main">Human-ai collaboration via conditional delegation: A case study of moderation</title>
+		<author>
+			<persName><forename type="first">V</forename><surname>Lai</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Carton</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Bhatnagar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Q</forename><forename type="middle">V</forename><surname>Liao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Tan</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 2022 CHI Conference on Human Factors in Computing Systems</title>
+				<meeting>the 2022 CHI Conference on Human Factors in Computing Systems</meeting>
+		<imprint>
+			<date type="published" when="2022">2022</date>
+			<biblScope unit="page" from="1" to="18" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b15">
+	<analytic>
+		<title level="a" type="main">Does more advice help? The effects of second opinions in AI-assisted decision making</title>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Lu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Yin</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the ACM on Human-Computer Interaction</title>
+				<meeting>the ACM on Human-Computer Interaction<address><addrLine>CSCW1</addrLine></address></meeting>
+		<imprint>
+			<date type="published" when="2024">2024</date>
+			<biblScope unit="volume">8</biblScope>
+			<biblScope unit="page" from="1" to="31" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b16">
+	<analytic>
+		<title level="a" type="main">Human Reliance on Machine Learning Models When Performance Feedback is Limited: Heuristics and Risks</title>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Lu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Yin</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 2021 CHI Conference on Human Factors in Computing Systems</title>
+				<meeting>the 2021 CHI Conference on Human Factors in Computing Systems</meeting>
+		<imprint>
+			<date type="published" when="2021">2021</date>
+			<biblScope unit="page" from="1" to="16" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b17">
+	<analytic>
+		<title level="a" type="main">Designing Behavior-Aware AI to Improve the Human-AI Team Performance in AI-Assisted Decision Making</title>
+		<author>
+			<persName><forename type="first">D</forename><surname>Madras</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Pitassi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Zemel</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">H A</forename><surname>Mahmood</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Lu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Yin</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the Thirty-Third International Joint Conference on Artificial Intelligence</title>
+				<meeting>the Thirty-Third International Joint Conference on Artificial Intelligence</meeting>
+		<imprint>
+			<date type="published" when="2018">2018. 2024</date>
+			<biblScope unit="page" from="3106" to="3114" />
+		</imprint>
+	</monogr>
+	<note>Advances in Neural Information Processing Systems</note>
+</biblStruct>
+
+<biblStruct xml:id="b18">
+	<analytic>
+		<title level="a" type="main">A multiobjective/multi-task learning framework induced by pareto stationarity</title>
+		<author>
+			<persName><forename type="first">L</forename><forename type="middle">W</forename><surname>Mayer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Karny</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Ayoub</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Song</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Tian</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Moradi-Pari</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Steyvers</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Momma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Dong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Liu</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2503.00248</idno>
+	</analytic>
+	<monogr>
+		<title level="m">International Conference on Machine Learning</title>
+				<imprint>
+			<publisher>PMLR</publisher>
+			<date type="published" when="2022">2025. 2022</date>
+			<biblScope unit="page" from="15895" to="15907" />
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+	<note>Human-AI Collaboration: Trade-offs Between Performance and Preferences</note>
+</biblStruct>
+
+<biblStruct xml:id="b19">
+	<analytic>
+		<title level="a" type="main">Consistent estimators for learning to defer to an expert</title>
+		<author>
+			<persName><forename type="first">H</forename><surname>Mozannar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Sontag</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">International Conference on Machine Learning</title>
+				<imprint>
+			<publisher>PMLR</publisher>
+			<date type="published" when="2020">2020</date>
+			<biblScope unit="page" from="7076" to="7087" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b20">
+	<monogr>
+		<title level="m" type="main">How does value similarity affect human reliance in ethical decision Proceedings of the</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Narayanan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Yu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C.-J</forename><surname>Ho</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Yin</surname></persName>
+		</author>
+		<imprint>
+			<date type="published" when="2023">2023. 2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b21">
+	<monogr>
+		<title level="m">AAAI/ACM Conference on AI, Ethics, and Society</title>
+				<imprint>
+			<biblScope unit="page" from="49" to="57" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b22">
+	<analytic>
+		<title level="a" type="main">Training language models to follow instructions with human feedback</title>
+		<author>
+			<persName><forename type="first">L</forename><surname>Ouyang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Almeida</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Wainwright</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Mishkin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Agarwal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Slama</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Ray</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Advances in neural information processing systems</title>
+		<imprint>
+			<biblScope unit="volume">35</biblScope>
+			<biblScope unit="page" from="27730" to="27744" />
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b23">
+	<analytic>
+		<title level="a" type="main">AdapterFusion: Non-Destructive Task Composition for Transfer Learning</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Pfeiffer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Kamath</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Rücklé</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Cho</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">I</forename><surname>Gurevych</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 16th Conference of the European Chapter of the Association for Computational Linguistics: Main Volume</title>
+				<meeting>the 16th Conference of the European Chapter of the Association for Computational Linguistics: Main Volume</meeting>
+		<imprint>
+			<date type="published" when="2021">2021</date>
+			<biblScope unit="page" from="487" to="503" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b24">
+	<monogr>
+		<title level="m" type="main">Fast Feature Selection with Fairness Constraints</title>
+		<author>
+			<persName><forename type="first">F</forename><surname>Quinzan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Khanna</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Hershcovitch</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Cohen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">G</forename><surname>Waddington</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Friedrich</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">W</forename><surname>Mahoney</surname></persName>
+		</author>
+		<imprint>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">AIS-TATS</note>
+</biblStruct>
+
+<biblStruct xml:id="b25">
+	<analytic>
+		<title level="a" type="main">Appropriate reliance on AI advice: Conceptualization and the effect of explanations</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Schemmer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Kuehl</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Benz</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Bartos</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Satzger</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 28th International Conference on Intelligent User Interfaces</title>
+				<meeting>the 28th International Conference on Intelligent User Interfaces</meeting>
+		<imprint>
+			<date type="published" when="2023">2023</date>
+			<biblScope unit="page" from="410" to="422" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b26">
+	<analytic>
+		<title level="a" type="main">Outrageously Large Neural Networks: The Sparsely-Gated Mixture-of-Experts Layer</title>
+		<author>
+			<persName><forename type="first">N</forename><surname>Shazeer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Mirhoseini</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Maziarz</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Davis</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Q</forename><surname>Le</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Hinton</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Dean</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">International Conference on Learning Representations</title>
+				<imprint>
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b27">
+	<analytic>
+		<title level="a" type="main">Bayesian modeling of human-AI complementarity</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Steyvers</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Tejeda</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Kerrigan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Smyth</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Proceedings of the National Academy of Sciences</title>
+		<imprint>
+			<biblScope unit="volume">119</biblScope>
+			<biblScope unit="issue">11</biblScope>
+			<biblScope unit="page">e2111547119</biblScope>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b28">
+	<analytic>
+		<title level="a" type="main">What large language models know and what people think they know</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Steyvers</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Tejeda</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Kumar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Belem</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Karny</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Hu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><forename type="middle">W</forename><surname>Mayer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Smyth</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nature Machine Intelligence</title>
+		<imprint>
+			<biblScope unit="page" from="1" to="11" />
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b29">
+	<analytic>
+		<title level="a" type="main">When combinations of humans and AI are useful: A systematic review and meta-analysis</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Vaccaro</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Almaatouq</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Malone</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nature Human Behaviour</title>
+		<imprint>
+			<biblScope unit="page" from="1" to="11" />
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b30">
+	<analytic>
+		<title level="a" type="main">Do Large Language Models Perform the Way People Expect? Measuring the Human Generalization Function</title>
+		<author>
+			<persName><forename type="first">K</forename><surname>Vafa</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Rambachan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Mullainathan</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">International Conference on Machine Learning</title>
+				<imprint>
+			<publisher>PMLR</publisher>
+			<date type="published" when="2024">2024</date>
+			<biblScope unit="page" from="48919" to="48937" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b31">
+	<analytic>
+		<title level="a" type="main">MAP: Multi-Human-Value Alignment Palette</title>
+		<author>
+			<persName><forename type="first">X</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Q</forename><surname>Le</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Ahmed</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Diao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Zhou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Baracaldo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Ding</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Anwar</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">The Thirteenth International Conference on Learning Representations</title>
+				<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b32">
+	<analytic>
+		<title level="a" type="main">Will You Accept the AI Recommendation? Predicting Human Behavior in AI-Assisted Decision Making</title>
+		<author>
+			<persName><forename type="first">X</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Lu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Yin</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Wilder</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the Twenty-Ninth International Conference on International Joint Conferences on Artificial Intelligence</title>
+				<meeting>the Twenty-Ninth International Conference on International Joint Conferences on Artificial Intelligence</meeting>
+		<imprint>
+			<date type="published" when="2020">2022. 2020</date>
+			<biblScope unit="page" from="1526" to="1533" />
+		</imprint>
+	</monogr>
+	<note>Proceedings of the ACM Web Conference 2022</note>
+</biblStruct>
+
+<biblStruct xml:id="b33">
+	<analytic>
+		<title level="a" type="main">Rewards-in-Context: Multi-objective Alignment of Foundation Models with Dynamic Preference Adjustment</title>
+		<author>
+			<persName><forename type="first">R</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Pan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Luo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Qiu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Zhong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Yu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Wortman Vaughan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Wallach</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 2019 chi conference on human factors in computing systems</title>
+				<meeting>the 2019 chi conference on human factors in computing systems</meeting>
+		<imprint>
+			<date type="published" when="2019">2024. 2019</date>
+			<biblScope unit="page" from="1" to="12" />
+		</imprint>
+	</monogr>
+	<note>International Conference on Machine Learning</note>
+</biblStruct>
+
+<biblStruct xml:id="b34">
+	<analytic>
+		<title level="a" type="main">Gradient surgery for multi-task learning</title>
+		<author>
+			<persName><forename type="first">T</forename><surname>Yu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Kumar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Gupta</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Levine</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Hausman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Finn</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Advances in neural information processing systems</title>
+		<imprint>
+			<biblScope unit="volume">33</biblScope>
+			<biblScope unit="page" from="5824" to="5836" />
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b35">
+	<analytic>
+		<title level="a" type="main">You Complete Me: Human-AI Teams and Complementary Expertise</title>
+		<author>
+			<persName><forename type="first">Q</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">L</forename><surname>Lee</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Carter</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">CHI Conference on Human Factors in Computing Systems</title>
+				<imprint>
+			<date type="published" when="2022">2022</date>
+			<biblScope unit="page" from="1" to="28" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b36">
+	<monogr>
+		<author>
+			<persName><forename type="first">B</forename><surname>Zoph</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">I</forename><surname>Bello</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Kumar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Du</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Huang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Dean</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Shazeer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><surname>Fedus</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2202.08906</idno>
+		<title level="m">St-moe: Designing stable and transferable sparse expert models</title>
+				<imprint>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+				</listBibl>
+			</div>
+		</back>
+	</text>
+</TEI>

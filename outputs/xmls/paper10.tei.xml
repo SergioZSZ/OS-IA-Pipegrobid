@@ -1,0 +1,2148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xml:space="preserve" xmlns="http://www.tei-c.org/ns/1.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.tei-c.org/ns/1.0 https://raw.githubusercontent.com/kermitt2/grobid/master/grobid-home/schemas/xsd/Grobid.xsd"
+ xmlns:xlink="http://www.w3.org/1999/xlink">
+	<teiHeader xml:lang="en">
+		<fileDesc>
+			<titleStmt>
+				<title level="a" type="main">Watson &amp; Holmes: A Naturalistic Benchmark for Comparing Human and LLM Reasoning</title>
+			</titleStmt>
+			<publicationStmt>
+				<publisher/>
+				<availability status="unknown"><licence/></availability>
+			</publicationStmt>
+			<sourceDesc>
+				<biblStruct>
+					<analytic>
+						<author>
+							<persName><forename type="first">Thatchawin</forename><surname>Leelawat</surname></persName>
+							<email>thatchawin.leelawat.19@ucl.ac.uk</email>
+							<affiliation key="aff0">
+								<orgName type="department">Computer Science</orgName>
+								<orgName type="institution">University College London</orgName>
+								<address>
+									<country key="GB">UK</country>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Lewis</forename><forename type="middle">D</forename><surname>Griffin</surname></persName>
+							<email>l.griffin@cs.ucl.ac.uk</email>
+							<affiliation key="aff0">
+								<orgName type="department">Computer Science</orgName>
+								<orgName type="institution">University College London</orgName>
+								<address>
+									<country key="GB">UK</country>
+								</address>
+							</affiliation>
+						</author>
+						<title level="a" type="main">Watson &amp; Holmes: A Naturalistic Benchmark for Comparing Human and LLM Reasoning</title>
+					</analytic>
+					<monogr>
+						<imprint>
+							<date/>
+						</imprint>
+					</monogr>
+					<idno type="MD5">45D145E0CA41734041DFF6C1CC7ED1B2</idno>
+				</biblStruct>
+			</sourceDesc>
+		</fileDesc>
+		<encodingDesc>
+			<appInfo>
+				<application version="0.7.2" ident="GROBID" when="2026-05-14T17:26+0000">
+					<desc>GROBID - A machine learning software for extracting information from scholarly documents</desc>
+					<ref target="https://github.com/kermitt2/grobid"/>
+				</application>
+			</appInfo>
+		</encodingDesc>
+		<profileDesc>
+			<abstract>
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>Existing benchmarks for AI reasoning provide limited insight into how closely these capabilities resemble human reasoning in naturalistic contexts. We present an adaptation of the Watson &amp; Holmes detective tabletop game as a new benchmark designed to evaluate reasoning performance using incrementally presented narrative evidence, open-ended questions and unconstrained language responses. An automated grading system was developed and validated against human assessors to enable scalable and replicable performance evaluation. Results show a clear improvement in AI model performance over time. Over nine months of 2025, model performance rose from the lower quartile of the human comparison group to approximately the top 5%. Around half of this improvement reflects steady advancement across successive model releases, while the remainder corresponds to a marked step change associated with reasoningoriented model architectures. Systematic differences in the performance of AI models compared to humans, dependent on features of the specific detection puzzle, were mostly absent with the exception of a fall in performance for models when solving longer cases (case lengths being in the range of 1900-4000 words), and an advantage at inductive reasoning for reasoning models at early stages of case solving when evidence was scant.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.">Background</head><p>This section outlines key perspectives and developments in reasoning and its evaluation. It reviews major theoretical accounts of human and machine reasoning, surveys existing reasoning benchmarks used to assess AI models' reasoning capabilities across domains, examines approaches to autograding open-ended reasoning performance, and concludes with a discussion of current benchmark limitations and gaps.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.1.">Background on Reasoning</head><p>Human reasoning has been a central focus of inquiry across philosophy, psychology, mathematics, and artificial intelligence. In these disciplines and in specific domains, researchers have proposed diverse theories to understand how people draw conclusions, solve problems, and make decisions.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.1.1.">Philosophical perspectives</head><p>Philosophical approaches to reasoning typically present idealized accounts of how reasoning should operate to draw conclusions. A standard account is the classification of reasoning modes into deduction, induction and abduction. Deduction and induction were already recognized and distinguished in ancient Greek philosophy, particularly in Aristotle's logic <ref type="bibr" target="#b5">[6]</ref>. Much later in the 19th century Charles Sanders Peirce <ref type="bibr" target="#b6">[7]</ref> added abduction to this framework. The modes can defined as follows:</p><p>-Deduction: Reasoning following established canonical logical patterns.</p><p>-Induction: Inferences based on generalization from previous, ideally repeated, observations. -Abduction: The best possible explanation for the given facts.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.1.2.">Psychological perspective</head><p>From a psychological standpoint, reasoning is concerned with how people actually think and make decisions. In contrast to philosophical accounts of idealized reasoning, psychological theories emphasize that human reasoning is shaped by cognitive processes, heuristics, mental models, and social dynamics rather than being purely logical.</p></div>
+			</abstract>
+		</profileDesc>
+	</teiHeader>
+	<text xml:lang="en">
+		<body>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="1.">Introduction</head><p>Reasoning has long been regarded as a defining feature of human intelligence; and, more recently, artificial intelligence (AI) <ref type="bibr" target="#b0">[1]</ref>. From early symbolic and rule-based systems to today's large language models (LLMs), progress in AI has often been measured by the extent to which machines can replicate or approximate human reasoning <ref type="bibr" target="#b1">[2]</ref>.</p><p>Unlike previous engineered reasoning systems, which follow explicit logical rules, contemporary AI models acquire reasoning capabilities implicitly through exposure to massive text corpora ; emerging <ref type="bibr" target="#b1">[2]</ref> as a byproduct of language prediction <ref type="bibr" target="#b2">[3]</ref>. Exploring how such reasoning arises and how it can be reliably elicited or improved has become essential for understanding the boundaries of LLM intelligence <ref type="bibr" target="#b3">[4]</ref>.</p><p>Several benchmarks have been developed to track the rapid advancement of AI reasoning capabilities across diverse domains. In the reasoning field, these benchmarks assess a wide range of sub-types, including Psychologists have studied the role of heuristics, mental shortcuts that simplify decision-making. The classic heuristics and biases program <ref type="bibr" target="#b7">[8]</ref> hypothesized that human reasoning relies on such heuristics. This hypothesis was motivated by the observation of systematic patterns of judgment errors that were otherwise difficult to explain under models of fully rational reasoning. While heuristics enable robust and efficient decision-making in complex, real-world environments, they also lead to predictable deviations from normative logic and probability <ref type="bibr" target="#b8">[9]</ref>. Also influential is the mental model theory <ref type="bibr" target="#b9">[10]</ref> which proposes that human reasoning often relies less on application of rules and more on internal simulations of possible situations. Modern formulations integrate probabilistic reasoning and computational constraints, acknowledging that reasoners may not always construct full sets of possible models <ref type="bibr" target="#b10">[11]</ref><ref type="bibr" target="#b11">[12]</ref><ref type="bibr" target="#b12">[13]</ref>.</p><p>A prominent contemporary framework is the Dual Process Theory <ref type="bibr" target="#b13">[14]</ref>, which divides reasoning into type 1 and type 2. Type 1 is quick, instinctive, and often relies on mental shortcuts. It can be influenced by personal biases due to pattern recognition or past experience. Type 2 works at a slower pace, engaging in careful and logical analysis. Type 2 is engaged when we carefully work through a problem step by step, such as solving a mathematical problem, or making a complex decision by weighing pros and cons.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.1.3.">Mathematical Reasoning</head><p>Reasoning has also been discussed in domains where it is particularly important; especially mathematics, where it is used to discover, analyze, and prove mathematical truths. Polya <ref type="bibr" target="#b14">[15]</ref> outlined a practical fourstep problem-solving process: comprehend the problem, formulate a plan, implement the plan, and evaluate the solution. These techniques, while not guaranteeing a solution, can "speed up the process of reaching a satisfactory solution" by guiding one's reasoning in fruitful directions. Pólya also catalogued many heuristic strategies to support reasoning including: drawing a diagram to visualize the problem, examining special cases or examples, considering related problems, and breaking the problem into sub-problems.</p><p>Pólya's mid 20 th century notion of heuristic was explicitly intended as a guide for human minds in classrooms and research, not for mechanical or computational application, but recently, mathematicians have started to explore the limits and opportunities for AI reasoning for mathematics. Gowers <ref type="bibr" target="#b15">[16]</ref> has argued that artificial intelligence may eventually perform human-style mathematical reasoning, rather than being limited to pattern-matching or statistical learning. Initiatives such as the Polymath Project (2009) <ref type="bibr" target="#b16">[17]</ref> demonstrated how large-scale collaboration, guided by human heuristics, could collectively solve difficult mathematical problems. In parallel, the rise of formal proof assistants and autograders <ref type="bibr" target="#b17">[18,</ref><ref type="bibr" target="#b18">19]</ref> provided systems that verify logical correctness, enabling collaboration and rigor at scale.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.1.4.">AI Reasoning</head><p>AI reasoning is not designed explicitly to replicate human cognition <ref type="bibr" target="#b19">[20]</ref>, but the methods used to elicit reasoning from AI models are often cognitively inspired. For example, Chain-of-Thought (CoT) prompting <ref type="bibr" target="#b2">[3]</ref>, asks a model to "think step by step" before providing an answer <ref type="bibr" target="#b2">[3,</ref><ref type="bibr" target="#b20">21]</ref>. This technique has some alignment with deductive and inductive reasoning, and with type 2 reasoning. CoT significantly improves AI capabilities on various benchmarks such as GSM8K <ref type="bibr" target="#b2">[3]</ref>. Building on this idea, researchers proposed lighter variants such as Chain-of-Draft <ref type="bibr" target="#b21">[22]</ref>, which augments CoT with concise reasoning prompts. Instead of long rationales, the model is asked to generate a short and bounded reasoning step (limit to five words per step). This causes the model to achieve performance close to full CoT while moderating token usage.</p><p>CoT performance can be further improved through self-consistency <ref type="bibr" target="#b22">[23]</ref>, which samples multiple reasoning paths and aggregates their conclusions, thereby reducing spurious errors. Beyond linear chains, Tree-of-Thought prompting <ref type="bibr" target="#b23">[24]</ref> generalizes CoT by allowing branching exploration and backtracking, a process that closely resembles human problem-solving through hypothesis testing. Other cognitively inspired approaches include least-to-most prompting <ref type="bibr" target="#b24">[25]</ref>, where the model decomposes a complex task into simpler subproblems before solving them sequentially, and role-play prompting <ref type="bibr" target="#b25">[26]</ref>, where models adopt a role to provide scaffolding to their reasoning.</p><p>Later, a new generation of reasoning models emerged that incorporate internal mechanisms to support multi-step inference more directly. A notable example is DeepSeek-R1, which was trained using reinforcement learning objectives that reward not only correct final answers but also the production of structured and readable reasoning traces <ref type="bibr" target="#b26">[27]</ref>. Such innovations mark a shift from completion-only models (cModels) towards reasoning models (rModels). Similar developments can be observed across the industry: OpenAI's o1 and o3 series reportedly extend inference-time computation to scale internal reasoning depth <ref type="bibr" target="#b27">[28,</ref><ref type="bibr" target="#b28">29]</ref>, while Google's Gemini 2.5 Pro/Flash models also emphasize enhanced multi-step reasoning capabilities <ref type="bibr" target="#b29">[30]</ref>. These advances illustrate how AI models are beginning to embed structured reasoning processes within their architecture and training regimes, moving beyond reasoning elicited purely through prompting.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.2.">Reasoning Benchmarks</head><p>Tasks used to evaluate AI capabilities are known as benchmarks and have been developed to assess a wide range of competences. Here we focus on reviewing benchmarks related to reasoning, before reviewing some common implementation issues such as their reliance on multiple-choice formats, tainting of results due to data leakage, and the lack of consistent human baselines for comparison. Some reasoning benchmarks are constructed around a particular domain of human activity and use a task that tests a mixture of reasoning, domain understanding and domain knowledge, while others aim for varying degrees of abstract reasoning minimizing the role of knowledge. We review the following types: Commonsense Reasoning, Mathematical Reasoning, Logical and Deductive Reasoning, Algorithmic and Symbolic Reasoning, Domain-specific Reasoning, and Multi-hop Reasoning.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.2.1.">Commonsense Reasoning</head><p>Common Sense Reasoning Benchmarks aim to assess AI reasoning about situations from everyday life. Notable examples include:</p><p>CommonsenseQA <ref type="bibr" target="#b30">[31]</ref> is ~12K multiple choice questions (MCQs) designed to test everyday commonsense knowledge that is obvious to humans but challenging for AI models. For example "Where on a river can you hold a cup upright to catch water on a sunny day?" with answer options: waterfall (correct), bridge, valley, pebble, and mountain.</p><p>WinoGrande <ref type="bibr" target="#b31">[32]</ref> is a 44K MCQ pronoun resolution dataset, evaluating AI models ability to determine which noun a pronoun refers to within a sentence. For example: "The trophy doesn't fit into the brown suitcase because it is too large" has the correct answer 'trophy' and incorrect answer 'suitcase'.</p><p>HellaSwag <ref type="bibr" target="#b32">[33]</ref> is an MCQ commonsense reasoning benchmark where the most plausible sentence to complete a given paragraph must be chosen. These paragraphs are taken from video caption datasets featuring daily activities and step-by-step instructional articles from the WikiHow website.</p><p>PIQA <ref type="bibr" target="#b33">[34]</ref> is a dataset of 21K MCQs dataset focused on everyday actions, including practical reasoning and knowledge of objects' shape, material, and intended use. Each question follows a goal-solution format, where the goal describes an intended action and the model must choose the more plausible solution. The dataset draws inspiration from Instructables.com. <ref type="bibr" target="#b34">[35]</ref> is a dataset of 38K MCQs focused on everyday social scenarios. Question types include understanding a person's wants, reactions, descriptions, motivations, needs, and effects.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Social IQa</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.2.2.">Mathematical Reasoning</head><p>Benchmarks of this type assesses an LLM's ability to understand and solve mathematical problems. The problems can be of different complexity, ranging from elementary-level exercises to advanced, competitiongrade challenges.</p><p>At the elementary level, common benchmarks include GSM8K <ref type="bibr" target="#b35">[36]</ref>, which contains 8,500 grade school math problems, and its simplified version, GSM1K <ref type="bibr" target="#b36">[37]</ref>. SWAMP <ref type="bibr" target="#b37">[38]</ref> offers similar elementary-level problems, but this dataset introduces more variation in sentence structures. Other benchmarks in this category include CMATH <ref type="bibr" target="#b38">[39]</ref>, which measures the elementary reasoning of LLMs in the Chinese language, and VNHSGE <ref type="bibr" target="#b39">[40]</ref>, which is based on the Vietnamese High School Graduation Examination.</p><p>At the high school level, MATH <ref type="bibr" target="#b40">[41]</ref> includes 12,500 American competition problems spanning seven mathematical domains, such as AMC and AIME. Another benchmark, AGIEval SAT-MATH <ref type="bibr" target="#b41">[42]</ref>, is derived from SAT math problems, and JEEBench <ref type="bibr" target="#b42">[43]</ref> presents Indian joint entrance examination questions.</p><p>At the higher education level, UGMathBench <ref type="bibr" target="#b43">[44]</ref> provides ~5K undergraduate-level questions for evaluation, while U-MATH <ref type="bibr" target="#b44">[45]</ref> focuses on open-ended university mathematics problems. For graduatelevel reasoning, HARDMATH <ref type="bibr" target="#b45">[46]</ref> targets skills in asymptotic thinking and approximation.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.2.3.">Logical and Deductive Reasoning</head><p>This type of reasoning follows formal rules, draws logically valid inferences, and maintains internal consistency. Natural Language Inference (NLI) is a key area within logical reasoning, where models determine whether a hypothesis is entailed, contradicted, or neutral with respect to a given premise <ref type="bibr" target="#b46">[47]</ref><ref type="bibr" target="#b47">[48]</ref><ref type="bibr" target="#b48">[49]</ref><ref type="bibr" target="#b49">[50]</ref>. Several benchmarks have been developed to evaluate this ability. For example, ConjNLI <ref type="bibr" target="#b46">[47]</ref> challenges models to reason about conjunctions within sentences. TaxiNLI <ref type="bibr" target="#b47">[48]</ref> focuses on logical reasoning across categories such as mathematical logic, connectives, and deductive inference. ConTRoL <ref type="bibr" target="#b49">[50]</ref> emphasizes contextual reasoning, requiring models to make inferences based on nuanced contextual cues. Additionally, HELP <ref type="bibr" target="#b48">[49]</ref> and MED <ref type="bibr" target="#b50">[51]</ref> are designed to assess monotonicity, a core principle in formal logic that tests how conclusions are preserved under specific operations.</p><p>Other benchmarks that fall into this category include ReClor <ref type="bibr" target="#b51">[52]</ref> and LogiQA <ref type="bibr" target="#b52">[53]</ref>, both of which are reading comprehension datasets that require logical reasoning. LogiQA features MCQs derived from Chinese civil service and law school exams, translated into English, and covers logical puzzles and analytical reasoning tasks. ReClor, on the other hand, is constructed from logical reasoning questions in standardized exams (such as the LSAT). It presents passages followed by questions that involve identifying assumptions, recognizing logical fallacies, or completing arguments.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.2.4.">Algorithmic and Symbolic Reasoning</head><p>This category focuses on working with symbols and following clear step-by-step rules, especially in ways that are not purely numerical. It emphasizes logical thinking, solving problems like a computer, and handling patterns or structures in language or code.</p><p>Benchmarks in this category range from simpler code generation and problem-solving tasks such as HumanEval <ref type="bibr" target="#b53">[54]</ref>, which focuses on logic, syntax, and correctness, to more advanced challenges such as MBPP <ref type="bibr" target="#b54">[55]</ref> designed to test procedural reasoning and generate correct code using introductory programming tasks. In the advanced class, APPS <ref type="bibr" target="#b55">[56]</ref> targets broad range of programming problems difficulties, from basic to competitive-level. CodeContests <ref type="bibr" target="#b56">[57]</ref> focus specifically on competition-grade programming problems sourced from real contests like Codeforces, demanding deep logical thinking and algorithmic design. An extension, CodeContests+ <ref type="bibr" target="#b57">[58]</ref>, generates additional AI-curated problems and test cases. QuixBugs <ref type="bibr" target="#b58">[59]</ref>, focuses on automatic bug correction in code.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.2.5.">Domain-specific Reasoning</head><p>Domain-specific reasoning benchmarks test models on questions that require knowledge related to a particular domain: scientific, legal or medical. This assesses both reasoning, and knowledge retrieval and application.</p><p>Humanity's Last Exam (HLE) <ref type="bibr" target="#b59">[60]</ref> is a 2.5K question multimodal benchmark that includes both text-only items and questions paired with reference images. HLE positions itself as testing performance at the frontier of expert human knowledge. It spans mathematics, humanities, natural sciences, and computer science. HLE consists of multiple-choice and short-answer questions graded using exact-match evaluation. Questions were contributed by experts and rigorously filtered and reviewed including automated difficulty checks against frontier language models and subsequent human expert review. These questions are intentionally crafted to be difficult, precise, and resistant to simple internet search or retrieval. According to the public HLE leaderboard, the current top model achieves approximately 38% accuracy <ref type="bibr" target="#b60">[61,</ref><ref type="bibr" target="#b61">62]</ref>.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Science-Based Benchmarks</head><p>The AI2 Reasoning Challenge (ARC) <ref type="bibr" target="#b62">[63]</ref> consists of ~8K MCQs on science topics from school grades 3-9. Models are required to recall factual knowledge and apply reasoning based on those facts. This benchmark focuses on recall, reasoning, knowledge synthesis, and inference.</p><p>OpenBookQA <ref type="bibr" target="#b63">[64]</ref> also focuses on the science domain, but requires models to extract relevant information from a provided collection of scientific facts rather than retrieve from memory. To solve these questions, models must combine those extracted facts with general reasoning skills.</p><p>SciQ <ref type="bibr" target="#b64">[65]</ref> contains ~14K science MCQs gathered through crowdsourcing. Unlike ARC and OpenBookQA, SciQ emphasizes the recall of factual knowledge and basic comprehension of science topics rather than complex reasoning or inference.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Biomedical and Medical Benchmarks</head><p>In more specialized scientific domains, benchmarks such as PubMedQA <ref type="bibr" target="#b65">[66]</ref> and MedQA <ref type="bibr" target="#b66">[67]</ref> have been developed. PubMedQA evaluates models on biomedical question answering, requiring understanding of scientific research texts in the form of PubMed abstracts. MedQA, in contrast, focuses on the medical domain and includes questions based on medical licensing exams. These benchmarks demand a high degree of domain knowledge and the ability to interpret and reason over complex scientific and clinical information.</p><p>Recently, the MedXpertQA <ref type="bibr" target="#b67">[68]</ref> benchmark has been proposed for expert-level medical reasoning. It includes ~4K questions and introduces a multimodal variant that combines text with clinical images. The dataset is adapted from real patient records and examination results, making it more clinically realistic than earlier benchmarks.</p><p>Another advancement is LLMEval-Med <ref type="bibr" target="#b68">[69]</ref>, which emphasizes evaluation on real-world clinical data. It contains ~3K questions derived from electronic health records, spanning five essential medical dimensions with a focus on open-ended tasks rather than only multiple choice. LLMEval-Med also introduces a dynamic evaluation framework that combines automated "LLM-as-Judge" assessment with expertdeveloped checklists, iteratively refined through human-machine agreement analysis to ensure reliability. Similarly, MedQA-CS <ref type="bibr" target="#b69">[70]</ref> adopts an AI-Structured Clinical Examination approach, modeled after OSCEs, where the LLM functions as an automated examiner to assess professional, open-ended clinical responses.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Legal Reasoning Benchmarks</head><p>LegalBench <ref type="bibr" target="#b70">[71]</ref> is an open-source benchmark developed collaboratively by experts in law and computer science. It contains 162 diverse tasks aimed at evaluating AI capability on reasoning in legal contexts. The tasks are of six types: issue-spotting (identifying whether a scenario raises a legal issue), rule-recall (recognizing the correct legal rule), rule-application (applying a legal rule to a set of facts), rule-conclusion (deriving the legal outcome), interpretation (extracting meaning from legal texts), and rhetoricalunderstanding (figuring out the role or purpose of language in legal arguments). From the perspective of classical reasoning, the legal domain relies most heavily on deduction, particularly in rule-application and rule-conclusion, and on abduction, which is central to issue-spotting, interpretation, and rhetoricalunderstanding.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.2.6.">Multi-hop Reasoning</head><p>Multi-hop reasoning benchmarks assess how well a model can connect multiple pieces of information to deduce a conclusion. These tasks often require retrieving or inferring intermediate steps (hops) before concluding.</p><p>One commonly used benchmark is HotpotQA <ref type="bibr" target="#b71">[72]</ref>, a large-scale crowdsourced dataset containing 113K questions specifically designed for multi-hop question answering. Solving these questions requires identifying relevant information from the provided paragraphs and synthesizing multiple facts to conclude.</p><p>Unlike other multi-hop reasoning benchmarks, StrategyQA <ref type="bibr" target="#b72">[73]</ref> is a dataset of ~3K multi-step questions that emphasizes implicit reasoning, where the reasoning step is not stated in the question or the data. It challenges models to infer the necessary intermediate steps on their own to answer yes/no questions.</p><p>MuSiQue <ref type="bibr" target="#b73">[74]</ref> contains 25K questions requiring 2-4 reasoning hops. These questions are carefully constructed by combining single-hop questions-a method designed to reduce reasoning shortcuts. This approach helps mitigate issues such as overly specific sub-questions or train-test leakage.</p><p>SCoRE <ref type="bibr" target="#b74">[75]</ref> extends multi-hop reasoning into the domain of commonsense knowledge, covering the spatial, temporal, social, and natural domains. Rather than retrieving textual evidence, SCoRE evaluates whether models can perform structured, multi-step reasoning by composing multiple commonsense statements to reach a logical conclusion.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.2.7.">Abstract Reasoning</head><p>ARC-AGI-1 <ref type="bibr" target="#b75">[76]</ref> is a visual benchmark designed to test the ability of systems to rapidly acquire unfamiliar skills and solve problems that are not explicitly included in their training data. Each task is presented as small (e.g. 20 by 20) grids of coloured cells organized as a few pairs of input-output demonstrations. The system must infer the underlying transformation rules from input to output from these demonstrations and apply them to novel inputs. Because the rules are never provided directly, solutions cannot be achieved through memorization, and the benchmark is designed to avoid leakage of test data into model training. While human participants generally find the tasks solvable (98% success), even advanced machine learning systems continue to struggle with them (o3-preview (low) model achieves only 76% accuracy) <ref type="bibr" target="#b76">[77]</ref>.</p><p>Later, ARC-AGI-2 <ref type="bibr" target="#b77">[78]</ref> was introduced with several refinements: reducing susceptibility to brute-force solutions, incorporating large-scale human testing to establish reliable baselines, expanding the task set to cover a wider range of difficulty, and calibrating challenge levels across the public, private, and semi-private evaluation splits to ensure consistent human solvability.</p><p>A key strength of ARC-AGI benchmarks is that they do not require domain-specific or world knowledge, and are resistant to data leakage. However, their narrow focus on abstract tasks raise questions about the extent to which performance on these benchmarks can generalize to broader reasoning tasks.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.2.8.">Game Based Benchmarks</head><p>A growing trend in LLM benchmarking is adapting and modifying games to serve as reasoning benchmarks. This approach is promising, as the structured rules and clear objectives of games provide a controlled environment to evaluate reasoning, strategy, and decision-making capabilities. Additionally, compared to static benchmarks, interactive game-based evaluations more closely resemble real-world reasoning, where models must adapt, plan, and respond dynamically during the interaction. Notable game-based benchmarks are the following: GTBench <ref type="bibr" target="#b78">[79]</ref> includes classic games such as Tic-Tac-Toe, Connect Four, Negotiation, and Nim, used to evaluate the mathematical, algorithmic, and logical reasoning of AI models; and modern competitive games like Diplomacy, Werewolf, and Avalon, which assess capabilities such as deception detection, role inference, coalition formation, and negotiation. Both classes of game require multi-hop, interactive, and strategic reasoning.</p><p>GameArena <ref type="bibr" target="#b79">[80]</ref> is a benchmark adapted from three interactive games: Akinator, Taboo, and Bluffing. Each game is designed to evaluate a specific type of reasoning in LLMs.</p><p>Akinator is a version of the classic 20-questions game in which an object must be identified by asking a series of questions with answer yes, no or uncertain. This game has been claimed to assess deductive reasoning but may be better characterized as abduction-dominated, since the model must infer the most plausible object from incomplete and often uncertain responses, updating its hypotheses as new information becomes available.</p><p>In the Taboo game, the goal of the human player is to ask the AI model questions that lead it to say a chosen 'taboo' word, while the model attempts to guess that word before it utters it in a response to a question. This game is claimed to engage abductive reasoning, as the model must infer the most plausible concept from indirect and incomplete linguistic cues.</p><p>In the Bluffing game, the human participant begins by making a statement that may be accurate or fabricated and attempts to convince the AI model of its credibility. This task engages inductive reasoning, since the model generalizes from a limited set of conversational cues to assess the likelihood of honesty or deception, but also abductive reasoning, as the model infers the most plausible explanation for inconsistencies or behavioral patterns in the player's answers.</p><p>While GameArena provides a structured framework for assessing different forms of reasoning in LLMs, it also presents several challenges. The reasoning categories assigned to each game (deductive, inductive, and abductive) are not always clearly delineated, as many tasks involve overlapping cognitive processes.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.2.9.">Detective Game based benchmarks</head><p>Detective-style benchmarks require models to analyse narrative contexts, identify relevant clues, and infer the most plausible conclusion. The tasks combine elements of logical, multi-hop, and commonsense reasoning, offering a closer simulation of human-style problem solving under uncertainty in naturalistic scenarios.</p><p>DetectBench <ref type="bibr" target="#b80">[81]</ref> is a benchmark consisting of ~4K MCQs devised around short detective-style scenarios. The benchmark is organized into three levels of difficulty. The baseline DetectBench task uses contexts averaging 140 words, while DetectBench-Hard and DetectBench-Distract introduce longer contexts. Each participant answered 15 questions drawn from a subset of 250 development-set questions, ensuring that each question was independently answered by three participants. Humans achieved 74% accuracy on questions, while the best LLM accuracy achieved was 62% achieved by GPT4 guided by a crafted prompt.</p><p>True Detective <ref type="bibr" target="#b81">[82]</ref> is a MCQ benchmark in which each case is presented as a detective-style puzzle of around 1,200 words, requiring the culprit to be identified. The benchmark question data are sourced from an online puzzle platform, raising the possibility that some instances may have been exposed during LLM training. Human performance is inferred from solve-rate statistics reported on the same platform; however, the number of participants and their demographic or educational backgrounds are not specified. Solve rate is used as the primary evaluation metric. Human accuracy ranges from 40% to 60%, while GPT-4 achieves 38% under standard conditions.</p><p>WHODUNIT <ref type="bibr" target="#b82">[83]</ref> is a new benchmark for deductive reasoning in narrative contexts, requiring an AI to identify the culprit in mystery-style stories (median length ≈ 220 pages) directly drawn from published fictions from famous writers such as Agatha Christie and Arthur Conan Doyle. The dataset also includes name-swap variants aimed at defeating memorization. After reading the narrative, the model is prompted with an open-ended question such as 'Who is the culprit?', and its answer is evaluated against the annotated ground truth. Unlike DetectBench and True Detective, which use MCQ, this benchmark evaluates the LLM reasoning by checking whether the model's output exactly matches the culprit's name. GPT-4o correctly identified the culprit in 84% of stories, with performance decreasing by approximately 1-3% with substituted names. Comparison human performance data has not been provided by the study authors.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.3.">Autograding of performance</head><p>Many benchmarks use MCQs but these have limitations that reduce their usefulness as a gauge of reasoning ability. Their constrained-choice format limits opportunities for open-ended reasoning, synthesis, and justification <ref type="bibr" target="#b83">[84]</ref>, which are considered important in educational measurement research <ref type="bibr" target="#b84">[85,</ref><ref type="bibr" target="#b85">86]</ref>. Other studies <ref type="bibr" target="#b85">[86,</ref><ref type="bibr" target="#b86">87]</ref> find that when models shift from MCQs to open-ended reasoning tasks, their performance sharply declines. This further highlights the limitations of MCQ-based benchmarks in accurately measuring reasoning ability. Furthermore, MCQs enforce binary scoring preventing awarding partial credit for partially correct reasoning answers. As observed in commonsense reasoning benchmarks, some MCQs embed ambiguity or multiple plausible answers, meaning that forcing a single "correct" choice can misrepresent nuanced judgments or reasoning paths <ref type="bibr" target="#b87">[88]</ref>. Given these limitations of the MCQs, open-ended questions provide a more faithful measure of reasoning ability by allowing systems to articulate their own reasoning processes without being affected by options in MCQ.</p><p>While open-ended questions are better probes, their grading is time-consuming and potentially variable. Grading rubrics are commonly used in educational measurement to reduce these issues. Rubrics provide structured evaluation criteria, often encompassing dimensions such as factual correctness, logical coherence, justification quality, and completeness of reasoning <ref type="bibr" target="#b88">[89,</ref><ref type="bibr" target="#b89">90]</ref>. This structured approach enables evaluators to move beyond binary correctness and capture richer aspects of performance, such as whether a response demonstrates sound reasoning, even if the final conclusion is partially incorrect.</p><p>Reliable evaluation of open-ended reasoning tasks requires scalable, consistent autograding, since human grading introduces bias, order effects, limited reproducibility across studies, and does not scale to modern benchmark sizes <ref type="bibr" target="#b18">[19,</ref><ref type="bibr" target="#b90">91]</ref> Early autograding approaches primarily relied on similarity-based methods such as semantic overlap, ngram matching or embedding similarity to compare responses with a reference answer <ref type="bibr" target="#b86">[87,</ref><ref type="bibr" target="#b91">[92]</ref><ref type="bibr" target="#b92">[93]</ref><ref type="bibr" target="#b93">[94]</ref>. While effective for factual questions, these techniques fail to capture reasoning quality or partial correctness when responses deviate lexically but remain semantically valid.</p><p>Recent work explores open-ended autograding using AIs as automated evaluators. AI-as-judge frameworks assess responses in context, interpreting arguments, explanations, and evidence expressed in free-form text <ref type="bibr" target="#b68">[69,</ref><ref type="bibr" target="#b85">86]</ref>. With well-designed prompts or rubrics, these systems achieve accuracy comparable to human graders while maintaining scalability and reproducibility across large datasets <ref type="bibr" target="#b89">[90,</ref><ref type="bibr" target="#b90">91,</ref><ref type="bibr" target="#b94">95]</ref>. Such approaches help reduce variability among evaluators, enhance scalability, and promote consistency.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.4.">Discussion of benchmarks</head><p>Despite their diversity, many reasoning benchmarks share the following limitations. First, most rely on MCQ formats, which simplify evaluation but fail to capture open-ended reasoning and explanation. This restricts assessment to answer accuracy rather than the quality of the reasoning process. For instance, several commonsense reasoning benchmarks such as CommonsenseQA <ref type="bibr" target="#b30">[31]</ref>, SocialIQA <ref type="bibr" target="#b34">[35]</ref>, and PIQA <ref type="bibr" target="#b33">[34]</ref> employ MCQs to test different aspects of commonsense reasoning. While these datasets are effective for measuring factual correctness, they often overlook partially correct or nuanced reasoning that large language models (LLMs) may produce. DetectBench <ref type="bibr" target="#b80">[81]</ref> exemplifies this limitation: although it aims to evaluate evidence detection and reasoning, it still depends on MCQs, constraining its ability to assess explanatory reasoning.</p><p>Second, some benchmarks may be prone to leakage of test data into training data, since their questions are sourced from widely available online platforms or classic texts <ref type="bibr" target="#b81">[82,</ref><ref type="bibr" target="#b82">83]</ref> that may appear in pretraining corpora. Leakage would cause reasoning performance to be over-estimated. For instance, in the WHODUNIT benchmark GPT-4o correctly identified the culprit in 84% of stories, with performance decreasing by approximately 1-3% when character names were substituted or the story theme was modified. This reduction suggests that the model had been exposed to the original material during training, and there is no guarantee that simple name substitution is sufficient to eliminate leakage effects fully.</p><p>Third, provision of human baselines for comparison is inconsistent. For example, MedQA reports model performance relative to the average passing performance of human medical students on the USMLE; while MedQA-CS positions AIs as "virtual students" in OSCE-style tasks but does not provide direct human student comparison. When human comparisons are provided it is important that the testing pool is well characterized and appropriately motivated.</p><p>A further crucial issue is the persistent gap between task competence and real-world competence. Performance on narrowly defined benchmark tasks does not necessarily generalize to reasoning ability in naturalistic settings. Increasing the naturalness and diversity of benchmarks, particularly through interactive or game-based formats, offers one way to address this limitation. While seeming less serious than traditional test-style evaluations, such formats provide a more naturalistic context for assessing reasoning. For instance, GTBench <ref type="bibr" target="#b78">[79]</ref> and GameArena <ref type="bibr" target="#b79">[80]</ref> evaluate reasoning in interactive, dialogue-driven, or strategic contexts, while detective-style benchmarks such as DetectBench <ref type="bibr" target="#b80">[81]</ref> and WHODUNIT <ref type="bibr" target="#b82">[83]</ref> simulate narrative problem-solving that more closely reflects real-world inference and decision-making.</p><p>Another critical issue with current benchmarks is that many established reasoning datasets, such as CommonsenseQA <ref type="bibr" target="#b30">[31]</ref>, WinoGrande <ref type="bibr" target="#b31">[32]</ref>, HellaSwag <ref type="bibr" target="#b32">[33]</ref>, and PIQA <ref type="bibr" target="#b33">[34]</ref>, have become saturated with model scores reaching or exceeding human scores. Saturated benchmarks are still useful, for example to assess the performance of lower compute models, but they become imprecise as scores reach the maximum possible.</p><p>The ideal reasoning benchmark would combine several key attributes:</p><p>• it would be immune to test data leakage,</p><p>• provide a precise measure of performance • be calibrated against robust human baselines, • resist rapid saturation, • reflect reasoning in naturalistic contexts. Such a benchmark has not yet been fully realized.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>3.Experimental Methods</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.1.">The W&amp;H game and its adaptation for the WnH benchmark</head><p>The Watson &amp; Holmes (W&amp;H) tabletop game <ref type="bibr" target="#b4">[5]</ref> was adapted for use in assessing the reasoning abilities of LLMs. We first describe the original form of the game, and then its adaptation.</p><p>Watson &amp; Holmes is a whodunnit game, in which players compete to be the first to solve a mystery using reasoning skills such as deduction, induction, and abduction. Each play of the game involves a fresh case, which can only be attempted once only. Each case consists of:</p><p>• A case introduction given in narrative form (e.g. a report of a new client visiting Holmes). Mean length 600 words. • Location cards with narrative text within which is information and clues to solving the case. Mean of 15 locations per case: mean of 160 words per location. • 2-4 questions per case which players must answer correctly to solve it.</p><p>• Model answers to those questions.</p><p>• A case solution given in narrative form (e.g. Holmes describes his reasoning to Watson). Mean length 600 words.</p><p>As W&amp;H is a commercial product that depends on players encountering each case for the first time, the case texts are neither distributed online nor provided in digital form with the game. We therefore consider it unlikely that they have appeared in any model training datasets.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>The unadapated game</head><p>The unadapted game is designed for three to seven players. It begins with reading of a case introduction (e.g. Figure <ref type="figure">1</ref>), review of the list of available case locations (e.g. Figure <ref type="figure" target="#fig_0">2</ref>), and distribution of initial resources to the players, namely Carriage Tokens, which can be used to bid for locations. Play then proceeds with alternating visiting and investigation phases.</p><p>During visiting phases, each player in turn chooses a location to visit and places a bid on it using Carriage Tokens. If a location is already taken, any other player wishing to enter during that turn must outbid the current occupant. Once a visiting phase is finished, the game enters an investigation phase, where players privately review the text for the location they have chosen to visit, taking notes as desired, and follow any special conditions or restrictions indicated for the location.</p><p>When a player feels confident that they understand the mystery they can visit a special location (221B Baker St) to unlock the case questions (e.g. Figure <ref type="figure" target="#fig_1">3</ref>, left). They write answers to the questions which they then compare to the model answers (e.g. Figure <ref type="figure" target="#fig_1">3</ref>, right). If their answers are correct, they win the game; otherwise, they reveal only how many questions they answered correctly, and play continues for any remaining players.</p><p>Once a player has won the game, or all players have lost, players finish by reading the case solution (e.g. Figure <ref type="figure" target="#fig_2">4</ref>) which presents an idealized reasoning path in narrative form.</p><p>Figure <ref type="figure">1</ref>: The introduction to the case 'A damsel in distress' as it is presented to the players in the tabletop game. Note, in this tutorial case (available free online) players get the questions along with the introduction, rather than only once they declare themselves ready to solve the case by visiting a special location.   </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>The adapated game</head><p>Beyond the detective skills required to solve a case, the game requires some strategic decision-making: choosing how to bid carriage tokens to secure a visit to a location, and choosing when to risk revealing and attempting the case questions. These strategic decisions are more complex in some cases that have special rules (e.g. the possibility to lock a location making it difficult for other players to access). To adapt the game to be a test of LLM reasoning we remove the strategic elements by making the following changes:</p><p>• Single player • Case questions detailed as part of case introduction.</p><p>• Locations can be visited in any order without bidding or locking mechanisms.</p><p>• Case questions are answered after the introduction and after each location.</p><p>• Play continues until all locations have been visited.</p><p>• Cases with significant special rules or visual clues are not used for LLM play -leaving 12 suitable cases. The first case is used for human player practice and is excluded from analysis.</p><p>The adapted process flow is shown in Figure <ref type="figure" target="#fig_3">5</ref>. The same workflow is used for both human participants and LLMs. The eleven cases used for performance evaluation had a mean of 15 (SD = 2) locations. The mean word count per case (introduction plus location texts) was 2,900 (SD = 600). The number of questions per case ranged from two to five (mean = 3.4), giving in total 37 questions across the eleven cases.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.1.1.">Human experiment</head><p>Five participants were recruited from UCL undergraduate Computer Science students subject to the criteria that they were at least 18 years old and had good English language proficiency. Solving detective cases was mentioned in the advertising to encourage motivated subjects.</p><p>Each participant solved each case in a separate online session which used video chat between the experimenter and participant, and an online slide deck and answer sheet. Participants were given access to the slide deck, which initially contained only the case introduction, the case questions, and a list of locations available for investigation. As play progressed the experimenter appended slides to the deck providing the narrative text of newly visited locations. Participants were able to navigate freely through the deck, revisiting previously viewed locations at their own pace. Participants were also free to take personal notes or highlight content within the slide deck as they progressed through the case. Players were given access to the answer sheet into which they recorded their answers to the case questions after reading the case introduction and after visiting each location. At each step, participants were encouraged to integrate newly revealed clues with those previously collected before submitting their next response.</p><p>The first case (case 0) was used to familiarize participants with the game and our implementation of it. The scores from this introductory case were not used in computing player performance.</p><p>Participants were rewarded according to a two-part scheme which incentivized diligent performance. First, participants were compensated at the London Living Wage rate (2025) for time spent solving cases (hence no incentive to rush). Second, the highest-scoring participant on each case received double payment for that case.</p><p>The UCL Computer Science Research Ethics Committee approved the experiment.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.1.2.">AI experiment</head><p>To implement the game for AI models we use three prompt templates as outlined below and detailed in appendix B.1. Each template is filled in with case-or location-specific information depending on the stage of play.</p><p>Introduction prompt. This prompt instructed the AI to solve the detective case and presented the case introduction and the case questions. The prompt ends with an instruction to the model to provide initial answers, in JSON format, to the questions.</p><p>Choose location prompt. This prompt recaps the case introduction (including the case questions) and the text of each location that has been visited so far during solving. This is followed by the list of locations not yet visited from which the model is instructed to select one and output it in JSON format.</p><p>Note that recapping the introduction and the text of locations already visited is necessary as the model is freshly prompted each time, rather than appending to a growing context. This prevents the model's previous answers to the case questions being visible to it as it makes a location choice, or answers case questions.</p><p>Question answering prompt. This prompt recaps the case introduction (including the case questions) and the text of each location that has been visited so far during solving. The prompt ends with an instruction to the model to provide answers, in JSON format, to the questions.</p><p>The models employed in the study are shown in Table <ref type="table" target="#tab_0">1</ref>, which includes both completion model (cModel) and reasoning (rModel) systems. Variants designed to reflect different levels of reasoning effort were also included (i.e., GPT-5-high vs. GPT-5, and o3-high vs. o3-pro). A default temperature value of 1.0 was applied when available, except for models that do not support temperature control (e.g., o1), for which the feature was disabled. In the unadapted version of the game, players answer the case questions only once, and the game is then ended for that player. In the adapted game, the player's answers are collected after the case introduction and after each location is visited.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>LLM Model</head><p>In the unadapted game, answer correctness is determined by the player themselves, by comparison with the model answers provided, and binary scoring of each answer as correct or incorrect. In the adapted version each answer was scored on a 4-point scale. This allows intermediate levels of solving to be gauged, yielding a more precise score. The scoring scale was as follows.</p><p>0: No elements are present and correct, or the answer is misleading, nonsensical, or intentionally wrong.</p><p>1: Some elements are present and correct, but most are absent or incorrect.</p><p>2: Most elements are present and correct, but some are missing or incorrect.</p><p>3: All elements are present and correct.</p><p>In the original game all that matters is whether or not a player answers all questions correctly at their single opportunity to answer them. For the adapted game four score metrics are used.</p><p>-Instantaneous score is the score at a particular number of locations into a case.</p><p>-Progressive score is the instantaneous score averaged across all stages of solving a case.</p><p>-Final score is instantaneous score at the end of the case.</p><p>-Overall score is the mean of progressive and final scores. By combining progressive and final scores, a high overall score requires a case to be fully solved, and as early as possible.</p><p>Finally, overall performance was defined as the mean of the overall score across all questions in all cases.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.2.2">Auto grading</head><p>As manual marking of case answers is time-consuming and potentially affected by the grader and their grading history, an automated AI-based grading system was developed to avoid these issues. To validate the autograder, a test dataset of sample answers was written by the experimenters, and these were graded by five markers working independently. For each question, these markers were provided with 2-3 example answers with grades at each level of grading 0-3. These grading examples were devised by the experimenters following discussion.</p><p>We used GPT 4.1 as autograder and experimented with the following variant prompting schemes (examples are provided in the appendix A.1.). All prompt modes included the case introduction, the case solution, the question, the model answer, and the task instruction. The differences between the modes were as follows:</p><p>-Mode 1: standard elements plus marking scheme and marking examples.</p><p>-Mode 2: same as mode 1, but elements in a different order.</p><p>-Mode 3: as mode 1 but without case solution -Mode 4: standard elements plus an LLM-generated marking rubric.</p><p>-Mode 5: as mode 4 but without use of the case solution during rubric generation.</p><p>The rubrics in Modes 4 and 5 were generated by prompting GPT-4.1 to provide detailed guidance on how to assign scores. The inputs to this rubric generation process were the question, the model answer, marking examples and, for mode 4, the case solution. The generated rubric defined criteria for each score (0-3), including a definition of how the score should be awarded, examples of answers at that level, and edgecase guidance such as how to handle partial answers or minor misspellings.</p><p>To identify the best-performing autograding mode the grades assigned by each were compared to those assigned by the human graders, with the agreement quantified by the percentage of grades agreeing exactly (% Agreement), and the root mean square (RMS) difference in grades.</p><p>Table <ref type="table">2</ref> details how the different autograder modes agree with human graders, giving the mean human-human agreement scores as comparison. Taking account of both agreement percentage and RMS grading mismatch, mode 5 was the best performing. Mode 5 autograder-human agreement is close enough to human-human agreement to make its use acceptable, and so all performance results in the remainder of this report will be based on mode 5 autograding performed by GPT 4.1.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Comparison</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>% Agree RMS</head><p>Human  <ref type="table">2</ref>: Agreement metrics between autograder modes and human graders. % Agreement is the proportion of questions on which they produced the exact same answer grading, and RMS the root-meansquare error between their answer grades.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.3.">Supplementary Methods</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.3.1">Question IDA rating</head><p>For use in performance analysis, each question was rated according to the importance of the three types of reasoning -induction, deduction and abduction (IDA) -needed to answer it. Ratings were very low, low, medium, high, very high. These ratings were set by an AI (GPT-5 Thinking) based on the full text of a case. The prompt used was:</p><p>"I am going to upload a document describing a Sherlock Holmes detective case, including an introduction, clues at different locations, and a solution. Three questions and their answers are provided. For each question, discuss the reasoning required to answer it correctly. Then I would like you to grade the importance of the three types of reasoning -inductive, deductive and abductive -in correctly answering the question. Grade each as very low, low, medium, high, very high."</p><p>Examples of the reasoning behind IDA ratings are provided in Figures 6. Figure <ref type="figure">6</ref>: An example of the reasoning behind IDA rating.</p><p>The same rating procedure was repeated but with only the case introduction provided, so without the locations' text, yielding a second set of IDA ratings.</p><p>The induction, deduction, and abduction ratings across the eleven cases are summarized in table <ref type="table">3</ref>.</p><p>Ratings (full case) Ratings (just intro) Induction 1.1 (0.6) 1.1 (0.5) Deduction 2.4 (0.9) 1.0 (0.9) Abduction 3.1 (0.7) 2.9 (0.9) Table <ref type="table">3</ref>: IDA ratings of questions IDA ratings -mean(sd), all on a scale of 0 to 4.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.3.2">Choice of main models and assessment of their performance variance</head><p>To simplify results presentation, a high performing cModel and a high performing rModel were chosen for extra analysis.</p><p>• Main cModel: GPT-4.1 • Main rModel: GPT-5 AI performance may vary across solving attempts due to stochastic variation in internal reasoning and output token generation. To assess this, five repeat complete runs were made with the main models. In the results and discussion, the average score across the five runs are reported for the main models, and single run scores for other models.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.3.3">Uncertainty Analysis</head><p>To assess uncertainty arising from the limited sample of human participants (n = 5), the finite set of WnH questions (n = 37), and variability across repeated model executions (five independent runs for the main rModel and cModel), a non-parametric bootstrap analysis was performed. This approach allows us to quantify (i) model performance uncertainty, and (ii) confidence in the comparison between model and human performance. By bootstrapping different combinations of study dimensions (participants, repeat runs and question pool) we determined the main contributors to the uncertainties.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.3.4">Choice of prompt system on the model performance</head><p>To assess the impact of prompt design on LLM performance, the following prompt systems were used:</p><p>-Simple Prompt, used in the main AI experiment section and other experiments in this article, directly asks the model to provide an answer either after the case introduction or after visiting a location. -Discussion Prompt, which is similar to the Simple Prompt, but additionally encourages the model to discuss and reason about the case before providing an answer. Accordingly, both the introduction and question-answering prompts are modified. -Revision Prompt, which extends the Discussion Prompt by adding a further prompt that instructs the model to reflect on and critique its answer after the initial discussion, and then produce a final answer.</p><p>The full prompts are provided in Appendix C.1.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.">Results</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.1.">Benchmark Scores</head><p>Table <ref type="table" target="#tab_2">4</ref> and Figure <ref type="figure" target="#fig_4">7</ref> present the performance scores for all humans and models tested.</p><p>Focusing on the overall performance score (average of progressive and final), the best performing cModel was GPT-4.1 with a score of 1.45, slightly ahead of the mean human score of 1.43. GPT-4.1 is our main cModel that we focus analysis on. The best performing rModel was o3-pro with a score of 2.14, which is well ahead of the best human player's score of 1.80. Our main rModel, GPT-5, performed slightly below o3-pro with a score of 2.10. Assuming that the population of human scores is normally distributed, we estimate that the o3-pro and GPT-5 overall performance scores are in the top 5% of human scores. As shown in Figure <ref type="figure" target="#fig_4">7</ref>, rModels outperform cModels. The differences in performance between the top five rModels are small, and clearly ahead of other rModels. o3-pro performs best, closely followed by GPT-5high, GPT-5, o3, and o3-high. Among the cModels there is a single distinct best model-GPT-4.1.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Model name</head><p>Comparing the same rModel under different reasoning efforts (i.e., GPT-5-high vs GPT-5 and o3-high vs o3-pro) shows that additional reasoning effort yields only small improvements. </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.2.">Uncertainty Analysis</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Model Performance</head><p>The uncertainty of a single-run benchmark score arises from two sources: run-to-run variability and the finite (n=37) sample of WnH questions. Run variability was estimated from the five repeat runs of each of the main models to have a standard deviation of 0.08. Per-question overall score has a standard deviation of 0.89, yielding standard error of 0.15 given 37 questions. Combining these yields an overall one standard deviation of performance uncertainty of ±0.17 for performance at WnH-style questions when evaluated by a single run on our sample of 37 questions.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Model vs Human</head><p>The uncertainty of the performance of a model, when expressed as a percentile of the distribution of human scores, arises from run variability, finite question sample, and the finite (n=5) sample of humans tested. Table <ref type="table">5</ref> shows 95% confidence intervals of the performance percentiles for the main models computed by bootstrapping these three dimensions of variability alone.</p><p>Considering the dimensions alone, and comparing the widths of the resulting confidence intervals indicates that the uncertainty due to the question and human samples are roughly equal and that due to run variability is smaller.</p><p>Considering the confidence intervals when all three sources of uncertainty are accounted for we see that while the best estimate of GPT-5 performance places it at the 98 th percentile of human performance, a more cautious statement is that we are 95% confident that it is at the 86 th percentile or higher. For GPT-4.1 our best estimate of performance places it at the 53 rd percentile, but more cautiously we say that we are 95% confident it is at 91 st percentile or lower.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Bootstrap Dimensions GPT-5 [95% CI] GPT-4.1 [95% CI]</head><p>Human 98% <ref type="bibr" target="#b92">[93]</ref><ref type="bibr" target="#b93">[94]</ref><ref type="bibr" target="#b94">[95]</ref><ref type="bibr" target="#b95">[96]</ref><ref type="bibr" target="#b96">[97]</ref><ref type="bibr" target="#b97">[98]</ref><ref type="bibr" target="#b98">[99]</ref><ref type="bibr" target="#b99">[100]</ref> 53%  Question 98% <ref type="bibr" target="#b89">[90]</ref><ref type="bibr" target="#b90">[91]</ref><ref type="bibr" target="#b91">[92]</ref><ref type="bibr" target="#b92">[93]</ref><ref type="bibr" target="#b93">[94]</ref><ref type="bibr" target="#b94">[95]</ref><ref type="bibr" target="#b95">[96]</ref><ref type="bibr" target="#b96">[97]</ref><ref type="bibr" target="#b97">[98]</ref><ref type="bibr" target="#b98">[99]</ref><ref type="bibr" target="#b99">[100]</ref> 53%  Runs 98% <ref type="bibr" target="#b95">[96]</ref><ref type="bibr" target="#b96">[97]</ref><ref type="bibr" target="#b97">[98]</ref> 53% <ref type="bibr" target="#b44">[45]</ref><ref type="bibr" target="#b45">[46]</ref><ref type="bibr" target="#b46">[47]</ref><ref type="bibr" target="#b47">[48]</ref><ref type="bibr" target="#b48">[49]</ref><ref type="bibr" target="#b49">[50]</ref><ref type="bibr" target="#b50">[51]</ref><ref type="bibr" target="#b51">[52]</ref><ref type="bibr" target="#b52">[53]</ref><ref type="bibr" target="#b53">[54]</ref><ref type="bibr" target="#b54">[55]</ref><ref type="bibr" target="#b55">[56]</ref><ref type="bibr" target="#b56">[57]</ref><ref type="bibr" target="#b57">[58]</ref><ref type="bibr" target="#b58">[59]</ref><ref type="bibr" target="#b59">[60]</ref><ref type="bibr" target="#b60">[61]</ref> Human + Questions + Runs 98% [86-100] 53% [0-91] Table <ref type="table">5</ref>: Confidence intervals for model performance expressed as percentiles relative to the distribution of human scores.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.3.">Effect of Prompting Scheme</head><p>Table <ref type="table" target="#tab_3">6</ref> indicates that varying the prompt system has no clear and strong impact on overall performance.</p><p>There is a suggestion of a trend towards more complex prompting schemes improving performance, but given the uncertainty analysis result in section 4.5, which yielded that score differences below 0.17 are unlikely to be meaningful, this is not reliable.</p><p>Therefore, Simple Prompt is used as the default in all subsequent sections.</p><p>GPT-4.  As we would expect these are generally increasing, as questions are answered better when more case narrative is available. For the main cModel (blue curves), the figure shows that the progression of instantaneous score is very similar to the average human (black curves). For the main rModel (red curves) the instantaneous score is higher than average human even on the first round of question answering immediately after the case introduction. The lead of the main rModel over the average human increases during the middle stages of the case, and slightly reduces at the final stages, but still finishes ahead of the average human. </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.6.">Models vs Humans: location ordering</head><p>Table <ref type="table">7</ref> reports the correlations between the turn on which each location is visited in the solving of a case for two solvers. The results show that the main models are as similar to humans, as humans are to each other, in the order of visiting locations.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Comparison</head><p>Correlation: mean (sd)</p><p>Human-Human 0.44 (0.12)</p><p>GPT-5-Human 0.52 (0.08) GPT-4.1-Human 0.48 (0.09) Table <ref type="table">7</ref>: Correlations describing the agreement in order of visiting locations between pairs of models and participants. Mean and sd are across all pairings of a type.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.7.">Models vs. Humans: question features</head><p>In this section we report the results for regressions on the difference in overall question score between the main models and the average human, which circumvents the confound of variable question difficulty.</p><p>Tables 8 present results for regressions of the difference in question overall score between main models and average human. The only significantly non-zero coefficients are the negative coefficients for word count for each of the main models vs. average human i.e. relative to humans, model performance declines on longer cases. Coefficients for IDA ratings are in no cases significantly non-zero. Additionally, we investigated whether there were any outlier questions where model overall scores deviated significantly from average human scores, even when adjusting for the systematic differences discovered by the regression analyses. Figures 9 depict the residuals between the model scores and the corresponding predictions from the regressions of model scores on human scores for GPT-5 vs. average Human and GPT-4.1 vs. average Human, respectively. For both regressions, the residuals were approximately normally distributed, and no significant outliers were identified. Given the surprising advantage of rModels over human participants at the earliest stage of solving a case immediately after the case introduction (see section 4.7), we performed a separate regression analysis on the instantaneous score differences (main r-Model vs. human) at this stage. This regression used the IDA ratings for post-intro question answering, excluding a word count feature since the case introductions vary by only +/-10% in length.</p><p>As shown in Table <ref type="table">9</ref>, there is a positive coefficient for the I rating, statistically significant at the 90% level, but not for the D and A ratings. The interpretation is that the advantage of GPT-5 over average human, at the stage immediately post introduction, is greater when the Induction reasoning required for the question is greater. Table <ref type="table">9</ref>: Regression coefficients for post introduction instantaneous scores on questions. 90% confidence intervals.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5.">Discussion</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5.1.">Overall performance in context</head><p>Figure <ref type="figure" target="#fig_9">10</ref> visualizes the performance of the main models, with average and expert (95 th percentile) human performance marked for context. The vertical scale of the figure charts overall score which is the average of final score and progressive score, where progressive score is itself the average of the instantaneous scores evaluated at each stage of solving a case. Consequently a maximum score of 3 is not achievable, even by a super-human reasoner, since most questions require information present on multiple location cards. We can compute a lower-bound on the maximum achievable score by averaging the per-question highest observed overall score, achieved by any participant or any model run. This yields a value of 2.45 which is marked on figure <ref type="figure" target="#fig_10">11</ref>.</p><p>The key results of this study, visualized in figure <ref type="figure" target="#fig_10">11</ref>, are:</p><p>• the main cModel (GPT-4.1) performed at average human level • the main rModel (GPT-5) performed at expert (top 5%) human level.</p><p>• There is a sizable gap between the highest model score and the maximum achievable score.   Figure <ref type="figure" target="#fig_0">12</ref> puts the performance of the best models in compute-cost context. The broad trend is of a linear increase in WnH performance as a function of log10 cost, but the deviations from the trend are of note. In particular the performance of GPT-5 is only slightly below that of the earlier o3-pro model from OpenAI, but is only 12.5% of the compute cost. Other models with relatively good performance given cost are: o3, Gemini 2.5 pro and Gemini 2.5 flash.</p><p>Figure <ref type="figure" target="#fig_0">12</ref>: Performance against log10 (costs).</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5.2.">Quantitative Comparison with other benchmarks</head><p>Across detective-style benchmarks such as DetectBench, True Detective, and WHODUNIT the performance of cModels prior to GPT-4.1 is slightly behind human performance. While this appears consistent with the WnH benchmark, where GPT-4.1 performs at average human level, the lack of rigour in human testing of previous detective benchmarks limits the strength of conclusions that can be drawn.</p><p>To more clearly situate our benchmark within the broader evaluation landscape, we compare it against widely adopted more rigorous benchmarks: ARC-AGI-1 <ref type="bibr" target="#b76">[77]</ref>, ARC-AGI-2 <ref type="bibr" target="#b76">[77]</ref>, Humanity's Last Exam (Text Only) <ref type="bibr" target="#b61">[62]</ref>, and chatbot arena <ref type="bibr" target="#b95">[96]</ref>. This comparison allows us to assess how performance on our benchmark relates to established measures of general reasoning and problem-solving ability. </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5.3.">Discussion about the human participants</head><p>The online format proved effective for both participant engagement and reliable data collection.</p><p>The median time for human participants to solve a case was 59 minutes (IQR = <ref type="bibr" target="#b47">[48,</ref><ref type="bibr" target="#b70">71]</ref> mins). As shown in figure <ref type="figure" target="#fig_12">13</ref>, Some players took systematically longer than others and this correlated with their overall performance (R 2 =0.60, significantly non-zero at 95% confidence). The trend being that taking 50% longer to solve a case (from 50 minutes to 75 minutes) achieves, on average, an overall score 0.60 higher. This is a substantial effect given that the average overall score was 1.43. It is unclear whether longer time spent was a cause of better performance, or merely a correlate of greater natural aptitude. On reflection we note that the policy of awarding double payment to the winner in each case may have discouraged effort when a player felt they had little chance of winning. A more graded reward scheme might have encouraged more consistent effort.</p><p>Another consideration is whether more review and discussion of answers and grading after completing practice case 0 would have helped participants better understand how to improve their performance early in the solving of a case game, and how that early performance affected overall score.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5.4.">Differences between model and human performance</head><p>Differences between model and human performance were observed linked to the word count of cases, the type of reasoning required, and the timecourse of solving cases.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5.4.1.">Word Count</head><p>Longer cases were solved less well by models, relative to humans. This trend reached 95% significance for the main cModel and 90% significance for the main rModel. Figure <ref type="figure" target="#fig_13">14</ref> exhibits these trends in raw form. It is notable that these trends are apparent even though the range of cases lengths is 1900-4000 words, well within the claimed context lengths of these models. These findings suggest that claims of indefinitely expanding model contexts without performance degradation should be treated with caution: increasing length already appears to produce adverse impacts on LLM reasoning. </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5.4.2.">Reasoning Type</head><p>For overall scores, reasoning type (IDA ratings) had no significant predictive power for the advantage of models over humans. However, for instantaneous scores, immediately after the introduction before any locations were visited, there was an advantage for GPT-5 on questions requiring more inductive reasoning (see table <ref type="table" target="#tab_0">11</ref>). Looking at the instances where this advantage manifested we see that the GPT-5 answers are bold leaps supported by multiple slight clues that are easily missed and integrated by human players.</p><p>It is worth noting that there are issues around the accuracy of the IDA ratings arising from the definitions of the reasoning modes themselves (section 2.1). While these definitions seem clear and distinct, rating their relevance for questions where all three modes are playing a role is very difficult, and the majority of questions in the naturalistic setting of the Watson &amp; Holmes games are mixed mode. This ambiguity is not unique to our setting. Conan Doyle repeatedly presents Holmes's method as deductive, but numerous commentators have observed that many of Holmes's most celebrated "deductions" are in fact abductive inferences <ref type="bibr" target="#b96">[97,</ref><ref type="bibr" target="#b97">98]</ref>.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5.4.">Utility of the WnH benchmark</head><p>The WnH benchmark aims to be a broad assessment of model reasoning applied to natural tasks, precise enough to discriminate incremental improvements in reasoning capability. Our results give us some confidence that this has been demonstrated. We observe:</p><p>• Model performance ranging from below average to expert (top 5%) human level (fig <ref type="figure" target="#fig_10">11</ref>).</p><p>• A trend in performance correlated with model release date (Figure <ref type="figure" target="#fig_10">11</ref>).</p><p>• A step change in performance with the release of rModels (Figure <ref type="figure" target="#fig_10">11</ref>).</p><p>Another strength of this benchmark is its pattern of correlations with other benchmarks. We visualize these using multi-dimensional scaling in <ref type="bibr">Fig 15 which</ref> indicates that the WnH benchmark is distinct from other benchmarks, but not radically so. A weakness of our benchmark is that it is approaching the end of its utility for differentiating frontier models, as its performance saturates. Given score uncertainties of ±0.17 (section 4.2) the o3-pro score of 2.14 is significantly short of the maximum achievable score, which is at least 2.46 (see section 5.1). However, if model WnH performance continues its recent trend of improvement (figure <ref type="figure" target="#fig_0">12</ref>) this gap will be closed by the end of 2026.</p><p>Benchmark saturation does not rob a benchmark of all utility. Current AI development is pursuing both high performance models designed for maximal reasoning performance <ref type="bibr" target="#b98">[99]</ref>, and small and efficient models optimized for deployability under tight resource constraints <ref type="bibr" target="#b99">[100]</ref><ref type="bibr" target="#b100">[101]</ref><ref type="bibr" target="#b101">[102]</ref>. While a saturated benchmark is useless for tracking the performance of frontier models, it can remain useful for assessing deployable models.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="6.">Conclusion</head><p>This study developed and populated a novel reasoning benchmark (WnH) based on the Watson &amp; Holmes tabletop detective game. Several key findings emerge.</p><p>First, AI expected performance at the benchmark has improved from lower quartile of our comparison human population (Computer Science undergraduates at a leading university) to top 14% level (95% confidence) over 9 months of 2025. Roughly half of that improvement is incremental with model release date, and half can be attributed to a step change when rModels were introduced.</p><p>Second, when model performance is considered in relation to compute cost, a clear efficiency trend emerges: newer models achieve higher reasoning ability at lower computational expense.</p><p>Third, rModels, compared to humans, are shown to have no clear strengths or weaknesses amongst the reasoning modes of inductive, deductive and abductive inference when the full case evidence is available; but there is an inductive reasoning advantage when incomplete evidence makes bold guesses based on multiple small hints the only route to answer. A clear result is that models reasoning performance decreases when evidence is presented across longer texts, even though these are considerably shorter than is claimed to be the working context length of contemporary models.</p><p>Finally, the utility of the benchmark is near its end for the frontier LLMs, with saturated performance expected to be achieved by the end of 2026. The benchmark is expected still to remain useful for assessing small, cost-effective AI models. Compare the provided answer to the model answer and to the case solution, and rate it on a scale of 0 to 3 according to the following criteria: 0: No elements are present and correct, or the answer is misleading, nonsensical, intentionally wrong 1: Some elements are present and correct, but most are absent or incorrect.</p><p>2: Most elements are present and correct, but some are missing or incorrect. You are to generate a detailed, step-by-step marking rubric for assessing answers to Sherlock Holmes detective case questions.</p><p>Act as a world-class Sherlockian examiner: think aloud, compare clues, and lay out your criteria with detective-like reasoning.</p><p>You will receive the following inputs:</p><p>-Case Solution: A passage revealing the full answer and context of a Sherlock Holmes mystery, including the identity of culprits, methods, motives, etc.</p><p>-Model Answer: A concise ideal answer to the question, summarizing the key information from the case solution.</p><p>-Provided Answer: The answer to be assessed for accuracy and completeness.</p><p>-Marking Examples: Sample answers and the scores they should receive.</p><p>Your task:</p><p>-Generate a detailed JSON object describing the marking rubric for scoring the Provided Answer on a scale from 0 to 3.</p><p>For each score (0, 1, 2, 3), provide:</p><p>-A precise definition of when that score should be awarded, tailored to this case.</p><p>-At least 2-3 concrete examples (in the context of this case) of answers that would receive that score.</p><p>-Specific guidance on edge cases, including partial descriptions, aliases, and minor misspellings (which should NOT be penalized if the intended answer is clear).</p><p>Include a section titled "step_by_step_application" that explains, like a detective, how to apply the rubric in order to judge an answer. This should be in the style of a logical investigation: e.g., "First, compare the names... Next, look for essential details... Finally, consider if minor errors affect understanding."</p><p>Your rubric must:</p><p>-Be formatted as JSON with each score (0, 1, 2, 3) as a key, each mapping to an object with "definition", "examples", and "edge_case_guidance" keys.</p><p>-Include the "step_by_step_application" key with detective-style instructions for applying the rubric.</p><p>-Encourage careful, expert, thoughtful evaluation.</p><p>Emphasize: Minor misspellings should NOT be penalized if the intended answer is clear and unambiguous. Mode 5 -rubric writer You are to generate a detailed, step-by-step marking rubric for assessing answers to Sherlock Holmes detective case questions.</p><p>Act as a world-class Sherlockian examiner: think aloud, compare clues, and lay out your criteria with detective-like reasoning.</p><p>You will receive the following inputs:</p><p>-Model Answer: A concise ideal answer to the question, summarizing the key information from the case solution.</p><p>-Provided Answer: The answer to be assessed for accuracy and completeness.</p><p>-Marking Examples: Sample answers and the scores they should receive.</p><p>Your task:</p><p>-Generate a detailed JSON object describing the marking rubric for scoring the Provided Answer on a scale from 0 to 3.</p><p>For each score (0, 1, 2, 3), provide:</p><p>-A precise definition of when that score should be awarded, tailored to this case.</p><p>-At least 2-3 concrete examples (in the context of this case) of answers that would receive that score.</p><p>-Specific guidance on edge cases, including partial descriptions, aliases, and minor misspellings (which should NOT be penalized if the intended answer is clear).</p><p>Include a section titled "step_by_step_application" that explains, like a detective, how to apply the rubric in order to judge an answer. This should be in the style of a logical investigation: e.g., "First, compare the names... Next, look for essential details... Finally, consider if minor errors affect understanding."</p><p>Your rubric must:</p><p>-Be formatted as JSON with each score (0, 1, 2, 3) as a key, each mapping to an object with "definition", "examples", and "edge_case_guidance" keys.</p><p>-Include the "step_by_step_application" key with detective-style instructions for applying the rubric.</p><p>-Encourage careful, expert, thoughtful evaluation.</p><p>Emphasize: Minor misspellings should NOT be penalized if the intended answer is clear and unambiguous. The questions are:</p><p>1.</p><p>[question_text] …</p></div><figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_0"><head>Figure 2 :</head><label>2</label><figDesc>Figure 2: The location card 'Bont's Surgery` in the case 'A damsel in distress'. Left: card front, visible when choosing location to visit. Right: card back, viewed only when a player visits that location.</figDesc><graphic coords="13,155.82,412.60,149.10,215.95" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_1"><head>Figure 3 :</head><label>3</label><figDesc>Figure 3: The questions (left) and model answers (right) to the case 'A damsel in distress'.</figDesc><graphic coords="14,85.15,72.00,231.39,144.70" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_2"><head>Figure 4 :</head><label>4</label><figDesc>Figure 4: The case solution to the case 'A damsel in distress' as it is presented to the players in the tabletop game.</figDesc><graphic coords="14,187.88,269.00,236.22,314.10" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_3"><head>Figure 5 :</head><label>5</label><figDesc>Figure 5: Adapted gameplay flow used for reasoning evaluation</figDesc><graphic coords="15,232.95,264.55,146.10,288.98" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_4"><head>Figure 7 :</head><label>7</label><figDesc>Figure 7: Visual comparison of overall scores for human players and AI models.</figDesc><graphic coords="23,72.00,376.50,468.00,198.80" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_5"><head>Fig 8</head><label>8</label><figDesc>Fig 8 plots how instantaneous scores increase during solving cases.As we would expect these are generally increasing, as questions are answered better when more case narrative is available. For the main cModel (blue curves), the figure shows that the progression of instantaneous score is very similar to the average human (black curves). For the main rModel (red curves) the instantaneous score is higher than average human even on the first round of question answering immediately after the case introduction. The lead of the main rModel over the average human increases during the middle stages of the case, and slightly reduces at the final stages, but still finishes ahead of the average human.</figDesc><graphic coords="25,82.63,251.88,211.10,125.80" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_6"><head>Figure 8 :</head><label>8</label><figDesc>Figure 8: Start-aligned (left) and end-aligned (right) average instantaneous scores for Humans and the main models. Two plots are needed to accommodate the varying number of locations per case.</figDesc><graphic coords="25,299.63,251.88,229.71,125.85" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_7"><head>Fig 9 :</head><label>9</label><figDesc>Fig 9: Histogram of Residuals. Left: GPT-5 vs. av. Human regression prediction. Right: GPT-4.1 vs. av Human -regression prediction.</figDesc><graphic coords="26,74.80,398.71,228.44,141.70" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_8"><head>Feature</head><label></label><figDesc></figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_9"><head>Figure 10 :</head><label>10</label><figDesc>Figure 10: Performance summary of the main models and human performance.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_10"><head>Figure 11</head><label>11</label><figDesc>Figure 11 puts the performance of the best models in temporal context, showing a trend of increasing performance with release date, and a step change with the extension from cModels to rModels.</figDesc><graphic coords="28,166.93,316.36,278.15,198.39" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_11"><head>Figure 11 :</head><label>11</label><figDesc>Figure 11: Overall scores of models by release date, compared against human performance. Lines added to indicate trends.</figDesc><graphic coords="29,114.50,72.00,382.99,189.90" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_12"><head>Figure 13 :</head><label>13</label><figDesc>Figure 13: Plot showing the correlation between players' average case-solving time and their average overall score.</figDesc><graphic coords="31,140.70,72.00,330.60,246.89" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_13"><head>Figure 14 :</head><label>14</label><figDesc>Figure 14: Overall Score by case length: Human vs rModel vs cModel. Lines are best fit trends.</figDesc><graphic coords="32,145.40,72.00,321.16,191.60" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_14"><head>Fig 15 -</head><label>15</label><figDesc>Fig 15 -MDS visualization of benchmark similarity. More correlated benchmarks are closer.</figDesc><graphic coords="33,204.00,73.50,204.70,152.70" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_15"><head></head><label></label><figDesc>You are an evaluator assessing the accuracy of answers to questions about a Sherlock Homes detective case. You will be given the case solution, a question and its model answer, and an answer to be assessed. **The Case Solution:** {case_solution} **Question:** {question} **Model Answer:** {model_answer} ### Marking Examples Here are some examples of provided answers and the scores they received: {marking_examples} ---### Now assess the following answer: **Provided Answer:** {provided_answer} ### Your TaskCompare the provided answer to the model answer and to the case solution, and rate it on a scale of 0 to 3 according to the following criteria: 0: No elements are present and correct, or the answer is misleading, nonsensical, intentionally wrong 1: Some elements are present and correct, but most are absent or incorrect. 2: Most elements are present and correct, but some are missing or incorrect. 3: All elements are present and correct.Make your assessment and return the result in **JSON format** as follows: evaluator assessing the accuracy of answers to questions about a Sherlock Holmes detective case. You will be given the case solution, a question, its model answer, and an answer to be assessed. ### Definition of Levels 0-3 -**Level 0:** No elements are present and correct, or the answer is misleading, nonsensical, or intentionally wrong.-**Level 1:** Some elements are present and correct, but most are absent or incorrect.-**Level 2:** Most elements are present and correct, but some are missing or incorrect.-**Level 3:** All elements are present and correct.Compare the provided answer to the model answer and to the case solution, and rate it on a scale of 0 to 3 according to the definitions above.Return your assessment in **JSON format** as follows: evaluator assessing the accuracy of answers to questions about a Sherlock Homes detective case. You will be given a question and its model answer, and an answer to be assessed.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_16"><head>3 :</head><label>3</label><figDesc>All elements are present and correct. Make your assessment and return the result in **JSON format** as follows:</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_17"><head></head><label></label><figDesc>your rubric in the following JSON format:evaluator assessing the accuracy of answers to Sherlock Holmes detective case questions. You will be given a question, a model answer, a detailed marking rubric, and the answer to be assessed. Sherlockian examiner, consult the rubric below. For each possible score, review the definitions, examples, and special guidance. {rubric_json} ### Now assess the following answer: **Provided Answer:** {provided_answer} ### Your TaskCompare the provided answer to the model answer and the marking rubric above. Follow the rubric's step-by-step application instructions to assign a score from 0 to 3, considering the definitions, examples, and edge case guidance for each score.Return your assessment in **JSON format** as follows:</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_18"><head></head><label></label><figDesc>your rubric in the following JSON format:: ["...", "..."], "edge_case_guidance": "..." }}, "step_by_step_application": "..." }}}}``` B.1. Full example AI experiment template Introduction Prompt OK you're going to try to solve a detective case. When I give you instructions I will start the text with a ##. Text from the case will start with $$. ## Let's start with the case introduction. on the case information provided, give the most likely answer to each of the following [number] questions. If uncertain, make your best guess. Provide answers concisely, without explanations, in **JSON format**, where the **keys are string representations of the question numbers**. The format should look like this:</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_0"><head>Table 1 :</head><label>1</label><figDesc>Overview of LLM Models with Release Dates and Model Categories</figDesc><table><row><cell>Name</cell><cell>Organization</cell><cell>Release Date</cell><cell>Model Type</cell></row><row><cell>Claude 3.5 Haiku</cell><cell>Anthropic</cell><cell>22-10-2024</cell><cell>cModel</cell></row><row><cell>Claude 3.7 Sonnet</cell><cell>Anthropic</cell><cell>24-02-2025</cell><cell>rModel</cell></row><row><cell>Claude 4 Opus</cell><cell>Anthropic</cell><cell>22-05-2025</cell><cell>rModel</cell></row><row><cell>Claude 4 Sonnet</cell><cell>Anthropic</cell><cell>22-05-2025</cell><cell>rModel</cell></row><row><cell>DeepSeek V3</cell><cell>DeepSeek</cell><cell>26-10-2024</cell><cell>rModel</cell></row><row><cell>GPT-4.1</cell><cell>OpenAI</cell><cell>14-05-2025</cell><cell>cModel</cell></row><row><cell>GPT-4.1 Nano</cell><cell>OpenAI</cell><cell>14-05-2025</cell><cell>cModel</cell></row><row><cell>GPT-4.1 Mini</cell><cell>OpenAI</cell><cell>14-05-2025</cell><cell>cModel</cell></row><row><cell>GPT-4o</cell><cell>OpenAI</cell><cell>13-05-2024</cell><cell>cModel</cell></row><row><cell>GPT-4o Mini</cell><cell>OpenAI</cell><cell>18-07-2024</cell><cell>cModel</cell></row><row><cell>GPT-5</cell><cell>OpenAI</cell><cell>07-08-2025</cell><cell>rModel</cell></row><row><cell>GPT-5 Mini</cell><cell>OpenAI</cell><cell>07-08-2025</cell><cell>rModel</cell></row><row><cell>GPT-5 Nano</cell><cell>OpenAI</cell><cell>07-08-2025</cell><cell>rModel</cell></row><row><cell>GPT-o1</cell><cell>OpenAI</cell><cell>12-09-2024</cell><cell>rModel</cell></row><row><cell>GPT-o3</cell><cell>OpenAI</cell><cell>16-04-2025</cell><cell>rModel</cell></row><row><cell>GPT-o3 Mini</cell><cell>OpenAI</cell><cell>16-04-2025</cell><cell>rModel</cell></row><row><cell>GPT-o3 Pro</cell><cell>OpenAI</cell><cell>10-06-2025</cell><cell>rModel</cell></row><row><cell>Gemini 2.5 Flash</cell><cell>Google</cell><cell>17-06-2025</cell><cell>rModel</cell></row><row><cell>Gemini 2.5 Pro</cell><cell>Google</cell><cell>17-06-2025</cell><cell>rModel</cell></row><row><cell>Llama 4 Scout</cell><cell>Meta</cell><cell>05-04-2025</cell><cell>cModel</cell></row><row><cell>Llama 4 Maverick</cell><cell>Meta</cell><cell>05-04-2025</cell><cell>cModel</cell></row><row><cell>Mistral 7B Instruct v0.3</cell><cell>Mistral</cell><cell>27-09-2023</cell><cell>cModel</cell></row><row><cell>3.2. Evaluating performance</cell><cell></cell><cell></cell><cell></cell></row><row><cell>3.2.1. Scoring System</cell><cell></cell><cell></cell><cell></cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_2"><head>Table 4 :</head><label>4</label><figDesc>Comparison of scores across models and participants. Within each group rows are ordered from high to low overall score. Key rows are shaded for clarity: blue for Human, orange for rModel, and purple for cModel.</figDesc><table><row><cell></cell><cell>Progressive Score</cell><cell>Final Score</cell><cell>Overall score</cell><cell>Estimated Human Percentile</cell></row><row><cell>Player1</cell><cell>1.29</cell><cell>2.30</cell><cell>1.80</cell><cell></cell></row><row><cell>Player5</cell><cell>1.20</cell><cell>2.03</cell><cell>1.61</cell><cell></cell></row><row><cell>Player4</cell><cell>1.05</cell><cell>2.05</cell><cell>1.55</cell><cell></cell></row><row><cell>Player3</cell><cell>0.91</cell><cell>1.68</cell><cell>1.29</cell><cell></cell></row><row><cell>Player2</cell><cell>0.66</cell><cell>1.11</cell><cell>0.89</cell><cell>4</cell></row><row><cell>Average Human</cell><cell>1.02</cell><cell>1.83</cell><cell>1.43</cell><cell></cell></row><row><cell>o3-pro</cell><cell>1.81</cell><cell>2.46</cell><cell>2.14</cell><cell></cell></row><row><cell>GPT-5 (high)</cell><cell>1.81</cell><cell>2.41</cell><cell>2.11</cell><cell></cell></row><row><cell>GPT-5 (main rModel)</cell><cell>1.79</cell><cell>2.41</cell><cell>2.10</cell><cell></cell></row><row><cell>o3</cell><cell>1.72</cell><cell>2.35</cell><cell>2.04</cell><cell></cell></row><row><cell>o3 (high)</cell><cell>1.72</cell><cell>2.32</cell><cell>2.02</cell><cell></cell></row><row><cell>Gemini 2.5 Pro</cell><cell>1.47</cell><cell>2.14</cell><cell>1.80</cell><cell></cell></row><row><cell>o1</cell><cell>1.35</cell><cell>1.97</cell><cell>1.66</cell><cell></cell></row><row><cell>Claude Opus 4</cell><cell>1.32</cell><cell>2.00</cell><cell>1.66</cell><cell></cell></row><row><cell>Claude 3.7 Sonnet</cell><cell>1.15</cell><cell>1.81</cell><cell>1.48</cell><cell></cell></row><row><cell>GPT-4.1 (main cModel)</cell><cell>1.05</cell><cell>1.86</cell><cell>1.45</cell><cell></cell></row><row><cell>Claude Sonnet 4</cell><cell>1.13</cell><cell>1.76</cell><cell>1.45</cell><cell></cell></row><row><cell>Gemini 2.5 Flash</cell><cell>1.11</cell><cell>1.68</cell><cell>1.39</cell><cell></cell></row><row><cell>GPT-5 mini</cell><cell>1.00</cell><cell>1.59</cell><cell>1.30</cell><cell></cell></row><row><cell>DeepSeek-V3</cell><cell>0.99</cell><cell>1.35</cell><cell>1.17</cell><cell></cell></row><row><cell>GPT-4o</cell><cell>0.87</cell><cell>1.32</cell><cell>1.10</cell><cell></cell></row><row><cell>Llama 4 Maverick</cell><cell>0.76</cell><cell>1.22</cell><cell>0.99</cell><cell>8</cell></row><row><cell>Claude 3.5 Haiku</cell><cell>0.73</cell><cell>1.03</cell><cell>0.88</cell><cell>4</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_3"><head>Table 6 :</head><label>6</label><figDesc>Effect of Prompt System Choice on Model Performance 4.4. Models vs. Humans: progressive solving</figDesc><table><row><cell></cell><cell></cell><cell cols="2">1 GPT-5 average</cell></row><row><cell>Simple Prompt</cell><cell>1.45</cell><cell>2.10</cell><cell>1.78</cell></row><row><cell>Discussion Prompt</cell><cell>1.60</cell><cell>2.02</cell><cell>1.81</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_4"><head>Table 8 :</head><label>8</label><figDesc>Regression coefficients for overall scores on questions</figDesc><table><row><cell>Feature</cell><cell>GPT-5 vs av. Human</cell><cell>GPT-4.1 vs. av. Human</cell><cell>GPT-5 vs. GPT-4.1</cell></row><row><cell>word count</cell><cell>-0.42 [-0.83, -0.03]</cell><cell>-0.43 [-0.78, -0.06]</cell><cell>+0.01 [-0.41, +0.44]</cell></row><row><cell>I rating</cell><cell>+0.06 [-0.22, +0.34]</cell><cell>+0.01 [-0.26, +0.27]</cell><cell>+0.01 [-0.20, +0.29]</cell></row><row><cell>D rating</cell><cell>-0.02 [-0.29, +0.31]</cell><cell>-0.22 [-0.50, +0.06]</cell><cell>-0.22 [-0.50, +0.50]</cell></row><row><cell>A rating</cell><cell>+0.01 [-0.25, +0.32]</cell><cell>-0.05 [-0.31, +0.20]</cell><cell>+0.06 [-0.22, +0.38]</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_5"><head>Table 10</head><label>10</label><figDesc>summarizes the pairwise correlations between benchmarks. This table is constructed by restricting the analysis to the set of models that are common across all chosen benchmarks. Overall, the correlations are moderate rather than strong, indicating only partial overlap in what each benchmark measures.</figDesc><table><row><cell>Benchmark</cell><cell>WnH</cell><cell>hle</cell><cell>cba</cell><cell cols="2">ARC-AGI-1 ARC-AGI-2</cell></row><row><cell>WnH</cell><cell>1.00</cell><cell>0.65</cell><cell>0.70</cell><cell>0.73</cell><cell>0.64</cell></row><row><cell>hle</cell><cell>0.65</cell><cell>1.00</cell><cell>0.55</cell><cell>0.78</cell><cell>0.84</cell></row><row><cell>cba</cell><cell>0.70</cell><cell>0.55</cell><cell>1.00</cell><cell>0.51</cell><cell>0.47</cell></row><row><cell>ARC-AGI-1</cell><cell>0.73</cell><cell>0.78</cell><cell>0.51</cell><cell>1.00</cell><cell>0.87</cell></row><row><cell>ARC-AGI-2</cell><cell>0.64</cell><cell>0.84</cell><cell>0.47</cell><cell>0.87</cell><cell>1.00</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_6"><head>Table 10 :</head><label>10</label><figDesc>score correlation between benchmarks. WnH denotes the proposed benchmark, HLE refers to Humanity's Last Exam, CBA denotes Chatbot Arena, and ARC-AGI-1 and ARC-AGI-2 refer to ARC-AGI versions 1 and 2, respectively. The strongest correlation in each row is bolded.</figDesc><table /></figure>
+		</body>
+		<back>
+			<div type="annex">
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Choose Location Prompt</head><p>OK you're going to try to solve a detective case.</p><p>When I give you instructions I will start the text with a ##. Text from the case will start with $$. ## Let's start with the case introduction. The questions are:</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>$$ Introduction</head><p>1. q1? … ## You should discuss your analysis of the case before your answer. If relevant, discuss means, motive, and opportunity, and any unexplained aspect of the case evidence. ## Previous solver attempts reasoning and answer were as follows:</p><p>[previous answer] ## Please discuss and critique previous answer and please give your own answer which may be the same or different in JSON format.</p></div>			</div>
+			<div type="references">
+
+				<listBibl>
+
+<biblStruct xml:id="b0">
+	<analytic>
+		<title level="a" type="main">AI Reasoning in Deep Learning Era: From Symbolic AI to Neural-Symbolic AI</title>
+		<author>
+			<persName><forename type="first">B</forename><surname>Liang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Tong</surname></persName>
+		</author>
+		<idno type="DOI">10.3390/math13111707</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Mathematics</title>
+		<imprint>
+			<biblScope unit="volume">13</biblScope>
+			<biblScope unit="issue">11</biblScope>
+			<biblScope unit="page">1707</biblScope>
+			<date type="published" when="2025-05">May 2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b1">
+	<monogr>
+		<title level="m" type="main">Emergent Abilities in Large Language Models: A Survey</title>
+		<author>
+			<persName><forename type="first">L</forename><surname>Berti</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Giorgi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Kasneci</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2503.05788</idno>
+		<idno type="arXiv">arXiv:2503.05788</idno>
+		<imprint>
+			<date type="published" when="2025-03-14">Mar. 14, 2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b2">
+	<monogr>
+		<title level="m" type="main">Chain-of-Thought Prompting Elicits Reasoning in Large Language Models</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Wei</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2201.11903</idno>
+		<idno type="arXiv">arXiv:2201.11903</idno>
+		<imprint>
+			<date type="published" when="2023-01-10">Jan. 10, 2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b3">
+	<monogr>
+		<title level="m" type="main">Implicit Reasoning in Large Language Models: A Comprehensive Survey</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Li</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2509.02350</idno>
+		<idno type="arXiv">arXiv:2509.02350</idno>
+		<imprint>
+			<date type="published" when="2025-02">Sep. 02, 2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b4">
+	<analytic>
+		<title/>
+		<author>
+			<persName><forename type="first">Holmes</forename><surname>Watson</surname></persName>
+		</author>
+		<ptr target="https://boardgamegeek.com/boardgame/182694/watson-and-holmes" />
+	</analytic>
+	<monogr>
+		<title level="j">BoardGameGeek</title>
+		<imprint>
+			<date type="published" when="2025-11-17">Nov. 17, 2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b5">
+	<analytic>
+		<title level="a" type="main">Aristotle&apos;s Logic</title>
+		<author>
+			<persName><forename type="first">R</forename><surname>Smith</surname></persName>
+		</author>
+		<ptr target="https://plato.stanford.edu/archives/win2022/entries/aristotle-logic/" />
+	</analytic>
+	<monogr>
+		<title level="m">The Stanford Encyclopedia of Philosophy</title>
+				<editor>
+			<persName><forename type="first">E</forename><forename type="middle">N</forename><surname>Zalta</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">U</forename><surname>Nodelman</surname></persName>
+		</editor>
+		<meeting><address><addrLine>Winter</addrLine></address></meeting>
+		<imprint>
+			<date type="published" when="2022-11-17">2022. 2022. Nov. 17, 2025</date>
+		</imprint>
+		<respStmt>
+			<orgName>Stanford University</orgName>
+		</respStmt>
+	</monogr>
+	<note>Metaphysics Research Lab</note>
+</biblStruct>
+
+<biblStruct xml:id="b6">
+	<analytic>
+		<title level="a" type="main">Explanation and Abductive Inference</title>
+		<author>
+			<persName><forename type="first">T</forename><surname>Lombrozo</surname></persName>
+		</author>
+		<idno type="DOI">10.1093/oxfordhb/9780199734689.013.0014</idno>
+	</analytic>
+	<monogr>
+		<title level="m">The Oxford Handbook of Thinking and Reasoning</title>
+				<editor>
+			<persName><forename type="first">K</forename><forename type="middle">J</forename><surname>Holyoak</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">R</forename><forename type="middle">G</forename><surname>Morrison</surname></persName>
+		</editor>
+		<imprint>
+			<publisher>Oxford University Press</publisher>
+			<date type="published" when="2012">2012</date>
+			<biblScope unit="page" from="260" to="276" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b7">
+	<monogr>
+		<title level="m" type="main">Judgment under uncertainty : heuristics and biases</title>
+		<author>
+			<persName><forename type="first">D</forename><surname>Kahneman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Slovic</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Tversky</surname></persName>
+		</author>
+		<imprint>
+			<date type="published" when="1982">1982</date>
+			<publisher>Cambridge University Press</publisher>
+			<pubPlace>Cambridge</pubPlace>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b8">
+	<monogr>
+		<author>
+			<persName><surname>Gerd</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><forename type="middle">M</forename><surname>Gigerenzer</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Todd</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Group</forename><surname>Research</surname></persName>
+		</author>
+		<title level="m">Simple heuristics that make us smart / Gerd Gigerenzer</title>
+				<editor>
+			<persName><forename type="first">M</forename><surname>Peter</surname></persName>
+		</editor>
+		<editor>
+			<persName><surname>Todd</surname></persName>
+		</editor>
+		<meeting><address><addrLine>New York</addrLine></address></meeting>
+		<imprint>
+			<publisher>Oxford University Press</publisher>
+			<date type="published" when="1999">1999</date>
+		</imprint>
+	</monogr>
+	<note>and the ABC Research Group. in Evolution and cognition</note>
+</biblStruct>
+
+<biblStruct xml:id="b9">
+	<analytic>
+		<title level="a" type="main">The mental model theory of conditional reasoning: critical appraisal and revision</title>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">B T</forename><surname>St</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Evans</surname></persName>
+		</author>
+		<idno type="DOI">10.1016/0010-0277(93)90056-2</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Cognition</title>
+		<imprint>
+			<biblScope unit="volume">48</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page" from="1" to="20" />
+			<date type="published" when="1993-07">Jul. 1993</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b10">
+	<analytic>
+		<title level="a" type="main">Logic, probability, and human reasoning</title>
+		<author>
+			<persName><forename type="first">P</forename><forename type="middle">N</forename><surname>Johnson-Laird</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">S</forename><surname>Khemlani</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><forename type="middle">P</forename><surname>Goodwin</surname></persName>
+		</author>
+		<idno type="DOI">10.1016/j.tics.2015.02.006</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Trends Cogn. Sci</title>
+		<imprint>
+			<biblScope unit="volume">19</biblScope>
+			<biblScope unit="issue">4</biblScope>
+			<biblScope unit="page" from="201" to="214" />
+			<date type="published" when="2015-04">Apr. 2015</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b11">
+	<analytic>
+		<title level="a" type="main">Reasoning about properties: A computational theory</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Khemlani</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><forename type="middle">N</forename><surname>Johnson-Laird</surname></persName>
+		</author>
+		<idno type="DOI">10.1037/rev0000240</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Psychol. Rev</title>
+		<imprint>
+			<biblScope unit="volume">129</biblScope>
+			<biblScope unit="issue">2</biblScope>
+			<biblScope unit="page" from="289" to="312" />
+			<date type="published" when="2022-03">Mar. 2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b12">
+	<analytic>
+		<title level="a" type="main">Possibilities and human reasoning</title>
+		<author>
+			<persName><forename type="first">P</forename><surname>Johnson-Laird</surname></persName>
+		</author>
+		<idno type="DOI">10.1177/27538699231152731</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Possibility Stud. Soc</title>
+		<imprint>
+			<biblScope unit="volume">1</biblScope>
+			<biblScope unit="issue">1-2</biblScope>
+			<biblScope unit="page" from="105" to="112" />
+			<date type="published" when="2023-06">Jun. 2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b13">
+	<analytic>
+		<title level="a" type="main">Dual-Process and Dual-System Theories of Reasoning</title>
+		<author>
+			<persName><forename type="first">K</forename><surname>Frankish</surname></persName>
+		</author>
+		<idno type="DOI">10.1111/j.1747-9991.2010.00330.x</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Philos. Compass</title>
+		<imprint>
+			<biblScope unit="volume">5</biblScope>
+			<biblScope unit="issue">10</biblScope>
+			<biblScope unit="page" from="914" to="926" />
+			<date type="published" when="2010-10">Oct. 2010</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b14">
+	<analytic>
+		<title level="a" type="main">How to solve it: a new aspect of mathematical method</title>
+		<author>
+			<persName><forename type="first">G</forename><surname>Pólya</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Expanded Princeton Science Library edition</title>
+				<meeting><address><addrLine>Princeton, N.J</addrLine></address></meeting>
+		<imprint>
+			<publisher>Princeton University Press</publisher>
+			<date type="published" when="2004">2004</date>
+		</imprint>
+		<respStmt>
+			<orgName>Princeton science library</orgName>
+		</respStmt>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b15">
+	<analytic>
+		<title level="a" type="main">How Close Are Computers to Automating Mathematical Reasoning?</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Ornes</surname></persName>
+		</author>
+		<ptr target="https://www.quantamagazine.org/how-close-are-computers-to-automating-mathematical-reasoning-20200827/" />
+	</analytic>
+	<monogr>
+		<title level="j">Quanta Magazine</title>
+		<imprint>
+			<date type="published" when="2025-11-17">Nov. 17, 2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b16">
+	<analytic>
+		<title level="a" type="main">Massively collaborative mathematics</title>
+		<author>
+			<persName><forename type="first">T</forename><surname>Gowers</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Nielsen</surname></persName>
+		</author>
+		<idno type="DOI">10.1038/461879a</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Nature</title>
+		<imprint>
+			<biblScope unit="volume">461</biblScope>
+			<biblScope unit="issue">7266</biblScope>
+			<biblScope unit="page" from="879" to="881" />
+			<date type="published" when="2009-10">Oct. 2009</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b17">
+	<analytic>
+		<title level="a" type="main">A Machine-Checked Proof of the Odd Order Theorem</title>
+		<author>
+			<persName><forename type="first">G</forename><surname>Gonthier</surname></persName>
+		</author>
+		<idno type="DOI">10.1007/978-3-642-39634-2_14</idno>
+	</analytic>
+	<monogr>
+		<title level="m">Interactive Theorem Proving</title>
+		<title level="s">Lecture Notes in Computer Science</title>
+		<editor>
+			<persName><forename type="first">S</forename><surname>Blazy</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">C</forename><surname>Paulin-Mohring</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">D</forename><surname>Pichardie</surname></persName>
+		</editor>
+		<meeting><address><addrLine>Berlin, Heidelberg; Berlin Heidelberg</addrLine></address></meeting>
+		<imprint>
+			<publisher>Springer</publisher>
+			<date type="published" when="2013">2013</date>
+			<biblScope unit="volume">7998</biblScope>
+			<biblScope unit="page" from="163" to="179" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b18">
+	<analytic>
+		<title level="a" type="main">Autograding Mathematical Induction Proofs with Natural Language Processing</title>
+		<author>
+			<persName><forename type="first">C</forename><surname>Zhao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Silva</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Poulsen</surname></persName>
+		</author>
+		<idno type="DOI">10.1007/s40593-025-00498-2</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Int. J. Artif. Intell. Educ</title>
+		<imprint>
+			<date type="published" when="2025-07">Jul. 2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b19">
+	<monogr>
+		<title level="m" type="main">Large Language Models Do Not Simulate Human Psychology</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Schröder</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Morgenroth</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">U</forename><surname>Kuhl</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">V</forename><surname>Vaquet</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Paaßen</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2508.06950</idno>
+		<idno type="arXiv">arXiv:2508.06950</idno>
+		<imprint>
+			<date type="published" when="2025-08-13">Aug. 13, 2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b20">
+	<monogr>
+		<title level="m" type="main">Large Language Models are Zero-Shot Reasoners</title>
+		<author>
+			<persName><forename type="first">T</forename><surname>Kojima</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">S</forename><surname>Gu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Reid</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Matsuo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Iwasawa</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2205.11916</idno>
+		<idno type="arXiv">arXiv:2205.11916</idno>
+		<imprint>
+			<date type="published" when="2023-01-29">Jan. 29, 2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b21">
+	<monogr>
+		<title level="m" type="main">Chain Of Draft</title>
+		<ptr target="https://arxiv.org/pdf/2502.18600" />
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b22">
+	<monogr>
+		<title level="m" type="main">Self-Consistency Improves Chain of Thought Reasoning in Language Models</title>
+		<author>
+			<persName><forename type="first">X</forename><surname>Wang</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2203.11171</idno>
+		<idno type="arXiv">arXiv:2203.11171</idno>
+		<imprint>
+			<date type="published" when="2023-07">Mar. 07, 2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b23">
+	<monogr>
+		<title level="m" type="main">Tree of Thoughts: Deliberate Problem Solving with Large Language Models</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Yao</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2305.10601</idno>
+		<idno type="arXiv">arXiv:2305.10601</idno>
+		<imprint>
+			<date type="published" when="2023-12-03">Dec. 03, 2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b24">
+	<monogr>
+		<title level="m" type="main">Least-to-Most Prompting Enables Complex Reasoning in Large Language Models</title>
+		<author>
+			<persName><forename type="first">D</forename><surname>Zhou</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2205.10625</idno>
+		<idno type="arXiv">arXiv:2205.10625</idno>
+		<imprint>
+			<date type="published" when="2023-04-16">Apr. 16, 2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b25">
+	<monogr>
+		<title level="m" type="main">Better Zero-Shot Reasoning with Role-Play Prompting</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Kong</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2308.07702</idno>
+		<idno type="arXiv">arXiv:2308.07702</idno>
+		<imprint>
+			<date type="published" when="2024-03-14">Mar. 14, 2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b26">
+	<monogr>
+		<title level="m" type="main">DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning</title>
+		<author>
+			<persName><forename type="first">-Ai</forename><surname>Deepseek</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2501.12948</idno>
+		<idno type="arXiv">arXiv:2501.12948</idno>
+		<imprint>
+			<date type="published" when="2025-01-22">Jan. 22, 2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b27">
+	<monogr>
+		<title level="m" type="main">Introducing OpenAI o3 and o4-mini</title>
+		<ptr target="https://openai.com/index/introducing-o3-and-o4-mini/" />
+		<imprint>
+			<date type="published" when="2025-11-17">Nov. 17, 2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b28">
+	<monogr>
+		<title level="m" type="main">Learning to reason with LLMs | OpenAI</title>
+		<ptr target="https://openai.com/index/learning-to-reason-with-llms/?utm_source=chatgpt.com" />
+		<imprint>
+			<date type="published" when="2025-11-17">Nov. 17, 2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b29">
+	<analytic>
+		<title level="a" type="main">Gemini 2.5: Our most intelligent AI model</title>
+		<ptr target="https://blog.google/technology/google-deepmind/gemini-model-thinking-updates-march-2025/" />
+	</analytic>
+	<monogr>
+		<title level="j">Google</title>
+		<imprint>
+			<date type="published" when="2025-11-17">Nov. 17, 2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b30">
+	<monogr>
+		<title level="m" type="main">CommonsenseQA: A Question Answering Challenge Targeting Commonsense Knowledge</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Talmor</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Herzig</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Lourie</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Berant</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.1811.00937</idno>
+		<idno type="arXiv">arXiv:1811.00937</idno>
+		<imprint>
+			<date type="published" when="2019-03-15">Mar. 15, 2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b31">
+	<monogr>
+		<title level="m" type="main">WinoGrande: An Adversarial Winograd Schema Challenge at Scale</title>
+		<author>
+			<persName><forename type="first">K</forename><surname>Sakaguchi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">L</forename><surname>Bras</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Bhagavatula</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Choi</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.1907.10641</idno>
+		<idno type="arXiv">arXiv:1907.10641</idno>
+		<imprint>
+			<date type="published" when="2019-11-21">Nov. 21, 2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b32">
+	<monogr>
+		<title level="m" type="main">HellaSwag: Can a Machine Really Finish Your Sentence?</title>
+		<author>
+			<persName><forename type="first">R</forename><surname>Zellers</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Holtzman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Bisk</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Farhadi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Choi</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.1905.07830</idno>
+		<idno type="arXiv">arXiv:1905.07830</idno>
+		<imprint>
+			<date type="published" when="2019-05-19">May 19, 2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b33">
+	<monogr>
+		<title level="m" type="main">PIQA: Reasoning about Physical Commonsense in Natural Language</title>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Bisk</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Zellers</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">L</forename><surname>Bras</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Gao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Choi</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.1911.11641</idno>
+		<idno type="arXiv">arXiv:1911.11641</idno>
+		<imprint>
+			<date type="published" when="2019-11-26">Nov. 26, 2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b34">
+	<monogr>
+		<title level="m" type="main">SocialIQA: Commonsense Reasoning about Social Interactions</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Sap</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Rashkin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Lebras</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Choi</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.1904.09728</idno>
+		<idno type="arXiv">arXiv:1904.09728</idno>
+		<imprint>
+			<date type="published" when="2019-09-10">Sep. 10, 2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b35">
+	<monogr>
+		<title level="m" type="main">Training Verifiers to Solve Math Word Problems</title>
+		<author>
+			<persName><forename type="first">K</forename><surname>Cobbe</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2110.14168</idno>
+		<idno type="arXiv">arXiv:2110.14168</idno>
+		<imprint>
+			<date type="published" when="2021-11-18">Nov. 18, 2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b36">
+	<monogr>
+		<title level="m" type="main">A Careful Examination of Large Language Model Performance on Grade School Arithmetic</title>
+		<author>
+			<persName><forename type="first">H</forename><surname>Zhang</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2405.00332</idno>
+		<idno type="arXiv">arXiv:2405.00332</idno>
+		<imprint>
+			<date type="published" when="2024-11-22">Nov. 22, 2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b37">
+	<monogr>
+		<title level="m" type="main">Are NLP Models really able to Solve Simple Math Word Problems?</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Patel</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Bhattamishra</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Goyal</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2103.07191</idno>
+		<idno type="arXiv">arXiv:2103.07191</idno>
+		<imprint>
+			<date type="published" when="2021-04-15">Apr. 15, 2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b38">
+	<monogr>
+		<title level="m" type="main">CMATH: Can Your Language Model Pass Chinese Elementary School Math Test?</title>
+		<author>
+			<persName><forename type="first">T</forename><surname>Wei</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Luan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Dong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Wang</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2306.16636</idno>
+		<idno type="arXiv">arXiv:2306.16636</idno>
+		<imprint>
+			<date type="published" when="2023-06-29">Jun. 29, 2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b39">
+	<monogr>
+		<title level="m" type="main">VNHSGE: VietNamese High School Graduation Examination Dataset for Large Language Models</title>
+		<author>
+			<persName><forename type="first">X.-Q</forename><surname>Dao</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2305.12199</idno>
+		<idno type="arXiv">arXiv:2305.12199</idno>
+		<imprint>
+			<date type="published" when="2023-05-20">May 20, 2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b40">
+	<monogr>
+		<title level="m" type="main">Measuring Mathematical Problem Solving With the MATH Dataset</title>
+		<author>
+			<persName><forename type="first">D</forename><surname>Hendrycks</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2103.03874</idno>
+		<idno type="arXiv">arXiv:2103.03874</idno>
+		<imprint>
+			<date type="published" when="2021-08">Nov. 08, 2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b41">
+	<monogr>
+		<title level="m" type="main">AGIEval: A Human-Centric Benchmark for Evaluating Foundation Models</title>
+		<author>
+			<persName><forename type="first">W</forename><surname>Zhong</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2304.06364</idno>
+		<idno type="arXiv">arXiv:2304.06364</idno>
+		<imprint>
+			<date type="published" when="2023-09-18">Sep. 18, 2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b42">
+	<monogr>
+		<title level="m" type="main">Have LLMs Advanced Enough? A Challenging Problem Solving Benchmark For Large Language Models</title>
+		<author>
+			<persName><forename type="first">D</forename><surname>Arora</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><forename type="middle">G</forename><surname>Singh</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mausam</forename></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2305.15074</idno>
+		<idno type="arXiv">arXiv:2305.15074</idno>
+		<imprint>
+			<date type="published" when="2023-10-23">Oct. 23, 2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b43">
+	<monogr>
+		<title level="m" type="main">UGMathBench: A Diverse and Dynamic Benchmark for Undergraduate-Level Mathematical Reasoning with Large Language Models</title>
+		<author>
+			<persName><forename type="first">X</forename><surname>Xu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Chao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Hu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Yang</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2501.13766</idno>
+		<idno type="arXiv">arXiv:2501.13766</idno>
+		<imprint>
+			<date type="published" when="2025-02-25">Feb. 25, 2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b44">
+	<monogr>
+		<title level="m" type="main">U-MATH: A University-Level Benchmark for Evaluating Mathematical Skills in LLMs</title>
+		<author>
+			<persName><forename type="first">K</forename><surname>Chernyshev</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2412.03205</idno>
+		<idno type="arXiv">arXiv:2412.03205</idno>
+		<imprint>
+			<date type="published" when="2025-01-14">Jan. 14, 2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b45">
+	<monogr>
+		<title level="m" type="main">HARDMath: A Benchmark Dataset for Challenging Problems in Applied Mathematics</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Fan</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2410.09988</idno>
+		<idno type="arXiv">arXiv:2410.09988</idno>
+		<imprint>
+			<date type="published" when="2024-12-13">Dec. 13, 2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b46">
+	<monogr>
+		<title level="m" type="main">ConjNLI: Natural Language Inference Over Conjunctive Sentences</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Saha</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Nie</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Bansal</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2010.10418</idno>
+		<idno type="arXiv">arXiv:2010.10418</idno>
+		<imprint>
+			<date type="published" when="2020-10-21">Oct. 21, 2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b47">
+	<monogr>
+		<title level="m" type="main">TaxiNLI: Taking a Ride up the NLU Hill</title>
+		<author>
+			<persName><forename type="first">P</forename><surname>Joshi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Aditya</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Sathe</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Choudhury</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2009.14505</idno>
+		<idno type="arXiv">arXiv:2009.14505</idno>
+		<imprint>
+			<date type="published" when="2020-09">Oct. 09, 2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b48">
+	<analytic>
+		<title level="a" type="main">HELP: A Dataset for Identifying Shortcomings of Neural Models in Monotonicity Reasoning</title>
+		<author>
+			<persName><forename type="first">H</forename><surname>Yanaka</surname></persName>
+		</author>
+		<idno type="DOI">10.18653/v1/S19-1027</idno>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the Eighth Joint Conference on Lexical and Computational Semantics (*SEM 2019)</title>
+				<meeting>the Eighth Joint Conference on Lexical and Computational Semantics (*SEM 2019)<address><addrLine>Minneapolis, Minnesota</addrLine></address></meeting>
+		<imprint>
+			<date type="published" when="2019">2019</date>
+			<biblScope unit="page" from="250" to="255" />
+		</imprint>
+	</monogr>
+	<note>Association for Computational Linguistics</note>
+</biblStruct>
+
+<biblStruct xml:id="b49">
+	<monogr>
+		<title level="m" type="main">Natural Language Inference in Context --Investigating Contextual Reasoning over Long Texts</title>
+		<author>
+			<persName><forename type="first">H</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Cui</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Zhang</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2011.04864</idno>
+		<idno type="arXiv">arXiv:2011.04864</idno>
+		<imprint>
+			<date type="published" when="2020-11-10">Nov. 10, 2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b50">
+	<analytic>
+		<title level="a" type="main">Can Neural Networks Understand Monotonicity Reasoning?</title>
+		<author>
+			<persName><forename type="first">H</forename><surname>Yanaka</surname></persName>
+		</author>
+		<idno type="DOI">10.18653/v1/W19-4804</idno>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 2019 ACL Workshop BlackboxNLP: Analyzing and Interpreting Neural Networks for NLP</title>
+				<meeting>the 2019 ACL Workshop BlackboxNLP: Analyzing and Interpreting Neural Networks for NLP<address><addrLine>Florence, Italy</addrLine></address></meeting>
+		<imprint>
+			<date type="published" when="2019">2019</date>
+			<biblScope unit="page" from="31" to="40" />
+		</imprint>
+	</monogr>
+	<note>Association for Computational Linguistics</note>
+</biblStruct>
+
+<biblStruct xml:id="b51">
+	<monogr>
+		<title level="m" type="main">ReClor: A Reading Comprehension Dataset Requiring Logical Reasoning</title>
+		<author>
+			<persName><forename type="first">W</forename><surname>Yu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Jiang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Dong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Feng</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2002.04326</idno>
+		<idno type="arXiv">arXiv:2002.04326</idno>
+		<imprint>
+			<date type="published" when="2020-08-22">Aug. 22, 2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b52">
+	<monogr>
+		<title level="m" type="main">LogiQA: A Challenge Dataset for Machine Reading Comprehension with Logical Reasoning</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Cui</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Huang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Zhang</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2007.08124</idno>
+		<idno type="arXiv">arXiv:2007.08124</idno>
+		<imprint>
+			<date type="published" when="2020-07-16">Jul. 16, 2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b53">
+	<monogr>
+		<title level="m" type="main">Evaluating Large Language Models Trained on Code</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Chen</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2107.03374</idno>
+		<idno type="arXiv">arXiv:2107.03374</idno>
+		<imprint>
+			<date type="published" when="2021-07-14">Jul. 14, 2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b54">
+	<monogr>
+		<title level="m" type="main">Program Synthesis with Large Language Models</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Austin</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2108.07732</idno>
+		<idno type="arXiv">arXiv:2108.07732</idno>
+		<imprint>
+			<date type="published" when="2021-08-16">Aug. 16, 2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b55">
+	<monogr>
+		<title level="m" type="main">Measuring Coding Challenge Competence With APPS</title>
+		<author>
+			<persName><forename type="first">D</forename><surname>Hendrycks</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2105.09938</idno>
+		<idno type="arXiv">arXiv:2105.09938</idno>
+		<imprint>
+			<date type="published" when="2021-08">Nov. 08, 2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b56">
+	<analytic>
+		<title level="a" type="main">Competition-Level Code Generation with AlphaCode</title>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Li</surname></persName>
+		</author>
+		<idno type="DOI">10.1126/science.abq1158</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Science</title>
+		<imprint>
+			<biblScope unit="volume">378</biblScope>
+			<biblScope unit="issue">6624</biblScope>
+			<biblScope unit="page" from="1092" to="1097" />
+			<date type="published" when="2022-12">Dec. 2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b57">
+	<monogr>
+		<title level="m" type="main">CodeContests+: High-Quality Test Case Generation for Competitive Programming</title>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Sun</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Shen</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2506.05817</idno>
+		<idno type="arXiv">arXiv:2506.05817</idno>
+		<imprint>
+			<date type="published" when="2025-06">Jun. 06, 2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b58">
+	<analytic>
+		<title level="a" type="main">QuixBugs: a multi-lingual program repair benchmark set based on the quixey challenge</title>
+		<author>
+			<persName><forename type="first">D</forename><surname>Lin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Koppel</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Solar-Lezama</surname></persName>
+		</author>
+		<idno type="DOI">10.1145/3135932.3135941</idno>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings Companion of the 2017 ACM SIGPLAN International Conference on Systems, Programming, Languages, and Applications: Software for Humanity</title>
+				<meeting>Companion of the 2017 ACM SIGPLAN International Conference on Systems, Programming, Languages, and Applications: Software for Humanity<address><addrLine>Vancouver BC Canada</addrLine></address></meeting>
+		<imprint>
+			<publisher>ACM</publisher>
+			<date type="published" when="2017-10">Oct. 2017</date>
+			<biblScope unit="page" from="55" to="56" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b59">
+	<monogr>
+		<title level="m" type="main">Humanity&apos;s Last Exam</title>
+		<author>
+			<persName><forename type="first">L</forename><surname>Phan</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2501.14249</idno>
+		<idno type="arXiv">arXiv:2501.14249</idno>
+		<imprint>
+			<date type="published" when="2025-09-25">Sep. 25, 2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b60">
+	<analytic>
+		<title level="a" type="main">Humanity&apos;s Last Exam</title>
+		<ptr target="https://scale.com/leaderboard" />
+	</analytic>
+	<monogr>
+		<title level="j">SEAL Leaderboard</title>
+		<imprint>
+			<date type="published" when="2025-12-21">Dec. 21, 2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b61">
+	<analytic>
+		<title level="a" type="main">Humanity&apos;s Last Exam (Text Only)</title>
+		<ptr target="https://scale.com/leaderboard" />
+	</analytic>
+	<monogr>
+		<title level="m">SEAL Leaderboard</title>
+				<imprint>
+			<date type="published" when="2025-12-21">Dec. 21, 2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b62">
+	<monogr>
+		<title level="m" type="main">Think you have Solved Question Answering? Try ARC, the AI2 Reasoning Challenge</title>
+		<author>
+			<persName><forename type="first">P</forename><surname>Clark</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.1803.05457</idno>
+		<idno type="arXiv">arXiv:1803.05457</idno>
+		<imprint>
+			<date type="published" when="2018-03-14">Mar. 14, 2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b63">
+	<monogr>
+		<title level="m" type="main">Careful Selection of Knowledge to solve Open Book Question Answering</title>
+		<author>
+			<persName><forename type="first">P</forename><surname>Banerjee</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><forename type="middle">K</forename><surname>Pal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Mitra</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Baral</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.1907.10738</idno>
+		<idno type="arXiv">arXiv:1907.10738</idno>
+		<imprint>
+			<date type="published" when="2019-07-24">Jul. 24, 2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b64">
+	<monogr>
+		<title level="m" type="main">Crowdsourcing Multiple Choice Science Questions</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Welbl</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><forename type="middle">F</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Gardner</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.1707.06209</idno>
+		<idno type="arXiv">arXiv:1707.06209</idno>
+		<imprint>
+			<date type="published" when="2017-07-19">Jul. 19, 2017</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b65">
+	<analytic>
+		<title level="a" type="main">PubMedQA: A Dataset for Biomedical Research Question Answering</title>
+		<author>
+			<persName><forename type="first">Q</forename><surname>Jin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Dhingra</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><surname>Cohen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Lu</surname></persName>
+		</author>
+		<idno type="DOI">10.18653/v1/D19-1259</idno>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP)</title>
+				<meeting>the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP)<address><addrLine>Hong Kong, China</addrLine></address></meeting>
+		<imprint>
+			<date type="published" when="2019">2019</date>
+			<biblScope unit="page" from="2567" to="2577" />
+		</imprint>
+	</monogr>
+	<note>Association for Computational Linguistics</note>
+</biblStruct>
+
+<biblStruct xml:id="b66">
+	<monogr>
+		<title level="m" type="main">What Disease does this Patient Have? A Large-scale Open Domain Question Answering Dataset from Medical Exams</title>
+		<author>
+			<persName><forename type="first">D</forename><surname>Jin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Pan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Oufattole</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W.-H</forename><surname>Weng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Fang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Szolovits</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2009.13081</idno>
+		<idno type="arXiv">arXiv:2009.13081</idno>
+		<imprint>
+			<date type="published" when="2020-09-28">Sep. 28, 2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b67">
+	<monogr>
+		<title level="m" type="main">MedXpertQA: Benchmarking Expert-Level Medical Reasoning and Understanding</title>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Zuo</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2501.18362</idno>
+		<idno type="arXiv">arXiv:2501.18362</idno>
+		<imprint>
+			<date type="published" when="2025-06">Jun. 06, 2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b68">
+	<monogr>
+		<title level="m" type="main">LLMEval-Med: A Real-world Clinical Benchmark for Medical LLMs with Physician Validation</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Zhang</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2506.04078</idno>
+		<idno type="arXiv">arXiv:2506.04078</idno>
+		<imprint>
+			<date type="published" when="2025-08-31">Aug. 31, 2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b69">
+	<monogr>
+		<title level="m" type="main">MedQA-CS: Benchmarking Large Language Models Clinical Skills Using an AI-SCE Framework</title>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Yao</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2410.01553</idno>
+		<idno type="arXiv">arXiv:2410.01553</idno>
+		<imprint>
+			<date type="published" when="2024-02">Oct. 02, 2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b70">
+	<monogr>
+		<title level="m" type="main">LegalBench: A Collaboratively Built Benchmark for Measuring Legal Reasoning in Large Language Models</title>
+		<author>
+			<persName><forename type="first">N</forename><surname>Guha</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2308.11462</idno>
+		<idno type="arXiv">arXiv:2308.11462</idno>
+		<imprint>
+			<date type="published" when="2023-08-20">Aug. 20, 2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b71">
+	<monogr>
+		<title level="m" type="main">HotpotQA: A Dataset for Diverse, Explainable Multi-hop Question Answering</title>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Yang</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.1809.09600</idno>
+		<idno type="arXiv">arXiv:1809.09600</idno>
+		<imprint>
+			<date type="published" when="2018-09-25">Sep. 25, 2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b72">
+	<monogr>
+		<title level="m" type="main">Did Aristotle Use a Laptop? A Question Answering Benchmark with Implicit Reasoning Strategies</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Geva</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Khashabi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Segal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Khot</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Roth</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Berant</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2101.02235</idno>
+		<idno type="arXiv">arXiv:2101.02235</idno>
+		<imprint>
+			<date type="published" when="2021-06">Jan. 06, 2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b73">
+	<monogr>
+		<title level="m" type="main">MuSiQue: Multihop Questions via Single-hop Question Composition</title>
+		<author>
+			<persName><forename type="first">H</forename><surname>Trivedi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Balasubramanian</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Khot</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Sabharwal</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2108.00573</idno>
+		<idno type="arXiv">arXiv:2108.00573</idno>
+		<imprint>
+			<date type="published" when="2022-05-05">May 05, 2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b74">
+	<monogr>
+		<title level="m" type="main">SCoRE: Benchmarking Long-Chain Reasoning in Commonsense Scenarios</title>
+		<author>
+			<persName><forename type="first">W</forename><surname>Zhan</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2503.06218</idno>
+		<idno type="arXiv">arXiv:2503.06218</idno>
+		<imprint>
+			<date type="published" when="2025-05-17">May 17, 2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b75">
+	<monogr>
+		<author>
+			<persName><forename type="first">F</forename><surname>Chollet</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Knoop</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Kamradt</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Landers</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2412.04604</idno>
+		<idno type="arXiv">arXiv:2412.04604</idno>
+		<title level="m">ARC Prize 2024: Technical Report</title>
+				<imprint>
+			<date type="published" when="2025-08">Jan. 08, 2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b76">
+	<analytic>
+		<title level="a" type="main">ARC Prize -Leaderboard</title>
+		<ptr target="https://arcprize.org/leaderboard" />
+	</analytic>
+	<monogr>
+		<title level="j">ARC Prize</title>
+		<imprint>
+			<date type="published" when="2025-08-11">Aug. 11, 2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b77">
+	<monogr>
+		<title level="m" type="main">ARC-AGI-2: A New Challenge for Frontier AI Reasoning Systems</title>
+		<author>
+			<persName><forename type="first">F</forename><surname>Chollet</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Knoop</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Kamradt</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Landers</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Pinkard</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2505.11831</idno>
+		<idno type="arXiv">arXiv:2505.11831</idno>
+		<imprint>
+			<date type="published" when="2025-05-17">May 17, 2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b78">
+	<monogr>
+		<title level="m" type="main">GTBench: Uncovering the Strategic Reasoning Limitations of LLMs via Game-Theoretic Evaluations</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Duan</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2402.12348</idno>
+		<idno type="arXiv">arXiv:2402.12348</idno>
+		<imprint>
+			<date type="published" when="2024-06-10">Jun. 10, 2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b79">
+	<monogr>
+		<title level="m" type="main">GameArena: Evaluating LLM Reasoning through Live Computer Games</title>
+		<author>
+			<persName><forename type="first">L</forename><surname>Hu</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2412.06394</idno>
+		<idno type="arXiv">arXiv:2412.06394</idno>
+		<imprint>
+			<date type="published" when="2025-02-15">Feb. 15, 2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b80">
+	<monogr>
+		<title level="m" type="main">DetectBench: Can Large Language Model Detect and Piece Together Implicit Evidence?</title>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Gu</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2406.12641</idno>
+		<idno type="arXiv">arXiv:2406.12641</idno>
+		<imprint>
+			<date type="published" when="2024-11-11">Nov. 11, 2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b81">
+	<monogr>
+		<title level="m" type="main">True Detective: A Deep Abductive Reasoning Benchmark Undoable for GPT-3 and Challenging for GPT-4</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Del</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Fishel</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2212.10114</idno>
+		<idno type="arXiv">arXiv:2212.10114</idno>
+		<imprint>
+			<date type="published" when="2023-01">Jun. 01, 2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b82">
+	<monogr>
+		<title level="m" type="main">WHODUNIT: Evaluation benchmark for culprit detection in mystery stories</title>
+		<author>
+			<persName><forename type="first">K</forename><surname>Gupta</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2502.07747</idno>
+		<idno type="arXiv">arXiv:2502.07747</idno>
+		<imprint>
+			<date type="published" when="2025-02-11">Feb. 11, 2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b83">
+	<monogr>
+		<title level="m" type="main">Reasoning Models are Test Exploiters: Rethinking Multiple-Choice</title>
+		<author>
+			<persName><forename type="first">N</forename><surname>Raman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Lundy</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Leyton-Brown</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2507.15337</idno>
+		<idno type="arXiv">arXiv:2507.15337</idno>
+		<imprint>
+			<date type="published" when="2025-02">Oct. 02, 2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b84">
+	<analytic>
+		<title level="a" type="main">Analysis of multiple-choice versus open-ended questions in language tests according to different cognitive domain levels</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Polat</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Novitas-R. Res. Youth Lang</title>
+		<imprint>
+			<biblScope unit="volume">14</biblScope>
+			<biblScope unit="issue">2</biblScope>
+			<biblScope unit="page" from="76" to="96" />
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b85">
+	<monogr>
+		<title level="m" type="main">It is Too Many Options: Pitfalls of Multiple-Choice Questions in Generative AI and Medical Education</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Singh</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2503.13508</idno>
+		<idno type="arXiv">arXiv:2503.13508</idno>
+		<imprint>
+			<date type="published" when="2025-03-13">Mar. 13, 2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b86">
+	<monogr>
+		<title level="m" type="main">EQUATOR: A Deterministic Framework for Evaluating LLM Reasoning with Open-Ended Questions</title>
+		<author>
+			<persName><forename type="first">R</forename><surname>Bernard</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Raza</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Das</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Murugan</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2501.00257</idno>
+		<idno type="arXiv">arXiv:2501.00257</idno>
+		<imprint>
+			<date type="published" when="2024-12-31">Dec. 31, 2024</date>
+		</imprint>
+	</monogr>
+	<note>.0.0-beta</note>
+</biblStruct>
+
+<biblStruct xml:id="b87">
+	<monogr>
+		<title level="m" type="main">Plausibly Problematic Questions in Multiple-Choice Benchmarks for Commonsense Reasoning</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Palta</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Balepur</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Rankel</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Wiegreffe</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Carpuat</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Rudinger</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2410.10854</idno>
+		<idno type="arXiv">arXiv:2410.10854</idno>
+		<imprint>
+			<date type="published" when="2024-06">Oct. 06, 2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b88">
+	<analytic>
+		<title level="a" type="main">The Assessment Evaluation Rubric: Promoting Learning and Learner-Centered Teaching through Assessment in Face-to-Face or Distanced Higher Education</title>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">E</forename><surname>Tractenberg</surname></persName>
+		</author>
+		<idno type="DOI">10.3390/educsci11080441</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Educ. Sci</title>
+		<imprint>
+			<biblScope unit="volume">11</biblScope>
+			<biblScope unit="issue">8</biblScope>
+			<biblScope unit="page">441</biblScope>
+			<date type="published" when="2021-08">Aug. 2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b89">
+	<analytic>
+		<title level="a" type="main">Rubric Is All You Need: Enhancing LLM-based Code Evaluation With Question-Specific Rubrics</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Pathak</surname></persName>
+		</author>
+		<idno type="DOI">10.1145/3702652.3744220</idno>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 2025 ACM Conference on International Computing Education Research V</title>
+				<meeting>the 2025 ACM Conference on International Computing Education Research V</meeting>
+		<imprint>
+			<date type="published" when="2025-08">Aug. 2025</date>
+			<biblScope unit="volume">1</biblScope>
+			<biblScope unit="page" from="181" to="195" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b90">
+	<analytic>
+		<title level="a" type="main">A Comprehensive Review on Automated Grading Systems in STEM Using AI Techniques</title>
+		<author>
+			<persName><forename type="first">L</forename><forename type="middle">Y</forename><surname>Tan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Hu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">J</forename><surname>Yeo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><forename type="middle">H</forename><surname>Cheong</surname></persName>
+		</author>
+		<idno type="DOI">10.3390/math13172828</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Mathematics</title>
+		<imprint>
+			<biblScope unit="volume">13</biblScope>
+			<biblScope unit="issue">17</biblScope>
+			<biblScope unit="page">2828</biblScope>
+			<date type="published" when="2025-09">Sep. 2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b91">
+	<analytic>
+		<title level="a" type="main">Automated essay scoring with string kernels and word embeddings</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Cozma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Butnaru</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">T</forename><surname>Ionescu</surname></persName>
+		</author>
+		<idno type="DOI">10.18653/v1/P18-2080</idno>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 56th Annual Meeting of the Association for Computational Linguistics</title>
+		<title level="s">Short Papers</title>
+		<meeting>the 56th Annual Meeting of the Association for Computational Linguistics<address><addrLine>Melbourne, Australia</addrLine></address></meeting>
+		<imprint>
+			<date type="published" when="2018">2018</date>
+			<biblScope unit="volume">2</biblScope>
+			<biblScope unit="page" from="503" to="509" />
+		</imprint>
+	</monogr>
+	<note>Association for Computational Linguistics</note>
+</biblStruct>
+
+<biblStruct xml:id="b92">
+	<analytic>
+		<title level="a" type="main">Similarity-Based Content Scoring -A more Classroom-Suitable Alternative to Instance-Based Scoring?</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Bexte</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Horbach</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Zesch</surname></persName>
+		</author>
+		<idno type="DOI">10.18653/v1/2023.findings-acl.119</idno>
+	</analytic>
+	<monogr>
+		<title level="m">Findings of the Association for Computational Linguistics: ACL 2023</title>
+				<meeting><address><addrLine>Toronto, Canada</addrLine></address></meeting>
+		<imprint>
+			<date type="published" when="2023">2023</date>
+			<biblScope unit="page" from="1892" to="1903" />
+		</imprint>
+	</monogr>
+	<note>Association for Computational Linguistics</note>
+</biblStruct>
+
+<biblStruct xml:id="b93">
+	<analytic>
+		<title level="a" type="main">Learning to grade short answer questions using semantic similarity measures and dependency graph alignments</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Mohler</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Bunescu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Mihalcea</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 49th Annual Meeting of the Association for Computational Linguistics: Human Language Technologies -Volume 1</title>
+				<meeting>the 49th Annual Meeting of the Association for Computational Linguistics: Human Language Technologies -Volume 1<address><addrLine>USA</addrLine></address></meeting>
+		<imprint>
+			<publisher>Association for Computational Linguistics</publisher>
+			<date type="published" when="2011">2011</date>
+			<biblScope unit="page" from="752" to="762" />
+		</imprint>
+	</monogr>
+	<note>HLT &apos;11</note>
+</biblStruct>
+
+<biblStruct xml:id="b94">
+	<analytic>
+		<title level="a" type="main">Who Validates the Validators? Aligning LLM-Assisted Evaluation of LLM Outputs with Human Preferences</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Shankar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">D</forename><surname>Zamfirescu-Pereira</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Hartmann</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Parameswaran</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">I</forename><surname>Arawjo</surname></persName>
+		</author>
+		<idno type="DOI">10.1145/3654777.3676450</idno>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 37th Annual ACM Symposium on User Interface Software and Technology</title>
+				<meeting>the 37th Annual ACM Symposium on User Interface Software and Technology<address><addrLine>Pittsburgh PA USA</addrLine></address></meeting>
+		<imprint>
+			<publisher>ACM</publisher>
+			<date type="published" when="2024-10">Oct. 2024</date>
+			<biblScope unit="page" from="1" to="14" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b95">
+	<monogr>
+		<title level="m" type="main">Chatbot Arena: An Open Platform for Evaluating LLMs by Human Preference</title>
+		<author>
+			<persName><forename type="first">W.-L</forename><surname>Chiang</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2403.04132</idno>
+		<idno type="arXiv">arXiv:2403.04132</idno>
+		<imprint>
+			<date type="published" when="2024-07">Mar. 07, 2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b96">
+	<analytic>
+		<title level="a" type="main">The Abduction of Sherlock Holmes</title>
+		<author>
+			<persName><forename type="first">D</forename><surname>Carson</surname></persName>
+		</author>
+		<idno type="DOI">10.1350/ijps.2009.11.2.123</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Int. J. Police Sci. Manag</title>
+		<imprint>
+			<biblScope unit="volume">11</biblScope>
+			<biblScope unit="issue">2</biblScope>
+			<biblScope unit="page" from="193" to="202" />
+			<date type="published" when="2009-06">Jun. 2009</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b97">
+	<analytic>
+		<title level="a" type="main">Eco and Peirce on Abduction</title>
+		<author>
+			<persName><forename type="first">F</forename><surname>Bellucci</surname></persName>
+		</author>
+		<idno type="DOI">10.4000/ejpap.1122</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Eur. J. Pragmatism Am. Philos</title>
+		<imprint>
+			<biblScope unit="volume">X</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<date type="published" when="2018-07">Jul. 2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b98">
+	<analytic>
+		<title level="a" type="main">Densing law of LLMs</title>
+		<author>
+			<persName><forename type="first">C</forename><surname>Xiao</surname></persName>
+		</author>
+		<idno type="DOI">10.1038/s42256-025-01137-0</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Nat. Mach. Intell</title>
+		<imprint>
+			<biblScope unit="volume">7</biblScope>
+			<biblScope unit="issue">11</biblScope>
+			<biblScope unit="page" from="1823" to="1833" />
+			<date type="published" when="2025-11">Nov. 2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b99">
+	<monogr>
+		<title level="m" type="main">Top LLM Trends 2025: What&apos;s the Future of LLMs</title>
+		<ptr target="https://www.turing.com/resources/top-llm-trends" />
+		<imprint>
+			<date type="published" when="2025-12-26">Dec. 26, 2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b100">
+	<monogr>
+		<title level="m" type="main">TinyLlama: An Open-Source Small Language Model</title>
+		<author>
+			<persName><forename type="first">P</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Zeng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><surname>Lu</surname></persName>
+		</author>
+		<idno type="DOI">10.48550/arXiv.2401.02385</idno>
+		<idno type="arXiv">arXiv:2401.02385</idno>
+		<imprint>
+			<date type="published" when="2024-04">Jun. 04, 2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b101">
+	<analytic>
+		<title level="a" type="main">Small Language Models: The Efficient Future of AI</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Thomas</surname></persName>
+		</author>
+		<ptr target="https://www.anaconda.com/blog/small-language-models-efficient-future-ai" />
+	</analytic>
+	<monogr>
+		<title level="j">Anaconda</title>
+		<imprint>
+			<date type="published" when="2025-12-27">Dec. 27, 2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+				</listBibl>
+			</div>
+		</back>
+	</text>
+</TEI>

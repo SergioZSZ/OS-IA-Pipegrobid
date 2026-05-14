@@ -1,0 +1,748 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xml:space="preserve" xmlns="http://www.tei-c.org/ns/1.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.tei-c.org/ns/1.0 https://raw.githubusercontent.com/kermitt2/grobid/master/grobid-home/schemas/xsd/Grobid.xsd"
+ xmlns:xlink="http://www.w3.org/1999/xlink">
+	<teiHeader xml:lang="en">
+		<fileDesc>
+			<titleStmt>
+				<title level="a" type="main">CONDITIONS FOR BACTERIAL SELECTION AND EXTINCTION DRIVEN BY GROWTH-KILL TRADE-OFF IN CYCLIC ANTIMICROBIAL TREATMENTS</title>
+			</titleStmt>
+			<publicationStmt>
+				<publisher/>
+				<availability status="unknown"><licence/></availability>
+				<date type="published" when="2026-02-17">February 17, 2026</date>
+			</publicationStmt>
+			<sourceDesc>
+				<biblStruct>
+					<analytic>
+						<author>
+							<persName><forename type="first">Niclas</forename><surname>Nordholt</surname></persName>
+						</author>
+						<author>
+							<persName><forename type="first">Frank</forename><surname>Schreiber</surname></persName>
+						</author>
+						<author>
+							<persName><forename type="first">Míriam</forename><forename type="middle">R</forename><surname>García</surname></persName>
+						</author>
+						<author>
+							<affiliation key="aff0">
+								<orgName type="department">Nerea Martínez-López Biosystems &amp; Bioprocesses Engineering Spanish National Research Council</orgName>
+								<orgName type="institution">IIM-CSIC</orgName>
+								<address>
+									<postCode>36208</postCode>
+									<settlement>Vigo</settlement>
+									<country key="ES">Spain</country>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<affiliation key="aff1">
+								<orgName type="department">Division of Biodeterioration and Reference Organisms Federal Institute for Materials Research and Testing (BAM) Berlín</orgName>
+								<address>
+									<postCode>12205</postCode>
+									<country key="DE">Germany</country>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<affiliation key="aff2">
+								<orgName type="department">Division of Biodeterioration and Reference Organisms Federal Institute for Materials Research and Testing (BAM) Berlín</orgName>
+								<address>
+									<postCode>12205</postCode>
+									<country key="DE">Germany</country>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<affiliation key="aff3">
+								<orgName type="department">Biosystems &amp; Bioprocesses Engineering</orgName>
+								<orgName type="institution">Spanish National Research Council (IIM-CSIC) Vigo</orgName>
+								<address>
+									<postCode>36208</postCode>
+									<country key="ES">Spain</country>
+								</address>
+							</affiliation>
+						</author>
+						<title level="a" type="main">CONDITIONS FOR BACTERIAL SELECTION AND EXTINCTION DRIVEN BY GROWTH-KILL TRADE-OFF IN CYCLIC ANTIMICROBIAL TREATMENTS</title>
+					</analytic>
+					<monogr>
+						<imprint>
+							<date type="published" when="2026-02-17">February 17, 2026</date>
+						</imprint>
+					</monogr>
+					<idno type="MD5">05CC867C1F87882BC9D7E3CF41111591</idno>
+					<idno type="arXiv">arXiv:2602.14645v1[q-bio.PE]</idno>
+				</biblStruct>
+			</sourceDesc>
+		</fileDesc>
+		<encodingDesc>
+			<appInfo>
+				<application version="0.7.2" ident="GROBID" when="2026-05-14T17:26+0000">
+					<desc>GROBID - A machine learning software for extracting information from scholarly documents</desc>
+					<ref target="https://github.com/kermitt2/grobid"/>
+				</application>
+			</appInfo>
+		</encodingDesc>
+		<profileDesc>
+			<textClass>
+				<keywords>
+					<term>Selection</term>
+					<term>Extinction conditions</term>
+					<term>Dynamic treatment</term>
+					<term>Antimicrobial resistance</term>
+				</keywords>
+			</textClass>
+			<abstract>
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>Antimicrobial protocols -using substances such as antibiotics or disinfectants -remain the preferred option for preventing the spread of pathogenic bacteria. However, bacteria can develop mechanisms to reduce their antimicrobial susceptibility, which can lead to treatment failure and the selection of resistance or tolerance. In this work, we propose a minimal population dynamics model to study bacterial selection during cyclic antimicrobial application, a commonly used protocol. Selection in bacterial populations with heterogeneous antimicrobial susceptibility is modelled here as a trade-off between survival advantage (reduction in antimicrobial killing) and potential fitness costs (reduction in growth rate) of the less susceptible strains. The proposed model allows us to derive useful expressions for determining the success of cyclic antimicrobial treatments based on two bacterial traits: growth and kill rates. The results obtained here are directly applicable to preventing the selection and spread of resistant and tolerant bacterial strains in real-life protocols.</p></div>
+			</abstract>
+		</profileDesc>
+	</teiHeader>
+	<text xml:lang="en">
+		<body>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="1">Introduction</head><p>Antimicrobial protocols are used daily to eliminate bacteria and prevent the spread of pathogens in home <ref type="bibr" target="#b0">[1]</ref>, industrial or clinical settings. However, bacteria from the same population can respond to treatment very differently, as a result of genetic or phenotypic changes altering antimicrobial susceptibility, among other bacterial characteristics. That is the case of antimicrobial resistance (AMR) or tolerance, which can seriously compromise antimicrobial treatment. In these scenarios, even a small subpopulation of bacteria with reduced antimicrobial susceptibility can survive treatment, making evolutionary processes-mutation, selection, and competition-highly relevant for understanding treatment failure and development of AMR and tolerance <ref type="bibr" target="#b1">[2]</ref>. Then, accurately predicting the dynamics of AMR and tolerance selection under biocidal stress is essential for systematic optimisation of antimicrobial protocols <ref type="bibr" target="#b2">[3]</ref>.</p><p>Although the evolutionary process is fundamentally stochastic, especially in small populations <ref type="bibr" target="#b3">[4]</ref>, outcomes become more predictable and often repeatable under strong and recurrent selective pressures, such as those imposed by cyclic biocide treatments <ref type="bibr" target="#b4">[5]</ref>. Mutation itself is random; however, in practice only a few mutant lineages tend to expand and dominate the population even at antimicrobial concentrations far below the minimum inhibitory concentration <ref type="bibr" target="#b5">[6]</ref>. In other words, evolution is highly repeatable when the efficiency of selection is high relative to the stochasticity of genetic drift, mutation, recombination and unpredictable environmental changes. Consequently, most mathematical models of antimicrobial resistance (AMR) require deterministic equations <ref type="bibr" target="#b6">[7]</ref>, typically systems of Ordinary Differential Equations (ODEs) <ref type="bibr" target="#b7">[8]</ref>.</p><p>If the process can be assumed to be deterministic under strong selective pressures, as is often observed in cyclic treatments or in treatments that are highly bactericidal, then it becomes necessary to identify a useful and experimentally applicable theory that will allow us to determine the conditions under which bacterial populations will go extinct during these treatment regimens. When a population is driven to extinction, it is also important to estimate the time to extinction so that unnecessary additional treatment cycles can be avoided. Conversely, when survival occurs, it becomes essential to characterise the conditions under which resistant or tolerant subpopulations gain a selective advantage, enabling treatment protocols to be adjusted to minimise their enrichment.</p><p>The establishment of this theoretical framework constitutes the main unresolved challenge, and overcoming it is indispensable for the optimisation of effective disinfection or sanitation protocols <ref type="bibr" target="#b6">[7,</ref><ref type="bibr" target="#b8">9]</ref>. Recent research has derived extinction conditions for bacterial populations exposed to antimicrobials, although this work assumes a constant antimicrobial stress without cyclic or time-varying concentration dynamics, and accounts for variability through stochastic fluctuations in growth rather than through the explicit coexistence of strains with different traits <ref type="bibr" target="#b9">[10]</ref>. Other studies use the birth-death stochastic process to investigate population dynamics under sequential therapies, capturing complex evolutionary phenomena such as collateral sensitivity but without providing explicit analytical conditions for selection or extinction <ref type="bibr" target="#b10">[11]</ref>. As a consequence, these approaches require numerical solution through dedicated in silico tools that must be recalibrated for each specific scenario and that usually depended on large parameter sets <ref type="bibr" target="#b11">[12]</ref>. Collectively, these studies motivate simple, analytically tractable models of strain competition and extinction under cyclic antimicrobial killing, with minimal population dynamics models appearing most useful. However existing results provide selection conditions only for growth trait evolution under serial dilution without antimicrobial treatment <ref type="bibr" target="#b12">[13]</ref>.</p><p>In this work, we study selection during cyclic antimicrobial application for bacterial populations formed by multiple strains. First, we propose a mathematical model to describe the population dynamics under cyclic treatment, consisting of successive growth and antimicrobial-killing periods. The model formulation is kept simple to study selection as a function of the minimum bacterial characteristics (traits) to describe the dynamics of the different strains, namely, growth rates during recovery and kill rates in response to antimicrobial killing. Then, the mathematical model is used to derive conditions for determining extinction or selection of the different strains based on the bacterial traits and the setup parameters for cyclic treatment. We also provide important measures to quantify selection and compare the selective ability of the strains, such as the extinction cycles and the selection coefficients. The resulting approach provides directly applicable criteria for preventing the selection and spread of resistant or tolerant bacteria in real-life antimicrobial protocols.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2">The mathematical model 2.1 Model assumptions</head><p>Consider a bacterial population formed by n &gt; 1 distinct strains {S i | 1 ≤ i ≤ n}. The population is subjected to a cyclic treatment that alternates growth periods with killing periods via some bactericidal antimicrobial, e.g., an antibiotic or disinfectant. The duration of the growth periods (t g &gt; 0) and the killing periods (t k &gt; 0) remains constant between cycles, as well as the applied antimicrobial concentration (C ≥ 0). We provide, though, an extension of the model to the case where the antimicrobial dose varies across cycles. Dilution into fresh medium by a factor 0 &lt; D &lt; 1 follows each killing period to remove the antimicrobial and provide the necessary resources for propagating bacteria to the next cycle.</p><p>During the growth periods, the strains grow exponentially until the total population reaches the saturation concentration (or carrying capacity K &gt; 0), once the resources are exhausted. When no more resources are available, bacteria enter the stationary phase and can no longer reproduce. Then, the strains indirectly compete for the available resources during growth; the fastest-growing strains will have a competitive advantage because they can convert resources into biomass more rapidly before saturation. Conversely, the slower-growing strains will be at a competitive disadvantage, as they may not be able to reproduce significantly before resources are exhausted. Thus, we will consider the exponential growth rates {µ i &gt; 0 | 1 ≤ i ≤ n} as the main parameters characterising the population dynamics during growth. For simplicity, we ignore the influence of other growth-related parameters, such as bacterial lag or growth efficiency (proportion of the resource converted by bacteria into biomass). The growth periods are followed by killing periods, during which we assume the strains' concentration decay exponentially (first-order kinetics). The kill rates {k i (C) ≥ 0 | 1 ≤ i ≤ n} are considered the main parameters characterising the population dynamics during antimicrobial killing. We thus ignore bimodal killing kinetics arising from phenotypic heterogeneity in the strains, such as heteroresistance <ref type="bibr" target="#b13">[14]</ref> or persistence <ref type="bibr" target="#b1">[2]</ref>. On the other hand, we assume that the strains cannot growth during the killing periods To confer the model more realism, we assume the strains cannot reproduce below an extinction limit X e &gt; 0. We will generally consider that the initial cell concentration (inoculum) for the strains, {X i0 | 1 ≤ i ≤ n}, verify X e ≤ X i0 , so that they can reproduce during the first growth period, unless stated otherwise (e.g., when studying the dynamics for the strains in isolation).</p><p>The duration of the growth and killing periods, the carrying capacity, the strains' inocula, the dilution factor, the applied antimicrobial concentration, and the extinction limit, will be called the setup parameters for cyclic treatment. On the other hand, the growth and kill rates are the main parameters characterising the population dynamics, so that we will refer to them as the bacterial traits. Note that we can assume the carrying capacity is a setup parameter (adjusted through the initial resource concentration in the culture medium) because we ignore differences in growth efficiency between the strains.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.2">Model formulation</head><p>Let {X i (t) | 1 ≤ i ≤ n} denote the cell concentrations of the different strains in the population at any time t ≥ 0. Taking into account the hypothesis and parameters described in Model assumptions, the following Ordinary Differential Equations (ODEs) describe the dynamics of the bacterial population under cyclic antimicrobial treatment:</p><formula xml:id="formula_0">dX i dt (t) = µ i I g (t)I e X 0 i,c − k i (C)I k (t) X i (t), t 0 c &lt; t &lt; t f c , c ≥ 1, 1 ≤ i ≤ n.<label>(1)</label></formula><p>The duration of the growth and killing periods remain fixed, so that t 0 c = (c − 1) (t g + t k ) and t f c = c (t g + t k ) are the initial and final time for the c-cycle, respectively. Note that the final time of the c-cycle coincides with the initial time of c + 1, i.e., t f c = t 0 c+1 . We denote X 0 i,c = X i (t 0 c ) the initial condition for ODEs (1) at the c-cycle, which is:</p><formula xml:id="formula_1">X 0 i,c = X i0 , c = 1, DX i (t f − c−1 ), c &gt; 1, X i (t f − c−1 ) = lim t→t f − c−1 X i (t), 1 ≤ i ≤ n.<label>(2)</label></formula><p>The functions I g , I e and I k involved in ODEs (1) are indicators for exponential growth, strains' extinction and antimicrobial killing, respectively. In first place, the function I g indicates saturation in the total cell concentration due to resources exhaustion, so that:</p><formula xml:id="formula_2">I g (t) = 1, t ∈ t 0 c , t 0 c + t c for some c ≥ 1, 0, i.o.c., t c = min{t g , t sat c },<label>(3)</label></formula><p>where t c denotes the time spent by the strains in the exponential growth phase at the c-cycle, and t sat c is the saturation time. That is, t sat c denotes the time necessary for the population to reach the carrying capacity at the c-cycle. Note that the saturation time for the c-cycle is the unique solution (if any) of the following equation:</p><formula xml:id="formula_3">n i=1 X 0 i,c exp µ i t sat c I e (X 0 i,c ) = K, c ≥ 1,<label>(4)</label></formula><p>which can only be solved numerically in the most general case. Nevertheless, as we will see, the model analysis can be fairly developed without using any closed-form expression for the saturation time in Eq. ( <ref type="formula" target="#formula_3">4</ref>). An approximation is provided, though, for cases where this is necessary (see An approximation for the saturation time).</p><p>On the other hand, the function I e in ODEs (1) accounts for strains' extinction, so that they cannot reproduce during the c-cycle if their concentration is below the extinction limit at the start of the cycle. That is:</p><formula xml:id="formula_4">I e X 0 i,c = 1, X 0 i,c ≥ X e , 0, i.o.c., c ≥ 1, 1 ≤ i ≤ n.<label>(5)</label></formula><p>Finally, the function I k in ODEs (1) indicates the periods of antimicrobial killing:</p><formula xml:id="formula_5">I k (t) = 1, t ∈ t 0 c + t g , t f c for some c ≥ 1, 0, i.o.c. (<label>6</label></formula><formula xml:id="formula_6">)</formula><p>Remark 1. If Eq. (4) has a solution, it is unique. On the other hand, the solution to Eq. (4) exists if and only if the cell concentration of some strain is above the extinction limit at the start of the c-cycle. Otherwise, the population cannot grow, nor therefore reach saturation. Note also that the unique solution of Eq. (4) verifies t sat c ≤ 0 if the total cell concentration at the start of the c-cycle is such that:</p><formula xml:id="formula_7">n i=1 X 0 i,c ≥ K.</formula><p>In that case, the duration of the exponential growth phase at the c-cycle would be t c = 0. Nevertheless, this scenario can occur only when the total cell concentration at the start of treatment exceeds the carrying capacity, since the population is diluted at the end of each cycle (see Eq. (2)).</p><p>Remark 2. The cell concentrations {X i (t) | 1 ≤ i ≤ n} are considered discontinuous at t f c = t 0 c+1 for any cycle c ≥ 1, since Eq. (2) considers an instantaneous dilution step at the end of each cycle. That is:</p><formula xml:id="formula_8">lim t→t f + c X i (t) = X 0 i,c+1 = D lim t→t f − c X i (t) ̸ = 0&lt;D&lt;1 lim t→t f − c X i (t), c ≥ 1, 1 ≤ i ≤ n.</formula><p>Note that Eqs.( <ref type="formula" target="#formula_0">1</ref>)-( <ref type="formula" target="#formula_1">2</ref>) imply that the cell concentrations at the final time t f c are:</p><formula xml:id="formula_9">X i (t f c ) = X i (t 0 c+1 ) = X 0 i,c+1 , c ≥ 1, 1 ≤ i ≤ n.</formula><p>The model for cyclic antimicrobial treatment given in Eqs. ( <ref type="formula" target="#formula_0">1</ref>)-( <ref type="formula" target="#formula_5">6</ref>) has the following (unique) analytical solution for the cell concentrations {X i (t) | 1 ≤ i ≤ n} of the different strains:</p><formula xml:id="formula_10">X i (t) = X 0 i,c exp µ i min{t c , t − t 0 c }I e X 0 i,c − k i (C) max{0, t − (t 0 c + t g )} , t 0 c ≤ t &lt; t f c , c ≥ 1,<label>(7)</label></formula><p>where X 0 i,c and I e X 0 i,c are calculated recursively using Eq. ( <ref type="formula" target="#formula_1">2</ref>) and Eq. ( <ref type="formula" target="#formula_4">5</ref>), respectively. The analytic solution in Eq. ( <ref type="formula" target="#formula_10">7</ref>) is rather cumbersome and will not be applied directly for the analysis and demonstrations in this work. Instead, we will repeatedly use the cell concentrations at the end of each cycle, which are:</p><formula xml:id="formula_11">X i t f c = D c X i0 exp µ i c q=1 t q I e X 0 i,q − ck i (C)t k , c ≥ 1, 1 ≤ i ≤ n,<label>(8)</label></formula><p>and the following expression, relating the cell concentrations at the initial and final time of each cycle:</p><formula xml:id="formula_12">X i t f c = DX 0 i,c exp µ i t c I e X 0 i,c − k i (C)t k , c ≥ 1, 1 ≤ i ≤ n.<label>(9)</label></formula><p>Remark 3. The model in Eqs. (1)-( <ref type="formula" target="#formula_5">6</ref>) can be easily extended to cyclic treatments for which the antimicrobial dose varies between cycles. In that case, ODEs (1) transform to:</p><formula xml:id="formula_13">dX i dt (t) = µ i I g (t)I e X 0 i,c − k i (C c )I k (t) X i (t), t 0 c &lt; t &lt; t f c , 1 ≤ i ≤ n, c ≥ 1,<label>(10)</label></formula><p>where C c ≥ 0 is the antimicrobial concentration applied at the c-cycle, and Eqs. (2)-( <ref type="formula" target="#formula_5">6</ref>) remain unchanged. Then, the kill rates for the different strains at the applied antimicrobial doses should be considered in the model as independent parameters. One alternative is to consider some pharmacodynamic function relating the kill rates of the strains with the antimicrobial concentration. For example, we can use the following Hill-type dependence:</p><formula xml:id="formula_14">k i (C) = k max,i C Hi C Hi + EC Hi 50,i , 1 ≤ i ≤ n,</formula><p>where k max,i is the maximum kill rate, EC 50,i is the half-maximum inhibitory concentration, and H i is the Hill exponent. In this case, only three parameters are needed per strain to consider antimicrobial killing at any concentration.</p><p>Note that the extended model in Eqs. (2)-( <ref type="formula" target="#formula_5">6</ref>) and (10) for cyclic treatment with variable antimicrobial concentration has a unique analytical solution, given by:</p><formula xml:id="formula_15">X i (t) = X 0 i,c exp µ i min{t c , t − t 0 c }I e X 0 i,c − k i (C c ) max{0, t − (t 0 c + t g )} , t 0 c ≤ t &lt; t f c , c ≥ 1.<label>(11)</label></formula><p>However, the analysis of the extinction and selection dynamics for the extended model is complicated and will not be addressed here. Note that little can be said about the extinction or selection of the strains if the succession of applied antimicrobial doses {C c | c ≥ 1} does not take a particular form (e.g., increases or decreases with the cycles).</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.3">An approximation for the saturation time</head><p>The model for cyclic antimicrobial treatment given by Eqs. ( <ref type="formula" target="#formula_0">1</ref>)-( <ref type="formula" target="#formula_5">6</ref>) has an analytical solution for the cell concentrations of the different strains in the population. However, these depend on the saturation times satisfying Eq. ( <ref type="formula" target="#formula_3">4</ref>), which has no closed-form solution. Then, the saturation times can be numerically approximated in model simulations, but there is no closed-form expression relating the saturation times to the model parameters.</p><p>Therefore, in this section, we derive approximate expressions for the saturation times of the bacterial population during cyclic treatment. We start by noting that, summing ODEs (1), the total cell concentration during the exponential growth phase verifies, at any cycle c ≥ 1, the following initial value problem:</p><formula xml:id="formula_16">   dX dt (t) = n i=1 µ i I e (X 0 i,c )X i (t), X 0 c = n i=1 X 0 i,c , t 0 c &lt; t &lt; t 0 c + t c , c ≥ 1,</formula><p>where the total cell concentration is denoted as:</p><formula xml:id="formula_17">X(t) = n i=1 X i (t).</formula><p>The next step is to rewrite the above ODE as follows:</p><formula xml:id="formula_18">dX dt (t) = n i=1 µ i I e (X 0 i,c ) X i (t) X(t) X(t) = µ(t)X(t), t 0 c &lt; t &lt; t 0 c + t c , c ≥ 1,</formula><p>so that µ(t) is the exponential growth rate of the bacterial population, depending on the (time-varying) subpopulation frequencies of the different strains. That is, we define the growth rate of the total population as:</p><formula xml:id="formula_19">µ(t) = n i=1 µ i I e (X 0 i,c ) X i (t) X(t) , t 0 c &lt; t &lt; t 0 c + t c , c ≥ 1.</formula><p>Note that we can divide the previous ODE by the total cell concentration since, taking into account Eq. ( <ref type="formula" target="#formula_10">7</ref>), we have X(t) &gt; 0 at any time t ≥ 0, as long as X i0 &gt; 0 for some strain S i (1 ≤ i ≤ n). Additionally, the cell concentration of some strain S i should be higher than or equal to the extinction limit at the start of the c-cycle (i.e., X 0 i,c ≥ X e ), or it makes no sense to talk about the saturation time (see Rmk. 1).</p><p>We now assume that the growth rate µ(t) of the population during the c-cycle can be approximated by a constant value μc , depending on the cell concentration of the different strains at the start of growth. The proposed approximation is:</p><formula xml:id="formula_20">µ(t) ≈ μc = n i=1 µ i I e (X 0 i,c ) X 0 i,c X 0 c , t 0 c &lt; t &lt; t 0 c + t c , c ≥ 1,</formula><p>and, consequently, the solution to the ODE describing the total cell concentration dynamics during exponential growth can be approximated as:</p><formula xml:id="formula_21">X (t) ≈ X 0 c exp (μ c t) , t 0 c &lt; t &lt; t 0 c + t c , c ≥ 1,</formula><p>Then, we can finally obtain the desired approximation for the saturation time by solving the following equation:</p><formula xml:id="formula_22">X t 0 c + t sat c ≈ X 0 c exp μc t sat c = K, c ≥ 1,</formula><p>whose solution is:</p><formula xml:id="formula_23">t sat c ≈ tsat c = X 0 c n i=1 µ i I e (X 0 i,c )X 0 i,c log K X 0 c , c ≥ 1. (<label>12</label></formula><formula xml:id="formula_24">)</formula><p>3</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Extinction and selection conditions</head><p>The mathematical model in Eqs. ( <ref type="formula" target="#formula_0">1</ref>)-( <ref type="formula" target="#formula_5">6</ref>) is useful for determining the outcome of cyclic antimicrobial treatment, e.g., which strains will eventually be selected, which will go extinct, or the conditions favouring the selection of one strain over the others. That is particularly interesting when the bacterial population consists of an ancestor strain and several resistant or tolerant mutants, which show reduced antimicrobial susceptibility at the expense of a fitness cost (typically reduced growth) <ref type="bibr" target="#b1">[2,</ref><ref type="bibr" target="#b8">9,</ref><ref type="bibr" target="#b14">15]</ref>. Then, the trade-off between increased survival and fitness cost of the evolved mutants determines the selection dynamics under cyclic treatment and, in particular, whether the mutants outcompete the ancestor.</p><p>Throughout this section, we use Eqs. ( <ref type="formula" target="#formula_0">1</ref>)-( <ref type="formula" target="#formula_5">6</ref>) to derive simple expressions for determining the extinction or selection of the different strains in the long term (i.e., when c → ∞) depending on the bacterial traits and the setup parameters for the cyclic protocol. First, let us define the concepts of strains' survival and extinction used here. Definition 1. Consider a bacterial population formed by strains {S i | 1 ≤ i ≤ n} subjected to cyclic antimicrobial treatment, as described by Eqs. (1)-( <ref type="formula" target="#formula_5">6</ref>). We say that:</p><formula xml:id="formula_25">1) Strain S i goes extinct if lim c→∞ X i t f c = 0. 2) Strain S i goes extinct in isolation if lim c→∞ X i t f c = 0 when X j0 = 0 for 1 ≤ j ≤ n, j ̸ = i.</formula><p>3) The total population goes extinct (total extinction) if strain S i goes extinct for</p><formula xml:id="formula_26">1 ≤ i ≤ n. 4) Strain S i survives if lim c→∞ X i t f c = X eq,i &gt; 0,</formula><p>where X eq,i is the equilibrium concentration for S i .</p><p>The extinction of strain S i in isolation is a particular case of extinction for which S i undergoes cyclic treatment in the absence of {S j | 1 ≤ j ≤ n, j ̸ = i}, i.e., independently of the competition with other strains. This concept will serve as a basis for studying the selection dynamics of the strains in competence. Note that Eq. ( <ref type="formula" target="#formula_3">4</ref>) has a closed-form solution for the saturation time when strain S i evolves in isolation, so that the time spent by the strain in the exponential growth phase at the c-cycle is:</p><formula xml:id="formula_27">t i,c = min{t g , t sat i,c }, t sat i,c = 1 µ i log K X 0 i,c , c ≥ 1, 1 ≤ i ≤ n.<label>(13)</label></formula><p>Therefore, if strain S i is subjected to the cyclic protocol in isolation, the expression in Eq. ( <ref type="formula" target="#formula_11">8</ref>) for the cell concentration at the end of the c-cycle takes the form:</p><formula xml:id="formula_28">X i (t f c ) = D c X i0 exp µ i c q=1 t i,q I e (X 0 i,q ) − ck i (C)t k , c ≥ 1, 1 ≤ i ≤ n,<label>(14)</label></formula><p>and, similarly, Eq. ( <ref type="formula" target="#formula_12">9</ref>) relating the cell concentration at the initial and final time of each cycle transforms to:</p><formula xml:id="formula_29">X i (t f c ) = DX 0 i,c exp µ i t i,c I e (X 0 i,c ) − k i (C)t k , c ≥ 1, 1 ≤ i ≤ n.<label>(15)</label></formula><p>First, we will proceed to analyse the conditions for total population extinction. If none of the strains survive cyclic treatment, the antimicrobial's selective pressure is enough to eliminate the population and prevent bacterial selection. Then, the selective part relying on cell survival under antimicrobial effect mainly determines the treatment outcome, and it makes no sense to study the selection component driven by bacterial competition (which is determined by the selection conditions, as we will see).</p><p>To obtain the conditions for total population extinction, we need first the following preliminary results, derived directly from Def. 1 and Eqs. ( <ref type="formula" target="#formula_0">1</ref>)-( <ref type="formula" target="#formula_5">6</ref>). Lemma 1. The saturation time for strain S i (1 ≤ i ≤ n) under cyclic treatment in isolation verifies:</p><formula xml:id="formula_30">t sat c ≤ t sat i,c , c ≥ 1.</formula><p>Proof. It should simply be noted that:</p><formula xml:id="formula_31">X 0 i,c exp µ i I e (X 0 i,c )t sat c + n l=1,l̸ =i X 0 l,c exp µ l I e (X 0 l,c )t sat c =</formula><p>Eq. ( <ref type="formula" target="#formula_3">4</ref>)</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>K =</head><p>Eq. ( <ref type="formula" target="#formula_27">13</ref>)</p><formula xml:id="formula_32">X 0 i,c exp µ i I e (X 0 i,c )t sat i,c , c ≥ 1,</formula><p>and, since X 0 l,c ≥ 0 for any strain S l (1 ≤ l ≤ n), we have:</p><formula xml:id="formula_33">X 0 i,c exp µ i I e (X 0 i,c )t sat c ≤ X 0 i,c exp µ i I e (X 0 i,c )t sat i,c ⇒ t sat c ≤ t sat i,c , c ≥ 1.</formula><p>Lemma 2. If strain S i (1 ≤ i ≤ n) goes extinct under cyclic treatment in isolation, then it goes extinct.</p><p>Proof. If strain S i goes extinct in isolation, using Def. 1 and Eq. ( <ref type="formula" target="#formula_28">14</ref>), we have:</p><formula xml:id="formula_34">lim c→∞ D c X i0 exp µ i c q=1 t i,q I e (X 0 i,q ) − ck i (C)t k = 0,</formula><p>and the proof is a direct consequence of Lem. 1 and the Sandwich Rule, because:</p><formula xml:id="formula_35">0 ≤ lim c→∞ X i (t f c ) =</formula><p>Eq. ( <ref type="formula" target="#formula_11">8</ref>)</p><formula xml:id="formula_36">lim c→∞ D c X i0 exp µ i c q=1 t q I e (X 0 i,q ) − ck i (C)t k ≤ Lem. 1 lim c→∞ D c X i0 exp µ i c q=1 t i,q I e (X 0 i,q ) − ck i (C)t k = 0 ⇒ lim c→∞ X i (t f c ) = 0. Lemma 3. Strain S i (1 ≤ i ≤ n)</formula><p>goes extinct under cyclic treatment if and only if X i0 &lt; X e or there exist a cycle c e,i ≥ 1 such that:</p><formula xml:id="formula_37">X i (t f ce,i ) &lt; X e ≤ X i (t 0 ce,i ),</formula><p>where c e,i is called the extinction cycle of strain S i .</p><formula xml:id="formula_38">Proof. . " ⇒ " It follows directly from Def. 1. " ⇐ " If strain S i (1 ≤ i ≤ n) is such that X i0 &lt; X e ,</formula><p>we can use Eq. ( <ref type="formula" target="#formula_11">8</ref>) with I e (X 0 i,c ) = 0 for c ≥ 1, to get:</p><formula xml:id="formula_39">lim c→∞ X i t f c = Eq. (8) lim c→∞ D c X i0 exp µ i c q=1 t q I e X 0 i,q − ck i (C)t k = lim c→∞ D c X i0 exp(−ck i (C)t k ) = 0.</formula><p>Then, if X i0 &lt; X e , we take c e,i = 0. Conversely, if X i (t f ce,i ) &lt; X e ≤ X i (t 0 ce,i ) for some cycle c e,i ≥ 1, we can use Eq. ( <ref type="formula" target="#formula_11">8</ref>) by taking into account that:</p><formula xml:id="formula_40">I e (X 0 i,c ) = 1, c ≤ c e,i , 0, c &gt; c e,i , c ≥ 1,</formula><p>to obtain:</p><formula xml:id="formula_41">lim c→∞ X i t f c = Eq. (8) lim c→∞ D c X i0 exp µ i c q=1 t q I e X 0 i,q − ck i (C)t k = lim c→∞ D c X i0 exp µ i ce,i q=1 t q − ck i (C)t k = X i0 exp µ i ce,i q=1 t q lim c→∞ D c exp (−ck i (C)t k ) = 0.</formula><p>We are now ready to derive necessary and sufficient conditions for total population extinction in terms of the model parameters. Then, the following result allows us to determine the success of cyclic antimicrobial protocols in bacterial populations with different competing strains. More interestingly, Prop. 1 can be used to determine the setup parameters for cyclic treatment that prevent bacterial selection. Proposition 1 (Extinction conditions). Consider a bacterial population formed by strains {S i | 1 ≤ i ≤ n} subjected to cyclic antimicrobial treatment, as described by Eqs. (1)- <ref type="bibr" target="#b5">(6)</ref>. Then:</p><p>1) Strain S i goes extinct in isolation if and only if X i0 &lt; X e , or:</p><formula xml:id="formula_42">t eq,i &gt; min t g , 1 µ i log K X e , (<label>16</label></formula><formula xml:id="formula_43">)</formula><p>where t eq,i is the equilibrium time for strain S i , defined in Lem. 4.</p><p>2) The total population goes extinct if and only if:</p><formula xml:id="formula_44">J = 1 ≤ j ≤ n | X e ≤ X j0 , t eq,j ≤ min t g , t 1 − 1 µ j log X e X j0 = ∅.</formula><p>Proof. b 1) " ⇐ " Let us assume that strain S i (1 ≤ i ≤ n) is subjected to cyclic treatment in isolation, so that X j0 = 0 for 1 ≤ j ≤ n, j ̸ = i. If X i0 &lt; X e , strain S i goes extinct by Lem. 3. Let us then consider X i0 ≥ X e , and:</p><formula xml:id="formula_45">1 µ i log K X e &lt; t eq,i = k i (C)t k − log(D) µ i .</formula><p>Then, we have:</p><formula xml:id="formula_46">log K X e + log(D) &lt; k i (C)t k ⇒ X i (t f 1 ) ≤ Eq. (<label>14</label></formula><formula xml:id="formula_47">) DK exp (−k i (C)t k ) &lt; X e ,</formula><p>and strain S i goes extinct by Lem. 3, with extinction cycle c e,i = 1. On the other hand, if:</p><formula xml:id="formula_48">t g &lt; t eq,i ,</formula><p>and considering that the duration of the exponential growth phase for strain S i in isolation verifies:</p><formula xml:id="formula_49">µ i t i,c I e (X 0 i,c ) + log(D) − k i (C)t k ≤</formula><p>Eq. ( <ref type="formula" target="#formula_27">13</ref>)</p><formula xml:id="formula_50">µ i t g + log(D) − k i (C)t k , c ≥ 1,</formula><p>then, by the sandwich rule, we obtain:</p><formula xml:id="formula_51">t g &lt; t eq,i ⇒ µ i t g + log(D) &lt; k i (C)t k ⇒ 0 ≤ lim c→∞ X i (t f c ) =</formula><p>Eq. ( <ref type="formula" target="#formula_28">14</ref>)</p><formula xml:id="formula_52">lim c→∞ X i0 exp µ i c q=1 t i,q I e (X 0 i,q ) + c log(D) − ck i (C)t k ⇒ 0 ≤ lim c→∞ X i (t f c ) ≤ lim c→∞ X i0 exp (c (µ i t g + log(D) − k i (C)t k )) = 0 ⇒ lim c→∞ X i (t f c ) = 0.</formula><p>" ⇒ " Let us assume that strain S i (1 ≤ i ≤ n) goes extinct in isolation, i.e., when X j0 = 0 for 1 ≤ j ≤ n, j ̸ = i, and consider X i0 ≥ X e . By Lem. 3, there exist a cycle c e,i ≥ 1 such that:</p><formula xml:id="formula_53">X i (t f ce,i ) &lt; X e ≤ X i (t 0 ce,i ) = X 0 i,ce,i .</formula><p>Then, if the extinction cycle of strain S i in isolation is c e,i = 1, we obtain:</p><formula xml:id="formula_54">X i (t f 1 ) &lt; X e , t sat i,1 ≤ t g ⇒ Eq. (<label>14</label></formula><formula xml:id="formula_55">) DK exp(−k i (C)t k ) &lt; X e ⇒ t eq,i &gt; 1 µ i log K X e , X i (t f 1 ) &lt; X e ≤ X i0 , t sat i,1 &gt; t g ⇒ Eq. (<label>15</label></formula><formula xml:id="formula_56">)</formula><formula xml:id="formula_57">DX i0 exp(µ i t g − k i (C)t k ) &lt; X i0 ⇒ t eq,i &gt; t g ,</formula><p>so that a necessary condition for c e,i = 1 is:</p><formula xml:id="formula_58">t eq,i &gt; min t g , 1 µ i log K X e .</formula><p>On the contrary, if c e,i &gt; 1, note that strain S i in isolation cannot reach the saturation concentration at the extinction cycle. Otherwise, by Lem. 3 it would be:</p><formula xml:id="formula_59">t sat i,ce,i ≤ t g , c e,i &gt; 1 ⇒ X i (t f ce,i ) =</formula><p>Eq. ( <ref type="formula" target="#formula_28">14</ref>)</p><formula xml:id="formula_60">DK exp (−k i (C)t k ) &lt; X e ≤ X(t f 1 ) ⇒ DK exp (−k i (C)t k ) &lt; X e ≤ X(t f 1 ) ≤ DK exp (−k i (C)t k )</formula><p>, which is impossible. Therefore, we have t sat i,ce,i &gt; t g when c e,i &gt; 1, and a necessary condition for strain S i going extinct in isolation is:</p><formula xml:id="formula_61">X i (t f ce,i ) &lt; X 0 i,ce,i , c e,i &gt; 1 ⇒ X i (t f ce,i ) =</formula><p>Eq. ( <ref type="formula" target="#formula_29">15</ref>)</p><formula xml:id="formula_62">DX 0 i,ce,i exp (µ i t g − k i (C)t k ) &lt; X 0 i,ce,i ⇒ t eq,i &gt; t g .</formula><p>2) " ⇐ " Let us assume that J = ∅. Then, for any strain S i (1 ≤ i ≤ n), we have X i0 &lt; X e , or:</p><formula xml:id="formula_63">t eq,i &gt; min t g , t 1 − 1 µ i log X e X i0 , 1 ≤ i ≤ n.</formula><p>First, we just demonstrated in Prop. 1.1 that strain S i goes extinct in isolation if X i0 &lt; X e , or it holds that:</p><p>t eq,i &gt; t g , in which case strain S i goes extinct by Lem. 2. Conversely, if the above condition does not hold, strain S i should verify:</p><formula xml:id="formula_64">t 1 − 1 µ i log X e X i0</formula><p>&lt; t eq,i ≤ t g , so that S i goes extinct by Lem. 3, with extinction cycle c e,i = 1. Indeed, we have:</p><formula xml:id="formula_65">t 1 − 1 µ i log X e X i0 &lt; t eq,i ⇒ X i (t f 1 ) =</formula><p>Eq. ( <ref type="formula" target="#formula_11">8</ref>)</p><formula xml:id="formula_66">DX i0 exp (µ i t 1 − k i (C)t k ) &lt; X e .</formula><p>In conclusion, the population becomes extinct when all strains go extinct in isolation, or when the strains surviving in isolation fall below the extinction limit after c = 1 due to competition with the other strains.</p><p>Note that the last scenario can only occur when t 1 &lt; t i,1 for the strains S i surviving in isolation, i.e., only when t 1 = t sat 1 &lt; t g , and X l0 &gt; 0 for some 1 ≤ l ≤ n, l ̸ = i. " ⇒ " Let us assume the total population goes extinct under cyclic treatment, i.e., all strains {S i | 1 ≤ i ≤ n} go extinct, and consider J ̸ = ∅. Then, there exist some strain S i with i ∈ J, and: t eq,i = min{t eq,j | j ∈ J}.</p><p>Since strain S i goes extinct, by Lem. 3 there exist a cycle c e,i ≥ 1 such that:</p><formula xml:id="formula_67">X i (t f ce,i ) &lt; X e ≤ X i (t 0 ce,i ) = X 0 i,ce,i</formula><p>, and the extinction cycle for S i verifies c e,i &gt; 1, because:</p><formula xml:id="formula_68">i ∈ J ⇒ X e ≤ X i0 , t eq,i &lt; t 1 − 1 µ i log X e X i0 ⇒ X i (t f 1 ) =</formula><p>Eq. ( <ref type="formula" target="#formula_11">8</ref>)</p><formula xml:id="formula_69">DX i0 exp (µ i t 1 − k i (C)t k ) ≥ X e .</formula><p>Now, at the extinction cycle c e,i &gt; 1, it holds that:</p><formula xml:id="formula_70">X i (t f ce,i ) &lt; X 0 i,ce,i ⇒ Eq. (9)</formula><p>t ce,i &lt; t eq,i = min{t eq,j | j ∈ J} ≤ t eq,j , j ∈ J, and the population should reach the carrying capacity at the extinction cycle, because:</p><formula xml:id="formula_71">i ∈ J, X i (t f ce,i ) &lt; X 0 i,ce,i , c e,i &gt; 1 ⇒ Eq. (<label>9</label></formula><formula xml:id="formula_72">)</formula><p>t ce,i &lt; t eq,i ≤ t g .</p><p>Then, the total cell concentration at the end of the growth period c e,i − 1 ≥ 1 verifies:</p><formula xml:id="formula_73">n l=1 X l (t 0 ce,i−1 ) exp µ l t ce,i−1 I e (X 0 l,ce,i−1 ) ≤ K = n l=1</formula><p>X l (t 0 ce,i ) exp µ l t ce,i I e (X 0 l,ce,i ) , so that we obtain:</p><formula xml:id="formula_74">n l=1 X l (t 0 ce,i ) exp(k l t k ) D =</formula><p>Eq. ( <ref type="formula" target="#formula_12">9</ref>)</p><formula xml:id="formula_75">n l=1 X l (t 0 ce,i−1 ) exp µ l t ce,i−1 I e (X 0 l,ce,i−1 ) ≤ n l=1 X l (t 0 ce,i ) exp µ l t ce,i I e (X 0 l,ce,i ) ⇒ 0 ≤ n l=1 X l (t 0 ce,i ) exp µ l t ce,i I e (X 0 l,ce,i ) − exp(k l t k ) D .</formula><p>Consequently, there exist some strain S l (1 ≤ l ≤ n) such that:</p><formula xml:id="formula_76">exp(k l t k ) D ≤ exp µ l t ce,i I e (X 0 l,ce,i ) ≤ exp µ l t ce,i ⇒ I e (X 0 l,ce,i ) = 1, t eq,l ≤ t ce,i &lt; t g .</formula><p>and l ∈ J, since strain S l is above the extinction limit at the start of cycle c e,i &gt; 1, and t eq,l &lt; t g . However, this is a contradiction, because:</p><p>t eq,l ≤ t ce,i &lt; t eq,j , j ∈ J.</p><p>Therefore, strain S i cannot go extinct when i ∈ J, and it should be J = ∅.</p><p>Remark 4. The condition for total population extinction in Prop. 1.2 involves the saturation time of the population at cycle c = 1, which has no closed-form expression as a function of the model parameters. Then, the condition for total population extinction should be approximated using a numerical solution of Eq. 4, or the approximation provided in An approximation for the saturation time.</p><p>The condition in Prop. 1.1 means that extinction under cyclic treatment in isolation depends on the equilibrium time for the strains. That is, a strains goes extinct independently of competition with the others if an equilibrium cannot be reached between new bacteria formed during growth and cell removal after killing and dilution. Then, a strain eventually extinguishes in isolation if, in each cycle, more bacteria are killed and diluted than formed during exponential growth. Additionally, the strains can be eliminated in isolation with just one cycle if antimicrobial killing and dilution are strong enough to reduce the cell concentration from the carrying capacity to values below the extinction limit.</p><p>On the other hand, the condition for total population extinction derived in Prop. 1.2 states that the strains go extinct under the cyclic protocol in competition if they cannot survive in isolation. Nevertheless, the bacterial population can also become extinct if competition during the first growth period impedes the propagation of the strains that would otherwise survive in isolation. That is an interesting result, particularly in the case where the population is formed by an ancestor strain, together with resistant or tolerant mutants. Indeed, if the mutant strain is initially present at very low frequencies in the population (the typical situation), so that it cannot reproduce enough during the first growth period due to the strong competition with the (much more frequent) ancestor, then the mutant can be removed from the population in just one cycle, even when it would outcompete the ancestor in other case.</p><p>If the condition in Prop. 1.2 does not hold and the bacterial population survives the cyclic protocol, the next step is to use Eqs. ( <ref type="formula" target="#formula_0">1</ref>)-( <ref type="formula" target="#formula_5">6</ref>) to determine which strains have the selective advantage and outcompete the others.</p><p>To derive the selection conditions, we need the following preliminary results. Lemma 4. If strain S i (1 ≤ i ≤ n) survives cyclic treatment, then:</p><formula xml:id="formula_77">lim c→∞ t c = t eq,i = k i (C)t k − log(D) µ i ,</formula><p>where t eq,i is called the equilibrium time for strain S i .</p><p>Proof. If strain S i (1 ≤ i ≤ n) survives, using Lem. 3 we have:</p><formula xml:id="formula_78">X i (t f c ) ≥ X e , c<label>≥</label></formula><p>1, and, by Def. 1, it holds that:</p><formula xml:id="formula_79">lim c→∞ X i (t f c+1 ) = lim c→∞ X i t f c = X eq,i .</formula><p>Then, we can use Eq. ( <ref type="formula" target="#formula_12">9</ref>) with I e (X 0 i,c ) = 1 for c ≥ 1, to get:</p><formula xml:id="formula_80">X eq,i = lim c→∞ X i (t f c+1 ) =</formula><p>Eq. ( <ref type="formula" target="#formula_12">9</ref>)</p><formula xml:id="formula_81">lim c→∞ DX 0 i,c+1 exp (µ i t c+1 − k i (C)t k ) = Rmk. 2 lim c→∞ DX i (t f c ) exp (µ i t c+1 − k i (C)t k ) = X eq,i lim c→∞ D exp (µ i t c+1 − k i (C)t k ) .</formula><p>Finally, dividing both sides of the above equation by X eq,i &gt; 0, and operating with the limits, we obtain:</p><formula xml:id="formula_82">lim c→∞ D exp (µ i t c+1 − k i (C)t k ) = 1 ⇔ lim c→∞ µ i t c+1 = k i (C)t k − log(D),</formula><p>so that, taking into account that the growth rate of strain S i is distinct from zero (µ i &gt; 0), we arrive at:</p><formula xml:id="formula_83">lim c→∞ t c+1 = lim c→∞ t c = k i (C)t k − log(D) µ i .</formula><p>Corollary 1. If strains S i and S j survive cyclic treatment (1 ≤ i, j ≤ n, j ̸ = i), then:</p><p>t eq,i = t eq,j .</p><p>Proof. The demonstration follows directly from Lem. 4.</p><p>We are now ready to derive necessary and sufficient conditions on the model parameters for determining which strains survive cyclic treatment. Proposition 2 (Selection conditions). Consider a bacterial population formed by strains {S i | 1 ≤ i ≤ n} subjected to cyclic antimicrobial treatment, as described by Eqs. ( <ref type="formula" target="#formula_0">1</ref>)-( <ref type="formula" target="#formula_5">6</ref>), and define:</p><formula xml:id="formula_84">J = 1 ≤ j ≤ n | X e ≤ X j0 , t eq,j ≤ min t g , t 1 − 1 µ j log X e X j0 ,</formula><p>as in Prop. 1.2. Then, strain S i survives if and only if i ∈ J, and:</p><p>t eq,i = min {t eq,j | j ∈ J} .</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Proof. b</head><p>" ⇐ " Let us assume that strain S i (1 ≤ i ≤ n) verifies i ∈ J and t eq,i ≤ t eq,j for j ∈ J. Then, if strain S i goes extinct under cyclic treatment, by Lem. 3 there exist a cycle c e,i such that:</p><formula xml:id="formula_85">X i (t f ce,i ) &lt; X e ≤ X i (t 0 ce,i ) ⇒ Eq. (<label>9</label></formula><formula xml:id="formula_86">)</formula><formula xml:id="formula_87">µ i t ce,i − k i t k + log(D) &lt; 0 ⇒ t ce,i &lt; t eq,i = k i t k − log(D) µ i ≤ t eq,j , j ∈ J,</formula><p>and c e,i &gt; 1, as i ∈ J. Additionally, i ∈ J implies t eq,i ≤ t g so that, since S i goes extinct, we obtain:</p><formula xml:id="formula_88">t ce,i &lt; t eq,i ≤ t g ,</formula><p>and the population reaches the saturation concentration at the extinction cycle of strain S i . That is:</p><formula xml:id="formula_89">t ce,i = t sat ce,i &lt; t g ⇒ K = n l=1 X l (t 0 ce,i ) exp µ l t ce,i I e (X 0 l,ce,i ) .</formula><p>Then, the total cell concentration at the end of the growth period c e,i − 1 ≥ 1 verifies:</p><formula xml:id="formula_90">n l=1 X l (t 0 ce,i−1 ) exp µ l t ce,i−1 I e (X 0 l,ce,i−1 ) ≤ K = n l=1 X l (t 0 ce,i ) exp µ l t ce,i I e (X 0 l,ce,i ) , so that: n l=1 X l (t 0 ce,i ) exp(k l t k ) D =</formula><p>Eq. ( <ref type="formula" target="#formula_12">9</ref>)</p><formula xml:id="formula_91">n l=1 X l (t 0 ce,i−1 ) exp µ l t ce,i−1 I e (X 0 l,ce,i−1 ) ≤ n l=1 X l (t 0 ce,i ) exp µ l t ce,i I e (X 0 l,ce,i ) ⇒ 0 ≤ n l=1 X l (t 0 ce,i ) exp µ l t ce,i I e (X 0 l,ce,i ) − exp(k l t k ) D .</formula><p>However, if the above condition holds, there exists a strain S m (1 ≤ m ≤ n) such that:</p><formula xml:id="formula_92">exp(k m t k ) D ≤ exp µ m t ce,i I e (X 0 m,ce,i ) ⇒ I e (X 0 m,ce,i ) = 1, t eq,m ≤ t ce,i &lt; t g ,</formula><p>and it should be m ∈ J, since S m is above the extinction limit at the start of cycle c e,i &gt; 1, and t eq,m &lt; t g . We thus arrive at a contradiction, because:</p><p>t eq,m ≤ t ce,i &lt; t eq,i ≤ t eq,j , m, j ∈ J.</p><p>" ⇒ " Let us assume that strain S i (1 ≤ i ≤ n) survives under cyclic treatment. Then, the total population cannot become extinct and, by Prop. 1, it should be i ∈ J ̸ = ∅. Now, if there exist a strain S l with l ∈ J, such that:</p><formula xml:id="formula_93">t eq,l = min{t eq,j | j ∈ J} &lt; t eq,i ,</formula><p>we just demonstrated that S l survives under cyclic treatment. However, taking into account Cor. 1, we would have:</p><p>t eq,i = t eq,l &lt; t eq,i ,</p><p>which is impossible. Therefore, if strain S i survives, it should be t eq,i ≤ t eq,j for any j ∈ J.</p><p>When an ancestor bacterial strain competes under cyclic treatment with a resistant or tolerant mutant, the selection condition in Prop. 2 can be represented as a trade-off between survival advantage (SA) and fitness cost (FC) conferred by the mutation. Indeed, define the fitness cost of the mutant S j as the reduction in growth rate relative to the ancestor</p><formula xml:id="formula_94">S i (1 ≤ i, j ≤ n, j ̸ = i), that is: FC j = µ i − µ j µ i = 1 − µ j µ i ,</formula><p>and the survival advantage as the increase in cell survival after killing and dilution of the mutant relative to the ancestor, so that:</p><formula xml:id="formula_95">SA j = log X i (t f c )/X i (t f c − t k ) − log X j (t f c )/X j (t f c − t k ) log(X i (t f c )/X i (t f c − t k )) = 1 − k j t k − log(D) k i t k − log(D) .</formula><p>Then, the condition for selective equilibrium between ancestor S i and mutant S j given in Prop. 2 takes the form:</p><p>t eq,i = t eq,j ⇔ FC j = SA j .</p><p>The above result indicates that mutant strains S j that cannot compensate for the fitness cost by increasing cell survival under antimicrobial killing (i.e., if FC j &gt; SA j ) will be outcompeted by the ancestor. Conversely, the mutant will eventually outcompete the ancestor when the survival advantage conferred by the mutation exceeds the fitness cost (i.e., FC j &lt; SA j ). That is true as long as the mutant S j is not eliminated by competition with the remaining strains during the first cycle of treatment (see Prop. 1.2).</p><p>Note that the selection condition in Prop. 2 only informs about which strain is eventually selected under the cyclic protocol, but does not provide any measure of the selective pressure exerted by one strain over another. To do that, we can use the following definition, which provides a quantitative measure of the selective advantage or disadvantage of one strain over the others. Definition 2. Consider a bacterial population formed by strains {S i | 1 ≤ i ≤ n} subjected to cyclic antimicrobial treatment. The selection coefficient of strain S i over S j at the c-cycle is <ref type="bibr" target="#b12">[13,</ref><ref type="bibr" target="#b15">16]</ref>:</p><formula xml:id="formula_96">s i|j,c = log X i (t f c ) X i (t 0 c ) − log X j (t f c ) X j (t 0 c ) , c ≥ 1, 1 ≤ i, j ≤ n, i ̸ = j.<label>(17)</label></formula><p>Remark 5. The selection coefficient verifies:</p><formula xml:id="formula_97">s i|j,c = − log X j (t f c ) X j (t 0 c ) − log X i (t f c ) X i (t 0 c ) = −s j|i,c , c ≥ 1, 1 ≤ i, j ≤ n, i ̸ = j.</formula><p>The selection coefficient in Eq. ( <ref type="formula" target="#formula_96">17</ref>) thus measures, at any cycle of treatment, the relative increase or decrease in cell concentration of one strain compared to another. Then, if the cell concentration of strain S i increased more than for S j from the start to the end of the c-cycle, the selection coefficient s i|j,c is positive and increases with the difference in survival between the strains. Additionally, if the cell concentration of both strains decreases during the c-cycle, the selection coefficient s i|j,c is equally positive when strain S j is being eliminated by cyclic treatment faster than S i . In consequence, the selection coefficient can compare the selective ability between any pair of competing strains, but it cannot detect whether both strains go extinct.</p><p>For the model of cyclic antimicrobial treatment in Eqs. ( <ref type="formula" target="#formula_0">1</ref>)-( <ref type="formula" target="#formula_5">6</ref>), the selection coefficient of Eq. ( <ref type="formula" target="#formula_96">17</ref>) takes the form:</p><formula xml:id="formula_98">s i|j,c = log X i (t f c ) X i (t 0 c ) − log X j (t f c ) X j (t 0 c ) = Eq. (9) log DX 0 i,c exp(µ i t c I e (X 0 i,c ) − k i (C)t k ) X 0 i,c − log DX 0 j,c exp(µ j t c I e (X 0 j,c ) − k j (C)t k ) X 0 j,c = µ i I e (X 0 i,c ) − µ j I e (X 0 j,c ) t c − (k i (C) − k j (C)) t k , c ≥ 1, 1 ≤ i, j ≤ n, i ̸ = j.<label>(18)</label></formula></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.1">Extinction cycle</head><p>Taking into account the extinction and selection conditions provided in Props. 1-2, we can now derive bounds on the extinction cycle for the strains that are eventually eliminated by cyclic treatment. These bounds can be used to analyse the effect of the setup parameters and bacterial traits on the extinction dynamics, or to determine the number of cycles required to eliminate the strains without running model simulations.</p><p>The following consequence of Prop. 1.2 will be useful in the derivations that follow. Corollary 2. Consider a bacterial population formed by strains {S i | 1 ≤ i ≤ n} subjected to cyclic antimicrobial treatment, as described by Eqs. (1)-( <ref type="formula" target="#formula_5">6</ref>). It holds that:</p><p>1) If the total population goes extinct, the saturation cannot be reached from the first cycle; that is:</p><formula xml:id="formula_99">t c = t g , c &gt; 1.</formula><p>2) If strain S i survives, the equilibrium time of strain S i verifies:</p><formula xml:id="formula_100">t eq,i ≤ t c , c &gt; 1.</formula><p>Proof. b 1) If the total population goes extinct under cyclic treatment, by Prop. 1.2, we have that any strain S i (1 ≤ i ≤ n) goes extinct in isolation, or the extinction cycle verifies c e,i = 1. Then, t eq,i &gt; t g for any strain S i such that c e,i &gt; 1. However, if the population reaches the saturation concentration at some cycle c &gt; 1, we can follow a similar reasoning to that of Prop. 1.2, and obtain:</p><formula xml:id="formula_101">n l=1 X 0 l,c exp µ l t c I e (X 0 l,c ) = Eq. (4) K ≥ n l=1 X 0 l,c−1 exp µ l t c−1 I e (X 0 l,c−1 = Eq. (9) n l=1 X 0 l,c exp(k l (C)t k ) D ⇒ n l=1 X 0 l,c exp µ l t c I e (X 0 l,c ) − exp(k l (C)t k ) D ≥ 0 ⇒ I e (X 0 m,c ) = 1, t eq,m ≤ t c ,</formula><p>for some strain S m (1 ≤ m ≤ n). We thus arrive at a contradiction, since t c &lt; t g &lt; t eq,m .</p><p>2) If strain S i survives cyclic treatment, using Prop. 2, it holds that i ∈ J and:</p><formula xml:id="formula_102">t eq,i = min{t eq,j | j ∈ J}, J = 1 ≤ j ≤ n | X e ≤ X j0 , t eq,j ≤ min t g , t 1 − 1 µ j log X e X j0 .</formula><p>Then, if there exists a cycle c &gt; 1 such that t c &lt; t eq,i , we have t c &lt; t eq,i ≤ t eq,j ≤ t g for any j ∈ J, and the population should reach the carrying capacity at the c-cycle. Also, strains S l (1 ≤ l ≤ n) such that l / ∈ J should verify c e,l = 1 or t c &lt; t g &lt; t eq,l , by Prop. 1.2. We thus arrive at: </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>=</head><p>Eq. ( <ref type="formula" target="#formula_12">9</ref>)</p><formula xml:id="formula_103">n l=1 X 0 l,c exp(k l (C)t k ) D ⇒ n l=1 X 0 l,c exp µ l t c I e (X 0 l,c ) − exp(k l (C)t k ) D ≥ 0 ⇒ I e (X 0 m,c ) = 1, t eq,m ≤ t c ,</formula><p>for some strain S m (1 ≤ m ≤ n), which is impossible.</p><p>When the bacterial population goes extinct under cyclic treatment, we have demonstrated in Prop. 1.2 that the strains surviving in isolation should fall below the extinction limit at the end of the first cycle due to competition. Additionally, Cor. 2 states that the population cannot reach the saturation concentration from the first cycle onwards, so that the strains surviving after the first cycle evolve as if they were in isolation. We thus have the following result. Corollary 3. Consider a bacterial population formed by strains {S i | 1 ≤ i ≤ n} subjected to cyclic antimicrobial treatment, as described by Eqs. (1)-( <ref type="formula" target="#formula_5">6</ref>). If the total population goes extinct, the extinction cycle of strain S i is:</p><formula xml:id="formula_104">c e,i =    0, X i0 &lt; X e , 1, X i0 ≥ X e , t eq,i &gt; t 1 − log (X e /X i0 ) /µ i , ⌈(t 1 − log (X e /X i0 ) /µ i − t g ) / (t eq,i − t g )⌉, i.o.c.,<label>(19)</label></formula><p>where y = ⌈x⌉ denotes the ceiling function, i.e., y is the minimum integer greater than or equal to x.</p><p>Proof. If the total population goes extinct, from Prop. 1.2, we have X i0 &lt; X e for any strain S i (1 ≤ i ≤ n), or:</p><formula xml:id="formula_105">t eq,i &gt; min t g , t 1 − 1 µ i log X e X i0 .</formula><p>If X i0 &lt; X e , we can set the extinction cycle to c e,i = 0, since the cell concentration of strain S i is already below the extinction limit before the treatment starts. On the other hand, Prop. 1.2 states that c e,i = 1 when X i0 ≥ X e , and:</p><formula xml:id="formula_106">t eq,i &gt; t 1 − 1 µ i log X e X i0 .</formula><p>Then, the unique non-trivial case is when X i0 ≥ X e , and we have:</p><formula xml:id="formula_107">t g &lt; t eq,i ≤ t 1 − 1 µ i log X e X i0 ,</formula><p>so that the extinction cycle of strain S i verifies c e,i &gt; 1. Then, since the duration of the exponential growth phase is t c = t g for any cycle c &gt; 1, by Cor. 2, and taking into account Lem. 3, it holds that:</p><formula xml:id="formula_108">X i (t f ce,i ) &lt; X e , I e (X 0 i,c ) = 1, t c = t g , 1 &lt; c ≤ c e,i ⇒ X i (t f c ) = Eq. (8) D ce,i X i0 exp (µ i t 1 + µ i (c e,i − 1) t g − c e,i k i (C)t k ) &lt; X e ⇔ c e,i (log(D) + µ i t g − k i (C)t k ) &lt; log X e X i0 + µ i (t g − t 1 ) ⇔ c e,i (µ i t g − µ i t eq,i ) &lt; log X e X i0 + µ i (t g − t 1 ) ⇔ c e,i (t g − t eq,i ) &lt; t g − t 1 − 1 µ i log X e X i0 .</formula><p>Since strain S i verifies t g − t eq,i &lt; 0, the above condition is equivalent to:</p><formula xml:id="formula_109">X i (t f ce,i ) &lt; X e , I e (X 0 i,c ) = 1, t c = t g , 1 &lt; c ≤ c e,i ⇔ I e (X 0 i,c ) = 1, t c = t g , 1 &lt; c ≤ c e,i , c e,i &gt; t 1 − log (X e /X i0 ) /µ i − t g t eq,i − t g ,</formula><p>which leads to the desired expression for the extinction cycle of strain S i :</p><formula xml:id="formula_110">X i0 ≥ X e , t g &lt; t eq,i ≤ t 1 − 1 µ i log X e X j0 ⇒ c e,i = min c &gt; 1 | c &gt; t 1 − log (X e /X i0 ) /µ i − t g t eq,i − t g = t 1 − log (X e /X i0 ) /µ i − t g t eq,i − t g .</formula><p>Let us now study the extinction cycle when the competition between strains extends beyond the first cycle of the antimicrobial treatment. In that case, the extinction dynamics of the strains depend on their ability to survive cyclic treatment and outcompete the others. A closed-form expression for the extinction cycle, however, cannot be obtained when at least two strains are competing from cycle c &gt; 1, since there is no closed-form expression for the saturation times in Eq. ( <ref type="formula" target="#formula_3">4</ref>). Nevertheless, we can use the following result to bound the extinction cycle when at least one strain is eventually selected under cyclic treatment. Corollary 4. Consider a bacterial population formed by strains {S i | 1 ≤ i ≤ n} subjected to cyclic antimicrobial treatment, as described by Eqs. (1)-( <ref type="formula" target="#formula_5">6</ref>). If the total population survives, so that:</p><formula xml:id="formula_111">J = 1 ≤ j ≤ n | X e ≤ X j0 , t eq,j ≤ min t g , t 1 − 1 µ j log X e X j0 ̸ = ∅,</formula><p>then, it holds that:</p><p>1) If t g = min{t eq,j | j ∈ J}, the extinction cycle for any strain S i going extinct is:</p><formula xml:id="formula_112">c e,i =    0, X i0 &lt; X e , 1, X i0 ≥ X e , t eq,i &gt; t 1 − log (X e /X i0 ) /µ i , ⌈(t 1 − log (X e /X i0 ) /µ i − t g ) / (t eq,i − t g )⌉, i.o.c.</formula><p>2) If t g &gt; min{t eq,j | j ∈ J}, the extinction cycle for any strain S i going extinct is bounded as: L e,i (l) &lt; c e,i , for any strain S l (1 ≤ l ≤ n) such that t eq,l = min{t eq,j | j ∈ J}, where:</p><formula xml:id="formula_113">L e,i (l) =        0, X i0 &lt; X e , 1, X i0 ≥ X e , t eq,i &gt; t 1 − log (X e /X i0 ) /µ i , log (X i0 /X e ) /µ i + log (K/X l0 ) /µ l − t eq,l</formula><p>t eq,i − t eq,l , i.o.c.</p><p>Proof. b</p><p>1) The demonstration is analogous to Cor. 3 by noting that, from Prop. 2 and Cor. 2.2, any strain S l surviving cyclic treatment verifies:</p><formula xml:id="formula_114">t eq,l = Prop. 2 min{t eq,j | j ∈ J} ≤ Cor. 2.2 t c ≤ t g , c &gt; 1.</formula><p>2) Let us assume that strain S i (1 ≤ i ≤ n) goes extinct. Since the total population does not become extinct, we can take the following set formed by the indexes of the strains surviving cyclic treatment:</p><formula xml:id="formula_115">Λ = {l ∈ J | t eq,l ≤ t eq,j , j ∈ J} ̸ = ∅,</formula><p>and i / ∈ Λ, by Prop. 2. Note that the demonstration is trivial for c e,i = 0 and c e,i = 1, as observed in Cor. 3. Conversely, if the extinction cycle of strain S i verifies c e,i &gt; 1, we can use Lem. 3 to obtain:</p><formula xml:id="formula_116">X i (t f ce,i ) &lt; X e ⇔ X i (t f ce,i ) = Eq. (8) D ce,i X i0 exp µ i ce,i c=1 t c − c e,i k i (C)t k &lt; X e ⇔ c e,i (log(D) − k i (C)t k ) + µ i ce,i c=1 t c &lt; log X e X i0 ⇔ c e,i t eq,i − ce,i c=1 t c &gt; 1 µ i log X i0 X e .</formula><p>However, we lack a closed-form expression linking the extinction cycle with the summation:</p><formula xml:id="formula_117">τ ce,i = ce,i c=1 t c ,</formula><p>which represents the time spent by the population in the exponential growth phase to the end of the extinction cycle c e,i &gt; 1. Then, we cannot find the exact value of the extinction cycle for strain S i , but we can take into account that any strain S l surviving cyclic treatment verifies:</p><formula xml:id="formula_118">l ∈ Λ ⇒ X l (t f ce,i ) = Eq. (8) X l0 D ce,i exp µ l ce,i c=1 t c − c e,i k l (C)t k ≤ Eq. (4) DK exp (−k l (C)t k ) ⇔ ce,i c=1 t c − c e,i t eq,l ≤ 1 µ l log K X l0 − t eq,l ⇔ ce,i c=1 t c ≤ 1 µ l log K X l0 + (c e,i − 1)t eq,l ,</formula><p>so that we can substitute the unknown bound for c e,i by the following:</p><formula xml:id="formula_119">c e,i t eq,i − ce,i c=1 t c &gt; 1 µ i log X i0 X e , ce,i c=1 t c ≤ 1 µ l log K X l0 + (c e,i − 1)t eq,l , l ∈ Λ ⇒ c e,i t eq,i − 1 µ l log K X l0 − (c e,i − 1)t eq,l &gt; 1 µ i log X i0 X e , l ∈ Λ ⇒ c e,i (t eq,i − t eq,l ) &gt; 1 µ i log X i0 X e + 1 µ l log K X l0 − t eq,l , l ∈ Λ ⇒ c e,i &gt; L e,i (l) = log (X i0 /X e ) /µ i + log (K/X l0 ) /µ l − t eq,l t eq,i − t eq,l , l ∈ Λ.</formula><p>Note the difference between the bound in the extinction cycle for the case where the total population becomes extinct and the case where some strain is selected. When the total population becomes extinct after the first cycle, Cor. 3 states that the extinction cycle for any strain depends only on its bacterial traits and setup parameters (i.e., inoculum, growth and killing time, and extinction limit). Then, the extinction dynamics of the different strains from the first treatment cycle onwards are independent of each other. Nevertheless, when some strains survive the cyclic protocol, bacterial competition influences the extinction cycle of the strains which are going extinct, whether in isolation or not. That is, the extinction cycle for the strains going extinct also depends on the bacterial traits of the strains being selected and on their inocula, as shown in Cor. 4. As a consequence, the extinction cycle can be seen as an indirect measure of the selective strength between competing strains.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4">Conclusions</head><p>In this work, we introduce a mathematical model for cyclic antimicrobial treatment in bacterial populations formed by multiple strains. The treatment alternates growth periods, during which the strains compete indirectly for the available resources, and antimicrobial killing periods via some bactericidal substance. The model thus considers the growth and kill rates for the different strains as the fundamental parameters (bacterial traits) characterising the bacterial dynamics under cyclic treatment. The growth rate determines the ability of the strains to compete for resources during the growth periods, so that the fastest-growing strains reproduce more rapidly and consume all resources before slower-growing strains can convert them into biomass. On the other hand, the kill rate determines the ability of the strains to survive the killing periods and compete in the next growth round. The model formulation was kept simple, minimising the number of bacterial traits considered, to analyse the effects of the most basic parameters (growth and kill rates) on the selection and extinction dynamics of the different strains during cyclic treatment.</p><p>Next, we used the proposed model to study the selection and extinction dynamics of the population as a function of the bacterial traits and the setup parameters for the cyclic protocol. In the first place, we derived necessary and sufficient conditions for determining the success of cyclic treatment in eliminating the bacterial population, so that none of the strains is selected. Interestingly, we found that the population can be eliminated with just one treatment cycle due to bacterial competition, even if the strains survive in isolation. Thus, mutant strains with reduced antimicrobial susceptibility, which are typically present in the population at very low initial frequencies, cannot be selected if competition with the ancestor (much more abundant initially) prevents the mutant from propagating beyond the first cycle.</p><p>Once the condition for total population extinction was established, we used the mathematical model to derive selection conditions for the different strains when the cyclic antimicrobial protocol fails to eliminate the population. It was found that bacterial selection depends on the time required for the strains to reach equilibrium between new bacteria formed during growth and cell removal after antimicrobial killing and dilution. Then, the strains that are selected under cyclic treatment are those that minimise the equilibrium time, thereby achieving a better compromise between bacterial growth and death. This result is especially useful for determining the fixation of mutant strains over the ancestor when they compete under cyclic treatment, since mutations that reduce antimicrobial susceptibility usually entail a fitness cost (reduced growth) directly proportional to the reduction in antimicrobial effect. In this regard, we showed that the selection conditions can be equivalently expressed as a trade-off between fitness cost and increased antimicrobial survival conferred by the mutation, so that the mutant outcompetes the ancestor when the survival advantage during antimicrobial killing compensates for the fitness cost during growth.</p><p>The work developed here can be used from a theoretical perspective, allowing the study of the bacterial selection dynamics in antimicrobial protocols. The given approach is general enough to cover a wide range of selection scenarios involving antimicrobial resistance or tolerance, for example, and considering biocides with different antimicrobial properties (such as antibiotics or disinfectants). Additionally, the developed approach can be used to assist real-life antimicrobial protocols involving resistant or tolerant strains. Indeed, the selection and extinction conditions derived from the mathematical model can be applied directly to predict the success of cyclic treatment or to design optimal protocols, and the expression for the extinction cycles helps to determine the number of cycles necessary for the antimicrobial protocol to eliminate the different strains (if possible).</p><p>In future work, we hope the proposed approach will serve as a basis for studying the influence of other bacterial characteristics that can be of importance for selection under cyclic treatment. Lag time or growth efficiency, for example, are bacterial traits that can vary significantly between strains and thus have a great impact on competition dynamics depending on the case. On the other hand, the different bacterial strains that form the population can exhibit significant phenotypic variability, leading to heterogeneous antimicrobial killing. For example, heteroresistance and persistence <ref type="bibr" target="#b16">[17,</ref><ref type="bibr" target="#b17">18]</ref> translate into distinct reversible states (phenotypes) within the same (isogenic) strain, which differ in their antimicrobial susceptibility and other biological characteristics. Then, the transfer rate between different phenotypes and the intra-strain variability in other bacterial characteristics are parameters that can determine selection and seriously impact the outcome of antimicrobial protocols.</p></div><figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_0"><head>1</head><label>1</label><figDesc>exp µ l t c I e (X 0 l,c ) = Eq. (4) exp µ l t c−1 I e (X 0 l,c−1</figDesc></figure>
+		</body>
+		<back>
+			<div type="references">
+
+				<listBibl>
+
+<biblStruct xml:id="b0">
+	<analytic>
+		<title level="a" type="main">Use of a predictive protocol to measure the antimicrobial resistance risks associated with biocidal product usage</title>
+		<author>
+			<persName><forename type="first">Rebecca</forename><surname>Wesgate</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Pierre</forename><surname>Grasha</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jean-Yves</forename><surname>Maillard</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">American Journal of Infection Control</title>
+		<imprint>
+			<biblScope unit="volume">44</biblScope>
+			<biblScope unit="issue">4</biblScope>
+			<biblScope unit="page" from="458" to="464" />
+			<date type="published" when="2016">2016</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b1">
+	<analytic>
+		<title level="a" type="main">Persistence against benzalkonium chloride promotes rapid evolution of tolerance during periodic disinfection</title>
+		<author>
+			<persName><forename type="first">Niclas</forename><surname>Nordholt</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Orestis</forename><surname>Kanaris</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Selina</forename><forename type="middle">B I</forename><surname>Schmidt</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Frank</forename><surname>Schreiber</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nature Communications</title>
+		<imprint>
+			<biblScope unit="volume">12</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page">6792</biblScope>
+			<date type="published" when="2021-11">November 2021</date>
+		</imprint>
+	</monogr>
+	<note>tex.ids= nordholt2021persistencea</note>
+</biblStruct>
+
+<biblStruct xml:id="b2">
+	<analytic>
+		<title level="a" type="main">Enhanced disinfection of bacterial populations by nutrient and antibiotic challenge timing</title>
+		<author>
+			<persName><forename type="first">Nihan</forename><surname>Acar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Nick</forename><forename type="middle">G</forename><surname>Cogan</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Mathematical Biosciences</title>
+		<imprint>
+			<biblScope unit="volume">313</biblScope>
+			<biblScope unit="page" from="12" to="32" />
+			<date type="published" when="2019-07">July 2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b3">
+	<analytic>
+		<title level="a" type="main">Antibiotic-induced population fluctuations and stochastic clearance of bacteria</title>
+		<author>
+			<persName><forename type="first">Jessica</forename><surname>Coates</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bo</forename><forename type="middle">Ryoung</forename><surname>Park</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dai</forename><surname>Le</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Emrah</forename><surname>Şimşek</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Waqas</forename><surname>Chaudhry</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Minsu</forename><surname>Kim</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Elife</title>
+		<imprint>
+			<biblScope unit="volume">7</biblScope>
+			<biblScope unit="page">e32976</biblScope>
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b4">
+	<analytic>
+		<title level="a" type="main">Quantitative systems-based prediction of antimicrobial resistance evolution</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Daniel</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Charlebois</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">npj Systems Biology and Applications</title>
+		<imprint>
+			<biblScope unit="volume">9</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page">40</biblScope>
+			<date type="published" when="2023-09">September 2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b5">
+	<analytic>
+		<title level="a" type="main">Antibiotic resistance: Insights from evolution experiments and mathematical modeling</title>
+		<author>
+			<persName><forename type="first">Gabriela</forename><surname>Petrungaro</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yuval</forename><surname>Mulla</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tobias</forename><surname>Bollenbach</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Current Opinion in Systems Biology</title>
+		<imprint>
+			<biblScope unit="volume">28</biblScope>
+			<biblScope unit="page">100365</biblScope>
+			<date type="published" when="2021-12">December 2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b6">
+	<analytic>
+		<title level="a" type="main">Towards evolutionary predictions: Current promises and challenges</title>
+		<author>
+			<persName><forename type="first">T</forename><surname>Meike</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Deepa</forename><surname>Wortel</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Susan</forename><forename type="middle">F</forename><surname>Agashe</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Claudia</forename><surname>Bailey</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Karen</forename><surname>Bank</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Thomas</forename><surname>Bisschop</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Johannes</forename><surname>Blankers</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Enrico</forename><forename type="middle">Sandro</forename><surname>Cairns</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Davide</forename><surname>Colizzi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Michael</forename><forename type="middle">M</forename><surname>Cusseddu</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Desai</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Martijn</forename><surname>Bram Van Dijk</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jacintha</forename><surname>Egas</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Astrid</forename><forename type="middle">T</forename><surname>Ellers</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">David</forename><forename type="middle">G</forename><surname>Groot</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Marcelle</forename><forename type="middle">L</forename><surname>Heckel</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ken</forename><surname>Johnson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Joachim</forename><surname>Kraaijeveld</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Liedewij</forename><surname>Krug</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Michael</forename><surname>Laan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Peter</forename><forename type="middle">A</forename><surname>Lässig</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jeroen</forename><surname>Lind</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Luke</forename><forename type="middle">M</forename><surname>Meijer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Samir</forename><surname>Noble</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Paul</forename><forename type="middle">B</forename><surname>Okasha</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Daniel</forename><forename type="middle">E</forename><surname>Rainey</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shraddha</forename><surname>Rozen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sander</forename><forename type="middle">J</forename><surname>Shitut</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Tans</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Henrique</forename><surname>Olivier Tenaillon</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Teotónio</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><forename type="middle">M</forename><surname>Arjan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Marcel</forename><forename type="middle">E</forename><surname>Visser</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Visser</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">A</forename><surname>Renske</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Vroomans</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">A</forename><surname>Gijsbert</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bregje</forename><surname>Werner</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Pleuni</forename><forename type="middle">S</forename><surname>Wertheim</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Pennings</surname></persName>
+		</author>
+		<idno type="DOI">10.1111/eva.13513</idno>
+		<ptr target="https://onlinelibrary.wiley.com/doi/pdf/10.1111/eva.13513" />
+	</analytic>
+	<monogr>
+		<title level="j">Evolutionary Applications</title>
+		<imprint>
+			<biblScope unit="volume">16</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page" from="3" to="21" />
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b7">
+	<monogr>
+		<title level="m" type="main">Mapping the landscape of mathematical models for antimicrobial resistance: a scoping review</title>
+		<author>
+			<persName><forename type="first">Felipe</forename><surname>Schardong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Claudio</forename><forename type="middle">Jose</forename><surname>Struchiner</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Luiz Max</forename><surname>Carvalho</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2601.02308</idno>
+		<imprint>
+			<date type="published" when="2026-01">January 2026</date>
+		</imprint>
+	</monogr>
+	<note>q-bio</note>
+</biblStruct>
+
+<biblStruct xml:id="b8">
+	<analytic>
+		<title level="a" type="main">Heterogeneous survival upon disinfection underlies evolution of increased tolerance</title>
+		<author>
+			<persName><forename type="first">Niclas</forename><surname>Nordholt</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Lydia-Yasmin</forename><surname>Sobisch</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Annett</forename><surname>Gödt</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dominique</forename><surname>Lewerenz</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Frank</forename><surname>Schreiber</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Microbiology Spectrum</title>
+		<imprint>
+			<biblScope unit="volume">12</biblScope>
+			<biblScope unit="issue">12</biblScope>
+			<biblScope unit="page" from="e03276" to="3298" />
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b9">
+	<analytic>
+		<title level="a" type="main">Stochastic Modeling of Bacterial Population Growth with Antimicrobial Resistance</title>
+		<author>
+			<persName><forename type="first">B</forename><forename type="middle">A</forename><surname>Mahmoud</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Mansour</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of Statistical Physics</title>
+		<imprint>
+			<biblScope unit="volume">190</biblScope>
+			<biblScope unit="issue">8</biblScope>
+			<biblScope unit="page">144</biblScope>
+			<date type="published" when="2023-08">August 2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b10">
+	<analytic>
+		<title level="a" type="main">Invariant set theory for predicting potential failure of antibiotic cycling</title>
+		<author>
+			<persName><forename type="first">Alejandro</forename><surname>Anderson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Matthew</forename><forename type="middle">W</forename><surname>Kinahan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Alejandro</forename><forename type="middle">H</forename><surname>Gonzalez</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Klas</forename><surname>Udekwu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Esteban</forename><forename type="middle">A</forename><surname>Hernandez-Vargas</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Infectious Disease Modelling</title>
+		<imprint>
+			<date type="published" when="2025-04">April 2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b11">
+	<analytic>
+		<title level="a" type="main">Computational framework for streamlining the success of sequential antibiotic therapy</title>
+		<author>
+			<persName><forename type="first">Alejandro</forename><surname>Anderson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Matthew</forename><forename type="middle">W</forename><surname>Kinahan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Rodolfo</forename><surname>Blanco-Rodriguez</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Alejandro</forename><forename type="middle">H</forename><surname>Gonzalez</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Klas</forename><surname>Udekwu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Esteban</forename><forename type="middle">A</forename><surname>Hernandez-Vargas</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">npj Antimicrobials and Resistance</title>
+		<imprint>
+			<biblScope unit="volume">3</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page" from="1" to="11" />
+			<date type="published" when="2025-11">November 2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b12">
+	<analytic>
+		<title level="a" type="main">Evolution of microbial growth traits under serial dilution</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Lin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Manhart</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Amir</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Genetics</title>
+		<imprint>
+			<biblScope unit="volume">215</biblScope>
+			<biblScope unit="issue">3</biblScope>
+			<biblScope unit="page" from="767" to="777" />
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b13">
+	<analytic>
+		<title level="a" type="main">Moment Closure for a Birth-Death Model of Antimicrobial Heteroresistance</title>
+		<author>
+			<persName><forename type="first">Nerea</forename><surname>Martínez-López</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Carlos</forename><surname>Vilas</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Adrián</forename><surname>Pedreira</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Míriam</forename><forename type="middle">R</forename><surname>García</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IFAC-PapersOnLine</title>
+		<imprint>
+			<biblScope unit="volume">58</biblScope>
+			<biblScope unit="issue">23</biblScope>
+			<biblScope unit="page" from="103" to="108" />
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b14">
+	<analytic>
+		<title level="a" type="main">The fitness costs of antibiotic resistance mutations</title>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">H</forename><surname>Melnyk</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Wong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Kassen</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Evolutionary Applications</title>
+		<imprint>
+			<biblScope unit="volume">8</biblScope>
+			<biblScope unit="issue">3</biblScope>
+			<date type="published" when="2015">2015</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b15">
+	<analytic>
+		<title level="a" type="main">On measuring selection in experimental evolution</title>
+		<author>
+			<persName><forename type="first">L</forename><forename type="middle">M</forename><surname>Chevin</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Biology Letters</title>
+		<imprint>
+			<biblScope unit="volume">7</biblScope>
+			<biblScope unit="issue">2</biblScope>
+			<biblScope unit="page" from="210" to="213" />
+			<date type="published" when="2011">2011</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b16">
+	<analytic>
+		<title level="a" type="main">Optimal control strategies for disinfection of bacterial populations with persister and susceptible dynamics</title>
+		<author>
+			<persName><forename type="first">N</forename><forename type="middle">G</forename><surname>Cogan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Brown</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Darres</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Petty</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Antimicrobial Agents Chemotheraphy</title>
+		<imprint>
+			<biblScope unit="volume">56</biblScope>
+			<biblScope unit="issue">6</biblScope>
+			<biblScope unit="page" from="4816" to="4826" />
+			<date type="published" when="2012">2012</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b17">
+	<analytic>
+		<title level="a" type="main">Definitions and guidelines for research on antibiotic persistence</title>
+		<author>
+			<persName><forename type="first">N</forename><forename type="middle">Q</forename><surname>Balaban</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Helaine</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Lewis</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Ackermann</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Aldridge</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">I</forename><surname>Andersson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">P</forename><surname>Brynildsen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Bumann</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Camilli</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">J</forename><surname>Collins</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Dehio</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Fortune</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">M</forename><surname>Ghigo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><forename type="middle">D</forename><surname>Hardt</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Harms</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Heinemann</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">T</forename><surname>Hung</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">U</forename><surname>Jenal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><forename type="middle">R</forename><surname>Levin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Michiels</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Storz</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">W</forename><surname>Tan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Tenson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Van Melderen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Zinkernagel</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nature Reviews Microbiology</title>
+		<imprint>
+			<biblScope unit="volume">17</biblScope>
+			<biblScope unit="issue">7</biblScope>
+			<biblScope unit="page" from="441" to="448" />
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+				</listBibl>
+			</div>
+		</back>
+	</text>
+</TEI>

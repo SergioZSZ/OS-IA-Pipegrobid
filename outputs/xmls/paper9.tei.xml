@@ -1,0 +1,675 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xml:space="preserve" xmlns="http://www.tei-c.org/ns/1.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.tei-c.org/ns/1.0 https://raw.githubusercontent.com/kermitt2/grobid/master/grobid-home/schemas/xsd/Grobid.xsd"
+ xmlns:xlink="http://www.w3.org/1999/xlink">
+	<teiHeader xml:lang="en">
+		<fileDesc>
+			<titleStmt>
+				<title level="a" type="main">Beyond Mimicry: Toward Lifelong Adaptability in Imitation Learning Blue Sky Ideas Track</title>
+			</titleStmt>
+			<publicationStmt>
+				<publisher/>
+				<availability status="unknown"><licence/></availability>
+			</publicationStmt>
+			<sourceDesc>
+				<biblStruct>
+					<analytic>
+						<author>
+							<persName><forename type="first">Felipe</forename><surname>Meneguzzi</surname></persName>
+							<email>felipe.meneguzzi@abdn.ac.uk</email>
+							<affiliation key="aff1">
+								<orgName type="institution">of</orgName>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Odinaldo</forename><surname>Rodrigues</surname></persName>
+							<email>odinaldo.rodrigues@kcl.ac.uk</email>
+							<affiliation key="aff2">
+							</affiliation>
+						</author>
+						<title level="a" type="main">Beyond Mimicry: Toward Lifelong Adaptability in Imitation Learning Blue Sky Ideas Track</title>
+					</analytic>
+					<monogr>
+						<imprint>
+							<date/>
+						</imprint>
+					</monogr>
+					<idno type="MD5">7B808DB93435478C1521F5561E0C2835</idno>
+				</biblStruct>
+			</sourceDesc>
+		</fileDesc>
+		<encodingDesc>
+			<appInfo>
+				<application version="0.7.2" ident="GROBID" when="2026-05-14T17:26+0000">
+					<desc>GROBID - A machine learning software for extracting information from scholarly documents</desc>
+					<ref target="https://github.com/kermitt2/grobid"/>
+				</application>
+			</appInfo>
+		</encodingDesc>
+		<profileDesc>
+			<textClass>
+				<keywords>
+					<term>Imitation Learning</term>
+					<term>Generalisation</term>
+					<term>Compositional Learning</term>
+				</keywords>
+			</textClass>
+			<abstract>
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>Imitation learning stands at a crossroads: despite decades of progress, current imitation learning agents remain sophisticated memorisation machines, excelling at replay but failing when contexts shift or goals evolve. This paper argues that this failure is not technical but foundational: imitation learning has been optimised for the wrong objective. We propose a research agenda that redefines success from perfect replay to compositional adaptability. Such adaptability hinges on learning behavioural primitives once and recombining them through novel contexts without retraining. We establish metrics for compositional generalisation, propose hybrid architectures, and outline interdisciplinary research directions drawing on cognitive science and cultural evolution. Agents that embed adaptability at the core of imitation learning thus have an essential capability for operating in an open-ended world.</p></div>
+			</abstract>
+		</profileDesc>
+	</teiHeader>
+	<text xml:lang="en">
+		<body>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="1">INTRODUCTION</head><p>When a child observes an adult stacking blocks, they do not memorise every motion in a trajectory. Instead, they extract reusable behavioural primitives (grasping, lifting, placing) and the compositional rules that govern their combination. Later, when faced with blocks of different shapes, sizes, or materials, a child can build entirely new structures never seen in demonstrations. This compositional understanding, fundamental to human imitation learning (IL), remains conspicuously absent from modern IL systems.</p><p>The disconnect between human and artificial imitation reveals a foundational flaw in the field's approach to learning from demonstrations. Current IL methods excel at reproducing demonstrated trajectories with impressive fidelity <ref type="bibr" target="#b6">[7,</ref><ref type="bibr" target="#b8">9]</ref>. Behavioural cloning (BC) achieves high accuracy on training distributions <ref type="bibr" target="#b18">[19]</ref>, inverse reinforcement learning infers underlying objectives <ref type="bibr" target="#b7">[8]</ref>, and adversarial approaches can handle imperfect demonstrations <ref type="bibr" target="#b23">[24]</ref>. Yet, these successes mask a critical limitation: when contexts shift beyond the training distribution performance degrades significantly <ref type="bibr" target="#b9">[10]</ref>. An IL agent that masters a navigation layout cannot easily adapt to a configuration change. These failures are not edge cases, but the norm whenever demonstration and evaluation conditions vary. The brittleness stems from optimising for the wrong objective: sample efficiency rather than adaptability. However, no amount of memorisation enables the behaviour required for more nuanced tasks. The real challenge, we argue, is not simply to learn from fewer demonstrations, but to actually understand the compositional structure of tasks embedded in them.</p><p>This paper introduces Compositional Repertoire Learning (CRL), a research agenda that redefines success in IL from trajectory reproduction to compositional generalisation. Rather than treating demonstrations as sequences of actions to memorise, CRL requires agents to extract behavioural primitives and compositional rules that can be recombined to solve novel contexts. This shift in orientation of the field is not merely technical but philosophical, fundamentally changing what it means for an agent to imitate successfully. The core insight driving CRL is that demonstrations contain two types of information: surface trajectories and deep compositional structure. Current methods capture only superficial knowledge, learning associations between states and actions. CRL requires agents to capture the structure of the solution, understanding that they must grasp primitives, i.e., steps that achieve sub-goals, so they can be recombined according to task-dependent rules. This structural understanding enables agents to generalise far beyond their training distribution, adapting to novel contexts through creative recombination rather than nearest-neighbour retrieval.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2">BACKGROUND</head><p>Most IL works model environments as Markov Decision Processes (MDPs), which are tuples of the form M = ⟨𝑆, 𝐴,𝑇 , 𝑟, 𝛾⟩, where 𝑆 is the state space, 𝐴 is the action space, 𝑇 : 𝑆 × 𝐴 → 𝑆 is a transition function, 𝑟 : 𝑆 × 𝐴 → R is an immediate reward function, and 𝛾 is the discount factor <ref type="bibr" target="#b20">[21]</ref>.</p><p>Mirror Mechanism and Behavioural Cloning Humans possess a neural mechanism that allows them to map observed actions onto their own motor systems <ref type="bibr" target="#b3">[4]</ref>. This mirror mechanism extracts the underlying intention of action sequences and, afterwards, adapts and replicate the learned behaviour in similar situations. For example, when watching someone stack blocks, humans learn goaldirected primitives, such as aligning, positioning, grasping, rather than just the actual hand and finger trajectories.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>arXiv:2602.19930v1 [cs.AI] 23 Feb 2026</head><p>In computer science, a well-known attempt to capture the mirror mechanism is called "Behavioural Cloning" <ref type="bibr" target="#b18">[19]</ref>, where a policy 𝜋 learns parameters 𝜃 such that 𝜋 𝜃 : 𝑆 ↦ → 𝐴 by optimising: arg min 𝜃 (𝑠,𝑎)∈D train E(𝑎, 𝜋 𝜃 (𝑠)), where D train is a set of teacher 𝜋 𝜓 demonstrations. However, this simplification into supervised learning without capturing the compositional structure leads to a fundamental limitation: mimicry, which we explain next.</p><p>Forms of Imitation There are two forms of imitation <ref type="bibr" target="#b5">[6]</ref>: mimicry and adaptive behaviour. Mimicry is associated with emulation, i.e, agents retrieve the state in the demonstration that is most similar to the current state and then replay the associated action. This causes behaviour-seeking mode <ref type="bibr" target="#b22">[23]</ref>, associated with two types of failures: compounding errors <ref type="bibr" target="#b19">[20,</ref><ref type="bibr">Ch. 26]</ref>, where small deviations cascade into large failures, and memorisation <ref type="bibr" target="#b19">[20,</ref><ref type="bibr">Ch. 19]</ref>, where agents retrieve stored actions rather than computing appropriate responses. Adaptive behaviour generates novel responses while maintaining behavioural intent. Agents understand not just what to do but also why, decomposing demonstrations into reusable primitives and compositional rules, enabling near-optimal responses to unseen states through recombination rather than retrieval. Both forms of imitation are essential. Mimicry works in controlled environments, while adaptive behaviour enables generalisation for more dynamic tasks where variation is the rule rather than the exception.</p><p>Limitation of Current Evaluation Current evaluation paradigms fail to measure true generalisation. Current metrics, such as Average Episodic Reward (AER), hide critical failures through averaging. An agent might achieve high AER by perfectly memorising most trajectories while failing on novel situations. Furthermore, agentic applications (sequential decision problems, episodic in nature) create complex dependencies. An agent starting from a state not present in the training dataset might reach familiar territory, then rely on memorisation. These metrics cannot distinguish this trajectory-level memorisation from compositional understanding. Most critically, states not seen during training and testing create hidden failure points invisible during evaluation but catastrophic in deployment. These limitations demand new paradigms that directly measure generalisation under a compositional lens.</p><p>Compositional Generalisation Compositional generalisation, borrowed from linguistics <ref type="bibr" target="#b11">[12]</ref>, provides the theoretical foundation for understanding adaptive capabilities. Like humans understanding novel sentences through grammatical rules, agents must understand behavioural combinations through compositional principles. Compositional generalisation refers to five forms through which a model can generalise: (i) systematicity, which is generalisation via systematically recombining known parts and rules; (ii) productivity, the ability to extend predictions beyond the length seen in training data (akin to machine learning generalisation); (iii) substitutivity, which is generalisation via the ability to replace components with synonyms; (iv) localism, whether the model compositions operate locally or globally; and (v) overgeneralisation, referring to the model's ability to pay attention to or being robust to exceptions.</p><p>In this work, we are particularly interested in the first three forms: systematicity, productivity, and substitutivity. To exemplify them, we use an excerpt from Kirk et al. <ref type="bibr" target="#b13">[14]</ref>: "[For a block-stacking environment], an example of systematicity is the ability to stack blocks in new configurations once the basics of block-stacking are mastered. Similarly, productivity can be measured by how many blocks the agent can generalise to, the complexity of blocks, and the complexity of the stacking configuration. Substitutivity can be evaluated by the agent's ability to generalise to blocks of new colours, understanding that the new colour does not affect the physics of the block." Thus, systematicity, productivity, and substitutivity allow us to capture dimensions of generalisation that go beyond mere accuracy on held-out states. Related Approaches Beyond compositional generalisation, other noteworthy related approaches inspire CRL. For example, Goalconditioned IL policies (𝜋 𝜃 | 𝑠, 𝑔) enable flexible behaviour by conditioning on desired outcomes <ref type="bibr" target="#b12">[13]</ref>. Hindsight experience replay relabels failed trajectories with achieved goals <ref type="bibr" target="#b2">[3]</ref>. However, goal-conditioning does not address how to deal with novel goalcontext combinations. Similarly, Hierarchical and Skill-based IL learns reusable behavioural components <ref type="bibr" target="#b17">[18,</ref><ref type="bibr" target="#b21">22]</ref>. These approaches address primitive extraction but typically assume fixed composition rules. CRL extends this by explicitly measuring compositional recombination across contexts.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3">COMPOSITIONAL REPERTOIRE LEARNING</head><p>The path from mimicry to adaptability requires mathematical rigour that current IL frameworks lack. This section lays CRL's foundation by building on three components that transform compositional generalisation from intuition into a measurable quantity: goals enable trajectory-level success measurement, controllable contexts provide systematic variation for testing, and deterministic transitions isolate algorithmic performance from environmental randomness.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.1">Goal-conditioned Contextual MDPs</head><p>The heart of CRL lies in a deceptively simple insight: standard MDPs cannot capture compositional structure because they conflate task definition with environmental dynamics. When everything changes simultaneously, it is impossible to isolate what varies compositionally from what varies arbitrarily. We propose Goal-conditioned Contextual MDPs (GCMDPs), extending contextual MDPs <ref type="bibr" target="#b10">[11]</ref> with explicit goal structure and context metrics. Definition 3.1. A Goal-conditioned Contextual MDP is a tuple M 𝑔𝑐 = ⟨𝑆, 𝐴, 𝐶, 𝐺, 𝑂,𝑇 , 𝜙, 𝑑⟩, where 𝑆 is the state space, 𝐴 is the action space, 𝐶 is the set of controllable contexts, 𝑂 is the set of observations, 𝐺 is the set of goals, 𝑇 : 𝑂 × 𝐴 ↦ → 𝑂 is a deterministic transition function, 𝜙 : 𝑆 × 𝐶 ↦ → 𝑂 is a projection function that maps state-context pairs to observations, and</p><formula xml:id="formula_0">𝑑 : 𝐶 × 𝐶 → R ≥ 0 is a contextual distance metric.</formula><p>This formulation departs from standard problems in three critical ways. First, by separating goals from rewards, we enable trajectorylevel evaluation capturing compositional generalisation (as defined in Section 2) beyond local action accuracy. Second, by using controllable contexts, GCMDPs avoid random variation, which obscures compositional structure. Third, by introducing deterministic transition functions, it avoids stochasticity attribution problems.</p><p>Explicit goal specifications (declarative success criteria rather than numeric reward signals) provide the missing abstraction layer, defining success at the trajectory level to capture whether agents understand task structure beyond surface mimicry. Definition 3.2. Let 𝜏 = (𝑜 0 , . . . , 𝑜 𝑛 ) be a trajectory, i.e., an ordered sequence of observations produced by the agent's interactions. 𝐺 specifies success criteria for the agent and can be of one of the following types. (i) terminal goals: the agent succeeds if the final observation in a trajectory satisfies one of the designated goal states; (ii) landmark goals: the agent succeeds when observations in a trajectory satisfy all states in one of the designated sets of goal states; or (iii) ordered landmark goals: the agent succeeds when observations in a trajectory satisfy all states in one of the designated sequences of goal states (order preserving).</p><p>Goals enable deliberate failure analysis <ref type="bibr" target="#b0">[1]</ref>. When agents fail, examining reached subgoals reveals whether failures stem from the inability to execute primitives <ref type="bibr" target="#b1">[2]</ref>, to combine them properly, or to adapt combinations to novel contexts.</p><p>Controllable contexts expose generative parameters, creating variation. For example, when agents fail on procedurally generated levels, it is hard to determine if they lack compositional understanding or encountered novel mechanics. Before we introduce them, let us say that two contexts 𝑐 and 𝑐 ′ are equivalent, in symbols 𝑐 ≃ 𝑐 ′ , if for all states 𝑠, we have that 𝜙(𝑠, 𝑐) = 𝜙(𝑠, 𝑐 ′ ). Definition 3.3. A context set 𝐶 is controllable when satisfying: (i) distribution separation, when for no 𝑐 ∈ 𝐶 𝑡𝑟𝑎𝑖𝑛 and 𝑐 ′ ∈ 𝐶 𝑡𝑒𝑠𝑡 do we have 𝑐 ≃ 𝑐 ′ ; (ii) observation independence, the agent should not assume that the projection function 𝜙 is injective (i.e., it does not assume equal observations in different contexts to be from the same state); and (iii) compositional structure, where for all 𝑐 ∈ 𝐶 train and for all 𝑐 ′ ∈ 𝐶 test such that 𝑐 ̸ ≃ 𝑐 ′ , 0 &lt; 𝑑(𝑐, 𝑐 ′ ) ≤ 𝛿 𝐶 , where</p><formula xml:id="formula_1">𝛿 𝐶 = max{𝑑(𝑐, 𝑐 ′ ) | 𝑐 ∈ 𝐶 train , 𝑐 ′ ∈ 𝐶 test }.</formula><p>In a block-stacking task, rather than random variation, controllable contexts allow control over problem characteristics, such as block count and colour. For navigation, map layout, room connectivity, and obstacle placement become explicit parameters. This enables systematic testing, varying single factors or specific combinations to reveal which compositional capabilities agents possess. For symbolic contexts representable as vectors of properties, we advocate the Levenshtein distance <ref type="bibr" target="#b15">[16]</ref>, which counts the number of insertion and deletion operations needed to transform between configurations. For example, transforming the specification of blocks from red, blue, green to red, yellow, green requires one deletion (blue) and one insertion (yellow), more accurately reflecting compositional changes, which Euclidean metrics struggle with.</p><p>Finally, deterministic transitions eliminate confounding stochasticity. When agents fail in stochastic environments, we cannot distinguish between compositional limitations and unlucky events. Consider navigation under unsafe conditions: failure might reflect inability to adapt (generalisation failure) or unstable random transitions that would fail regardless (environmental stochasticity). Deterministic transitions eliminate this confounding factor. The execution of an action in a state produces a unique outcome, ensuring that failures reflect the agent's limitations rather than chance. This enables reproducible debugging, allowing researchers to trace exact failure points, identify violated compositional rules, and design targeted improvements. Determinism transforms generalisation from a statistical property to a measurable one.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.2">Comparison with POMDPs</head><p>A comparison between GCMDPs and Partially Observable MDPs (POMDPs) is warranted due to structural similarities. POMDPs excel when agents must maintain beliefs about hidden states and perform Bayesian inference. Yet, IL from expert demonstrations presents a different challenge: agents receive complete demonstrations with full state and context information. The problem is not inferring hidden states but understanding compositional structure. The projection 𝜙 : 𝑆 × 𝐶 → 𝑂 captures how context shapes observation without hiding information. This transparency enables systematic generalisation testing that is impossible under POMDPs' probabilistic framework. When a GCMDP agent fails, we know it lacks compositional understanding, not state information, a far more tractable debugging problem.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.3">Measuring Compositional Generalisation</head><p>Current IL metrics give us success rate but reveal nothing about the nature of that success. An agent with 90% accuracy may be simply replicating trajectories in familiar contexts but failing catastrophically on novel ones, or it may indeed possess robust compositional understanding, albeit with occasional execution errors.</p><p>Consider a block-stacking task where an agent learns to execute stack commands that build towers by placing blocks in sequence (e.g., stack(red, blue) places the red block on top of the blue one). Suppose training includes blocks "red", "blue", and "green" in two-block configurations. At test time, we might present novel challenges: a new block (purple), longer sequences (red, blue, green, red) or symmetrical configurations (stack(blue, red)). Two agents with identical test accuracy might differ dramaticallyone handles novel colours but fails on longer sequences, while the other shows the opposite pattern. Traditional metrics cannot capture these distinctions. Thus, we propose the generalisation boundary, adapted from behavioural science <ref type="bibr" target="#b3">[4]</ref>, that cuts through this ambiguity by explicitly measuring how far agents can deviate from training contexts while maintaining performance. Definition 3.4. Let 𝐶 be a set of controllable contexts, 𝑝 a minimum performance threshold, and 𝑆𝑅 𝜋 𝜃 (𝑑 𝑐 ) the success rate at contextual distance 𝑑 𝑐 (averaged over all contexts at that distance). We define the generalisation boundary as:</p><formula xml:id="formula_2">𝛿 𝜋 𝜃 (𝑝) = sup{𝑑 𝑐 ∈ [0, 𝛿 𝐶 ] | 𝑆𝑅 𝜋 𝜃 (𝑑 𝑐 ) ≥ 𝑝}, where 𝛿 𝐶 is the maximum contextual distance.</formula><p>This reveals generalisation profiles invisible to traditional evaluation. Two agents with identical test accuracy might have vastly different boundaries: one maintaining perfect performance until sudden failure, while the other degrades gracefully as contextual distance increases. High thresholds (𝑝 = 0.9) test robust systematicity, while lower thresholds (𝑝 = 0.5) reveal absolute limits of compositional understanding. Combined with compositional generalisation, we can measure contextual distances to different test cases. In our block-stacking example, we could change a block's colour to test substitutivity, add a block to test productivity, or reorder the blocks to test systematicity. In addition, we can combine these forms of compositional generalisation to further test the agent. Agents may succeed at different distances for different compositional dimensions. An agent might handle substitutivity but fail systematicity, revealing specific compositional limitations.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.4">Suitable Environments and Benchmarks</head><p>Not all environments enable compositional generalisation measurement. In Procgen <ref type="bibr" target="#b4">[5]</ref>, when agents fail on unseen levels, we cannot determine whether they lack compositional understanding or encountered entirely novel mechanics. Compatible benchmarks require: (i) fixed primitive semantics: a "grasp" action should function identically for red or blue blocks; environments changing primitives meanings conflate adaptation with relearning; (ii) isolated compositional dimensions: systematicity varies only structural combinations, productivity extends sequence length without novel primitives, substitutivity changes components with functional equivalents; (iii) interpretable failures: distinguishing nature of failures, perceptual (inability to recognise blocks), compositional (inability to plan sequences), or operational (inability to perform primitives); and (iv) modular evaluation: primitives, compositional rules, and integrated behaviours separately. Therefore, CRL calls for careful and well-thought-out benchmarks. As Mitchell <ref type="bibr" target="#b16">[17]</ref> argues, current AI evaluation often cannot distinguish memorisation from genuine understanding; compositional generalisation measurement inherits this challenge but, through careful benchmark design, offers an opportunity for deeper insight into agent capabilities.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4">FUTURE RESEARCH LANDSCAPE</head><p>CRL opens research paths that extend beyond incremental improvements to IL. These directions challenge fundamental assumptions about learning, adaptation, and intelligence while remaining grounded in achievable scientific progress. Compositional Generalization at Scale: Current benchmarks fail to measure compositional capabilities, conflating multiple dimensions or lacking structure entirely. CRL demands specialised evaluation to reveal exactly which capabilities fail: systematicity, varying only in structural combinations; productivity, extending sequences without novel primitives; substitutivity, replacing objects with functional equivalents. Open-world deployment presents the ultimate challenge: agents must decompose novel situations, repurpose primitives, and recognise compositional limits. Research into compositional curricula that mimic human developmental progression from simple to complex behaviours could dramatically improve generalisation while revealing fundamental learning principles. Hybrid Architectures: CRL enables natural integration with complementary paradigms. Foundation models provide semantic priors for primitive selection; planners excel at long-horizon reasoning. Combining these yields agents that learn primitives via imitation but compose them using principled algorithms, addressing IL's inability to reason about novel combinations. The challenge: preserving each paradigm's strengths while ensuring semantic alignment between learned primitives and symbolic representations. Safety and Ethics in Adaptive Systems: Creative recombination risks discovering harmful behaviours never demonstrated. Compositional safety specifications must constrain entire combination spaces, not individual trajectories. Behavioural contracts could guarantee safe primitive combinations-proving no navigation-grasping combination causes collision requires compositional algebra, not trajectory enumeration. Ethical questions arise: should agent populations preserve behavioural diversity or converge? How do we ensure cross-cultural adaptation respects local norms?</p><p>Multi-agent Compositional IL: Teams could share and recombine behavioural primitives, enabling collective repertoire expansion through social learning. This mirrors cultural transmission mechanisms in human societies and opens questions about convergence versus diversity in behavioural populations. Social learning theory shows how discoveries propagate through populations, suggesting mechanisms for efficient primitive sharing. Cognitive Science Synergies: Developmental psychology reveals a structured progression from mimicry to composition. Kolb's experiential learning theory <ref type="bibr" target="#b14">[15]</ref> suggests beneficial cycles: experiencing demonstrations, analysing patterns, extracting structures, and testing combinations, implying that agents should reflect rather than pure matching. Behavioural science research on explorationexploitation trade-offs can inform how agents balance exploring new combinations of primitives versus exploiting known compositions. Social learning theory shows how discoveries propagate through populations, mirroring human cultural transmission.</p><p>The compositional structure from GCMDPs opens pathways we have not described here, such as: multi-agent solutions using IL, where teams can share and recombine behavioural primitives, and implications for explainable AI through interpretable primitive decomposition. By reconceptualising IL through the lens of compositionality, CRL transforms IL from a narrow technique for trajectory reproduction into a foundational paradigm for understanding how agent systems acquire, adapt, and transmit complex behaviours. The breadth of these possibilities underscores that CRL is not merely an incremental advance but a research agenda that will reshape how we approach learning from demonstration.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5">CONCLUSION</head><p>This paper calls for a research agenda re-orientation in IL: from narrow mimicry toward lifelong adaptability through Compositional Repertoire Learning (CRL). By formalising Goal-conditioned Contextual MDPs and introducing compositional generalisation dimensions, we outline a foundation for agents that learn once and adapt everywhere. CRL envisions architectures that allow for integrating imitation with planning, symbolic reasoning, and foundation models, supported by benchmarks that stress compositional generalisation (systematicity, productivity, and substitutivity).</p><p>The significance of this shift lies in enabling agents to operate beyond static demonstrations, adapt to unseen contexts, and recombine learned behaviours for novel goals. These capabilities are critical for advancing autonomy in robotics, human-AI collaboration, and open-world systems where variability and uncertainty are the norm. By embracing CRL, the agent community can establish IL as a cornerstone for next-generation AI, bridging data-driven learning with structured reasoning. This will enable the realisation of more sophisticated cognitive learning techniques, paving the way for more robust, adaptable, and proactive agents.</p></div>		</body>
+		<back>
+
+			<div type="acknowledgement">
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>ACKNOWLEDGMENTS</head><p>This work was supported by UK Research and Innovation [grant number EP/S023356/1], in the UKRI Centre for Doctoral Training in Safe and Trusted Artificial Intelligence (www.safeandtrustedai.org).</p></div>
+			</div>
+
+			<div type="references">
+
+				<listBibl>
+
+<biblStruct xml:id="b0">
+	<analytic>
+		<title level="a" type="main">Goal recognition as reinforcement learning</title>
+		<author>
+			<persName><forename type="first">Leonardo</forename><surname>Amado</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Reuth</forename><surname>Mirsky</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Felipe</forename><surname>Meneguzzi</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the AAAI Conference on Artificial Intelligence</title>
+				<meeting>the AAAI Conference on Artificial Intelligence</meeting>
+		<imprint>
+			<date type="published" when="2022">2022</date>
+			<biblScope unit="volume">36</biblScope>
+			<biblScope unit="page" from="9644" to="9651" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b1">
+	<analytic>
+		<title level="a" type="main">Robust Neuro-Symbolic Goal and Plan Recognition</title>
+		<author>
+			<persName><forename type="first">Leonardo</forename><forename type="middle">R</forename><surname>Amado</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ramon</forename><forename type="middle">F</forename><surname>Pereira</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Felipe</forename><surname>Meneguzzi</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the AAAI Conference on Artificial Intelligence</title>
+				<meeting>the AAAI Conference on Artificial Intelligence</meeting>
+		<imprint>
+			<date type="published" when="2023">2023</date>
+			<biblScope unit="volume">37</biblScope>
+			<biblScope unit="page" from="11937" to="11944" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b2">
+	<analytic>
+		<title level="a" type="main">Hindsight experience replay</title>
+		<author>
+			<persName><forename type="first">Marcin</forename><surname>Andrychowicz</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Filip</forename><surname>Wolski</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Alex</forename><surname>Ray</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jonas</forename><surname>Schneider</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Rachel</forename><surname>Fong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Peter</forename><surname>Welinder</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bob</forename><surname>Mcgrew</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Josh</forename><surname>Tobin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Openai</forename></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Pieter</forename><surname>Abbeel</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Wojciech</forename><surname>Zaremba</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Advances in neural information processing systems</title>
+		<imprint>
+			<biblScope unit="volume">30</biblScope>
+			<date type="published" when="2017">2017. 2017</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b3">
+	<analytic>
+		<title level="a" type="main">Social learning theory</title>
+		<author>
+			<persName><forename type="first">Albert</forename><surname>Bandura</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Prentice-Hall series in social learning theory</title>
+				<meeting><address><addrLine>Englewood Cliffs, NJ</addrLine></address></meeting>
+		<imprint>
+			<publisher>Prentice-Hall</publisher>
+			<date type="published" when="1977">1977</date>
+			<biblScope unit="volume">1</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b4">
+	<monogr>
+		<title level="m" type="main">Leveraging Procedural Generation to Benchmark Reinforcement Learning</title>
+		<author>
+			<persName><forename type="first">Karl</forename><surname>Cobbe</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Christopher</forename><surname>Hesse</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jacob</forename><surname>Hilton</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">John</forename><surname>Schulman</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1912.01588</idno>
+		<imprint>
+			<date type="published" when="2019">2019. 2019</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b5">
+	<monogr>
+		<title level="m" type="main">Generalized Imitation and Applied Behavior Analysis</title>
+		<author>
+			<persName><forename type="first">Meghan</forename><forename type="middle">A</forename><surname>Deshais</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jacquelyn</forename><surname>Macdonald</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Leslie</forename><surname>Quiroz</surname></persName>
+		</author>
+		<idno type="DOI">10.1007/978-3-030-88538-0_35</idno>
+		<ptr target="https://doi.org/10.1007/978-3-030-88538-0_35" />
+		<imprint>
+			<date type="published" when="2022">2022</date>
+			<publisher>Springer International Publishing</publisher>
+			<biblScope unit="page" from="821" to="844" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b6">
+	<analytic>
+		<title level="a" type="main">GRAIL: Goal Recognition Alignment through Imitation Learning</title>
+		<author>
+			<persName><forename type="first">Osher</forename><surname>Elhadad</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Felipe</forename><surname>Meneguzzi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Reuth</forename><surname>Mirsky</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 25th International Conference on Autonomous Agents and Multiagent Systems</title>
+				<editor>
+			<persName><forename type="first">Chris</forename><surname>Amato</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">Louise</forename><surname>Dennis</surname></persName>
+		</editor>
+		<meeting>the 25th International Conference on Autonomous Agents and Multiagent Systems</meeting>
+		<imprint>
+			<date type="published" when="2026">2026</date>
+		</imprint>
+	</monogr>
+	<note>to appear</note>
+</biblStruct>
+
+<biblStruct xml:id="b7">
+	<monogr>
+		<title level="m" type="main">A Survey of Imitation Learning Methods, Environments and Metrics</title>
+		<author>
+			<persName><forename type="first">Nathan</forename><surname>Gavenski</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Felipe</forename><surname>Meneguzzi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Michael</forename><surname>Luck</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Odinaldo</forename><surname>Rodrigues</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2404.19456</idno>
+		<imprint>
+			<date type="published" when="2024">2024. 2024</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b8">
+	<analytic>
+		<title level="a" type="main">How Resilient Are Imitation Learning Methods to Sub-optimal Experts?</title>
+		<author>
+			<persName><forename type="first">Nathan</forename><surname>Gavenski</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Juarez</forename><surname>Monteiro</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Adilson</forename><surname>Medronha</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Rodrigo</forename><forename type="middle">C</forename><surname>Barros</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Intelligent Systems</title>
+				<editor>
+			<persName><forename type="first">João</forename><surname>Carlos</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">Xavier-Junior</forename></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">Ricardo</forename><forename type="middle">Araújo</forename><surname>Rios</surname></persName>
+		</editor>
+		<meeting><address><addrLine>Cham</addrLine></address></meeting>
+		<imprint>
+			<publisher>Springer International Publishing</publisher>
+			<date type="published" when="2022">2022</date>
+			<biblScope unit="page" from="449" to="463" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b9">
+	<analytic>
+		<title level="a" type="main">Quantifying Generalisation in Imitation Learning</title>
+		<author>
+			<persName><forename type="first">Nathan</forename><surname>Gavenski</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Odinaldo</forename><surname>Rodrigues</surname></persName>
+		</author>
+		<ptr target="https://openreview.net/forum?id=rf8c4zw9lO" />
+	</analytic>
+	<monogr>
+		<title level="m">The Thirty-ninth Annual Conference on Neural Information Processing Systems Datasets and Benchmarks Track</title>
+				<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b10">
+	<monogr>
+		<title level="m" type="main">Contextual markov decision processes</title>
+		<author>
+			<persName><forename type="first">Assaf</forename><surname>Hallak</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dotan</forename><surname>Di Castro</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shie</forename><surname>Mannor</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1502.02259</idno>
+		<imprint>
+			<date type="published" when="2015">2015. 2015</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b11">
+	<analytic>
+		<title level="a" type="main">Compositionality Decomposed: How do Neural Networks Generalise</title>
+		<author>
+			<persName><forename type="first">Dieuwke</forename><surname>Hupkes</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Verna</forename><surname>Dankers</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mathijs</forename><surname>Mul</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Elia</forename><surname>Bruni</surname></persName>
+		</author>
+		<idno type="DOI">10.1613/jair.1.11674</idno>
+		<ptr target="https://doi.org/10.1613/jair.1.11674" />
+	</analytic>
+	<monogr>
+		<title level="j">Journal of Artificial Intelligence Research</title>
+		<imprint>
+			<biblScope unit="volume">67</biblScope>
+			<biblScope unit="page" from="757" to="795" />
+			<date type="published" when="2020-04">2020. April 2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b12">
+	<analytic>
+		<title level="a" type="main">Learning to Achieve Goals</title>
+		<author>
+			<persName><forename type="first">Leslie</forename><surname>Pack</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Kaelbling</forename></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 13th International Joint Conference on Artificial Intelligence</title>
+				<editor>
+			<persName><forename type="first">Ruzena</forename><surname>Bajcsy</surname></persName>
+		</editor>
+		<meeting>the 13th International Joint Conference on Artificial Intelligence<address><addrLine>Chambéry, France</addrLine></address></meeting>
+		<imprint>
+			<publisher>Morgan Kaufmann</publisher>
+			<date type="published" when="1993-08-28">1993. August 28 -September 3, 1993</date>
+			<biblScope unit="page" from="1094" to="1099" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b13">
+	<analytic>
+		<title level="a" type="main">A Survey of Zero-shot Generalisation in Deep Reinforcement Learning</title>
+		<author>
+			<persName><forename type="first">Robert</forename><surname>Kirk</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Amy</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Edward</forename><surname>Grefenstette</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tim</forename><surname>Rocktäschel</surname></persName>
+		</author>
+		<idno type="DOI">10.1613/jair.1.14174</idno>
+		<ptr target="https://doi.org/10.1613/jair.1.14174" />
+	</analytic>
+	<monogr>
+		<title level="j">Journal of Artificial Intelligence Research</title>
+		<imprint>
+			<biblScope unit="volume">76</biblScope>
+			<biblScope unit="page" from="201" to="264" />
+			<date type="published" when="2023-01">2023. Jan. 2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b14">
+	<monogr>
+		<title level="m" type="main">Experiential learning</title>
+		<author>
+			<persName><forename type="first">David</forename><forename type="middle">A</forename><surname>Kolb</surname></persName>
+		</author>
+		<imprint>
+			<date type="published" when="1983">1983</date>
+			<publisher>Financial TImes Prentice Hall</publisher>
+			<pubPlace>Upper Saddle River, NJ</pubPlace>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b15">
+	<analytic>
+		<title level="a" type="main">Binary coors capable or &apos;correcting deletions, insertions, and reversals</title>
+		<author>
+			<persName><surname>Vi Lcvenshtcin</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Soviet physics-doklady</title>
+		<imprint>
+			<biblScope unit="volume">10</biblScope>
+			<date type="published" when="1966">1966</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b16">
+	<analytic>
+		<title level="a" type="main">How do we know how smart AI systems are</title>
+		<author>
+			<persName><forename type="first">Melanie</forename><surname>Mitchell</surname></persName>
+		</author>
+		<idno type="DOI">10.1126/science.adj5957</idno>
+		<ptr target="https://www.science.org/doi/pdf/10.1126/science.adj5957" />
+	</analytic>
+	<monogr>
+		<title level="j">Science</title>
+		<imprint>
+			<biblScope unit="volume">381</biblScope>
+			<biblScope unit="page">5957</biblScope>
+			<date type="published" when="2023">2023. 2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b17">
+	<analytic>
+		<title level="a" type="main">Learning grounded finite-state representations from unstructured demonstrations</title>
+		<author>
+			<persName><forename type="first">Scott</forename><surname>Niekum</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sarah</forename><surname>Osentoski</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">George</forename><surname>Konidaris</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sachin</forename><surname>Chitta</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bhaskara</forename><surname>Marthi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Andrew</forename><forename type="middle">G</forename><surname>Barto</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">The International Journal of Robotics Research</title>
+		<imprint>
+			<biblScope unit="volume">34</biblScope>
+			<biblScope unit="issue">2</biblScope>
+			<biblScope unit="page" from="131" to="157" />
+			<date type="published" when="2015">2015. 2015</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b18">
+	<analytic>
+		<title level="a" type="main">Alvinn: An autonomous land vehicle in a neural network</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Dean</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Pomerleau</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Advances in neural information processing systems</title>
+		<imprint>
+			<biblScope unit="volume">1</biblScope>
+			<date type="published" when="1988">1988. 1988</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b19">
+	<monogr>
+		<author>
+			<persName><forename type="first">Stuart</forename><forename type="middle">J</forename><surname>Russell</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Peter</forename><surname>Norvig</surname></persName>
+		</author>
+		<title level="m">Artificial intelligence : a modern approach</title>
+				<meeting><address><addrLine>Harlow, England</addrLine></address></meeting>
+		<imprint>
+			<publisher>Pearson Education Limited</publisher>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+	<note>global edition ed</note>
+</biblStruct>
+
+<biblStruct xml:id="b20">
+	<monogr>
+		<author>
+			<persName><forename type="first">Richard</forename><forename type="middle">S</forename><surname>Sutton</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Andrew</forename><forename type="middle">G</forename><surname>Barto</surname></persName>
+		</author>
+		<ptr target="https://search.worldcat.org/title/1043175824" />
+		<title level="m">Reinforcement Learning: An Introduction</title>
+				<meeting><address><addrLine>Cambridge, MA</addrLine></address></meeting>
+		<imprint>
+			<publisher>MIT Press</publisher>
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+	<note>2nd ed</note>
+</biblStruct>
+
+<biblStruct xml:id="b21">
+	<analytic>
+		<title level="a" type="main">Between MDPs and semi-MDPs: A framework for temporal abstraction in reinforcement learning</title>
+		<author>
+			<persName><forename type="first">Doina</forename><surname>Richard S Sutton</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Satinder</forename><surname>Precup</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Singh</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Artificial intelligence</title>
+		<imprint>
+			<biblScope unit="volume">112</biblScope>
+			<biblScope unit="page" from="181" to="211" />
+			<date type="published" when="1999">1999. 1999</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b22">
+	<analytic>
+		<title level="a" type="main">Of Moments and Matching: A Game-Theoretic Framework for Closing the Imitation Gap</title>
+		<author>
+			<persName><forename type="first">Gokul</forename><surname>Swamy</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sanjiban</forename><surname>Choudhury</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">Andrew</forename><surname>Bagnell</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Steven</forename><surname>Wu</surname></persName>
+		</author>
+		<ptr target="https://proceedings.mlr.press/v139/swamy21a.html" />
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 38th International Conference on Machine Learning (Proceedings of Machine Learning Research</title>
+				<editor>
+			<persName><forename type="first">Marina</forename><surname>Meila</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">Tong</forename><surname>Zhang</surname></persName>
+		</editor>
+		<meeting>the 38th International Conference on Machine Learning ( Machine Learning Research</meeting>
+		<imprint>
+			<publisher>PMLR</publisher>
+			<date type="published" when="2021">2021</date>
+			<biblScope unit="volume">139</biblScope>
+			<biblScope unit="page" from="10022" to="10032" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b23">
+	<analytic>
+		<title level="a" type="main">Recent Advances in Imitation Learning from Observation</title>
+		<author>
+			<persName><forename type="first">Faraz</forename><surname>Torabi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Garrett</forename><surname>Warnell</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Peter</forename><surname>Stone</surname></persName>
+		</author>
+		<idno type="DOI">10.24963/IJCAI.2019/882</idno>
+		<ptr target="https://doi.org/10.24963/IJCAI.2019/882" />
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the Twenty-Eighth International Joint Conference on Artificial Intelligence, IJCAI 2019</title>
+				<meeting>the Twenty-Eighth International Joint Conference on Artificial Intelligence, IJCAI 2019<address><addrLine>Macao, China</addrLine></address></meeting>
+		<imprint>
+			<publisher>ijcai</publisher>
+			<date type="published" when="2019-08-10">2019. August 10-16, 2019</date>
+			<biblScope unit="page" from="6325" to="6331" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+				</listBibl>
+			</div>
+		</back>
+	</text>
+</TEI>
