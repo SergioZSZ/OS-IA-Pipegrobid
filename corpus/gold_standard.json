@@ -64,7 +64,7 @@
       "text": "ACKNOWLEDGMENTS CJP thanks F. Tablizo for encouraging feedback and useful discussions. CJP was supported in part by grants to the Philippine Genome Center from the Department of Health -Epidemiology Bureau for the national SARS-CoV-2 biosurveillance initiative.",
       "entities": {
         "PER": ["CJP", "F. Tablizo"],
-        "ORG": ["Philippine Genome Center", "Department of Health - Epidemiology Bureau", "national SARS-CoV-2 biosurveillance initiative"],
+        "ORG": ["Philippine Genome Center", "Department of Health -Epidemiology Bureau", "national SARS-CoV-2 biosurveillance initiative"],
         "PROJ": []
       }
     },
