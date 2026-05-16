@@ -1,0 +1,178 @@
+{
+  "metadata": {
+    "model_name": "kalawinka/flair-ner-acknowledgments",
+    "model_parameters": {
+      "framework": "flair",
+      "label_mapping": {
+        "IND": "PER",
+        "UNI": "ORG",
+        "FUND": "ORG",
+        "COR": "ORG",
+        "GRNB": "PROJ"
+      },
+      "dropped_labels": [
+        "MISC"
+      ],
+      "proj_supported_natively": true,
+      "torch_load_weights_only": false
+    },
+    "execution_date": "2026-05-16T10:23:06.647447+00:00",
+    "categories": [
+      "PER",
+      "ORG",
+      "PROJ"
+    ],
+    "notes": "Domain-specialized NER model trained on scientific acknowledgements (Smirnova & Mayr, arXiv:2307.13377). Native labels IND/UNI/FUND/COR/GRNB/MISC mapped to PER/ORG/PROJ; MISC is dropped. Unlike the generic baseline, this model detects grant numbers (GRNB -> PROJ) natively. Loaded with weights_only=False for PyTorch >= 2.6 compatibility."
+  },
+  "documents": [
+    {
+      "paper_id": "paper_03",
+      "text": "Acknowledgments We thank the National Science Foundation for support under grants IIS-2229876 and IIS-2340209 for this work. Any opinions, findings, conclusions, or recommendations expressed here are those of the authors alone.",
+      "entities": {
+        "PER": [],
+        "ORG": [
+          "National Science Foundation"
+        ],
+        "PROJ": [
+          "IIS-2229876",
+          "IIS-2340209"
+        ]
+      }
+    },
+    {
+      "paper_id": "paper_07",
+      "text": "ACKNOWLEDGMENTS We thank Janus, whose writing on information flow in transformers informed a part of this work. Victor Godet, Janus, Grace Kind, Max Loeffler, Antra Tessera, Wyatt Walls, and xlr8harder reviewed an early version of the results and suggested potential experiments. Prime Intellect provided additional compute. This work was supported by the Czech Science Foundation, grant No. 26-23955S.",
+      "entities": {
+        "PER": [
+          "Janus",
+          "Victor Godet",
+          "Janus",
+          "Grace Kind",
+          "Max Loeffler",
+          "Antra Tessera",
+          "Wyatt Walls"
+        ],
+        "ORG": [
+          "Czech Science Foundation"
+        ],
+        "PROJ": [
+          "26-23955S"
+        ]
+      }
+    },
+    {
+      "paper_id": "paper_09",
+      "text": "ACKNOWLEDGMENTS This work was supported by UK Research and Innovation [grant number EP/S023356/1], in the UKRI Centre for Doctoral Training in Safe and Trusted Artificial Intelligence (www.safeandtrustedai.org).",
+      "entities": {
+        "PER": [],
+        "ORG": [
+          "UK Research and Innovation",
+          "UKRI Centre for Doctoral Training in Safe and Trusted Artificial Intelligence"
+        ],
+        "PROJ": [
+          "EP/S023356/1"
+        ]
+      }
+    },
+    {
+      "paper_id": "paper_11",
+      "text": "Acknowledgements: SS acknowledges the funding support from Dana Farber Cancer Institute (Prof. C.Z. Zhang), and LM thanks the Simons Foundation and the Henri Seydoux Fund for partial financial support. Code Availability: The custom FEniCS code has been hosted on GitHub at the following LINK.",
+      "entities": {
+        "PER": [
+          "C.Z. Zhang"
+        ],
+        "ORG": [
+          "Dana Farber Cancer Institute",
+          "Simons Foundation",
+          "Henri Seydoux Fund"
+        ],
+        "PROJ": []
+      }
+    },
+    {
+      "paper_id": "paper_13",
+      "text": "This research was partly funded by the European Research Council (ERC) under the European Union's Horizon 2020 research and innovation programme (grant agreement No. 851173, to A.-F. B.).",
+      "entities": {
+        "PER": [
+          "F. B."
+        ],
+        "ORG": [
+          "European Research Council (ERC)",
+          "European Union's Horizon 2020 research and innovation programme"
+        ],
+        "PROJ": [
+          "851173"
+        ]
+      }
+    },
+    {
+      "paper_id": "paper_19",
+      "text": "ACKNOWLEDGMENTS CJP thanks F. Tablizo for encouraging feedback and useful discussions. CJP was supported in part by grants to the Philippine Genome Center from the Department of Health -Epidemiology Bureau for the national SARS-CoV-2 biosurveillance initiative.",
+      "entities": {
+        "PER": [
+          "F. Tablizo"
+        ],
+        "ORG": [
+          "Philippine Genome Center",
+          "Department of Health -Epidemiology Bureau",
+          "national SARS-CoV-2 biosurveillance initiative"
+        ],
+        "PROJ": []
+      }
+    },
+    {
+      "paper_id": "paper_27",
+      "text": "ACKNOWLEDGEMENTS This work was supported by grants from the National Eye Institute (NEI): R01EY022933, R01EY025087 and P30EY026877 (SAB). S.G. thanks the Simons Foundation Collaboration on the Physics of Learning and Neural Computation and a Schmidt Sciences Polymath Award for support. Z.A. was supported by the Stanford Medicine Post-Baccalaureate Experience In Research program.",
+      "entities": {
+        "PER": [],
+        "ORG": [
+          "National Eye Institute (NEI)",
+          "Simons Foundation Collaboration on the Physics of Learning and Neural Computation",
+          "Schmidt Sciences Polymath Award",
+          "Stanford Medicine Post-Baccalaureate Experience In Research program"
+        ],
+        "PROJ": [
+          "R01EY022933",
+          "R01EY025087",
+          "P30EY026877"
+        ]
+      }
+    },
+    {
+      "paper_id": "paper_28",
+      "text": "Acknowledgements This work was partially supported by Scialog grant #SA-AUT-2024-015b from Research Corporation for Science Advancement and Arnold and Mabel Beckman Foundation. We thank Ishan Amin for the initial idea and discussion around the LAE encoding. We thank Tobias Kreiman, Sam Blau, Ryan Liu, Ritwik Gupta, Sanjeev Raja, Nithin Chalapathi, Yue Jian, Yiheng Du, Michael Psenka, Boyu Qie, Kai Nelson, Rasmus Hoegh from UC Berkeley / LBNL for the helpful discussions. We thank C. Lawrence Zitnick, Misko Dzamba, Meng Gao, Muhammed Shuaibi, Daniel S. Levine, Luis Barroso-Luque and others from the FAIR Chemistry group for helpful discussions and comments.",
+      "entities": {
+        "PER": [
+          "Ishan Amin",
+          "Tobias Kreiman",
+          "Sam Blau",
+          "Ryan Liu",
+          "Ritwik Gupta",
+          "Sanjeev Raja",
+          "Nithin Chalapathi",
+          "Yue Jian",
+          "Yiheng Du",
+          "Michael Psenka",
+          "Boyu Qie",
+          "Kai Nelson",
+          "Rasmus Hoegh",
+          "Lawrence Zitnick",
+          "Misko Dzamba",
+          "Meng Gao",
+          "Muhammed Shuaibi",
+          "Daniel S. Levine",
+          "Luis Barroso-Luque"
+        ],
+        "ORG": [
+          "Scialog",
+          "Research Corporation for Science Advancement and Arnold",
+          "Mabel Beckman Foundation",
+          "UC Berkeley / LBNL"
+        ],
+        "PROJ": [
+          "SA-AUT-2024-015b"
+        ]
+      }
+    }
+  ]
+}

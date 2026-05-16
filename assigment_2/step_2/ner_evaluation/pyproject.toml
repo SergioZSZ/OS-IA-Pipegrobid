@@ -1,0 +1,31 @@
+[tool.poetry]
+name = "ner-evaluation"
+version = "0.1.0"
+description = "NER model evaluation on scientific acknowledgements against a manually annotated gold standard"
+authors = ["G4 OpenScience"]
+license = "MIT"
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+# Core utilities
+python-dotenv = "^1.0.1"
+
+# Model 1: Jean-Baptiste/roberta-large-ner-english (transformers)
+transformers = "^4.44.0"
+torch = "^2.4.0"
+
+# Model 2: kalawinka/flair-ner-acknowledgments (flair)
+flair = "^0.14.0"
+
+# Model 3: Groq API
+groq = "^1.2.0"
+
+# Model 4: HuggingFace Inference Providers
+huggingface-hub = "^0.34.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

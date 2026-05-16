@@ -1,0 +1,32 @@
+# Environment variables (API keys)
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+
+# Poetry virtual environment
+.venv/
+
+# Downloaded models (HuggingFace cache)
+.cache/
+models/
+*.bin
+*.safetensors
+*.pt
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
