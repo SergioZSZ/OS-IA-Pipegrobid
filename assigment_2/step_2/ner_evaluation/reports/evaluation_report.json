@@ -1,0 +1,1527 @@
+{
+  "groq/llama-3.3-70b-versatile": {
+    "per_category": {
+      "PER": {
+        "tp": 33,
+        "fp": 1,
+        "fn": 2,
+        "precision": 0.9706,
+        "recall": 0.9429,
+        "f1": 0.9565
+      },
+      "ORG": {
+        "tp": 23,
+        "fp": 2,
+        "fn": 2,
+        "precision": 0.92,
+        "recall": 0.92,
+        "f1": 0.92
+      },
+      "PROJ": {
+        "tp": 9,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      }
+    },
+    "overall": {
+      "tp": 65,
+      "fp": 3,
+      "fn": 4,
+      "precision": 0.9559,
+      "recall": 0.942,
+      "f1": 0.9489
+    },
+    "per_paper": [
+      {
+        "paper_id": "paper_03",
+        "categories": {
+          "PER": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [],
+            "fp_entities": [],
+            "fn_entities": []
+          },
+          "ORG": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [
+              "National Science Foundation"
+            ],
+            "fp_entities": [],
+            "fn_entities": []
+          },
+          "PROJ": {
+            "tp": 2,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [
+              "IIS-2229876",
+              "IIS-2340209"
+            ],
+            "fp_entities": [],
+            "fn_entities": []
+          }
+        }
+      },
+      {
+        "paper_id": "paper_07",
+        "categories": {
+          "PER": {
+            "tp": 7,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [
+              "Antra Tessera",
+              "Grace Kind",
+              "Janus",
+              "Max Loeffler",
+              "Victor Godet",
+              "Wyatt Walls",
+              "xlr8harder"
+            ],
+            "fp_entities": [],
+            "fn_entities": []
+          },
+          "ORG": {
+            "tp": 2,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [
+              "Czech Science Foundation",
+              "Prime Intellect"
+            ],
+            "fp_entities": [],
+            "fn_entities": []
+          },
+          "PROJ": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [
+              "26-23955S"
+            ],
+            "fp_entities": [],
+            "fn_entities": []
+          }
+        }
+      },
+      {
+        "paper_id": "paper_09",
+        "categories": {
+          "PER": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [],
+            "fp_entities": [],
+            "fn_entities": []
+          },
+          "ORG": {
+            "tp": 2,
+            "fp": 1,
+            "fn": 0,
+            "tp_entities": [
+              "UK Research and Innovation",
+              "UKRI Centre for Doctoral Training in Safe and Trusted Artificial Intelligence"
+            ],
+            "fp_entities": [
+              "UKRI"
+            ],
+            "fn_entities": []
+          },
+          "PROJ": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [
+              "EP/S023356/1"
+            ],
+            "fp_entities": [],
+            "fn_entities": []
+          }
+        }
+      },
+      {
+        "paper_id": "paper_11",
+        "categories": {
+          "PER": {
+            "tp": 2,
+            "fp": 1,
+            "fn": 1,
+            "tp_entities": [
+              "LM",
+              "SS"
+            ],
+            "fp_entities": [
+              "C.Z. Zhang"
+            ],
+            "fn_entities": [
+              "Prof. C.Z. Zhang"
+            ]
+          },
+          "ORG": {
+            "tp": 3,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [
+              "Dana Farber Cancer Institute",
+              "Henri Seydoux Fund",
+              "Simons Foundation"
+            ],
+            "fp_entities": [],
+            "fn_entities": []
+          },
+          "PROJ": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [],
+            "fp_entities": [],
+            "fn_entities": []
+          }
+        }
+      },
+      {
+        "paper_id": "paper_13",
+        "categories": {
+          "PER": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [
+              "A.-F. B."
+            ],
+            "fp_entities": [],
+            "fn_entities": []
+          },
+          "ORG": {
+            "tp": 4,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [
+              "ERC",
+              "European Research Council",
+              "European Union",
+              "Horizon 2020"
+            ],
+            "fp_entities": [],
+            "fn_entities": []
+          },
+          "PROJ": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [
+              "851173"
+            ],
+            "fp_entities": [],
+            "fn_entities": []
+          }
+        }
+      },
+      {
+        "paper_id": "paper_19",
+        "categories": {
+          "PER": {
+            "tp": 2,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [
+              "CJP",
+              "F. Tablizo"
+            ],
+            "fp_entities": [],
+            "fn_entities": []
+          },
+          "ORG": {
+            "tp": 2,
+            "fp": 0,
+            "fn": 1,
+            "tp_entities": [
+              "Department of Health - Epidemiology Bureau",
+              "Philippine Genome Center"
+            ],
+            "fp_entities": [],
+            "fn_entities": [
+              "national SARS-CoV-2 biosurveillance initiative"
+            ]
+          },
+          "PROJ": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [],
+            "fp_entities": [],
+            "fn_entities": []
+          }
+        }
+      },
+      {
+        "paper_id": "paper_27",
+        "categories": {
+          "PER": {
+            "tp": 2,
+            "fp": 0,
+            "fn": 1,
+            "tp_entities": [
+              "S.G.",
+              "Z.A."
+            ],
+            "fp_entities": [],
+            "fn_entities": [
+              "SAB"
+            ]
+          },
+          "ORG": {
+            "tp": 4,
+            "fp": 1,
+            "fn": 1,
+            "tp_entities": [
+              "NEI",
+              "National Eye Institute",
+              "Schmidt Sciences Polymath Award",
+              "Simons Foundation Collaboration on the Physics of Learning and Neural Computation"
+            ],
+            "fp_entities": [
+              "Stanford Medicine Post-Baccalaureate Experience In Research"
+            ],
+            "fn_entities": [
+              "Stanford Medicine Post-Baccalaureate Experience In Research program"
+            ]
+          },
+          "PROJ": {
+            "tp": 3,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [
+              "P30EY026877",
+              "R01EY022933",
+              "R01EY025087"
+            ],
+            "fp_entities": [],
+            "fn_entities": []
+          }
+        }
+      },
+      {
+        "paper_id": "paper_28",
+        "categories": {
+          "PER": {
+            "tp": 19,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [
+              "Boyu Qie",
+              "C. Lawrence Zitnick",
+              "Daniel S. Levine",
+              "Ishan Amin",
+              "Kai Nelson",
+              "Luis Barroso-Luque",
+              "Meng Gao",
+              "Michael Psenka",
+              "Misko Dzamba",
+              "Muhammed Shuaibi",
+              "Nithin Chalapathi",
+              "Rasmus Hoegh",
+              "Ritwik Gupta",
+              "Ryan Liu",
+              "Sam Blau",
+              "Sanjeev Raja",
+              "Tobias Kreiman",
+              "Yiheng Du",
+              "Yue Jian"
+            ],
+            "fp_entities": [],
+            "fn_entities": []
+          },
+          "ORG": {
+            "tp": 5,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [
+              "Arnold and Mabel Beckman Foundation",
+              "FAIR Chemistry group",
+              "LBNL",
+              "Research Corporation for Science Advancement",
+              "UC Berkeley"
+            ],
+            "fp_entities": [],
+            "fn_entities": []
+          },
+          "PROJ": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [
+              "SA-AUT-2024-015b"
+            ],
+            "fp_entities": [],
+            "fn_entities": []
+          }
+        }
+      }
+    ]
+  },
+  "hf/Qwen/Qwen2.5-7B-Instruct": {
+    "per_category": {
+      "PER": {
+        "tp": 33,
+        "fp": 1,
+        "fn": 2,
+        "precision": 0.9706,
+        "recall": 0.9429,
+        "f1": 0.9565
+      },
+      "ORG": {
+        "tp": 20,
+        "fp": 2,
+        "fn": 5,
+        "precision": 0.9091,
+        "recall": 0.8,
+        "f1": 0.8511
+      },
+      "PROJ": {
+        "tp": 9,
+        "fp": 3,
+        "fn": 0,
+        "precision": 0.75,
+        "recall": 1.0,
+        "f1": 0.8571
+      }
+    },
+    "overall": {
+      "tp": 62,
+      "fp": 6,
+      "fn": 7,
+      "precision": 0.9118,
+      "recall": 0.8986,
+      "f1": 0.9051
+    },
+    "per_paper": [
+      {
+        "paper_id": "paper_03",
+        "categories": {
+          "PER": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [],
+            "fp_entities": [],
+            "fn_entities": []
+          },
+          "ORG": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [
+              "National Science Foundation"
+            ],
+            "fp_entities": [],
+            "fn_entities": []
+          },
+          "PROJ": {
+            "tp": 2,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [
+              "IIS-2229876",
+              "IIS-2340209"
+            ],
+            "fp_entities": [],
+            "fn_entities": []
+          }
+        }
+      },
+      {
+        "paper_id": "paper_07",
+        "categories": {
+          "PER": {
+            "tp": 7,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [
+              "Antra Tessera",
+              "Grace Kind",
+              "Janus",
+              "Max Loeffler",
+              "Victor Godet",
+              "Wyatt Walls",
+              "xlr8harder"
+            ],
+            "fp_entities": [],
+            "fn_entities": []
+          },
+          "ORG": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 1,
+            "tp_entities": [
+              "Czech Science Foundation"
+            ],
+            "fp_entities": [],
+            "fn_entities": [
+              "Prime Intellect"
+            ]
+          },
+          "PROJ": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [
+              "26-23955S"
+            ],
+            "fp_entities": [],
+            "fn_entities": []
+          }
+        }
+      },
+      {
+        "paper_id": "paper_09",
+        "categories": {
+          "PER": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [],
+            "fp_entities": [],
+            "fn_entities": []
+          },
+          "ORG": {
+            "tp": 2,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [
+              "UK Research and Innovation",
+              "UKRI Centre for Doctoral Training in Safe and Trusted Artificial Intelligence"
+            ],
+            "fp_entities": [],
+            "fn_entities": []
+          },
+          "PROJ": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [
+              "EP/S023356/1"
+            ],
+            "fp_entities": [],
+            "fn_entities": []
+          }
+        }
+      },
+      {
+        "paper_id": "paper_11",
+        "categories": {
+          "PER": {
+            "tp": 2,
+            "fp": 1,
+            "fn": 1,
+            "tp_entities": [
+              "Prof. C.Z. Zhang",
+              "SS"
+            ],
+            "fp_entities": [
+              "J.K."
+            ],
+            "fn_entities": [
+              "LM"
+            ]
+          },
+          "ORG": {
+            "tp": 3,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [
+              "Dana Farber Cancer Institute",
+              "Henri Seydoux Fund",
+              "Simons Foundation"
+            ],
+            "fp_entities": [],
+            "fn_entities": []
+          },
+          "PROJ": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [],
+            "fp_entities": [],
+            "fn_entities": []
+          }
+        }
+      },
+      {
+        "paper_id": "paper_13",
+        "categories": {
+          "PER": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [
+              "A.-F. B."
+            ],
+            "fp_entities": [],
+            "fn_entities": []
+          },
+          "ORG": {
+            "tp": 4,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [
+              "ERC",
+              "European Research Council",
+              "European Union",
+              "Horizon 2020"
+            ],
+            "fp_entities": [],
+            "fn_entities": []
+          },
+          "PROJ": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [
+              "851173"
+            ],
+            "fp_entities": [],
+            "fn_entities": []
+          }
+        }
+      },
+      {
+        "paper_id": "paper_19",
+        "categories": {
+          "PER": {
+            "tp": 2,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [
+              "CJP",
+              "F. Tablizo"
+            ],
+            "fp_entities": [],
+            "fn_entities": []
+          },
+          "ORG": {
+            "tp": 2,
+            "fp": 0,
+            "fn": 1,
+            "tp_entities": [
+              "Department of Health - Epidemiology Bureau",
+              "Philippine Genome Center"
+            ],
+            "fp_entities": [],
+            "fn_entities": [
+              "national SARS-CoV-2 biosurveillance initiative"
+            ]
+          },
+          "PROJ": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [],
+            "fp_entities": [],
+            "fn_entities": []
+          }
+        }
+      },
+      {
+        "paper_id": "paper_27",
+        "categories": {
+          "PER": {
+            "tp": 2,
+            "fp": 0,
+            "fn": 1,
+            "tp_entities": [
+              "S.G.",
+              "Z.A."
+            ],
+            "fp_entities": [],
+            "fn_entities": [
+              "SAB"
+            ]
+          },
+          "ORG": {
+            "tp": 2,
+            "fp": 2,
+            "fn": 3,
+            "tp_entities": [
+              "NEI",
+              "National Eye Institute"
+            ],
+            "fp_entities": [
+              "Simons Foundation",
+              "Stanford Medicine"
+            ],
+            "fn_entities": [
+              "Schmidt Sciences Polymath Award",
+              "Simons Foundation Collaboration on the Physics of Learning and Neural Computation",
+              "Stanford Medicine Post-Baccalaureate Experience In Research program"
+            ]
+          },
+          "PROJ": {
+            "tp": 3,
+            "fp": 3,
+            "fn": 0,
+            "tp_entities": [
+              "P30EY026877",
+              "R01EY022933",
+              "R01EY025087"
+            ],
+            "fp_entities": [
+              "SAB",
+              "Schmidt Sciences Polymath Award",
+              "Simons Foundation Collaboration on the Physics of Learning and Neural Computation"
+            ],
+            "fn_entities": []
+          }
+        }
+      },
+      {
+        "paper_id": "paper_28",
+        "categories": {
+          "PER": {
+            "tp": 19,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [
+              "Boyu Qie",
+              "C. Lawrence Zitnick",
+              "Daniel S. Levine",
+              "Ishan Amin",
+              "Kai Nelson",
+              "Luis Barroso-Luque",
+              "Meng Gao",
+              "Michael Psenka",
+              "Misko Dzamba",
+              "Muhammed Shuaibi",
+              "Nithin Chalapathi",
+              "Rasmus Hoegh",
+              "Ritwik Gupta",
+              "Ryan Liu",
+              "Sam Blau",
+              "Sanjeev Raja",
+              "Tobias Kreiman",
+              "Yiheng Du",
+              "Yue Jian"
+            ],
+            "fp_entities": [],
+            "fn_entities": []
+          },
+          "ORG": {
+            "tp": 5,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [
+              "Arnold and Mabel Beckman Foundation",
+              "FAIR Chemistry group",
+              "LBNL",
+              "Research Corporation for Science Advancement",
+              "UC Berkeley"
+            ],
+            "fp_entities": [],
+            "fn_entities": []
+          },
+          "PROJ": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [
+              "SA-AUT-2024-015b"
+            ],
+            "fp_entities": [],
+            "fn_entities": []
+          }
+        }
+      }
+    ]
+  },
+  "Jean-Baptiste/roberta-large-ner-english": {
+    "per_category": {
+      "PER": {
+        "tp": 24,
+        "fp": 11,
+        "fn": 11,
+        "precision": 0.6857,
+        "recall": 0.6857,
+        "f1": 0.6857
+      },
+      "ORG": {
+        "tp": 17,
+        "fp": 13,
+        "fn": 8,
+        "precision": 0.5667,
+        "recall": 0.68,
+        "f1": 0.6182
+      },
+      "PROJ": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 9,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      }
+    },
+    "overall": {
+      "tp": 41,
+      "fp": 24,
+      "fn": 28,
+      "precision": 0.6308,
+      "recall": 0.5942,
+      "f1": 0.6119
+    },
+    "per_paper": [
+      {
+        "paper_id": "paper_03",
+        "categories": {
+          "PER": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [],
+            "fp_entities": [],
+            "fn_entities": []
+          },
+          "ORG": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [
+              "National Science Foundation"
+            ],
+            "fp_entities": [],
+            "fn_entities": []
+          },
+          "PROJ": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2,
+            "tp_entities": [],
+            "fp_entities": [],
+            "fn_entities": [
+              "IIS-2229876",
+              "IIS-2340209"
+            ]
+          }
+        }
+      },
+      {
+        "paper_id": "paper_07",
+        "categories": {
+          "PER": {
+            "tp": 6,
+            "fp": 1,
+            "fn": 1,
+            "tp_entities": [
+              "Antra Tessera",
+              "Grace Kind",
+              "Janus",
+              "Max Loeffler",
+              "Victor Godet",
+              "Wyatt Walls"
+            ],
+            "fp_entities": [
+              "lr8harder"
+            ],
+            "fn_entities": [
+              "xlr8harder"
+            ]
+          },
+          "ORG": {
+            "tp": 2,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [
+              "Czech Science Foundation",
+              "Prime Intellect"
+            ],
+            "fp_entities": [],
+            "fn_entities": []
+          },
+          "PROJ": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "tp_entities": [],
+            "fp_entities": [],
+            "fn_entities": [
+              "26-23955S"
+            ]
+          }
+        }
+      },
+      {
+        "paper_id": "paper_09",
+        "categories": {
+          "PER": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [],
+            "fp_entities": [],
+            "fn_entities": []
+          },
+          "ORG": {
+            "tp": 1,
+            "fp": 1,
+            "fn": 1,
+            "tp_entities": [
+              "UK Research and Innovation"
+            ],
+            "fp_entities": [
+              "UKRI Centre for Doctoral Training"
+            ],
+            "fn_entities": [
+              "UKRI Centre for Doctoral Training in Safe and Trusted Artificial Intelligence"
+            ]
+          },
+          "PROJ": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "tp_entities": [],
+            "fp_entities": [],
+            "fn_entities": [
+              "EP/S023356/1"
+            ]
+          }
+        }
+      },
+      {
+        "paper_id": "paper_11",
+        "categories": {
+          "PER": {
+            "tp": 0,
+            "fp": 2,
+            "fn": 3,
+            "tp_entities": [],
+            "fp_entities": [
+              ".",
+              "C.Z. Zhang"
+            ],
+            "fn_entities": [
+              "LM",
+              "Prof. C.Z. Zhang",
+              "SS"
+            ]
+          },
+          "ORG": {
+            "tp": 2,
+            "fp": 3,
+            "fn": 1,
+            "tp_entities": [
+              "Dana Farber Cancer Institute",
+              "Simons Foundation"
+            ],
+            "fp_entities": [
+              "GitHub",
+              "LM",
+              "SS"
+            ],
+            "fn_entities": [
+              "Henri Seydoux Fund"
+            ]
+          },
+          "PROJ": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [],
+            "fp_entities": [],
+            "fn_entities": []
+          }
+        }
+      },
+      {
+        "paper_id": "paper_13",
+        "categories": {
+          "PER": {
+            "tp": 0,
+            "fp": 2,
+            "fn": 1,
+            "tp_entities": [],
+            "fp_entities": [
+              ".",
+              "A.-F. B"
+            ],
+            "fn_entities": [
+              "A.-F. B."
+            ]
+          },
+          "ORG": {
+            "tp": 3,
+            "fp": 0,
+            "fn": 1,
+            "tp_entities": [
+              "ERC",
+              "European Research Council",
+              "European Union"
+            ],
+            "fp_entities": [],
+            "fn_entities": [
+              "Horizon 2020"
+            ]
+          },
+          "PROJ": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "tp_entities": [],
+            "fp_entities": [],
+            "fn_entities": [
+              "851173"
+            ]
+          }
+        }
+      },
+      {
+        "paper_id": "paper_19",
+        "categories": {
+          "PER": {
+            "tp": 1,
+            "fp": 1,
+            "fn": 1,
+            "tp_entities": [
+              "F. Tablizo"
+            ],
+            "fp_entities": [
+              "."
+            ],
+            "fn_entities": [
+              "CJP"
+            ]
+          },
+          "ORG": {
+            "tp": 2,
+            "fp": 1,
+            "fn": 1,
+            "tp_entities": [
+              "Department of Health - Epidemiology Bureau",
+              "Philippine Genome Center"
+            ],
+            "fp_entities": [
+              "CJP"
+            ],
+            "fn_entities": [
+              "national SARS-CoV-2 biosurveillance initiative"
+            ]
+          },
+          "PROJ": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [],
+            "fp_entities": [],
+            "fn_entities": []
+          }
+        }
+      },
+      {
+        "paper_id": "paper_27",
+        "categories": {
+          "PER": {
+            "tp": 0,
+            "fp": 3,
+            "fn": 3,
+            "tp_entities": [],
+            "fp_entities": [
+              "). S.G.",
+              ".",
+              ". Z.A."
+            ],
+            "fn_entities": [
+              "S.G.",
+              "SAB",
+              "Z.A."
+            ]
+          },
+          "ORG": {
+            "tp": 2,
+            "fp": 5,
+            "fn": 3,
+            "tp_entities": [
+              "NEI",
+              "National Eye Institute"
+            ],
+            "fp_entities": [
+              "Physics",
+              "SAB",
+              "Simons Foundation",
+              "Stanford Medicine",
+              "ation on"
+            ],
+            "fn_entities": [
+              "Schmidt Sciences Polymath Award",
+              "Simons Foundation Collaboration on the Physics of Learning and Neural Computation",
+              "Stanford Medicine Post-Baccalaureate Experience In Research program"
+            ]
+          },
+          "PROJ": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3,
+            "tp_entities": [],
+            "fp_entities": [],
+            "fn_entities": [
+              "P30EY026877",
+              "R01EY022933",
+              "R01EY025087"
+            ]
+          }
+        }
+      },
+      {
+        "paper_id": "paper_28",
+        "categories": {
+          "PER": {
+            "tp": 17,
+            "fp": 2,
+            "fn": 2,
+            "tp_entities": [
+              "Boyu Qie",
+              "C. Lawrence Zitnick",
+              "Daniel S. Levine",
+              "Ishan Amin",
+              "Kai Nelson",
+              "Luis Barroso-Luque",
+              "Meng Gao",
+              "Misko Dzamba",
+              "Muhammed Shuaibi",
+              "Nithin Chalapathi",
+              "Rasmus Hoegh",
+              "Ritwik Gupta",
+              "Ryan Liu",
+              "Sam Blau",
+              "Sanjeev Raja",
+              "Tobias Kreiman",
+              "Yue Jian"
+            ],
+            "fp_entities": [
+              ".",
+              "Yiheng Du, Michael Psenka"
+            ],
+            "fn_entities": [
+              "Michael Psenka",
+              "Yiheng Du"
+            ]
+          },
+          "ORG": {
+            "tp": 4,
+            "fp": 3,
+            "fn": 1,
+            "tp_entities": [
+              "Arnold and Mabel Beckman Foundation",
+              "LBNL",
+              "Research Corporation for Science Advancement",
+              "UC Berkeley"
+            ],
+            "fp_entities": [
+              "E",
+              "FAIR Chemistry",
+              "Scialog"
+            ],
+            "fn_entities": [
+              "FAIR Chemistry group"
+            ]
+          },
+          "PROJ": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "tp_entities": [],
+            "fp_entities": [],
+            "fn_entities": [
+              "SA-AUT-2024-015b"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "kalawinka/flair-ner-acknowledgments": {
+    "per_category": {
+      "PER": {
+        "tp": 25,
+        "fp": 3,
+        "fn": 10,
+        "precision": 0.8929,
+        "recall": 0.7143,
+        "f1": 0.7937
+      },
+      "ORG": {
+        "tp": 13,
+        "fp": 7,
+        "fn": 12,
+        "precision": 0.65,
+        "recall": 0.52,
+        "f1": 0.5778
+      },
+      "PROJ": {
+        "tp": 9,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      }
+    },
+    "overall": {
+      "tp": 47,
+      "fp": 10,
+      "fn": 22,
+      "precision": 0.8246,
+      "recall": 0.6812,
+      "f1": 0.746
+    },
+    "per_paper": [
+      {
+        "paper_id": "paper_03",
+        "categories": {
+          "PER": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [],
+            "fp_entities": [],
+            "fn_entities": []
+          },
+          "ORG": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [
+              "National Science Foundation"
+            ],
+            "fp_entities": [],
+            "fn_entities": []
+          },
+          "PROJ": {
+            "tp": 2,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [
+              "IIS-2229876",
+              "IIS-2340209"
+            ],
+            "fp_entities": [],
+            "fn_entities": []
+          }
+        }
+      },
+      {
+        "paper_id": "paper_07",
+        "categories": {
+          "PER": {
+            "tp": 6,
+            "fp": 0,
+            "fn": 1,
+            "tp_entities": [
+              "Antra Tessera",
+              "Grace Kind",
+              "Janus",
+              "Max Loeffler",
+              "Victor Godet",
+              "Wyatt Walls"
+            ],
+            "fp_entities": [],
+            "fn_entities": [
+              "xlr8harder"
+            ]
+          },
+          "ORG": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 1,
+            "tp_entities": [
+              "Czech Science Foundation"
+            ],
+            "fp_entities": [],
+            "fn_entities": [
+              "Prime Intellect"
+            ]
+          },
+          "PROJ": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [
+              "26-23955S"
+            ],
+            "fp_entities": [],
+            "fn_entities": []
+          }
+        }
+      },
+      {
+        "paper_id": "paper_09",
+        "categories": {
+          "PER": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [],
+            "fp_entities": [],
+            "fn_entities": []
+          },
+          "ORG": {
+            "tp": 2,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [
+              "UK Research and Innovation",
+              "UKRI Centre for Doctoral Training in Safe and Trusted Artificial Intelligence"
+            ],
+            "fp_entities": [],
+            "fn_entities": []
+          },
+          "PROJ": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [
+              "EP/S023356/1"
+            ],
+            "fp_entities": [],
+            "fn_entities": []
+          }
+        }
+      },
+      {
+        "paper_id": "paper_11",
+        "categories": {
+          "PER": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 3,
+            "tp_entities": [],
+            "fp_entities": [
+              "C.Z. Zhang"
+            ],
+            "fn_entities": [
+              "LM",
+              "Prof. C.Z. Zhang",
+              "SS"
+            ]
+          },
+          "ORG": {
+            "tp": 3,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [
+              "Dana Farber Cancer Institute",
+              "Henri Seydoux Fund",
+              "Simons Foundation"
+            ],
+            "fp_entities": [],
+            "fn_entities": []
+          },
+          "PROJ": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [],
+            "fp_entities": [],
+            "fn_entities": []
+          }
+        }
+      },
+      {
+        "paper_id": "paper_13",
+        "categories": {
+          "PER": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 1,
+            "tp_entities": [],
+            "fp_entities": [
+              "F. B."
+            ],
+            "fn_entities": [
+              "A.-F. B."
+            ]
+          },
+          "ORG": {
+            "tp": 0,
+            "fp": 2,
+            "fn": 4,
+            "tp_entities": [],
+            "fp_entities": [
+              "European Research Council (ERC)",
+              "European Union's Horizon 2020 research and innovation programme"
+            ],
+            "fn_entities": [
+              "ERC",
+              "European Research Council",
+              "European Union",
+              "Horizon 2020"
+            ]
+          },
+          "PROJ": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [
+              "851173"
+            ],
+            "fp_entities": [],
+            "fn_entities": []
+          }
+        }
+      },
+      {
+        "paper_id": "paper_19",
+        "categories": {
+          "PER": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 1,
+            "tp_entities": [
+              "F. Tablizo"
+            ],
+            "fp_entities": [],
+            "fn_entities": [
+              "CJP"
+            ]
+          },
+          "ORG": {
+            "tp": 3,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [
+              "Department of Health - Epidemiology Bureau",
+              "Philippine Genome Center",
+              "national SARS-CoV-2 biosurveillance initiative"
+            ],
+            "fp_entities": [],
+            "fn_entities": []
+          },
+          "PROJ": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [],
+            "fp_entities": [],
+            "fn_entities": []
+          }
+        }
+      },
+      {
+        "paper_id": "paper_27",
+        "categories": {
+          "PER": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3,
+            "tp_entities": [],
+            "fp_entities": [],
+            "fn_entities": [
+              "S.G.",
+              "SAB",
+              "Z.A."
+            ]
+          },
+          "ORG": {
+            "tp": 3,
+            "fp": 1,
+            "fn": 2,
+            "tp_entities": [
+              "Schmidt Sciences Polymath Award",
+              "Simons Foundation Collaboration on the Physics of Learning and Neural Computation",
+              "Stanford Medicine Post-Baccalaureate Experience In Research program"
+            ],
+            "fp_entities": [
+              "National Eye Institute (NEI)"
+            ],
+            "fn_entities": [
+              "NEI",
+              "National Eye Institute"
+            ]
+          },
+          "PROJ": {
+            "tp": 3,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [
+              "P30EY026877",
+              "R01EY022933",
+              "R01EY025087"
+            ],
+            "fp_entities": [],
+            "fn_entities": []
+          }
+        }
+      },
+      {
+        "paper_id": "paper_28",
+        "categories": {
+          "PER": {
+            "tp": 18,
+            "fp": 1,
+            "fn": 1,
+            "tp_entities": [
+              "Boyu Qie",
+              "Daniel S. Levine",
+              "Ishan Amin",
+              "Kai Nelson",
+              "Luis Barroso-Luque",
+              "Meng Gao",
+              "Michael Psenka",
+              "Misko Dzamba",
+              "Muhammed Shuaibi",
+              "Nithin Chalapathi",
+              "Rasmus Hoegh",
+              "Ritwik Gupta",
+              "Ryan Liu",
+              "Sam Blau",
+              "Sanjeev Raja",
+              "Tobias Kreiman",
+              "Yiheng Du",
+              "Yue Jian"
+            ],
+            "fp_entities": [
+              "Lawrence Zitnick"
+            ],
+            "fn_entities": [
+              "C. Lawrence Zitnick"
+            ]
+          },
+          "ORG": {
+            "tp": 0,
+            "fp": 4,
+            "fn": 5,
+            "tp_entities": [],
+            "fp_entities": [
+              "Mabel Beckman Foundation",
+              "Research Corporation for Science Advancement and Arnold",
+              "Scialog",
+              "UC Berkeley / LBNL"
+            ],
+            "fn_entities": [
+              "Arnold and Mabel Beckman Foundation",
+              "FAIR Chemistry group",
+              "LBNL",
+              "Research Corporation for Science Advancement",
+              "UC Berkeley"
+            ]
+          },
+          "PROJ": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0,
+            "tp_entities": [
+              "SA-AUT-2024-015b"
+            ],
+            "fp_entities": [],
+            "fn_entities": []
+          }
+        }
+      }
+    ]
+  }
+}
