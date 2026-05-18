@@ -1,0 +1,1 @@
+This folder contains the gold standard used to evaluate Named Entity Recognition models on the acknowledgements of scientific papers. It includes 8 manually annotated documents with three entity categories (PER, ORG, PROJ). See ANNOTATION_GUIDELINES.md for the detailed annotation rules and methodological decisions.
